@@ -14,8 +14,4 @@ Qualität:
   
 Empfehlung:
   SQL für Verwaltung
-  MungoDB für Dokumente
-
-Anwesenheit:
-  Montags mindestens eine Person pro Gruppe anwesend
-  Bei Review gesamte Gruppe anwesend, Absprache mit anderen Gruppen über Zeitraum
+  MongoDB für Dokumente
