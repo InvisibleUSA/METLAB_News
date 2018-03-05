@@ -28,7 +28,6 @@ Syntax highlighted code block
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-[Test](https://discordapp.com/api/guilds/420294629997412364/widget.json)
 
 ### Jekyll Themes
 
