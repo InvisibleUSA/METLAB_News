@@ -1,8 +1,7 @@
-| Termine          |                               | 
-|------------------|-------------------------------| 
-|                  |                               | 
-|                  |                               | 
+## Termine
+ 
 | Fälligkeitsdatum | Beschreibung                  | 
+|------------------|-------------------------------| 
 | 11.03.2018       | Projektplan                   | 
 | 11.03.2018       | Risikoanalyse                 | 
 | 11.03.2018       | Rollenverteilung              | 
