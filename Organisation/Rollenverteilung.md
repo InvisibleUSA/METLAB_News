@@ -1,3 +1,5 @@
+| Rolle                                |         Name       |
+|--------------------------------------|--------------------|
 | Projektleiter                        | Erik Hennig        |
 | Recherche                            | Marco Rempfer      |
 | Modellierung                         | Benny Gerlach      |
