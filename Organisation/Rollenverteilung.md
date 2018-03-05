@@ -1,6 +1,6 @@
 | Projektleiter                        | Erik Hennig        |
 | Recherche                            | Marco Rempfer      |
 | Modellierung                         | Benny Gerlach      |
-| Tests                                | Achim Groﬂ         |
+| Tests                                | Achim Gro√ü         |
 | Implementierung                      | Lukas Niedergriese |
-| Qualit‰tssicherung und Dokumentation | Tobias Reis        |
+| Qualit√§tssicherung und Dokumentation | Tobias Reis        |
