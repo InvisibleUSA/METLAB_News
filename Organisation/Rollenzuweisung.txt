@@ -1,0 +1,7 @@
+Projektleiter												Erik Hennig
+technischer Assistent										Lukas Niedergriese
+Verantwortlicher für Recherche								Marco Rempfer
+Verantwortlicher für Modellierung							Benny Gerlach
+Verantwortliche für Tests									Achim Groß
+Verantwortlicher für Implementierung						Lukas Niedergriese
+Verantwortlicher für Qualitätssicherung und Dokumentation	Tobias Reis
