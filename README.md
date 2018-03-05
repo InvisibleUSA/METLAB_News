@@ -1,4 +1,8 @@
-## Welcome to GitHub Pages
+## Willkommen auf der Website von METLAB News
+
+Dies ist die Projektwebsite. Hier wird regelmäßig die Dokumentation zum aktuellen Fortschritt des Projektes veröffentlicht.
+
+#### Informationen zu Markdown
 
 You can use the [editor on GitHub](https://github.com/InvisibleUSA/METLAB_News/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
