@@ -1,3 +1,3 @@
 ## Anwesenheit:
 - Montags mindestens eine Person pro Gruppe anwesend
-- Bei review gesamte Gruppen anwesend, Absprache mit anderen Gruppen über Zeitraum
+- Bei review gesamte Gruppen anwesend, Absprache mit anderen Gruppen Ã¼ber Zeitraum
