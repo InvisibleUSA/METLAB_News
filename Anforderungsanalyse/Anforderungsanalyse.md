@@ -1,4 +1,5 @@
-Gefordert:
+## Anforderungsanalyse
+# Gefordert:
 1) ein Webservice, der Nachrichten nach benutzerdefinierten Kriterien bereitstellt
 - der Kunde stellt die Software als Dienstleistung für Unternehmen zur Verfügung
 - der Kunde verwaltet seine Klienten (Unternehmen) selbst
