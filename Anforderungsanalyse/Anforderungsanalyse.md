@@ -1,23 +1,23 @@
-## Anforderungsanalyse
+ï»¿## Anforderungsanalyse
 # Gefordert:
 1) ein Webservice, der Nachrichten nach benutzerdefinierten Kriterien bereitstellt
-- der Kunde stellt die Software als Dienstleistung für Unternehmen zur Verfügung
+- der Kunde stellt die Software als Dienstleistung fÃ¼r Unternehmen zur VerfÃ¼gung
 - der Kunde verwaltet seine Klienten (Unternehmen) selbst
-- die Software wird über eine grafische Oberfläche in einem (beliebigen) Browser
-  bedient, mindestens die Endbenutzer interagieren nur über diese Oberfläche
+- die Software wird Ã¼ber eine grafische OberflÃ¤che in einem (beliebigen) Browser
+  bedient, mindestens die Endbenutzer interagieren nur Ã¼ber diese OberflÃ¤che
 - es werden Nachrichten aus verschiedenen Quellen bereitgestellt:
   RSS, Twitter, Facebook, Onlinezeitungen
 - jeder Endbenutzer (Mitarbeiter eines Unternehmens) kann ein Profil erstellen,
-  das Quellen und Filter (Suchbegriffe) enthält
+  das Quellen und Filter (Suchbegriffe) enthÃ¤lt
 - ein Benutzerprofil kann mit anderen Mitarbeitern geteilt werden
-- jeder Endbenutzer kann einen Benachrichtigungsdienst abonieren, der regelmäßig
+- jeder Endbenutzer kann einen Benachrichtigungsdienst abonieren, der regelmÃ¤ÃŸig
   eine Zusammenfassung seiner aktuellen Nachrichten als Mail versendet,
   der Endbenutzer gibt die Uhrzeit der Benachrichtigung vor
-- jede Nachricht wird als vollständiger Artikel archiviert
+- jede Nachricht wird als vollstÃ¤ndiger Artikel archiviert
 
 
-2) eine Website, die den Kunden kontinuierlich über den Stand des Projekts informiert
-- wöchentliche Updates
+2) eine Website, die den Kunden kontinuierlich Ã¼ber den Stand des Projekts informiert
+- wÃ¶chentliche Updates
 
 
 
