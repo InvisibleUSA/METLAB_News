@@ -2,9 +2,26 @@
 
 Dies ist die Projektwebsite. Hier wird regelmäßig die Dokumentation zum aktuellen Fortschritt des Projektes veröffentlicht.
 
-### Aktuelle Rollenverteilung
+### Sitemap
 
-[Rollenverteilung.md](https://github.com/InvisibleUSA/METLAB_News/blob/master/Organisation/Rollenverteilung.md)
+[Terminplanung](Terminplanung.md)
+#### Organisation
+[Rollenverteilung](/Organisation/Rollenverteilung.md)
+
+[Notizen](/Organisation/Notizen.md)
+
+[Projekplan](/Organisation/Projektplan/Projektplan.md)
+
+[Zielsetzung](/Organisation/Projektplan/Zielsetzung.md)
+#### Dokumentation
+[Protokoll](/Dokumentation/Protokoll.md)
+
+[KVP_Shoutbox](/Dokumentation/KVP_Shoutbox.MD)
+
+[Richtlinien](/Dokumentation/Richtlinien.md)
+
+#### Anforderungsanalyse
+[Anforderungsanalyse](/Anforderungsanalyse/Anforderungsanalyse.md)
 
 ## Informationen zu Markdown
 

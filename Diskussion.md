@@ -1,0 +1,11 @@
+- Java als Programmiersprache
+- IntelliJ als IDE
+- Visual Paradigm Community Edition als UML Tool
+- Vaadin für das Frontend (ohne Designer), kein JS
+- Toomcat als Server?
+- Maven für Projektkonfiguration?
+- JUnit für Unit Tests
+- MariaDB für Benutzerverwaltung? Alternative: Data Warehouse
+- Firmen und deren Mitarbeiter in der selben Datenbank
+- MongoDB für Nachrichtenverwaltung und Archivierung?
+- Benutzerprofile als XML? Alternative: OO-DB

@@ -14,3 +14,6 @@
 
 # Visio autosave temporary files
 *.~vsd*
+
+# Mac ds files
+*.DS_Store*
