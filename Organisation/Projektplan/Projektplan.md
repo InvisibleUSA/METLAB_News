@@ -1,6 +1,6 @@
 # Projektplan
 In diesem Dokument soll die Struktur des Projekts beschrieben werden. Zudem wir das Projekt in kleinere Vorgänge unterteilt, die hier kurz beschrieben werden. Zu jedem Vorgang existiert ein Verantwortlicher und es wurde ungefähr abgeschätzt, wie lange für die Umsetzung benötigt wird.
-Bei Änderungen der Paketnamen oder Hinzufügen/Löschen von Pakten müssen diese auch im Gantt-Diagramm vollzogen werden. (https://app.agantty.com/sharing/4215a8cb1f0f34490a22865a73cda384)
+Bei Änderungen der Paketnamen oder Hinzufügen/Löschen von Pakten müssen diese auch im Gantt-Diagramm vollzogen werden. [Link](https://app.agantty.com/sharing/4215a8cb1f0f34490a22865a73cda384)
 
 Zusätzlich zur den Vorgängen werden auch Meilensteine beschrieben.
 
