@@ -4,7 +4,18 @@ Dies ist die Projektwebsite. Hier wird regelmäßig die Dokumentation zum aktuel
 
 ### Aktuelle Rollenverteilung
 
-[Rollenverteilung.md](/Organisation/Rollenverteilung.md)
+[Terminplanung](Terminplanung.md)
+#### Organisation
+[Rollenverteilung](/Organisation/Rollenverteilung.md)
+[Notizen](/Organisation/Notizen.md)
+[Projekplan](/Organisation/Projektplan/Projektplan.md)
+[Zielsetzung](/Organisation/Projektplan/Zielsetzung.md
+#### Dokumentation
+[Protokoll](/Dokumentation/Protokoll.md)
+[KVP_Shoutbox](/Dokumentation/KVP_Shoutbox.MD)
+[Richtlinien](/Dokumentation/Richtlinien.md)
+#### Anforderungsanalyse
+[Anforderungsanalyse](/Anforderungsanalyse/Anforderungsanalyse.md)
 
 ## Informationen zu Markdown
 
