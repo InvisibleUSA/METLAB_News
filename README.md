@@ -2,7 +2,7 @@
 
 Dies ist die Projektwebsite. Hier wird regelmäßig die Dokumentation zum aktuellen Fortschritt des Projektes veröffentlicht.
 
-### Aktuelle Rollenverteilung
+### Sitemap
 
 [Terminplanung](Terminplanung.md)
 #### Organisation
