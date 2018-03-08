@@ -4,7 +4,7 @@ Dies ist die Projektwebsite. Hier wird regelmäßig die Dokumentation zum aktuel
 
 ### Aktuelle Rollenverteilung
 
-[Rollenverteilung.md](Terminplanung.md)
+[Rollenverteilung.md](/Organisation/Rollenverteilung.md)
 
 ## Informationen zu Markdown
 
