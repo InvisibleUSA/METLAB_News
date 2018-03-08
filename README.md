@@ -1,4 +1,4 @@
-## Willkommen auf der Website von METLAB News
+## Willkommen auf der Website von [METLAB News](https://invisibleusa.github.io/METLAB_News/)
 
 Dies ist die Projektwebsite. Hier wird regelmäßig die Dokumentation zum aktuellen Fortschritt des Projektes veröffentlicht.
 
