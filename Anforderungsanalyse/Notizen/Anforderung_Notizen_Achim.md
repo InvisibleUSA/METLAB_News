@@ -1,4 +1,4 @@
-Anforderungen:
+﻿# Anforderungen
   Nutzerinteraktion nur über Browser
   Verwaltung (Hoof), Systemadmin kann gespeicherte Daten filtern, kategorisiert löschen
     Installarionsskript mit liefern
@@ -8,10 +8,10 @@ Anforderungen:
   Aboservice, täglicher Kurzabriss (jeweils Betreff, Snippet, Quelle) um Uhrzeit (Email, PDF in Email)
   Snippetarchiv: jede angezeigte Nachricht archivieren, da Links Aktualität verlieren können
   
-Qualität:
+# Qualität
   Nutzbarkeit Login
   Inhalt (viel sinnvolles, wenig Schrott)
   
-Empfehlung:
+# Empfehlung
   SQL für Verwaltung
   MongoDB für Dokumente
