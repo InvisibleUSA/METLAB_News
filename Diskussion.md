@@ -16,8 +16,12 @@
   Export als XML-Datei? (JAXB?)
 - Lucene? mit Hibernate Search?
 - ROME für RSS [z]
-- SAX? / JAXB?
 
+
+Vorschlag: Artikel komplett als XML in eXist oder BaseX, Indizierung mit Lucene
+(evtl. über Hibernate Search), bei Bedarf JAXB
+Benutzerprofile ebenfalls in XML, auf dem selben DBMS, ebenfalls mit JAXB
+Benutzer in MariaDB, Anbindung über Hibernate ORM
 
 
 
