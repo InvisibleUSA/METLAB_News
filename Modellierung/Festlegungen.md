@@ -1,2 +1,1 @@
-- jeder Klient hinterlegt einen "Master", der die Administratoren verwaltet, die ihrerseits Endnutzer
-  verifizieren, löschen und evtl. auch eigenhändig hinzufügen können
+jeder Klient hinterlegt einen "Master", der die Administratoren verwaltet, die ihrerseits Endnutzer verifizieren, lÃ¶schen und evtl. auch eigenhÃ¤ndig hinzufÃ¼gen kÃ¶nnen
