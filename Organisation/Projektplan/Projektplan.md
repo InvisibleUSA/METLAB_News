@@ -81,7 +81,12 @@ Zusätzlich zur den Vorgängen werden auch Meilensteine beschrieben.
 ## Meilensteine
 Die Meilensteine wurden mit den Reviewterminen gleichgesetzt, da es sich dabei wichtige Teile des Projekts abgeschlossen werden und eine Rückkopplung mit dem Kunden erfolgt.
 ### Analysereview
+Zu diesem Zeitpunkt sollen Lastenheft und Glossar fertiggestellt sein. Ein erster Prototyp des Produkts wurde entwickelt und es gibt ein Dokumentationskonzept. Die Startphase der Anforderungsanalyse ist abgeschlossen-
 ### Designreview
+Beim Erreichen des Meilensteins Designreview wurde die grundlegende Struktur des Programmes festgelegt. Zusätzlich wurde ein Testkonzept angefertigt und das Dokumentationskonzept überarbeitet. Das Projekt ist bereit, in
+die Implementationsphase überzugehen.
 ### Codereview
+Beim Meilenstein Codereview ist die Implementierung weit fortgeschritten und die Software funktionsfähig. Es wird sichergestellt, dass die bisherige Arbeit den Qualitätsanforderungen der Dokumentation entspricht und der
+Code geeignet getestet wird.
 ### Endabnahme
-
+Zum Zeitpunkt Endabnahme ist das Projekt abgeschlossen. Es sind keine weiteren Aktionen mehr nötig und das Produkt kann ausgeliefert werden.
