@@ -1,19 +1,19 @@
-#Aufgabenblatt 1
-##Aufwandserfassung
+# Aufgabenblatt 1
+## Aufwandserfassung
 
-##Statusbericht
+## Statusbericht
 
 
-##Rollenverteilung
+## Rollenverteilung
 [Rollenverteilung](/Organisation/Rollenverteilung.md)
 
-##Projektplan
+## Projektplan
 [Projektstrukturplan](/Organisation/Projektplan/Projektplan.md)
 [Zielsetzung](/Organisation/Projektplan/Zielsetzung.md)
 [Kapazitätsplan](/Organisation/Projektplan/Kapazitätsplan.xlsx)
 
-##Risikoanalyse
+## Risikoanalyse
 [Risikoanalyse](/Organisation/Risikoanalyse.xlsx)
 
-##Gruppen-Homepage
+## Gruppen-Homepage
 [Gruppen-Homepage](../README.md)
