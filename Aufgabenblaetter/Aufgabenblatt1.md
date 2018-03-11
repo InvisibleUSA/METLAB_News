@@ -5,15 +5,15 @@
 
 
 ## Rollenverteilung
-[Rollenverteilung](/Organisation/Rollenverteilung.md)
+[Rollenverteilung](../Organisation/Rollenverteilung.md)
 
 ## Projektplan
-[Projektstrukturplan](/Organisation/Projektplan/Projektplan.md)
-[Zielsetzung](/Organisation/Projektplan/Zielsetzung.md)
-[Kapazitätsplan](/Organisation/Projektplan/Kapazitätsplan.xlsx)
+[Projektstrukturplan](../Organisation/Projektplan/Projektplan.md)
+[Zielsetzung](../Organisation/Projektplan/Zielsetzung.md)
+[Kapazitätsplan](../Organisation/Projektplan/Kapazitätsplan.xlsx)
 
 ## Risikoanalyse
-[Risikoanalyse](/Organisation/Risikoanalyse.xlsx)
+[Risikoanalyse](../Organisation/Risikoanalyse.xlsx)
 
 ## Gruppen-Homepage
 [Gruppen-Homepage](../README.md)
