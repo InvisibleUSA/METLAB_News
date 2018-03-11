@@ -1,7 +1,7 @@
 # Aufgabenblatt 1
 ## Aufwandserfassung
 
-[Aufwandserfassung](../Organisation/Aufwandserfassung/Aufwandserfassung_Wochenbericht_KW10.xslx)
+[Aufwandserfassung](../Organisation/Aufwandserfassung/Aufwandserfassung_Wochenbericht_KW10.xlsx)
 
 ## Statusbericht
 
