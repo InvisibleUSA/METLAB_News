@@ -1,15 +1,20 @@
 # Aufgabenblatt 1
 ## Aufwandserfassung
 
+[Aufwandserfassung](../Organisation/Aufwandserfassung/Aufwandserfassung_Wochenbericht_KW10.xslx)
+
 ## Statusbericht
 
+[Statusbericht](../Organisation/Aufwandserfassung/Aufwandserfassung_Wochenbericht_KW10.md)
 
 ## Rollenverteilung
 [Rollenverteilung](../Organisation/Rollenverteilung.md)
 
 ## Projektplan
 [Projektstrukturplan](../Organisation/Projektplan/Projektplan.md)
+
 [Zielsetzung](../Organisation/Projektplan/Zielsetzung.md)
+
 [Kapazitätsplan](../Organisation/Projektplan/Weekly Workload.xlsx)
 
 ## Risikoanalyse
