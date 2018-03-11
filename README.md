@@ -3,7 +3,7 @@
 Dies ist die Projektwebsite. Hier wird regelmäßig die Dokumentation zum aktuellen Fortschritt des Projektes veröffentlicht.
 
 ### Aufgabenblätter
-[Aufgabenblatt](/Aufgabenblaetter/Aufgabenblatt1.md)
+[Aufgabenblatt 1](/Aufgabenblaetter/Aufgabenblatt1.md)
 
 ### Sitemap
 

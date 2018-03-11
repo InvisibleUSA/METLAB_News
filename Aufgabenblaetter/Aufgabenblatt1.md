@@ -10,7 +10,7 @@
 ## Projektplan
 [Projektstrukturplan](../Organisation/Projektplan/Projektplan.md)
 [Zielsetzung](../Organisation/Projektplan/Zielsetzung.md)
-[Kapazitätsplan](../Organisation/Projektplan/Kapazitätsplan.xlsx)
+[Kapazitätsplan](../Organisation/Projektplan/Weekly Workload.xlsx)
 
 ## Risikoanalyse
 [Risikoanalyse](../Organisation/Risikoanalyse.xlsx)
