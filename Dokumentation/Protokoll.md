@@ -60,5 +60,29 @@
     -	Aufgaben sollten öffentlichen zugänglich sein
     -	Zusätzliche Dinge nur über Passwort (z.B.: Arbeitsrichtlinien, Qualität-Standards, etc.)
 
-
-
+### 14.03.2018 (Abschluss AB2, Besprechung AB3)
+ * Recherchebericht (AB2)
+    - Benny macht Bericht für Punkt 4 (genauere Betrachtung)
+    - Marco fasst Bericht zusammen und bringt ihn zu Ende
+ * Technische Details
+    - UML-Tool auswählen (Marco vergleicht)
+      * Violet UML
+      * Visual paradigm
+      * Argo-UML
+    - OS für Server
+      * Linux, welche Systeme stehen zur Auswahl?
+      * vllt. Windows?
+ * Designstudie
+    - Server anmieten (Lukas)
+    - 1. Schritt: Frameworks, Tools ausprobieren, Notizen in OneNote
+      * Maven (Erik)
+	  * Vaadin (Achim)
+	  * Lucene, BaseX (Benny)
+	  * RSS-Feed, Rome (Erik)
+	  * TomEE (Lukas)
+	  * JUnit (Achim)
+	- 2.Schritt: Treffen und Modell entwickeln
+	- 3. Schritt: Implementierung
+ * Dauer der Besprechung: 1,5 h
+ * Issues erstellen, Projektplan aktualisieren (Erik)
+ 
