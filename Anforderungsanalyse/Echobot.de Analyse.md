@@ -37,11 +37,13 @@
     - 6.000.000 Mitarbeiter Daten aus Handelsregister, Unternehmenswebseiten, Pressemitteilungen und ähnlichen Quellen
 
 #### Use-Cases:
-  - Pressearbeit
-  - Marketing
-  - Vertrieb
-  - Kundenberatung
-  - Risikomangement
+  - Pressespiegel erstellen mit Artikeln, Social Media Posts, etc. die über die Firma sind
+  - Aufrufen von Archivierten Pressespiegeln
+  - Wettbewerbsvergleich mit anderen Firmen in der selben Branche
+  - Überwachung der Zuliefererfirmen anhand von Mitarbeiterentlassungen oder schließungen von Standorten etc
+  - Spezifische Kundensuche a lá "Firmen die eine neue Lagerhalle bauen"
+  - Veröffentlichen des Pressespiegels auf der eigenen Website gegen Extra-Gebühr
+  - Kundenberwertungen anhand von Social Media Posts erhalten
   
 # Arbeitsweise
   - Indeziert Artikel im Netz und speichert diese. Fügt jeden Tag ~500 000 neue Artikel hinzu.
