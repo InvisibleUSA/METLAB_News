@@ -69,9 +69,7 @@
       * Violet UML
       * Visual paradigm
       * Argo-UML
-    - OS für Server
-      * Linux, welche Systeme stehen zur Auswahl?
-      * vllt. Windows?
+    - OS für Server: CentOS
  * Designstudie
     - Server anmieten (Lukas)
     - 1. Schritt: Frameworks, Tools ausprobieren, Notizen in OneNote
