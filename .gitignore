@@ -17,3 +17,6 @@
 
 # Mac ds files
 *.DS_Store*
+
+# Asta temp files
+*.lock
