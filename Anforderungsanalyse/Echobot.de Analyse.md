@@ -44,6 +44,7 @@
   - Spezifische Kundensuche a lá "Firmen die eine neue Lagerhalle bauen"
   - Veröffentlichen des Pressespiegels auf der eigenen Website gegen Extra-Gebühr
   - Kundenberwertungen anhand von Social Media Posts erhalten
+  - E-Mail Alert kann zu jeder Medienzusammenfassung eingestellt werden
   
 # Arbeitsweise
   - Indeziert Artikel im Netz und speichert diese. Fügt jeden Tag ~500 000 neue Artikel hinzu.
