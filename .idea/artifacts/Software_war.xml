@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Software:war">
+    <output-path>$PROJECT_DIR$/Software/target</output-path>
+    <root id="archive" name="MetlabNews-0.1.war">
+      <element id="artifact" artifact-name="Software:war exploded" />
+    </root>
+  </artifact>
+</component>

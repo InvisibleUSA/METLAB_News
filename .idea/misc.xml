@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
-    <file type="gwt" url="file://$PROJECT_DIR$/View" />
-    <file type="web" url="file://$PROJECT_DIR$/View" />
+    <file type="gwt" url="file://$PROJECT_DIR$/Software" />
+    <file type="web" url="file://$PROJECT_DIR$/Software" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/View/pom.xml" />
+        <option value="$PROJECT_DIR$/Software/pom.xml" />
       </list>
     </option>
   </component>
