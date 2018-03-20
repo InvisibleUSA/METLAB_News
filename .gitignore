@@ -20,3 +20,6 @@
 
 # Asta temp files
 *.lock
+
+# IntelliJ Project Data
+.idea
