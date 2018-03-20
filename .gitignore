@@ -22,4 +22,7 @@
 *.lock
 
 # IntelliJ Project Data
-.idea
+.idea/
+
+# executables
+target/
