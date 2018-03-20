@@ -6,11 +6,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 
 
 
@@ -29,11 +25,9 @@ public class UserLoginUI extends UI
 	{
 		final VerticalLayout mainLayout = new VerticalLayout();
 
-		final TextField TextFieldUserName = new TextField();
-		TextFieldUserName.setCaption("Benutzername:");
+		final TextField TextFieldUserName = new TextField("Benutzername:");
 
-		final TextField TextFieldPassword = new TextField();
-		TextFieldPassword.setCaption("Passwort:");
+		final PasswordField TextFieldPassword = new PasswordField("Passwort:");
 
 		Button buttonLogin = new Button("Anmelden");
 		buttonLogin.addClickListener(e ->
