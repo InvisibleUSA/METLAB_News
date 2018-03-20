@@ -1,10 +1,10 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="Software:war exploded">
-    <output-path>$PROJECT_DIR$/Software/target/MetlabNews-0.1</output-path>
+  <artifact type="exploded-war" name="view:war exploded">
+    <output-path>$PROJECT_DIR$/target/metlab-0.1</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="Software" />
+          <element id="module-output" name="view" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: com.vaadin:vaadin-server:8.3.2" />
@@ -22,10 +22,10 @@
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/Software/target/MetlabNews-0.1/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/metlab-0.1/META-INF/MANIFEST.MF" />
       </element>
-      <element id="javaee-facet-resources" facet="Software/web/Web" />
-      <element id="gwt-compiler-output" facet="Software/gwt/GWT" />
+      <element id="javaee-facet-resources" facet="view/web/Web" />
+      <element id="gwt-compiler-output" facet="view/gwt/GWT" />
     </root>
   </artifact>
 </component>

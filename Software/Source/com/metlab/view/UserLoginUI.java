@@ -1,4 +1,4 @@
-package MetlabNews;
+package com.metlab.view;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -22,29 +22,33 @@ import com.vaadin.ui.VerticalLayout;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("mytheme")
-public class MainUI extends UI
+public class UserLoginUI extends UI
 {
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
-		final VerticalLayout layout = new VerticalLayout();
+		final VerticalLayout mainLayout = new VerticalLayout();
 
-		final TextField name = new TextField();
-		name.setCaption("Type your name here:");
+		final TextField TextFieldUserName = new TextField();
+		TextFieldUserName.setCaption("Benutzername:");
 
-		Button button = new Button("Click Me");
-		button.addClickListener(e -> {
-			layout.addComponent(new Label("Thanks " + name.getValue()
-					                              + ", it works!"));
-		});
+		final TextField TextFieldPassword = new TextField();
+		TextFieldPassword.setCaption("Passwort:");
 
-		layout.addComponents(name, button);
+		Button buttonLogin = new Button("Anmelden");
+		buttonLogin.addClickListener(e ->
+			{
+				mainLayout.addComponent(new Label("Benutzer " + TextFieldUserName.getValue()
+					+ " hat sich mit Passwort " + TextFieldPassword.getValue() + " angemeldet."));
+			});
 
-		setContent(layout);
+		mainLayout.addComponents(TextFieldUserName, TextFieldPassword, buttonLogin);
+
+		setContent(mainLayout);
 	}
 
 	@WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
-	@VaadinServletConfiguration(ui = MainUI.class, productionMode = false)
+	@VaadinServletConfiguration(ui = UserLoginUI.class, productionMode = false)
 	public static class MyUIServlet extends VaadinServlet
 	{
 	}
