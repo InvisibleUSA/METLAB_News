@@ -4,9 +4,10 @@ import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.*;
 import com.vaadin.ui.*;
+
+import java.io.File;
 
 
 
@@ -20,25 +21,55 @@ import com.vaadin.ui.*;
 @Theme("mytheme")
 public class UserLoginUI extends UI
 {
+
+	final String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+	final FileResource loginButtonIco = new FileResource(new File(basepath + "/../../Resources/Icons/loginButton.gif"));
+	final FileResource registerButtonIco = new FileResource(new File(basepath + "/../../Resources/Icons/registerButton.gif"));
+
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
-		final VerticalLayout mainLayout = new VerticalLayout();
+		final Panel panel = new Panel();
+
+		final VerticalLayout rootLayout = new VerticalLayout();
+
+		final VerticalLayout verticalLayout = new VerticalLayout();
+
+		final HorizontalSplitPanel horizontalLayout = new HorizontalSplitPanel();
 
 		final TextField TextFieldUserName = new TextField("Benutzername:");
 
 		final PasswordField TextFieldPassword = new PasswordField("Passwort:");
 
-		Button buttonLogin = new Button("Anmelden");
+		Button buttonLogin = new Button(loginButtonIco);
+		Button buttonRegister = new Button(registerButtonIco);
 		buttonLogin.addClickListener(e ->
 			{
-				mainLayout.addComponent(new Label("Benutzer " + TextFieldUserName.getValue()
+				verticalLayout.addComponent(new Label("Benutzer " + TextFieldUserName.getValue()
 					+ " hat sich mit Passwort " + TextFieldPassword.getValue() + " angemeldet."));
 			});
 
-		mainLayout.addComponents(TextFieldUserName, TextFieldPassword, buttonLogin);
+		buttonRegister.addClickListener(e ->
+		    {
+		        verticalLayout.addComponent(new Label("Benutzer " + TextFieldUserName.getValue()
+		            + " hat sich mit Passwort " + TextFieldPassword.getValue() + " registriert."));
+		    });
 
-		setContent(mainLayout);
+		panel.setContent(horizontalLayout);
+
+		horizontalLayout.setFirstComponent(buttonLogin);
+		horizontalLayout.setSecondComponent(buttonRegister);
+
+		horizontalLayout.setWidth(Float.toString(buttonRegister.getWidth()));
+
+		verticalLayout.addComponents(TextFieldUserName, TextFieldPassword, horizontalLayout);
+
+
+		//rootLayout.addComponent(verticalLayout);
+		//rootLayout.addComponent(horizontalLayout);
+
+
+		setContent(verticalLayout);
 	}
 
 	@WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
