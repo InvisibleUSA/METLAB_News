@@ -31,10 +31,10 @@ public class UserLoginUI extends UI
 
 		Button buttonLogin = new Button("Anmelden");
 		buttonLogin.addClickListener(e ->
-			{
-				mainLayout.addComponent(new Label("Benutzer " + TextFieldUserName.getValue()
-					+ " hat sich mit Passwort " + TextFieldPassword.getValue() + " angemeldet."));
-			});
+		                             {
+			                             mainLayout.addComponent(new Label("Benutzer " + TextFieldUserName.getValue()
+					                                                               + " hat sich mit Passwort " + TextFieldPassword.getValue() + " angemeldet."));
+		                             });
 
 		mainLayout.addComponents(TextFieldUserName, TextFieldPassword, buttonLogin);
 

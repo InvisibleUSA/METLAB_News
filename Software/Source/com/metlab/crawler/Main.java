@@ -1,4 +1,5 @@
 package com.metlab.crawler;
 
-public class Main {
+public class Main
+{
 }
