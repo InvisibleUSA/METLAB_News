@@ -1,4 +1,4 @@
-package com.metlab.view;
+package com.metlab.frontend.view;
 
 import javax.servlet.annotation.WebServlet;
 
