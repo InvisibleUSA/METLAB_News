@@ -56,6 +56,7 @@ public class UserLoginUI extends UI
 		            + " hat sich mit Passwort " + TextFieldPassword.getValue() + " registriert."));
 		    });
 
+
 		panel.setContent(horizontalLayout);
 
 		horizontalLayout.setFirstComponent(buttonLogin);
