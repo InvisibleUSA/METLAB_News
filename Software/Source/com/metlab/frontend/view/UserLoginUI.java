@@ -31,9 +31,9 @@ public class UserLoginUI extends UI
 	{
 		final Panel panel = new Panel();
 
-		final VerticalLayout rootLayout = new VerticalLayout();
-
 		final VerticalLayout verticalLayout = new VerticalLayout();
+
+		final FormLayout formLayout = new FormLayout();
 
 		final HorizontalSplitPanel horizontalLayout = new HorizontalSplitPanel();
 
@@ -62,12 +62,8 @@ public class UserLoginUI extends UI
 
 		horizontalLayout.setWidth(Float.toString(buttonRegister.getWidth()));
 
-		verticalLayout.addComponents(TextFieldUserName, TextFieldPassword, horizontalLayout);
-
-
-		//rootLayout.addComponent(verticalLayout);
-		//rootLayout.addComponent(horizontalLayout);
-
+		formLayout.addComponents(TextFieldUserName, TextFieldPassword);
+		verticalLayout.addComponents(formLayout,horizontalLayout);
 
 		setContent(verticalLayout);
 	}
