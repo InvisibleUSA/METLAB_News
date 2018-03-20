@@ -43,6 +43,7 @@ public class UserLoginUI extends UI
 
 		Button buttonLogin = new Button(loginButtonIco);
 		Button buttonRegister = new Button(registerButtonIco);
+
 		buttonLogin.addClickListener(e ->
 			{
 				verticalLayout.addComponent(new Label("Benutzer " + TextFieldUserName.getValue()
@@ -59,8 +60,6 @@ public class UserLoginUI extends UI
 
 		horizontalLayout.setFirstComponent(buttonLogin);
 		horizontalLayout.setSecondComponent(buttonRegister);
-
-		horizontalLayout.setWidth(Float.toString(buttonRegister.getWidth()));
 
 		formLayout.addComponents(TextFieldUserName, TextFieldPassword);
 		verticalLayout.addComponents(formLayout,horizontalLayout);
