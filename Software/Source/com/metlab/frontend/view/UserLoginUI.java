@@ -29,7 +29,11 @@ public class UserLoginUI extends UI
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
+
+		//Variable definition
 		final Panel panel = new Panel();
+
+		final HorizontalLayout titleBar = new HorizontalLayout();
 
 		final VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -52,10 +56,21 @@ public class UserLoginUI extends UI
 
 		buttonRegister.addClickListener(e ->
 		    {
+		    	UserRegisterUI userReg = new UserRegisterUI();
+		    	userReg.setFields(TextFieldUserName.getValue(), TextFieldPassword.getValue());
+		    	setContent(userReg.registerForm);
+
 		        verticalLayout.addComponent(new Label("Benutzer " + TextFieldUserName.getValue()
 		            + " hat sich mit Passwort " + TextFieldPassword.getValue() + " registriert."));
 		    });
 
+
+
+
+
+		Label title = new Label("Willkommen bei METLAB-News");
+		titleBar.addComponent(title);
+		titleBar.setExpandRatio(title,1.0f);
 
 		panel.setContent(horizontalLayout);
 
@@ -63,7 +78,7 @@ public class UserLoginUI extends UI
 		horizontalLayout.setSecondComponent(buttonRegister);
 
 		formLayout.addComponents(TextFieldUserName, TextFieldPassword);
-		verticalLayout.addComponents(formLayout,horizontalLayout);
+		verticalLayout.addComponents(titleBar, formLayout,horizontalLayout);
 
 		setContent(verticalLayout);
 	}
