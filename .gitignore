@@ -23,6 +23,7 @@
 
 # IntelliJ Project Data
 .idea/
+*.iml
 
 # executables
 target/
