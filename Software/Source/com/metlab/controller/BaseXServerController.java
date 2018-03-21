@@ -8,13 +8,10 @@ import org.basex.server.ClientSession;
 
 import java.io.IOException;
 
-
-
 public class BaseXServerController
 {
 
 	private BaseXServer server;
-	private Context     context;
 
 	private String username    = "admin";
 	private String pw          = "admin";
@@ -26,9 +23,6 @@ public class BaseXServerController
 		try
 		{
 			server = new BaseXServer();
-			context = new Context();
-			System.out.println("Create a local database.");
-			System.out.println("result: " + new CreateDB("LocalDB").execute(context));
 			server.stop();
 		}
 		catch(IOException e)
@@ -37,12 +31,14 @@ public class BaseXServerController
 		}
 	}
 
-	public String execute(Command cmd)
+	public synchronized String execute(Command cmd)
 	{
 		try
 		{
 			ClientSession session = new ClientSession(hostaddress, port, username, pw);
-			return session.execute(cmd);
+			String        result  = session.execute(cmd);
+			session.close();
+			return result;
 		}
 		catch(IOException e)
 		{
