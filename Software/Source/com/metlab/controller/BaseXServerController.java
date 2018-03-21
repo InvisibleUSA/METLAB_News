@@ -1,4 +1,4 @@
-package com.metlab;
+package com.metlab.controller;
 
 import org.basex.BaseXServer;
 import org.basex.core.Command;
