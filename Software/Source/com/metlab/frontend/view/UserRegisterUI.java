@@ -1,6 +1,6 @@
 package com.metlab.frontend.view;
 
-import com.metlab.frontend.controller.SQLController;
+//import com.metlab.frontend.controller.SQLController;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 
@@ -47,8 +47,8 @@ public class UserRegisterUI extends UI
 
 		submit.addClickListener(e ->
 		     {
-		     	SQLController submitReg = new SQLController();
-		     	submitReg.test(emailTextfield.getValue(),name.getValue(),gName.getValue(),passwordTextfield.getValue(),companyTextfield.getValue(),sex.getValue());
+		     	//SQLController submitReg = new SQLController();
+		     	//submitReg.test(emailTextfield.getValue(),name.getValue(),gName.getValue(),passwordTextfield.getValue(),companyTextfield.getValue(),sex.getValue());
 		     });
 
 		titleBar.addComponent(title);
