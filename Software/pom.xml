@@ -81,6 +81,11 @@
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-themes</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.basex</groupId>
+			<artifactId>basex</artifactId>
+			<version>7.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>
