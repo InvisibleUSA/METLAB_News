@@ -130,7 +130,7 @@ public class Crawler implements Runnable{
 	    }
 	    System.out.println("");
     	for(int i = 0; i<level-1; i++){ System.out.print("\t");}
-	    System.out.print("</" + last.getNodeName() + ">");
+		System.out.print("new BaseXServerController();</" + last.getNodeName() + ">");
     }
 
     private String getHTTPResponse(String url){

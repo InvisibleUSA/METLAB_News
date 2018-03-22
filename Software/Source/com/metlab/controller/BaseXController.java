@@ -1,5 +1,6 @@
 package com.metlab.controller;
 
+import org.basex.BaseXClient;
 import org.basex.BaseXServer;
 import org.basex.core.Command;
 import org.basex.server.ClientSession;
@@ -78,8 +79,15 @@ public class BaseXController
 		}
 	}
 
-	public void stop() throws IOException
+	public void stop()
 	{
-		server.stop();
+		try
+		{
+			server.stop();
+		}
+		catch(IOException e)
+		{
+			System.err.println(e);
+		}
 	}
 }

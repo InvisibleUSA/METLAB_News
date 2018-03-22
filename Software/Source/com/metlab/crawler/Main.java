@@ -11,10 +11,21 @@ public class Main
     {
         BaseXController bxc = BaseXController.getInstance();
 
+	    try
+	    {
+		    Thread.sleep(5000);
+	    }
+	    catch(Exception e)
+	    {
+	    }
+
         XQuery xq = new XQuery(
                 "fn:min(for $time in /profile/keywords/keyword where (fn:current-time() < xs:time($time)) return xs:time($time))");
         System.out.println(bxc.execute(xq));
-        Crawler c = new Crawler();
-        new Thread(c).start();
+
+	    //Crawler c = new Crawler();
+	    // new Thread(c).start();
+
+	    BaseXController.getInstance().stop();
     }
 }
