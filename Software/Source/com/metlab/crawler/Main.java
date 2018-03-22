@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import static java.lang.System.exit;
+
 
 
 public class Main
@@ -16,17 +18,8 @@ public class Main
     {
         BaseXController bxc = BaseXController.getInstance();
 
-	    String s  = "fn:min(for $time in /profile/keywords/keyword where (fn:current-time() < xs:time($time)) return xs:time($time))";
-	    XQuery xq = new XQuery("");
-	    //Open   db  = new Open("test");
-	    //Add    add = new Add("/test/file.xml", "<test></test>");
-	    //System.out.println("Starting execution.");
-	    //System.out.println(xq);
-	    // System.out.println(bxc.execute(db));
-	    //System.out.println(bxc.execute(add));
-	    //System.out.println(bxc.execute(xq));
-
 	    Crawler c = new Crawler();
+	    c.setDebug(false);
 	    new Thread(c).start();
 
 	    System.out.println(bxc.execute(new List()));
@@ -47,13 +40,31 @@ public class Main
 			    }
 			    else if(input.equals("query"))
 			    {
-				    System.out.println("query:");
-				    System.out.println(bxc.query(bf.readLine()));
+				    String input2 = "";
+				    while(true)
+				    {
+					    System.out.println("enter query:");
+					    input2 = bf.readLine();
+					    if(input2.equals("stop"))
+					    {
+						    break;
+					    }
+					    System.out.println(bxc.query(input2));
+				    }
 			    }
 			    else if(input.equals("cmd"))
 			    {
-				    System.out.println("cmd:");
-				    System.out.println(bxc.execute(bf.readLine()));
+				    String input2 = "";
+				    while(true)
+				    {
+					    System.out.println("enter Command:");
+					    input2 = bf.readLine();
+					    if(input2.equals("stop"))
+					    {
+						    break;
+					    }
+					    System.out.println(bxc.execute(input2));
+				    }
 			    }
 		    }
 		    catch(IOException e)
@@ -69,5 +80,8 @@ public class Main
 	    {
 		    e.printStackTrace();
 	    }
+	    c.stop();
+	    bxc.stop();
+	    exit(0);
     }
 }

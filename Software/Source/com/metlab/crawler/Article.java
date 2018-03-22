@@ -26,7 +26,7 @@ public class Article
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 		String erg =
-				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+				"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
 						+ "<article>\n"
 						+ "\t<title>" + title + "</title>\n"
 						+ "\t<link>" + link + "</link>\n"
@@ -63,5 +63,10 @@ public class Article
 				.replace("?", "")
 				.replace("*", "");
 		return f;
+	}
+
+	public String getTitle()
+	{
+		return title;
 	}
 }

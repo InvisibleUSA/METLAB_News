@@ -13,7 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -21,6 +20,7 @@ import java.util.Calendar;
 
 public class Crawler implements Runnable{
 
+	private boolean  debug          = false;
 	private boolean  running        = true;
 	private String[] rssSourceLinks = {
     		"http://www.spiegel.de/schlagzeilen/tops/index.rss"
@@ -28,51 +28,60 @@ public class Crawler implements Runnable{
 
     @Override
     public void run(){
-	    for(String link : rssSourceLinks)
+	    while(running)
 	    {
-        	String doc = getHTTPResponse(link);
-	        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	        try
-	        {
-		        DocumentBuilder    dBuilder = dbFactory.newDocumentBuilder();
-		        Document           feed     = dBuilder.parse(new ByteArrayInputStream(doc.getBytes("UTF-8")));
-		        ArrayList<Article> articles = extractArticles(feed);
-		        for(Article a : articles)
-		        {
-			        boolean exists = articleExists(a);
-			        if(!exists)
-			        {
-				        writeToBaseX(a, "Spiegel");
-			        }
-		        }
-	        }
-	        catch(SAXException | IOException | ParserConfigurationException e)
-	        {
-		        e.printStackTrace();
-	        }
-        }
+		    for(String link : rssSourceLinks)
+		    {
+			    String                 doc       = getHTTPResponse(link);
+			    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			    try
+			    {
+				    DocumentBuilder    dBuilder = dbFactory.newDocumentBuilder();
+				    Document           feed     = dBuilder.parse(new ByteArrayInputStream(doc.getBytes("UTF-8")));
+				    ArrayList<Article> articles = extractArticles(feed);
+				    for(Article a : articles)
+				    {
+					    boolean exists = articleExists(a);
+					    if(!exists)
+					    {
+						    writeToBaseX(a, "Spiegel");
+					    }
+				    }
+			    }
+			    catch(SAXException | IOException | ParserConfigurationException e)
+			    {
+				    e.printStackTrace();
+			    }
+		    }
+	    }
     }
 
 	private void writeToBaseX(Article a, String source) throws IOException
 	{
-		File tmp_xml = Paths.get("temp_article.xml").toFile();
-		if(!tmp_xml.exists())
+		BaseXController bsx  = BaseXController.getInstance();
+		Add             add  = new Add("Artikel/" + a.getFormattedTitle() + ".xml", a.toString());
+		String          res1 = add.toString();
+		String          res2 = bsx.execute(add);
+		if(debug)
 		{
-			tmp_xml.createNewFile();
+			System.out.println(res1);
+			System.out.println(res2);
 		}
-		BufferedWriter bfw = new BufferedWriter(new FileWriter(tmp_xml));
-		bfw.write(a.toString());
-		bfw.close();
-		String          day = a.getPubDate().get(Calendar.DAY_OF_MONTH) + "." + a.getPubDate().get(
-				Calendar.MONTH) + "." + a.getPubDate().get(Calendar.YEAR);
-		BaseXController bsx = BaseXController.getInstance();
-		System.out.println(bsx.execute(new Add("Artikel/" + source + "/" + day + "/" + a.getFormattedTitle() + ".xml",
-		                                       tmp_xml.getAbsolutePath())));
-		tmp_xml.delete();
 	}
 
 	private boolean articleExists(Article a)
 	{
+		BaseXController bsx    = BaseXController.getInstance();
+		String          xquery = "/article/title = \"" + a.getTitle() + "\"";
+		String          result = bsx.query(xquery);
+		if(debug)
+		{
+			System.out.println("exists \"" + a.getTitle() + "\"? --> " + result);
+		}
+		if(result.equals("true"))
+		{
+			return true;
+		}
 		return false;
 	}
 
@@ -103,16 +112,16 @@ public class Crawler implements Runnable{
 					switch(curr_field.getNodeName())
 					{
 						case "title":
-							title = getValueFromNode(curr_field);
+							title = getValueFromNode(curr_field).replace("\"", "'");
 							break;
 						case "description":
-							description = getValueFromNode(curr_field);
+							description = getValueFromNode(curr_field).replace("\"", "'");
 							break;
 						case "link":
-							link = getValueFromNode(curr_field);
+							link = getValueFromNode(curr_field).replace("\"", "'");
 							break;
 						case "guid":
-							guid = getValueFromNode(curr_field);
+							guid = getValueFromNode(curr_field).replace("\"", "'");
 							break;
 						case "pubDate":
 							pubDate = parseCalendar(getValueFromNode(curr_field));
@@ -132,6 +141,7 @@ public class Crawler implements Runnable{
 	public void stop()
 	{
 		running = false;
+		Thread.currentThread().interrupt();
 	}
 
 	/**
@@ -196,9 +206,7 @@ public class Crawler implements Runnable{
 	 */
 	private Calendar parseCalendar(String pubDate) throws NumberFormatException
 	{
-		System.out.println(pubDate);
 		pubDate = pubDate.substring(pubDate.indexOf(",") + 2);
-		System.out.println(pubDate);
 		String[] fields     = pubDate.split(" ");
 		int      dayInMonth = Integer.parseInt(fields[0]);
 		int      month      = parseMonth(fields[1]);
@@ -221,7 +229,10 @@ public class Crawler implements Runnable{
 		{
 			c.set(Calendar.ZONE_OFFSET, -offsetMillis);
 		}
-		System.out.println(c.getTimeInMillis());
+		if(debug)
+		{
+			System.out.println(c.getTimeInMillis());
+		}
 		return c;
 	}
 
@@ -327,4 +338,9 @@ public class Crawler implements Runnable{
 	    }
 	    return "";
     }
+
+	public void setDebug(boolean newVal)
+	{
+		debug = newVal;
+	}
 }

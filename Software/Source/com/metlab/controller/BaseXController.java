@@ -3,6 +3,8 @@ package com.metlab.controller;
 import org.basex.BaseXServer;
 import org.basex.core.Command;
 import org.basex.core.Context;
+import org.basex.core.cmd.Check;
+import org.basex.core.cmd.Close;
 import org.basex.core.cmd.CreateDB;
 import org.basex.core.cmd.Open;
 import org.basex.server.ClientSession;
@@ -29,7 +31,7 @@ public class BaseXController
 		try
 		{
 			server = new BaseXServer();
-			System.out.println(execute(new CreateDB(dbName)));
+			System.out.println(new Check(dbName).execute(server.context));
 		}
 		catch(IOException e)
 		{
@@ -53,6 +55,7 @@ public class BaseXController
 			ClientSession session = new ClientSession(hostaddress, port, username, pw);
 			session.execute(new Open(dbName));
 			String result = session.execute(c);
+			session.execute(new Close());
 			session.close();
 			return "result: " + result;
 		}
@@ -75,6 +78,7 @@ public class BaseXController
 			{
 				result[i++] = session.execute(c);
 			}
+			session.execute(new Close());
 			session.close();
 			return result;
 		}
@@ -92,6 +96,7 @@ public class BaseXController
 			ClientSession session = new ClientSession(hostaddress, port, username, pw);
 			session.execute(new Open(dbName));
 			String result = session.execute(command);
+			session.execute(new Close());
 			session.close();
 			return result;
 		}
@@ -109,6 +114,7 @@ public class BaseXController
 			ClientSession session = new ClientSession(hostaddress, port, username, pw);
 			session.execute(new Open(dbName));
 			String result = session.query(xQuery).execute();
+			session.execute(new Close());
 			session.close();
 			return result;
 		}
