@@ -1,6 +1,5 @@
 package com.metlab.controller;
 
-import org.basex.BaseXClient;
 import org.basex.BaseXServer;
 import org.basex.core.Command;
 import org.basex.core.Context;
@@ -54,7 +53,8 @@ public class BaseXController
 			ClientSession session = new ClientSession(hostaddress, port, username, pw);
 			session.execute(new Open(dbName));
 			String result = session.execute(c);
-			return result;
+			session.close();
+			return "result: " + result;
 		}
 		catch(IOException e)
 		{
@@ -85,7 +85,24 @@ public class BaseXController
 		}
 	}
 
-	public synchronized String execute(String xQuery)
+	public synchronized String execute(String command)
+	{
+		try
+		{
+			ClientSession session = new ClientSession(hostaddress, port, username, pw);
+			session.execute(new Open(dbName));
+			String result = session.execute(command);
+			session.close();
+			return result;
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public synchronized String query(String xQuery)
 	{
 		try
 		{

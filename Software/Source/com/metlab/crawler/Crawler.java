@@ -1,5 +1,7 @@
 package com.metlab.crawler;
 
+import com.metlab.controller.BaseXController;
+import org.basex.core.cmd.Add;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -11,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -39,7 +42,7 @@ public class Crawler implements Runnable{
 			        boolean exists = articleExists(a);
 			        if(!exists)
 			        {
-				        writeToBaseX(a);
+				        writeToBaseX(a, "Spiegel");
 			        }
 		        }
 	        }
@@ -50,9 +53,22 @@ public class Crawler implements Runnable{
         }
     }
 
-	private void writeToBaseX(Article a)
+	private void writeToBaseX(Article a, String source) throws IOException
 	{
-
+		File tmp_xml = Paths.get("temp_article.xml").toFile();
+		if(!tmp_xml.exists())
+		{
+			tmp_xml.createNewFile();
+		}
+		BufferedWriter bfw = new BufferedWriter(new FileWriter(tmp_xml));
+		bfw.write(a.toString());
+		bfw.close();
+		String          day = a.getPubDate().get(Calendar.DAY_OF_MONTH) + "." + a.getPubDate().get(
+				Calendar.MONTH) + "." + a.getPubDate().get(Calendar.YEAR);
+		BaseXController bsx = BaseXController.getInstance();
+		System.out.println(bsx.execute(new Add("Artikel/" + source + "/" + day + "/" + a.getFormattedTitle() + ".xml",
+		                                       tmp_xml.getAbsolutePath())));
+		tmp_xml.delete();
 	}
 
 	private boolean articleExists(Article a)
