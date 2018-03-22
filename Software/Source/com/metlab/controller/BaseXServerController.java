@@ -16,7 +16,7 @@ public class BaseXServerController
 	private String hostaddress = "localhost";
 	private int    port        = 1984;
 
-	protected BaseXServerController()
+	public BaseXServerController()
 	{
 		try
 		{
