@@ -2,6 +2,7 @@ package com.metlab.controller;
 
 import org.basex.BaseXServer;
 import org.basex.core.Command;
+import org.basex.core.cmd.CreateDB;
 import org.basex.server.ClientSession;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class BaseXServerController
 		try
 		{
 			server = new BaseXServer();
-			server.stop();
+			System.out.println(execute(new CreateDB("ClippingDB")));
 		}
 		catch(IOException e)
 		{
