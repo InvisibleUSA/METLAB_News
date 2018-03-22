@@ -4,6 +4,7 @@ import org.basex.BaseXClient;
 import org.basex.BaseXServer;
 import org.basex.core.Command;
 import org.basex.core.Context;
+import org.basex.core.cmd.Open;
 import org.basex.server.ClientSession;
 
 import java.io.IOException;
@@ -48,9 +49,10 @@ public class BaseXController
 		try
 		{
 			ClientSession session = new ClientSession(hostaddress, port, username, pw);
+			session.execute(new Open("test"));
 
 			//System.out.println(session);
-			String result = c.execute(m_ctx);
+			String result = session.execute(c);
 			return result;
 		}
 		catch(IOException e)
