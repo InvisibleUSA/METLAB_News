@@ -1,4 +1,13 @@
 package com.metlab.crawler;
 
-public class Main {
+import com.metlab.BaseXServerController;
+
+
+
+public class Main
+{
+    public static void main(String... args)
+    {
+        new BaseXServerController();
+    }
 }
