@@ -14,5 +14,7 @@ public class Main
         XQuery xq = new XQuery(
                 "fn:min(for $time in /profile/keywords/keyword where (fn:current-time() < xs:time($time)) return xs:time($time))");
         System.out.println(bxc.execute(xq));
+        Crawler c = new Crawler();
+        new Thread(c).start();
     }
 }
