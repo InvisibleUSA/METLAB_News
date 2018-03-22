@@ -3,6 +3,7 @@ package com.metlab.controller;
 import org.basex.BaseXClient;
 import org.basex.BaseXServer;
 import org.basex.core.Command;
+import org.basex.core.Context;
 import org.basex.server.ClientSession;
 
 import java.io.IOException;
@@ -19,13 +20,13 @@ public class BaseXController
 	private String hostaddress = "localhost";
 	private int    port        = 1984;
 	private static BaseXController m_bxc;
+	private Context m_ctx = new Context();
 
 	protected BaseXController()
 	{
 		try
 		{
 			server = new BaseXServer();
-			server.stop();
 		}
 		catch(IOException e)
 		{
@@ -42,13 +43,14 @@ public class BaseXController
 		return m_bxc;
 	}
 
-	public synchronized String execute(Command cmd)
+	public synchronized String execute(Command c)
 	{
 		try
 		{
 			ClientSession session = new ClientSession(hostaddress, port, username, pw);
-			String        result  = session.execute(cmd);
-			session.close();
+
+			//System.out.println(session);
+			String result = c.execute(m_ctx);
 			return result;
 		}
 		catch(IOException e)
