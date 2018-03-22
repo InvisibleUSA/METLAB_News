@@ -41,5 +41,25 @@ public class Profile
 		m_generationTime = gt;
 	}
 
-
+	@Override
+	public String toString()
+	{
+		StringBuilder s = new StringBuilder("---------------------" + profileName + "---------------------\n");
+		s.append("Generation time: ").append(m_generationTime).append("\n");
+		s.append("Keywords:\n");
+		for(String key : keywords)
+		{
+			s.append("    ").append(key).append("\n");
+		}
+		for(String src : sourceLinks)
+		{
+			s.append("    ").append(src).append("\n");
+		}
+		for(char c : profileName.toCharArray())
+		{
+			s.append("-");
+		}
+		s.append("------------------------------------------\n");
+		return s.toString();
+	}
 }

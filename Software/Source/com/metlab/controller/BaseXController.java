@@ -24,7 +24,6 @@ public class BaseXController
 	private String dbName      = "ClippingDB";
 	private int    port        = 1984;
 	private static BaseXController m_bxc;
-	private Context m_ctx = new Context();
 
 	public BaseXController()
 	{
