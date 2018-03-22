@@ -2,8 +2,6 @@ package com.metlab.controller;
 
 import org.basex.BaseXServer;
 import org.basex.core.Command;
-import org.basex.core.Context;
-import org.basex.core.cmd.CreateDB;
 import org.basex.server.ClientSession;
 
 import java.io.IOException;
