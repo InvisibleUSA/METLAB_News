@@ -24,8 +24,8 @@ public class Main
 	    //System.out.println(bxc.execute(add));
 	    System.out.println(bxc.execute(xq));
 
-	    //Crawler c = new Crawler();
-	    // new Thread(c).start();
+	    Crawler c = new Crawler();
+	    new Thread(c).start();
 
 	    BaseXController.getInstance().stop();
     }
