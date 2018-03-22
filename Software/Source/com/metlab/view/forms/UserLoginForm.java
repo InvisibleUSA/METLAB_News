@@ -1,6 +1,7 @@
 package com.metlab.view.forms;
 
 import com.metlab.controller.ICallbackFunction;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -20,7 +21,7 @@ public class UserLoginForm extends VerticalLayout
 			loginCallback.execute(new String[]{ textFieldEmail.getValue(),
 					textFieldPassword.getValue() });
 		});
-
+		Page.getCurrent().setTitle("Anmelden");
 		this.addComponents(textFieldEmail, textFieldPassword, buttonLogin);
 	}
 

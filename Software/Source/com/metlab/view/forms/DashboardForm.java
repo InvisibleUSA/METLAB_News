@@ -1,6 +1,7 @@
 package com.metlab.view.forms;
 
 import com.metlab.controller.ICallbackFunction;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -17,6 +18,7 @@ public class DashboardForm extends VerticalLayout
 			{
 				userLogoutCallback.execute(null);
 		    });
+		Page.getCurrent().setTitle("METLAB News");
 		this.addComponents(topLabel, logoutButton);
 	}
 }

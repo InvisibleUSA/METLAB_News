@@ -1,5 +1,6 @@
 package com.metlab.view;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import com.metlab.controller.Controller;
@@ -8,6 +9,7 @@ import com.metlab.view.forms.DashboardForm;
 import com.metlab.view.forms.UserLoginForm;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
@@ -27,12 +29,7 @@ public class MainUI extends UI implements IView
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
-		Controller.getInstance();
-	}
-
-	static public IView getInstance()
-	{
-		return (MainUI)UI.getCurrent();
+		Controller.getInstance(this);
 	}
 
 	public void registerCallbackFunctions(ICallbackFunction userLogin,
@@ -64,5 +61,10 @@ public class MainUI extends UI implements IView
 	@VaadinServletConfiguration(ui = MainUI.class, productionMode = false)
 	public static class MainUIServlet extends VaadinServlet
 	{
+		@Override
+		public void init() throws ServletException
+		{
+			super.init();
+		}
 	}
 }

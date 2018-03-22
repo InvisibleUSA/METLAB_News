@@ -9,21 +9,21 @@ import com.metlab.view.MainUI;
 
 public class Controller
 {
-	public static Controller getInstance()
+	public static Controller getInstance(final IView userInterface)
 	{
 		if(instance == null)
 		{
-			instance = new Controller();
+			instance = new Controller(userInterface);
 		}
 		return instance;
 	}
 
 
-	private Controller()
+	private Controller(final IView userInterface)
 	{
 		System.out.print("\n\n\nMessage from Controller: software is running\n\n");
 
-		userInterface = MainUI.getInstance();
+		this.userInterface = userInterface;
 		registerCallbackFunctionsInUI();
 
 		userInterface.showUserLoginForm();
@@ -57,10 +57,10 @@ public class Controller
 	private void userLogoutEvent()
 	{
 		System.out.println("Message from Controller: user logged out");
-		MainUI.getInstance().showUserLoginForm();
+		userInterface.showUserLoginForm();
 	}
 
 
 	private static Controller instance = null;
-	private IView userInterface = null;
+	private IView userInterface;
 }
