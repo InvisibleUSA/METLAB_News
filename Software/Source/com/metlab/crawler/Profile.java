@@ -1,5 +1,6 @@
 package com.metlab.crawler;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,12 +11,14 @@ public class Profile
 	private String profileName;
 	private List<String> keywords    = new ArrayList<String>();
 	private List<String> sourceLinks = new ArrayList<String>();
+	private LocalTime m_generationTime;
 
-	public Profile(String name, ArrayList<String> keywords, ArrayList<String> sourceLinks)
+	public Profile(String name, ArrayList<String> keywords, ArrayList<String> sourceLinks, LocalTime generationTime)
 	{
 		profileName = name;
 		this.sourceLinks = sourceLinks;
 		this.keywords = keywords;
+		m_generationTime = generationTime;
 	}
 
 	public Profile(String name)
@@ -32,4 +35,11 @@ public class Profile
 	{
 		sourceLinks.add(sourceLink);
 	}
+
+	public void setGenerationTime(LocalTime gt)
+	{
+		m_generationTime = gt;
+	}
+
+
 }

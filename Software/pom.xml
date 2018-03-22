@@ -49,6 +49,10 @@
 			<id>webjars</id>
 			<url>https://dl.bintray.com/webjars/maven</url>
 		</repository>
+		<repository>
+			<id>basex</id>
+			<url>http://basex.org/modules/db</url>
+		</repository>
 	</repositories>
 
 	<dependencyManagement>
