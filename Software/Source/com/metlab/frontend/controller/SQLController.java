@@ -6,11 +6,7 @@ import java.sql.*;
 
 public class SQLController
 {
-	/*
-	Beispielkommentar
-	von Lukas
-	von Tobi
-	 */
+
 	public void test(String email, String name, String pName, String pw, String company, String sex)
 	{
 		try
