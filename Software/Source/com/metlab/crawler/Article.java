@@ -83,6 +83,12 @@ public class Article
 		return f;
 	}
 
+	public String getDateFormatted()
+	{
+		return pubDate.get(Calendar.DAY_OF_MONTH) + "." + (pubDate.get(Calendar.MONTH) + 1) + "." + pubDate.get(
+				Calendar.YEAR);
+	}
+
 	public String getTitle()
 	{
 		return title;

@@ -50,7 +50,7 @@
 			<url>https://dl.bintray.com/webjars/maven</url>
 		</repository>
 		<repository>
-			<id>basex</id>
+			<id>basex-db</id>
 			<url>http://basex.org/modules/db</url>
 		</repository>
 	</repositories>

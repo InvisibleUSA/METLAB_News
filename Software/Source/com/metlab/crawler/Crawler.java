@@ -79,9 +79,7 @@ public class Crawler implements Runnable{
 	private void writeToBaseX(Article a, Source source)
 	{
 		BaseXController bsx  = BaseXController.getInstance();
-		Calendar        c    = a.getPubDate();
-		String          date = c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(
-				Calendar.YEAR);
+		String          date = a.getDateFormatted();
 		Add             add  = new Add("Artikel/" + source.getName() + "/" + date + "/" + a.getFileName(),
 		                               a.toString());
 		String          res1 = add.toString();
