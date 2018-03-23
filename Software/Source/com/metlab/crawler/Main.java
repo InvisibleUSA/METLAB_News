@@ -67,7 +67,7 @@ public class Main
 	    cc.addSource(new Source("Nachdenkseiten", "https://www.nachdenkseiten.de/?feed=rss2"));
 
 	    cc.setDebug(true);
-	    cc.setSleeptime(5 * 60 * 1000);
+	    cc.setSleeptime(2 * 60 * 1000);
 	    cc.start();
 
 	    //System.out.println(bxc.execute(add));

@@ -80,7 +80,8 @@ public class Crawler implements Runnable{
 	{
 		BaseXController bsx  = BaseXController.getInstance();
 		Calendar        c    = a.getPubDate();
-		String          date = c.get(Calendar.DAY_OF_MONTH) + "." + c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR);
+		String          date = c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(
+				Calendar.YEAR);
 		Add             add  = new Add("Artikel/" + source.getName() + "/" + date + "/" + a.getFileName(),
 		                               a.toString());
 		String          res1 = add.toString();

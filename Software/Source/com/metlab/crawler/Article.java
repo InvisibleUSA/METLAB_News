@@ -15,7 +15,7 @@ public class Article
 
 	public Article(String title, String link, String description, String guid, Calendar pubDate)
 	{
-		this.title = removeAllTags(format(title));
+		this.title = format(removeAllTags(title));
 		this.link = format(link);
 		this.description = format(description);
 		this.guid = format(guid);
