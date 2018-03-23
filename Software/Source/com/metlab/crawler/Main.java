@@ -54,18 +54,21 @@ public class Main
 
         BaseXController bxc = BaseXController.getInstance();
 
-	    Crawler c = new Crawler(20000);
-	    c.addSource(new Source("Spiegel", "http://www.spiegel.de/schlagzeilen/tops/index.rss"));
-	    c.addSource(new Source("Süddeutsche", "http://rss.sueddeutsche.de/app/service/rss/alles/index.rss"));
-	    c.addSource(new Source("Zeit", "http://newsfeed.zeit.de/index"));
-	    c.addSource(new Source("Stuttgarter Zeitung", "https://www.stuttgarter-zeitung.de/news.rss.feed"));
-	    c.addSource(new Source("MAZ", "http://www.maz-online.de/rss/feed/maz_brandenburg"));
-	    c.addSource(new Source("Gamestar", "http://www.gamestar.de/news/rss/news.rss"));
-	    c.addSource(new Source("Kino.de", "https://www.kino.de/rss/neu-im-kino"));
-	    c.addSource(new Source("Sumikai", "https://sumikai.com/feed/"));
+	    CrawlerController cc = CrawlerController.getInstance();
+	    cc.addSource(new Source("Spiegel", "http://www.spiegel.de/schlagzeilen/tops/index.rss"));
+	    cc.addSource(new Source("Süddeutsche", "http://rss.sueddeutsche.de/app/service/rss/alles/index.rss"));
+	    cc.addSource(new Source("Zeit", "http://newsfeed.zeit.de/index"));
+	    cc.addSource(new Source("Stuttgarter Zeitung", "https://www.stuttgarter-zeitung.de/news.rss.feed"));
+	    cc.addSource(new Source("MAZ", "http://www.maz-online.de/rss/feed/maz_brandenburg"));
+	    cc.addSource(new Source("Gamestar", "http://www.gamestar.de/news/rss/news.rss"));
+	    cc.addSource(new Source("Kino.de", "https://www.kino.de/rss/neu-im-kino"));
+	    cc.addSource(new Source("Sumikai", "https://sumikai.com/feed/"));
+	    cc.addSource(new Source("Netzpolitik.org", "https://netzpolitik.org/feed"));
+	    cc.addSource(new Source("Nachdenkseiten", "https://www.nachdenkseiten.de/?feed=rss2"));
 
-	    c.setDebug(true);
-	    new Thread(c).start();
+	    cc.setDebug(true);
+	    cc.setSleeptime(5 * 60 * 1000);
+	    cc.start();
 
 	    //System.out.println(bxc.execute(add));
 	    //System.out.println(bxc.execute(add1));
@@ -131,7 +134,7 @@ public class Main
 	    {
 		    e.printStackTrace();
 	    }
-	    c.stop();
+	    cc.stop();
 	    bxc.stop();
 	    exit(0);
     }

@@ -23,44 +23,47 @@ public class Crawler implements Runnable{
 
 	private boolean           debug   = false;
 	private boolean           running = true;
-	private ArrayList<Source> sources = new ArrayList<>();
+	private Source source;
 
 	private int sleeptime = 1000;
 
-	public Crawler()
+	public Crawler(Source source)
 	{
+		this.source = source;
 	}
 
-	public Crawler(int sleeptime)
+	public Crawler(int sleeptime, Source source)
 	{
 		this.sleeptime = sleeptime;
+		this.source = source;
 	}
     @Override
     public void run(){
 	    while(running)
 	    {
-		    for(Source src : sources)
+		    if(debug)
 		    {
-			    String                 doc       = getHTTPResponse(src.getLink());
-			    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			    try
+			    System.out.println("crawling " + source.getName() + " --> " + source.getLink());
+		    }
+		    String                 doc       = getHTTPResponse(source.getLink());
+		    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		    try
+		    {
+			    DocumentBuilder    dBuilder = dbFactory.newDocumentBuilder();
+			    Document           feed     = dBuilder.parse(new ByteArrayInputStream(doc.getBytes("UTF-8")));
+			    ArrayList<Article> articles = extractArticles(feed);
+			    for(Article a : articles)
 			    {
-				    DocumentBuilder    dBuilder = dbFactory.newDocumentBuilder();
-				    Document           feed     = dBuilder.parse(new ByteArrayInputStream(doc.getBytes("UTF-8")));
-				    ArrayList<Article> articles = extractArticles(feed);
-				    for(Article a : articles)
+				    boolean exists = articleExists(a);
+				    if(!exists)
 				    {
-					    boolean exists = articleExists(a);
-					    if(!exists)
-					    {
-						    writeToBaseX(a, src.getName());
-					    }
+					    writeToBaseX(a, source);
 				    }
 			    }
-			    catch(SAXException | IOException | ParserConfigurationException e)
-			    {
-				    e.printStackTrace();
-			    }
+		    }
+		    catch(SAXException | IOException | ParserConfigurationException e)
+		    {
+			    e.printStackTrace();
 		    }
 		    try
 		    {
@@ -73,10 +76,13 @@ public class Crawler implements Runnable{
 	    }
     }
 
-	private void writeToBaseX(Article a, String source) throws IOException
+	private void writeToBaseX(Article a, Source source)
 	{
 		BaseXController bsx  = BaseXController.getInstance();
-		Add             add  = new Add("Artikel/" + a.getFileName(), a.toString());
+		Calendar        c    = a.getPubDate();
+		String          date = c.get(Calendar.DAY_OF_MONTH) + "." + c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR);
+		Add             add  = new Add("Artikel/" + source.getName() + "/" + date + "/" + a.getFileName(),
+		                               a.toString());
 		String          res1 = add.toString();
 		String          res2 = bsx.execute(add);
 		if(debug)
@@ -365,8 +371,8 @@ public class Crawler implements Runnable{
 		debug = newVal;
 	}
 
-	public void addSource(Source source)
+	public void setSleeptime(int sleeptime)
 	{
-		sources.add(source);
+		this.sleeptime = sleeptime;
 	}
 }

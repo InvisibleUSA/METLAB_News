@@ -29,14 +29,9 @@ public class Article
 
 	private String format(String s)
 	{
-		s = s.replace("/>", ">");
-		s = s.replace(">", "/>");
 		s = s.replace("&", "und");
-		s = s.replaceAll("</.*>", "");
 		s = s.trim();
 		s = s.replace("\"", "'");
-		s = s.replace("“", "'");
-		s = s.replace("„", "'");
 		return s;
 	}
 
@@ -46,10 +41,10 @@ public class Article
 		String erg =
 				"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
 						+ "<article>\n"
-						+ "\t<title>" + title + "</title>\n"
-						+ "\t<link>" + link + "</link>\n"
-						+ "\t<description>" + description + "</description>\n"
-						+ "\t<guid>" + guid + "</guid>\n"
+						+ "\t<title><![CDATA[" + title + "]]></title>\n"
+						+ "\t<link><![CDATA[" + link + "]]></link>\n"
+						+ "\t<description><![CDATA[" + description + "]]></description>\n"
+						+ "\t<guid><![CDATA[" + guid + "]]></guid>\n"
 						+ "\t<pubDate>" + sdf.format(pubDate.getTime()) + "</pubDate>\n"
 						+ "</article>";
 		return erg;
@@ -81,7 +76,10 @@ public class Article
 				.replace("?", "")
 				.replace("*", "")
 				.replace("<", "")
-				.replace(">", "");
+				.replace(">", "")
+				.replace("„", "")
+				.replace("“", "")
+				.replace(".", "");
 		return f;
 	}
 

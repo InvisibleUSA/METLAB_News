@@ -25,7 +25,7 @@ public class BaseXController
 	private int    port        = 1984;
 	private static BaseXController m_bxc;
 
-	public BaseXController()
+	private BaseXController()
 	{
 		try
 		{
