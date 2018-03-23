@@ -1,6 +1,6 @@
-package com.metlab.view;
+package com.metlab.frontend.view;
 
-import com.metlab.controller.ICallbackFunction;
+import com.metlab.frontend.ICallbackFunction;
 
 
 

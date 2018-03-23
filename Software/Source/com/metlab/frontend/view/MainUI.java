@@ -1,13 +1,13 @@
-package com.metlab.view;
+package com.metlab.frontend.view;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
-import com.metlab.controller.*;
-import com.metlab.view.forms.*;
+import com.metlab.frontend.uiController;
+import com.metlab.frontend.ICallbackFunction;
+import com.metlab.frontend.view.forms.*;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
@@ -27,7 +27,7 @@ public class MainUI extends UI implements IView
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
-		Controller.getInstance(this);
+		uiController.getInstance(this);
 	}
 
 	public void registerCallbackFunctions(

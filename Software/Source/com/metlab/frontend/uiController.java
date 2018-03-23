@@ -1,27 +1,30 @@
-package com.metlab.controller;
+package com.metlab.frontend;
 
 
 
-import com.metlab.view.IView;
-import com.metlab.view.MainUI;
+import com.metlab.frontend.view.IView;
 
 
-
-public class Controller
+public class uiController
 {
-	public static Controller getInstance(final IView userInterface)
+	private static uiController instance = null;
+	private IView userInterface;
+	private final String messageStart = "Message from uiController: ";
+
+	public static uiController getInstance(final IView userInterface)
 	{
 		if(instance == null)
 		{
-			instance = new Controller(userInterface);
+			instance = new uiController(userInterface);
 		}
 		return instance;
 	}
 
 
-	private Controller(final IView userInterface)
+	private uiController(final IView userInterface)
 	{
-		System.out.print("\n\n\nMessage from Controller: software is running\n\n");
+		System.out.print("\n\n\n****************************************************************************************************\n");
+		System.out.println(messageStart + "software is running");
 
 		this.userInterface = userInterface;
 		registerCallbackFunctionsInUI();
@@ -62,13 +65,13 @@ public class Controller
 
 	private void userEnterLoginForm()
 	{
-		System.out.println("Message from Controller: user entered login form");
+		System.out.println(messageStart + "user entered login form");
 		userInterface.showUserLoginForm();
 	}
 
 	private void userEnterRegisterForm()
 	{
-		System.out.println("Message from Controller: user entered register form");
+		System.out.println(messageStart + "user entered register form");
 		userInterface.showUserRegisterForm();
 	}
 
@@ -76,7 +79,7 @@ public class Controller
 	{
 		String email = (String)param[0];
 		String password = (String)param[1];
-		System.out.println("Message from Controller: user " + email +
+		System.out.println(messageStart + "user " + email +
 				" logged in with password " + password);
 		userInterface.showDashboardForm(email);
 	}
@@ -88,7 +91,7 @@ public class Controller
 		String nameFirst = (String) param[2];
 		String nameLast = (String) param[3];
 		String company = (String) param[4];
-		System.out.println("Message from Controller: user " + email +
+		System.out.println(messageStart + "user " + email +
 				" named '" + nameFirst + "' '" + nameLast + "' registered using password " +
 				password + " with company code " + company);
 		userInterface.showDashboardForm(email);
@@ -96,11 +99,7 @@ public class Controller
 
 	private void userLogoutEvent()
 	{
-		System.out.println("Message from Controller: user logged out");
+		System.out.println(messageStart + "user logged out");
 		userInterface.showUserLoginForm();
 	}
-
-
-	private static Controller instance = null;
-	private IView userInterface;
 }

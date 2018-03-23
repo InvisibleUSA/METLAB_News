@@ -1,4 +1,4 @@
-package com.metlab.controller;
+package com.metlab.frontend;
 
 
 

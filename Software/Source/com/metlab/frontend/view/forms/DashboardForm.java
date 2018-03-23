@@ -1,6 +1,6 @@
-package com.metlab.view.forms;
+package com.metlab.frontend.view.forms;
 
-import com.metlab.controller.ICallbackFunction;
+import com.metlab.frontend.ICallbackFunction;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
