@@ -10,8 +10,8 @@ public class UserRegisterUI extends UI
 {
 
 	//Layouts
-	final FormLayout registerForm = new FormLayout();
-	final HorizontalLayout titleBar = new HorizontalLayout();
+	final FormLayout       registerForm = new FormLayout();
+	final HorizontalLayout titleBar     = new HorizontalLayout();
 
 	//Form components
 	TextField     userNameTextField       = new TextField("Benutzername:");
@@ -33,7 +33,6 @@ public class UserRegisterUI extends UI
 	protected void init(VaadinRequest vaadinRequest)
 	{
 		setContent(registerForm);
-
 	}
 
 
@@ -44,15 +43,16 @@ public class UserRegisterUI extends UI
 		repeatPasswordTextField.setValue(aPassword);
 
 		submit.addClickListener(e ->
-		     {
-		     	SQLController submitReg = new SQLController();
-			     submitReg.test(emailTextField.getValue(),
-			                    companyTextField.getValue(),
-			                    sexTextField.getValue(),
-			                    nameTextField.getValue(),
-			                    passwordTextField.getValue(),
-			                    preNameTextField.getValue());
-		     });
+		                        {
+			                        SQLController submitReg = new SQLController();
+			                        submitReg.registerUser(emailTextField.getValue(),
+			                                               companyTextField.getValue(),
+			                                               sexTextField.getValue(),
+			                                               nameTextField.getValue(),
+			                                               passwordTextField.getValue(),
+			                                               preNameTextField.getValue());
+			                        submitReg.getEmails();
+		                        });
 
 		titleBar.addComponent(title);
 		registerForm.addComponents(titleBar, userNameTextField, nameTextField, preNameTextField, companyTextField,
@@ -61,5 +61,4 @@ public class UserRegisterUI extends UI
 		                           sexTextField);
 		setContent(registerForm);
 	}
-
 }
