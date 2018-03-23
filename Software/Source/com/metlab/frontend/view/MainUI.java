@@ -30,6 +30,15 @@ public class MainUI extends UI implements IView
 		uiController.getInstance(this);
 	}
 
+	private ICallbackFunction userLoginEnterFormCallback     = null;
+	private ICallbackFunction userLoginCallback              = null;
+	private ICallbackFunction userRegisterEnterFormCallback  = null;
+	private ICallbackFunction userRegisterCallback           = null;
+	private ICallbackFunction userLogoutCallback             = null;
+	private ICallbackFunction sysAdminLoginEnterFormCallback = null;
+	private ICallbackFunction sysAdminLoginCallback          = null;
+	private ICallbackFunction sysAdminLogoutCallback         = null;
+
 	public void registerCallbackFunctions(
 			ICallbackFunction userLoginEnterForm,
 			ICallbackFunction userLogin,
@@ -72,19 +81,11 @@ public class MainUI extends UI implements IView
 
 	public void showSysAdminForm(String username)
 	{
-		setContent(new SysAdminForm(username, userLogoutCallback));
+		setContent(new SysAdminForm(username, sysAdminLogoutCallback));
 	}
 
 
 
-	private ICallbackFunction userLoginEnterFormCallback     = null;
-	private ICallbackFunction userLoginCallback              = null;
-	private ICallbackFunction userRegisterEnterFormCallback  = null;
-	private ICallbackFunction userRegisterCallback           = null;
-	private ICallbackFunction userLogoutCallback             = null;
-	private ICallbackFunction sysAdminLoginEnterFormCallback = null;
-	private ICallbackFunction sysAdminLoginCallback          = null;
-	private ICallbackFunction sysAdminLogoutCallback         = null;
 
 	@WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)
 	@VaadinServletConfiguration(ui = MainUI.class, productionMode = false)

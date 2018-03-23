@@ -8,6 +8,9 @@ import com.vaadin.ui.*;
 
 public class SysAdminForm extends VerticalLayout
 {
+	private final Label  title        = new Label();
+	private final Button buttonLogout = new Button("Abmelden");
+
 	public SysAdminForm(String userName,
 	                    ICallbackFunction sysAdminLogoutCallback)
 	{
@@ -21,7 +24,4 @@ public class SysAdminForm extends VerticalLayout
 		this.addComponents(title,
 		                   buttonLogout);
 	}
-
-	private final Label  title        = new Label();
-	private final Button buttonLogout = new Button("Abmelden");
 }

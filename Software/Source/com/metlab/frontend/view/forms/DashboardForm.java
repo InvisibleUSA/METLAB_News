@@ -8,6 +8,9 @@ import com.vaadin.ui.*;
 
 public class DashboardForm extends VerticalLayout
 {
+	private final Label  title        = new Label();
+	private final Button buttonLogout = new Button("Abmelden");
+
 	public DashboardForm(String userName,
 	                     ICallbackFunction userLogoutCallback)
 	{
@@ -21,7 +24,4 @@ public class DashboardForm extends VerticalLayout
 		this.addComponents(title,
 		                   buttonLogout);
 	}
-
-	private final Label  title        = new Label();
-	private final Button buttonLogout = new Button("Abmelden");
 }

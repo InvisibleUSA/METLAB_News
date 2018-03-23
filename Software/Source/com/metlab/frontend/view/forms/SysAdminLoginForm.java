@@ -8,14 +8,20 @@ import com.vaadin.ui.*;
 
 public class SysAdminLoginForm extends VerticalLayout
 {
+	private final Label         title             = new Label(
+			"Willkommen bei METLAB-News - Anmeldung Systemadministrator");
+	private final TextField     textFieldEmail    = new TextField("E-Mail:");
+	private final PasswordField textFieldPassword = new PasswordField("Passwort:");
+	private final Button        buttonLogin       = new Button("Anmelden");
+	private final Button        buttonUser        = new Button("Nutzer-Anmeldung");
+
 	public SysAdminLoginForm(ICallbackFunction sysLoginCallback,
 	                         ICallbackFunction enterUserLoginFormCallback)
 	{
 		Page.getCurrent().setTitle("METLAB Anmeldung Systemadministrator");
 
 		buttonLogin.addClickListener((Button.ClickEvent event) ->
-				                             sysLoginCallback.execute(new String[] {textFieldEmail.getValue(),
-						                             textFieldPassword.getValue()}));
+				                             sysLoginAction(sysLoginCallback));
 
 		buttonUser.addClickListener((Button.ClickEvent event) ->
 				                            enterUserLoginFormCallback.execute(null));
@@ -25,10 +31,22 @@ public class SysAdminLoginForm extends VerticalLayout
 		                   buttonLogin, buttonUser);
 	}
 
-	private final Label         title             = new Label(
-			"Willkommen bei METLAB-News - Anmeldung Systemadministrator");
-	private final TextField     textFieldEmail    = new TextField("E-Mail:");
-	private final PasswordField textFieldPassword = new PasswordField("Passwort:");
-	private final Button        buttonLogin       = new Button("Anmelden");
-	private final Button        buttonUser        = new Button("Nutzer-Login");
+	private void sysLoginAction(ICallbackFunction sysLoginCallback)
+	{
+		String email    = textFieldEmail.getValue();
+		String password = textFieldPassword.getValue();
+
+		if(email.isEmpty())
+		{
+			Notification.show("Bitte geben Sie eine Email Adresse ein!");
+		}
+		else if(password.isEmpty())
+		{
+			Notification.show("Bitte geben Sie ein Passwort ein!");
+		}
+		else
+		{
+			sysLoginCallback.execute(new String[] {email, password});
+		}
+	}
 }
