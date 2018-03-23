@@ -5,6 +5,7 @@ package com.metlab.frontend;
 import com.metlab.frontend.view.IView;
 
 
+
 public class uiController
 {
 	private static uiController instance = null;
@@ -23,7 +24,8 @@ public class uiController
 
 	private uiController(final IView userInterface)
 	{
-		System.out.print("\n\n\n****************************************************************************************************\n");
+		System.out.print(
+				"\n\n\n****************************************************************************************************\n");
 		System.out.println(messageStart + "software is running");
 
 		this.userInterface = userInterface;
@@ -38,7 +40,7 @@ public class uiController
 		userInterface.registerCallbackFunctions(
 				(Object[] param) ->
 				{
-					userEnterLoginForm();
+					userLoginEnterForm();
 					return null;
 				},
 				(Object[] param) ->
@@ -48,7 +50,7 @@ public class uiController
 				},
 				(Object[] param) ->
 				{
-					userEnterRegisterForm();
+					userRegisterEnterForm();
 					return null;
 				},
 				(Object[] param) ->
@@ -58,48 +60,86 @@ public class uiController
 				},
 				(Object[] param) ->
 				{
-					userLogoutEvent();
+					userLogoutEvent(param);
+					return null;
+				},
+				(Object[] param) ->
+				{
+					sysAdminLoginEnterForm();
+					return null;
+				},
+				(Object[] param) ->
+				{
+					sysAdminLoginEvent(param);
+					return null;
+				},
+				(Object[] param) ->
+				{
+					sysAdminLogoutEvent(param);
 					return null;
 				});
 	}
 
-	private void userEnterLoginForm()
+	private void userLoginEnterForm()
 	{
 		System.out.println(messageStart + "user entered login form");
 		userInterface.showUserLoginForm();
 	}
 
-	private void userEnterRegisterForm()
+	private void userLoginEvent(Object[] param)
+	{
+		String email    = (String)param[0];
+		String password = (String)param[1];
+		System.out.println(messageStart + "user " + email +
+				                   " logged in with password " + password);
+		userInterface.showDashboardForm(email);
+	}
+
+	private void userRegisterEnterForm()
 	{
 		System.out.println(messageStart + "user entered register form");
 		userInterface.showUserRegisterForm();
 	}
 
-	private void userLoginEvent(Object[] param)
-	{
-		String email = (String)param[0];
-		String password = (String)param[1];
-		System.out.println(messageStart + "user " + email +
-				" logged in with password " + password);
-		userInterface.showDashboardForm(email);
-	}
-
 	private void userRegisterEvent(Object[] param)
 	{
-		String email = (String) param[0];
-		String password = (String) param[1];
-		String nameFirst = (String) param[2];
-		String nameLast = (String) param[3];
-		String company = (String) param[4];
+		String email     = (String)param[0];
+		String password  = (String)param[1];
+		String nameFirst = (String)param[2];
+		String nameLast  = (String)param[3];
+		String company   = (String)param[4];
 		System.out.println(messageStart + "user " + email +
-				" named '" + nameFirst + "' '" + nameLast + "' registered using password " +
-				password + " with company code " + company);
+				                   " named '" + nameFirst + "' '" + nameLast + "' registered using password " +
+				                   password + " with company code " + company);
 		userInterface.showDashboardForm(email);
 	}
 
-	private void userLogoutEvent()
+	private void userLogoutEvent(Object[] param)
 	{
-		System.out.println(messageStart + "user logged out");
+		String email = (String)param[0];
+		System.out.println(messageStart + "user " + email + " logged out");
 		userInterface.showUserLoginForm();
+	}
+
+	private void sysAdminLoginEnterForm()
+	{
+		System.out.println(messageStart + "system admin entered login form");
+		userInterface.showSysAdminLoginForm();
+	}
+
+	private void sysAdminLoginEvent(Object[] param)
+	{
+		String email    = (String)param[0];
+		String password = (String)param[1];
+		System.out.println(messageStart + "system admin " + email +
+				                   " logged in with password " + password);
+		userInterface.showSysAdminForm(email);
+	}
+
+	private void sysAdminLogoutEvent(Object[] param)
+	{
+		String email = (String)param[0];
+		System.out.println(messageStart + "system admin " + email + " logged out");
+		userInterface.showSysAdminLoginForm();
 	}
 }

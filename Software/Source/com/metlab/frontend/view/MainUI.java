@@ -31,27 +31,33 @@ public class MainUI extends UI implements IView
 	}
 
 	public void registerCallbackFunctions(
-			ICallbackFunction userEnterLoginForm,
+			ICallbackFunction userLoginEnterForm,
 			ICallbackFunction userLogin,
-			ICallbackFunction userEnterRegisterForm,
+			ICallbackFunction userRegisterEnterForm,
 			ICallbackFunction userRegister,
-			ICallbackFunction userLogout)
+			ICallbackFunction userLogout,
+			ICallbackFunction sysAdminLoginEnterForm,
+			ICallbackFunction sysAdminLogin,
+			ICallbackFunction sysAdminLogout)
 	{
-		userEnterLoginFormCallback = userEnterLoginForm;
+		userLoginEnterFormCallback = userLoginEnterForm;
 		userLoginCallback = userLogin;
-		userEnterRegisterFormCallback = userEnterRegisterForm;
+		userRegisterEnterFormCallback = userRegisterEnterForm;
 		userRegisterCallback = userRegister;
 		userLogoutCallback = userLogout;
+		sysAdminLoginEnterFormCallback = sysAdminLoginEnterForm;
+		sysAdminLoginCallback = sysAdminLogin;
+		sysAdminLogoutCallback = sysAdminLogout;
 	}
 
 	public void showUserLoginForm()
 	{
-		setContent(new UserLoginForm(userLoginCallback, userEnterRegisterFormCallback));
+		setContent(new UserLoginForm(userLoginCallback, userRegisterEnterFormCallback, sysAdminLoginEnterFormCallback));
 	}
 
 	public void showUserRegisterForm()
 	{
-		setContent(new UserRegisterForm(userRegisterCallback, userEnterLoginFormCallback));
+		setContent(new UserRegisterForm(userRegisterCallback, userLoginEnterFormCallback));
 	}
 
 	public void showDashboardForm(String username)
@@ -59,15 +65,26 @@ public class MainUI extends UI implements IView
 		setContent(new DashboardForm(username, userLogoutCallback));
 	}
 
+	public void showSysAdminLoginForm()
+	{
+		setContent(new SysAdminLoginForm(sysAdminLoginCallback, userLoginEnterFormCallback));
+	}
+
+	public void showSysAdminForm(String username)
+	{
+		setContent(new SysAdminForm(username, userLogoutCallback));
+	}
 
 
-	private ICallbackFunction userEnterLoginFormCallback = null;
-	private ICallbackFunction userLoginCallback = null;
-	private ICallbackFunction userEnterRegisterFormCallback = null;
-	private ICallbackFunction userRegisterCallback = null;
-	private ICallbackFunction userLogoutCallback = null;
 
-
+	private ICallbackFunction userLoginEnterFormCallback     = null;
+	private ICallbackFunction userLoginCallback              = null;
+	private ICallbackFunction userRegisterEnterFormCallback  = null;
+	private ICallbackFunction userRegisterCallback           = null;
+	private ICallbackFunction userLogoutCallback             = null;
+	private ICallbackFunction sysAdminLoginEnterFormCallback = null;
+	private ICallbackFunction sysAdminLoginCallback          = null;
+	private ICallbackFunction sysAdminLogoutCallback         = null;
 
 	@WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)
 	@VaadinServletConfiguration(ui = MainUI.class, productionMode = false)

@@ -6,17 +6,17 @@ import com.vaadin.ui.*;
 
 
 
-public class DashboardForm extends VerticalLayout
+public class SysAdminForm extends VerticalLayout
 {
-	public DashboardForm(String userName,
-	                     ICallbackFunction userLogoutCallback)
+	public SysAdminForm(String userName,
+	                    ICallbackFunction sysAdminLogoutCallback)
 	{
-		Page.getCurrent().setTitle("METLAB News");
+		Page.getCurrent().setTitle("METLAB Administration");
 
-		title.setCaption("Nutzeranmeldung erfolgreich - Hallo " + userName);
+		title.setCaption("Systemadministratoranmeldung erfolgreich - Hallo " + userName);
 
 		buttonLogout.addClickListener((Button.ClickEvent event) ->
-				                              userLogoutCallback.execute(new String[] {userName}));
+				                              sysAdminLogoutCallback.execute(new String[] {userName}));
 
 		this.addComponents(title,
 		                   buttonLogout);
