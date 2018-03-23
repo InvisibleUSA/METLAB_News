@@ -4,8 +4,6 @@ import com.metlab.frontend.controller.SQLController;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 
-import javax.xml.soap.Text;
-
 
 
 public class UserRegisterUI extends UI
@@ -16,15 +14,15 @@ public class UserRegisterUI extends UI
 	final HorizontalLayout titleBar = new HorizontalLayout();
 
 	//Form components
-	TextField usernameTextfield = new TextField("Benutzername:");
-	TextField name = new TextField("Name:");
-	TextField gName = new TextField("Vorname:");
-	TextField companyTextfield = new TextField("Firma:");
-	PasswordField passwordTextfield = new PasswordField("Passwort:");
-	PasswordField repeatPassword = new PasswordField("Passwort wiederholen:");
-	TextField emailTextfield = new TextField("Email:");
-	TextField repeatEmail = new TextField("Email wiederholen:");
-	TextField sex = new TextField("Geschlecht:");
+	TextField     userNameTextField       = new TextField("Benutzername:");
+	TextField     nameTextField           = new TextField("Name:");
+	TextField     preNameTextField        = new TextField("Vorname:");
+	TextField     companyTextField        = new TextField("Firma:");
+	PasswordField passwordTextField       = new PasswordField("Passwort:");
+	PasswordField repeatPasswordTextField = new PasswordField("Passwort wiederholen:");
+	TextField     emailTextField          = new TextField("Email:");
+	TextField     repeatEmailTextField    = new TextField("Email wiederholen:");
+	TextField     sexTextField            = new TextField("Geschlecht:");
 
 	Button submit = new Button("Abschicken");
 
@@ -41,18 +39,26 @@ public class UserRegisterUI extends UI
 
 	protected void setFields(String aUsername, String aPassword)
 	{
-		usernameTextfield.setValue(aUsername);
-		passwordTextfield.setValue(aPassword);
-		repeatPassword.setValue(aPassword);
+		userNameTextField.setValue(aUsername);
+		passwordTextField.setValue(aPassword);
+		repeatPasswordTextField.setValue(aPassword);
 
 		submit.addClickListener(e ->
 		     {
 		     	SQLController submitReg = new SQLController();
-			     submitReg.test();
+			     submitReg.test(emailTextField.getValue(),
+			                    companyTextField.getValue(),
+			                    sexTextField.getValue(),
+			                    nameTextField.getValue(),
+			                    passwordTextField.getValue(),
+			                    preNameTextField.getValue());
 		     });
 
 		titleBar.addComponent(title);
-		registerForm.addComponents(titleBar,usernameTextfield, name, gName, companyTextfield,passwordTextfield,repeatPassword,emailTextfield,repeatEmail, submit, sex);
+		registerForm.addComponents(titleBar, userNameTextField, nameTextField, preNameTextField, companyTextField,
+		                           passwordTextField, repeatPasswordTextField, emailTextField, repeatEmailTextField,
+		                           submit,
+		                           sexTextField);
 		setContent(registerForm);
 	}
 

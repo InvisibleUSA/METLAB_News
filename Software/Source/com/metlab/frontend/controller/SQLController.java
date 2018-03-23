@@ -7,7 +7,7 @@ import java.sql.*;
 public class SQLController
 {
 
-	public void test()
+	public void test(String Email, String Company, String Sex, String Name, String Password, String PreName)
 	{
 		try
 		{
@@ -15,7 +15,7 @@ public class SQLController
 			Connection conn      = DriverManager.getConnection(url);
 			Statement  statement = conn.createStatement();
 			statement.executeQuery("INSERT INTO Abonnent (EMail, Firma, Geschlecht, isAdmin, Name, PW, VName) " +
-					                       "VALUES ('email', 'Beispielfirma', 'm' , 1, 'name', 'pw', 'pName')");
+					                       "VALUES ('" + Email + "', '" + Company + "', '" + Sex + "' , 1 , '" + Name + "', '" + Password + "', '" + PreName + "')");
 
 			conn.close();
 		}
