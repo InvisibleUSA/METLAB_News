@@ -48,7 +48,7 @@ public class UserRegisterUI extends UI
 		submit.addClickListener(e ->
 		     {
 		     	SQLController submitReg = new SQLController();
-		     	submitReg.test(emailTextfield.getValue(),name.getValue(),gName.getValue(),passwordTextfield.getValue(),companyTextfield.getValue(),sex.getValue());
+			     submitReg.test();
 		     });
 
 		titleBar.addComponent(title);
