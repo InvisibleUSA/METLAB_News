@@ -15,11 +15,24 @@ public class Article
 
 	public Article(String title, String link, String description, String guid, Calendar pubDate)
 	{
-		this.title = title;
-		this.link = link;
-		this.description = description;
-		this.guid = guid;
+		this.title = format(removeAllTags(title));
+		this.link = format(link);
+		this.description = format(description);
+		this.guid = format(guid);
 		this.pubDate = pubDate;
+	}
+
+	private String removeAllTags(String s)
+	{
+		return s.replaceAll("<.*>", "");
+	}
+
+	private String format(String s)
+	{
+		s = s.replace("&", "und");
+		s = s.trim();
+		s = s.replace("\"", "'");
+		return s;
 	}
 
 	public String toString()
@@ -28,10 +41,10 @@ public class Article
 		String erg =
 				"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
 						+ "<article>\n"
-						+ "\t<title>" + title + "</title>\n"
-						+ "\t<link>" + link + "</link>\n"
-						+ "\t<description>" + description + "</description>\n"
-						+ "\t<guid>" + guid + "</guid>\n"
+						+ "\t<title><![CDATA[" + title + "]]></title>\n"
+						+ "\t<link><![CDATA[" + link + "]]></link>\n"
+						+ "\t<description><![CDATA[" + description + "]]></description>\n"
+						+ "\t<guid><![CDATA[" + guid + "]]></guid>\n"
 						+ "\t<pubDate>" + sdf.format(pubDate.getTime()) + "</pubDate>\n"
 						+ "</article>";
 		return erg;
@@ -47,7 +60,7 @@ public class Article
 		return guid;
 	}
 
-	public String getFormattedTitle()
+	public String getFileName()
 	{
 		String f = title
 				.replace(" ", "")
@@ -61,8 +74,19 @@ public class Article
 				.replace("%", "")
 				.replace("&", "")
 				.replace("?", "")
-				.replace("*", "");
+				.replace("*", "")
+				.replace("<", "")
+				.replace(">", "")
+				.replace("„", "")
+				.replace("“", "")
+				.replace(".", "");
 		return f;
+	}
+
+	public String getDateFormatted()
+	{
+		return pubDate.get(Calendar.DAY_OF_MONTH) + "." + (pubDate.get(Calendar.MONTH) + 1) + "." + pubDate.get(
+				Calendar.YEAR);
 	}
 
 	public String getTitle()

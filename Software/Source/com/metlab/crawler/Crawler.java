@@ -15,51 +15,73 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 
 
 public class Crawler implements Runnable{
 
-	private boolean  debug          = false;
-	private boolean  running        = true;
-	private String[] rssSourceLinks = {
-    		"http://www.spiegel.de/schlagzeilen/tops/index.rss"
-    };
+	private boolean           debug   = false;
+	private boolean           running = true;
+	private Source source;
 
+	private int sleeptime = 1000;
+
+	public Crawler(Source source)
+	{
+		this.source = source;
+	}
+
+	public Crawler(int sleeptime, Source source)
+	{
+		this.sleeptime = sleeptime;
+		this.source = source;
+	}
     @Override
     public void run(){
 	    while(running)
 	    {
-		    for(String link : rssSourceLinks)
+		    if(debug)
 		    {
-			    String                 doc       = getHTTPResponse(link);
-			    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			    try
+			    System.out.println("crawling " + source.getName() + " --> " + source.getLink());
+		    }
+		    String                 doc       = getHTTPResponse(source.getLink());
+		    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		    try
+		    {
+			    DocumentBuilder    dBuilder = dbFactory.newDocumentBuilder();
+			    Document           feed     = dBuilder.parse(new ByteArrayInputStream(doc.getBytes("UTF-8")));
+			    ArrayList<Article> articles = extractArticles(feed);
+			    for(Article a : articles)
 			    {
-				    DocumentBuilder    dBuilder = dbFactory.newDocumentBuilder();
-				    Document           feed     = dBuilder.parse(new ByteArrayInputStream(doc.getBytes("UTF-8")));
-				    ArrayList<Article> articles = extractArticles(feed);
-				    for(Article a : articles)
+				    boolean exists = articleExists(a);
+				    if(!exists)
 				    {
-					    boolean exists = articleExists(a);
-					    if(!exists)
-					    {
-						    writeToBaseX(a, "Spiegel");
-					    }
+					    writeToBaseX(a, source);
 				    }
 			    }
-			    catch(SAXException | IOException | ParserConfigurationException e)
-			    {
-				    e.printStackTrace();
-			    }
+		    }
+		    catch(SAXException | IOException | ParserConfigurationException e)
+		    {
+			    e.printStackTrace();
+		    }
+		    try
+		    {
+			    Thread.sleep(sleeptime);
+		    }
+		    catch(InterruptedException e)
+		    {
+			    e.printStackTrace();
 		    }
 	    }
     }
 
-	private void writeToBaseX(Article a, String source) throws IOException
+	private void writeToBaseX(Article a, Source source)
 	{
 		BaseXController bsx  = BaseXController.getInstance();
-		Add             add  = new Add("Artikel/" + a.getFormattedTitle() + ".xml", a.toString());
+		String          date = a.getDateFormatted();
+		Add             add  = new Add("Artikel/" + source.getName() + "/" + date + "/" + a.getFileName(),
+		                               a.toString());
 		String          res1 = add.toString();
 		String          res2 = bsx.execute(add);
 		if(debug)
@@ -156,7 +178,8 @@ public class Crawler implements Runnable{
 		}
 		else if(node.hasChildNodes())
 		{
-			if(node.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE)
+			if(node.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE || node.getChildNodes().item(
+					0).getNodeType() == Node.CDATA_SECTION_NODE)
 			{
 				return node.getChildNodes().item(0).getNodeValue();
 			}
@@ -218,20 +241,23 @@ public class Crawler implements Runnable{
 		Calendar c          = Calendar.getInstance();
 		c.set(year, month, dayInMonth, hour, min, sec);
 
-		int offsetHour   = Integer.parseInt(fields[4].substring(1, 3));
-		int offsetMin    = Integer.parseInt(fields[4].substring(3, 5));
-		int offsetMillis = (60 * offsetHour + offsetMin) * 60 * 1000;
-		if(fields[4].charAt(0) == '+')
+		if(fields[4].length() == 5)
 		{
-			c.set(Calendar.ZONE_OFFSET, offsetMillis);
+			int offsetHour   = Integer.parseInt(fields[4].substring(1, 3));
+			int offsetMin    = Integer.parseInt(fields[4].substring(3, 5));
+			int offsetMillis = (60 * offsetHour + offsetMin) * 60 * 1000;
+			if(fields[4].charAt(0) == '+')
+			{
+				c.set(Calendar.ZONE_OFFSET, offsetMillis);
+			}
+			else if(fields[4].charAt(0) == '-')
+			{
+				c.set(Calendar.ZONE_OFFSET, -offsetMillis);
+			}
 		}
-		else if(fields[4].charAt(0) == '-')
+		else if(fields[4].length() == 3)
 		{
-			c.set(Calendar.ZONE_OFFSET, -offsetMillis);
-		}
-		if(debug)
-		{
-			System.out.println(c.getTimeInMillis());
+			c.setTimeZone(TimeZone.getTimeZone(fields[4]));
 		}
 		return c;
 	}
@@ -342,5 +368,10 @@ public class Crawler implements Runnable{
 	public void setDebug(boolean newVal)
 	{
 		debug = newVal;
+	}
+
+	public void setSleeptime(int sleeptime)
+	{
+		this.sleeptime = sleeptime;
 	}
 }
