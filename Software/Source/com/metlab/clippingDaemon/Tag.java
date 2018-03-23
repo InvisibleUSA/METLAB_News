@@ -26,6 +26,11 @@ public class Tag
 		return t;
 	}
 
+	public String attribute(String name)
+	{
+		return m_attributes.get(name);
+	}
+
 	public String name()
 	{
 		return m_name;
@@ -44,6 +49,10 @@ public class Tag
 	private void construct(Node n)
 	{
 		m_name = n.getNodeName();
+		for(int i = 0; i < n.getAttributes().getLength(); i++)
+		{
+			m_attributes.put(n.getAttributes().item(i).getNodeName(), n.getAttributes().item(i).getNodeValue());
+		}
 		if((n.getChildNodes().getLength() == 1) && (n.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
 		{
 			m_value = n.getChildNodes().item(0).getNodeValue();
@@ -80,7 +89,8 @@ public class Tag
 		return s;
 	}
 
-	private HashMap<Key, Tag> m_children = new HashMap<>(); //position needs to be in there (multi hash map)
+	private HashMap<Key, Tag>       m_children   = new HashMap<>();
+	private HashMap<String, String> m_attributes = new HashMap<>();
 	private String m_name;
 	private String m_value = "{empty value}";
 
