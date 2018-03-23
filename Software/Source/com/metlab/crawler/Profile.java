@@ -51,6 +51,7 @@ public class Profile
 		{
 			s.append("    ").append(key).append("\n");
 		}
+		s.append("Sources:\n");
 		for(String src : sourceLinks)
 		{
 			s.append("    ").append(src).append("\n");

@@ -3,8 +3,8 @@ package com.metlab.clippingDaemon;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 
@@ -25,6 +25,19 @@ public class Tag
 		Key k = new Key(s, position);
 		Tag t = m_children.get(k);
 		return t;
+	}
+
+	public ArrayList<Tag> children(String s)
+	{
+		Key            k   = new Key(s, 0);
+		ArrayList<Tag> alt = new ArrayList<>();
+		Tag            t;
+		while((t = m_children.get(k)) != null)
+		{
+			alt.add(t);
+			k.position++;
+		}
+		return alt;
 	}
 
 	public String attribute(String name)

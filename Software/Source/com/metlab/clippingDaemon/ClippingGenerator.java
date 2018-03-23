@@ -39,23 +39,23 @@ public class ClippingGenerator implements Runnable
 		}
 	}
 
-	public void enqueueNextProfile()
+	public void enqueueNextProfile(String s)
 	{
 		//fetch profile
 		String query = "for $profile in /profile " +
 				"where fn:current-time() < xs:time($profile/generationtime) " +
 				"order by $profile/generationtime return $profile";
 
-		BaseXController bxc = BaseXController.getInstance();
+		//BaseXController bxc = BaseXController.getInstance();
 
 
-		String                 doc       = "<profiles>" + bxc.query(query) + "</profiles>";
+		//String                 doc       = "<profiles>" + bxc.query(query) + "</profiles>";
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		Document               feed;
 		try
 		{
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			feed = dBuilder.parse(new ByteArrayInputStream(doc.getBytes("UTF-8")));
+			feed = dBuilder.parse(new ByteArrayInputStream(s.getBytes("UTF-8")));
 		}
 		catch(Exception e)
 		{
@@ -64,55 +64,22 @@ public class ClippingGenerator implements Runnable
 		}
 
 		//parse
-		for(int i = 0; i < feed.getChildNodes().item(0).getChildNodes().getLength(); i++)
+		Tag profiles = new Tag(feed);
+		for(Tag profile : profiles.children("profile"))
 		{
-			Node profile = feed.getChildNodes().item(0).getChildNodes().item(i);
-			if(!profile.hasChildNodes())
-			{
-				continue;
-			}
-
-
-			String            name;
+			String            name     = profile.child("name").value();
 			ArrayList<String> keywords = new ArrayList<>();
-			ArrayList<String> sources  = new ArrayList<>();
-			LocalTime         generationTime;
-
-
-			println(profile.getNodeName());
-
-			ArrayList<Node> aln;
-
-			aln = getChildrenByName(profile, "name");
-			print(aln.get(0).getNodeName() + "    ");
-			name = aln.get(0).getChildNodes().item(0).getNodeValue();
-			println(name);
-
-			aln = getChildrenByName(profile, "generationtime");
-			print(aln.get(0).getNodeName() + "    ");
-			String tmp = aln.get(0).getChildNodes().item(0).getNodeValue();
-			println(tmp);
-			generationTime = LocalTime.parse(tmp);
-
-			aln = getChildrenByName(profile, "keywords");
-			aln = getChildrenByName(aln.get(0), "keyword");
-			println(aln.get(0).getNodeName());
-			for(Node n : aln)
+			for(Tag key : profile.child("keywords").children("keyword"))
 			{
-				keywords.add(aln.get(0).getChildNodes().item(0).getNodeValue());
+				keywords.add(key.value());
 			}
-			println(keywords.toString());
-
-			aln = getChildrenByName(profile, "sources");
-			aln = getChildrenByName(aln.get(0), "source");
-			println(aln.get(0).getNodeName());
-			for(Node n : aln)
+			ArrayList<String> sources = new ArrayList<>();
+			for(Tag src : profile.child("sources").children("source"))
 			{
-				sources.add(aln.get(0).getChildNodes().item(0).getNodeValue());
+				sources.add(src.value());
 			}
-			println(sources.toString());
-
-			Profile p = new Profile(name, keywords, sources, generationTime);
+			LocalTime generationTime = LocalTime.parse(profile.child("generationtime").value());
+			Profile   p              = new Profile(name, keywords, sources, generationTime);
 			System.out.println(p);
 		}
 		//enqueue
