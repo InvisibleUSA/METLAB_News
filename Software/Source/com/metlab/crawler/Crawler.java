@@ -15,24 +15,33 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 
 
 public class Crawler implements Runnable{
 
-	private boolean  debug          = false;
-	private boolean  running        = true;
-	private String[] rssSourceLinks = {
-    		"http://www.spiegel.de/schlagzeilen/tops/index.rss"
-    };
+	private boolean           debug   = false;
+	private boolean           running = true;
+	private ArrayList<Source> sources = new ArrayList<>();
 
+	private int sleeptime = 1000;
+
+	public Crawler()
+	{
+	}
+
+	public Crawler(int sleeptime)
+	{
+		this.sleeptime = sleeptime;
+	}
     @Override
     public void run(){
 	    while(running)
 	    {
-		    for(String link : rssSourceLinks)
+		    for(Source src : sources)
 		    {
-			    String                 doc       = getHTTPResponse(link);
+			    String                 doc       = getHTTPResponse(src.getLink());
 			    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			    try
 			    {
@@ -44,7 +53,7 @@ public class Crawler implements Runnable{
 					    boolean exists = articleExists(a);
 					    if(!exists)
 					    {
-						    writeToBaseX(a, "Spiegel");
+						    writeToBaseX(a, src.getName());
 					    }
 				    }
 			    }
@@ -53,13 +62,21 @@ public class Crawler implements Runnable{
 				    e.printStackTrace();
 			    }
 		    }
+		    try
+		    {
+			    Thread.sleep(sleeptime);
+		    }
+		    catch(InterruptedException e)
+		    {
+			    e.printStackTrace();
+		    }
 	    }
     }
 
 	private void writeToBaseX(Article a, String source) throws IOException
 	{
 		BaseXController bsx  = BaseXController.getInstance();
-		Add             add  = new Add("Artikel/" + a.getFormattedTitle() + ".xml", a.toString());
+		Add             add  = new Add("Artikel/" + a.getFileName(), a.toString());
 		String          res1 = add.toString();
 		String          res2 = bsx.execute(add);
 		if(debug)
@@ -156,7 +173,8 @@ public class Crawler implements Runnable{
 		}
 		else if(node.hasChildNodes())
 		{
-			if(node.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE)
+			if(node.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE || node.getChildNodes().item(
+					0).getNodeType() == Node.CDATA_SECTION_NODE)
 			{
 				return node.getChildNodes().item(0).getNodeValue();
 			}
@@ -218,20 +236,23 @@ public class Crawler implements Runnable{
 		Calendar c          = Calendar.getInstance();
 		c.set(year, month, dayInMonth, hour, min, sec);
 
-		int offsetHour   = Integer.parseInt(fields[4].substring(1, 3));
-		int offsetMin    = Integer.parseInt(fields[4].substring(3, 5));
-		int offsetMillis = (60 * offsetHour + offsetMin) * 60 * 1000;
-		if(fields[4].charAt(0) == '+')
+		if(fields[4].length() == 5)
 		{
-			c.set(Calendar.ZONE_OFFSET, offsetMillis);
+			int offsetHour   = Integer.parseInt(fields[4].substring(1, 3));
+			int offsetMin    = Integer.parseInt(fields[4].substring(3, 5));
+			int offsetMillis = (60 * offsetHour + offsetMin) * 60 * 1000;
+			if(fields[4].charAt(0) == '+')
+			{
+				c.set(Calendar.ZONE_OFFSET, offsetMillis);
+			}
+			else if(fields[4].charAt(0) == '-')
+			{
+				c.set(Calendar.ZONE_OFFSET, -offsetMillis);
+			}
 		}
-		else if(fields[4].charAt(0) == '-')
+		else if(fields[4].length() == 3)
 		{
-			c.set(Calendar.ZONE_OFFSET, -offsetMillis);
-		}
-		if(debug)
-		{
-			System.out.println(c.getTimeInMillis());
+			c.setTimeZone(TimeZone.getTimeZone(fields[4]));
 		}
 		return c;
 	}
@@ -342,5 +363,10 @@ public class Crawler implements Runnable{
 	public void setDebug(boolean newVal)
 	{
 		debug = newVal;
+	}
+
+	public void addSource(Source source)
+	{
+		sources.add(source);
 	}
 }

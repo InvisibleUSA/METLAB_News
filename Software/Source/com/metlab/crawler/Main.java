@@ -17,6 +17,7 @@ public class Main
 {
     public static void main(String... args)
     {
+
 	    Add add = new Add("test/file", "<profile>\n" +
 			    "    <name>{name}</name>\n" +
 			    "    <uid>{UNIQUE-ID}</uid>\n" +
@@ -53,13 +54,22 @@ public class Main
 
         BaseXController bxc = BaseXController.getInstance();
 
-	    Crawler c = new Crawler();
-	    c.setDebug(false);
+	    Crawler c = new Crawler(20000);
+	    c.addSource(new Source("Spiegel", "http://www.spiegel.de/schlagzeilen/tops/index.rss"));
+	    c.addSource(new Source("Süddeutsche", "http://rss.sueddeutsche.de/app/service/rss/alles/index.rss"));
+	    c.addSource(new Source("Zeit", "http://newsfeed.zeit.de/index"));
+	    c.addSource(new Source("Stuttgarter Zeitung", "https://www.stuttgarter-zeitung.de/news.rss.feed"));
+	    c.addSource(new Source("MAZ", "http://www.maz-online.de/rss/feed/maz_brandenburg"));
+	    c.addSource(new Source("Gamestar", "http://www.gamestar.de/news/rss/news.rss"));
+	    c.addSource(new Source("Kino.de", "https://www.kino.de/rss/neu-im-kino"));
+	    c.addSource(new Source("Sumikai", "https://sumikai.com/feed/"));
+
+	    c.setDebug(true);
 	    new Thread(c).start();
 
-	    System.out.println(bxc.execute(add));
-	    System.out.println(bxc.execute(add1));
-	    System.out.println(bxc.execute(add2));
+	    //System.out.println(bxc.execute(add));
+	    //System.out.println(bxc.execute(add1));
+	    //System.out.println(bxc.execute(add2));
 	    //System.out.println(bxc.execute(new List()));
 	    System.out.println(bxc.execute(new List("ClippingDB")));
 

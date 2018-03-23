@@ -15,11 +15,29 @@ public class Article
 
 	public Article(String title, String link, String description, String guid, Calendar pubDate)
 	{
-		this.title = title;
-		this.link = link;
-		this.description = description;
-		this.guid = guid;
+		this.title = removeAllTags(format(title));
+		this.link = format(link);
+		this.description = format(description);
+		this.guid = format(guid);
 		this.pubDate = pubDate;
+	}
+
+	private String removeAllTags(String s)
+	{
+		return s.replaceAll("<.*>", "");
+	}
+
+	private String format(String s)
+	{
+		s = s.replace("/>", ">");
+		s = s.replace(">", "/>");
+		s = s.replace("&", "und");
+		s = s.replaceAll("</.*>", "");
+		s = s.trim();
+		s = s.replace("\"", "'");
+		s = s.replace("“", "'");
+		s = s.replace("„", "'");
+		return s;
 	}
 
 	public String toString()
@@ -47,7 +65,7 @@ public class Article
 		return guid;
 	}
 
-	public String getFormattedTitle()
+	public String getFileName()
 	{
 		String f = title
 				.replace(" ", "")
@@ -61,7 +79,9 @@ public class Article
 				.replace("%", "")
 				.replace("&", "")
 				.replace("?", "")
-				.replace("*", "");
+				.replace("*", "")
+				.replace("<", "")
+				.replace(">", "");
 		return f;
 	}
 
