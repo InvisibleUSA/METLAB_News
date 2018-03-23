@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.metlab</groupId>
-	<artifactId>metlab</artifactId>
+	<groupId>com.metlabnews</groupId>
+	<artifactId>metlabnews</artifactId>
 	<packaging>war</packaging>
 	<version>0.1</version>
-	<name>metlab</name>
+	<name>metlabnews</name>
 
 	<prerequisites>
 		<maven>3</maven>
@@ -23,13 +23,6 @@
 		<!-- If there are no local customizations, this can also be "fetch" or "cdn" -->
 		<vaadin.widgetset.mode>local</vaadin.widgetset.mode>
 	</properties>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>vaadin-prereleases</id>
-			<url>https://maven.vaadin.com/vaadin-prereleases</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<repositories>
 		<repository>
@@ -132,7 +125,7 @@
 				<configuration>
 					<filesets>
 						<fileset>
-							<directory>src/main/webapp/VAADIN/themes</directory>
+							<directory>${project.basedir}/Resources/VAADIN/themes</directory>
 							<includes>
 								<include>**/styles.css</include>
 								<include>**/styles.scss.cache</include>
