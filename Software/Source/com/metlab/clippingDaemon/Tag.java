@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -79,13 +80,23 @@ public class Tag
 
 	private String print(int indentlevel)
 	{
-		String s      = m_name;
+		String s      = "<" + m_name;
 		String indent = "";
 		for(int i = 0; i < indentlevel; i++)
 		{
 			indent += " ";
 		}
-		//for (Tag t: m_children)
+		s = indent + s;
+		for(HashMap.Entry<String, String> entry : m_attributes.entrySet())
+		{
+			s += " " + entry.getKey() + "=\"" + entry.getValue() + "\"";
+		}
+		s += ">\n";
+		for(HashMap.Entry<Key, Tag> entry : m_children.entrySet())
+		{
+			s += entry.getValue().print(indentlevel + 2);
+		}
+		s += indent + "</" + m_name + ">\n";
 		return s;
 	}
 
