@@ -2,7 +2,13 @@ package com.metlab.clippingDaemon;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,16 +21,43 @@ public class Tag
 		construct(d.getChildNodes().item(0));
 	}
 
+	@SuppressWarnings("WeakerAccess")
+	public Tag(String s)
+	{
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		try
+		{
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document        XMLDoc   = dBuilder.parse(new ByteArrayInputStream(s.getBytes("UTF-8")));
+			construct(XMLDoc.getChildNodes().item(0));
+		}
+		catch(SAXException e)
+		{
+			e.printStackTrace();
+			System.out.println("Parsing exception.");
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			System.out.println("IO Exception.");
+		}
+		catch(ParserConfigurationException e)
+		{
+			e.printStackTrace();
+			System.out.println("Parser is not correctly configured. Exception.");
+		}
+	}
+
 	public Tag child(String s)
 	{
 		return child(s, 0);
 	}
 
+	@SuppressWarnings("WeakerAccess")
 	public Tag child(String s, int position)
 	{
 		Key k = new Key(s, position);
-		Tag t = m_children.get(k);
-		return t;
+		return m_children.get(k);
 	}
 
 	public ArrayList<Tag> children(String s)
@@ -75,6 +108,10 @@ public class Tag
 		{
 			for(int i = 0; i < n.getChildNodes().getLength(); i++)
 			{
+				if(!n.getChildNodes().item(i).hasChildNodes())
+				{
+					continue;
+				}
 				Tag t = new Tag(n.getChildNodes().item(i));
 				Key k = new Key(n.getChildNodes().item(i).getNodeName(), 0);
 				while(m_children.containsKey(k))
@@ -93,24 +130,24 @@ public class Tag
 
 	private String print(int indentlevel)
 	{
-		String s      = "<" + m_name;
-		String indent = "";
+		StringBuilder s      = new StringBuilder("<" + m_name);
+		StringBuilder indent = new StringBuilder();
 		for(int i = 0; i < indentlevel; i++)
 		{
-			indent += " ";
+			indent.append(" ");
 		}
-		s = indent + s;
+		s.insert(0, indent);
 		for(HashMap.Entry<String, String> entry : m_attributes.entrySet())
 		{
-			s += " " + entry.getKey() + "=\"" + entry.getValue() + "\"";
+			s.append(" ").append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
 		}
-		s += ">\n";
+		s.append(">\n");
 		for(HashMap.Entry<Key, Tag> entry : m_children.entrySet())
 		{
-			s += entry.getValue().print(indentlevel + 2);
+			s.append(entry.getValue().print(indentlevel + 2));
 		}
-		s += indent + "</" + m_name + ">\n";
-		return s;
+		s.append(indent).append("</").append(m_name).append(">\n");
+		return s.toString();
 	}
 
 	private HashMap<Key, Tag>       m_children   = new HashMap<>();
@@ -120,10 +157,10 @@ public class Tag
 
 	private class Key
 	{
-		public String name;
-		public int    position;
+		String name;
+		int    position;
 
-		public Key(String n, int p)
+		Key(String n, int p)
 		{
 			name = n;
 			position = p;
@@ -138,6 +175,10 @@ public class Tag
 		@Override
 		public boolean equals(Object o)
 		{
+			if(o.getClass() != this.getClass())
+			{
+				return false;
+			}
 			Key k = (Key)o;
 			return (name.equals(k.name)) && (position == k.position);
 		}

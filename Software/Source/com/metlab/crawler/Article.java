@@ -10,12 +10,14 @@ public class Article
 	private String   title;
 	private String   link;
 	private String   description;
+	private Source   source;
 	private String   guid;
 	private Calendar pubDate;
 
-	public Article(String title, String link, String description, String guid, Calendar pubDate)
+	public Article(String title, Source source, String link, String description, String guid, Calendar pubDate)
 	{
 		this.title = format(removeAllTags(title));
+		this.source = source;
 		this.link = format(link);
 		this.description = format(description);
 		this.guid = format(guid);
@@ -38,10 +40,12 @@ public class Article
 	public String toString()
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
-		String erg =
-				"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
-						+ "<article>\n"
+		@SuppressWarnings("UnnecessaryLocalVariable")
+		final String erg =
+				//"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n" +
+				"<article>\n"
 						+ "\t<title><![CDATA[" + title + "]]></title>\n"
+						+ "\t<source><![CDATA[" + source.getName() + "]]></source>\n"
 						+ "\t<link><![CDATA[" + link + "]]></link>\n"
 						+ "\t<description><![CDATA[" + description + "]]></description>\n"
 						+ "\t<guid><![CDATA[" + guid + "]]></guid>\n"
@@ -62,7 +66,8 @@ public class Article
 
 	public String getFileName()
 	{
-		String f = title
+		@SuppressWarnings("UnnecessaryLocalVariable")
+		final String f = title
 				.replace(" ", "")
 				.replace(":", "")
 				.replace("/", "")

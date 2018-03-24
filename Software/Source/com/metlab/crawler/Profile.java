@@ -2,6 +2,7 @@ package com.metlab.crawler;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -9,14 +10,16 @@ import java.util.List;
 public class Profile
 {
 	private String profileName;
-	private List<String> keywords    = new ArrayList<String>();
-	private List<String> sourceLinks = new ArrayList<String>();
+	private String userMail;
+	private List<String> keywords = new ArrayList<>();
+	private List<String> sources  = new ArrayList<>();
 	private LocalTime m_generationTime;
 
-	public Profile(String name, ArrayList<String> keywords, ArrayList<String> sourceLinks, LocalTime generationTime)
+	public Profile(String name, String userMail, ArrayList<String> keywords, ArrayList<String> sources, LocalTime generationTime)
 	{
 		profileName = name;
-		this.sourceLinks = sourceLinks;
+		this.userMail = userMail;
+		this.sources = sources;
 		this.keywords = keywords;
 		m_generationTime = generationTime;
 	}
@@ -33,12 +36,37 @@ public class Profile
 
 	public void addSource(String sourceLink)
 	{
-		sourceLinks.add(sourceLink);
+		sources.add(sourceLink);
 	}
 
 	public void setGenerationTime(LocalTime gt)
 	{
 		m_generationTime = gt;
+	}
+
+	public String getName()
+	{
+		return profileName;
+	}
+
+	public String getUserMail()
+	{
+		return userMail;
+	}
+
+	public List<String> getKeywords()
+	{
+		return Collections.unmodifiableList(keywords);
+	}
+
+	public List<String> getSources()
+	{
+		return Collections.unmodifiableList(sources);
+	}
+
+	public LocalTime getGenerationTime()
+	{
+		return m_generationTime;
 	}
 
 	@Override
@@ -52,7 +80,7 @@ public class Profile
 			s.append("    ").append(key).append("\n");
 		}
 		s.append("Sources:\n");
-		for(String src : sourceLinks)
+		for(String src : sources)
 		{
 			s.append("    ").append(src).append("\n");
 		}

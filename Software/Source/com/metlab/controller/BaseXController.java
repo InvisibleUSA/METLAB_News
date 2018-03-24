@@ -18,11 +18,11 @@ public class BaseXController
 
 	private BaseXServer server;
 
-	private String username    = "admin";
-	private String pw          = "admin";
-	private String hostaddress = "localhost";
-	private String dbName      = "ClippingDB";
-	private int    port        = 1984;
+	final private String username    = "admin";
+	final private String pw          = "admin";
+	final private String hostaddress = "localhost";
+	final private String dbName      = "ClippingDB";
+	final private int    port        = 1984;
 	private static BaseXController m_bxc;
 
 	private BaseXController()
@@ -38,7 +38,7 @@ public class BaseXController
 		}
 	}
 
-	public static BaseXController getInstance()
+	public static synchronized BaseXController getInstance()
 	{
 		if(m_bxc == null)
 		{

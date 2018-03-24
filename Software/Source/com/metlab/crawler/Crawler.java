@@ -153,7 +153,7 @@ public class Crawler implements Runnable{
 			}
 			if(!guid.equals("") && !title.equals(""))
 			{
-				Article a = new Article(title, link, description, guid, pubDate);
+				Article a = new Article(title, source, link, description, guid, pubDate);
 				articles.add(a);
 			}
 		}
