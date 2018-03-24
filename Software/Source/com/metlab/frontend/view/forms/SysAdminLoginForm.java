@@ -43,7 +43,7 @@ public class SysAdminLoginForm extends VerticalLayout
 		{
 			Notification.show("Bitte geben Sie eine Email Adresse ein!");
 		}
-		else if(password.isEmpty())
+		if(password.isEmpty())
 		{
 			Notification.show("Bitte geben Sie ein Passwort ein!");
 		}

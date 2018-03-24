@@ -6,7 +6,6 @@ import javax.servlet.annotation.WebServlet;
 import com.metlab.frontend.uiController;
 import com.metlab.frontend.ICallbackFunction;
 import com.metlab.frontend.view.forms.*;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
