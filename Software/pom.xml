@@ -53,6 +53,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
@@ -75,6 +80,7 @@
 			<artifactId>vaadin-themes</artifactId>
 		</dependency>
 	</dependencies>
+
 
 	<build>
 		<sourceDirectory>${project.basedir}/Source/</sourceDirectory>
@@ -135,7 +141,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- The Jetty plugin allows us to easily test the development build by
+			<!-- The Jetty plugin allows us to easily registerUser the development build by
 				running jetty:run on the command line. -->
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
