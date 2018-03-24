@@ -20,7 +20,7 @@ public interface IView
 
 	void showUserLoginForm();
 	void showUserRegisterForm();
-	void showDashboardForm(String username);
+	void showDashboardForm(String username, Boolean isAdmin);
 	void showSysAdminLoginForm();
 	void showSysAdminForm(String username);
 }

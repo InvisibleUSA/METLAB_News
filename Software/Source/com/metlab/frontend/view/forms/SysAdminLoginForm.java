@@ -15,6 +15,8 @@ public class SysAdminLoginForm extends VerticalLayout
 	private final Button        buttonLogin       = new Button("Anmelden");
 	private final Button        buttonUser        = new Button("Nutzer-Anmeldung");
 
+	private final HorizontalLayout buttonBar = new HorizontalLayout();
+
 	public SysAdminLoginForm(ICallbackFunction sysLoginCallback,
 	                         ICallbackFunction enterUserLoginFormCallback)
 	{
@@ -26,9 +28,10 @@ public class SysAdminLoginForm extends VerticalLayout
 		buttonUser.addClickListener((Button.ClickEvent event) ->
 				                            enterUserLoginFormCallback.execute(null));
 
+		buttonBar.addComponents(buttonLogin, buttonUser);
 		this.addComponents(title,
 		                   textFieldEmail, textFieldPassword,
-		                   buttonLogin, buttonUser);
+		                   buttonBar);
 	}
 
 	private void sysLoginAction(ICallbackFunction sysLoginCallback)

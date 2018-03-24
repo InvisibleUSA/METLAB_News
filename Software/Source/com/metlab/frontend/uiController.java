@@ -92,7 +92,9 @@ public class uiController
 		String password = (String)param[1];
 		System.out.println(messageStart + "user " + email +
 				                   " logged in with password " + password);
-		userInterface.showDashboardForm(email);
+		// ToDo: check user
+		Boolean isAdmin = email.equals("admin");
+		userInterface.showDashboardForm(email, isAdmin);
 	}
 
 	private void userRegisterEnterForm()
@@ -111,7 +113,9 @@ public class uiController
 		System.out.println(messageStart + "user " + email +
 				                   " named '" + nameFirst + "' '" + nameLast + "' registered using password " +
 				                   password + " with company code " + company);
-		userInterface.showDashboardForm(email);
+		// ToDo: check user
+		Boolean isAdmin = email.equals("admin");
+		userInterface.showDashboardForm(email, isAdmin);
 	}
 
 	private void userLogoutEvent(Object[] param)

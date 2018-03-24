@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import com.metlab.frontend.uiController;
 import com.metlab.frontend.ICallbackFunction;
 import com.metlab.frontend.view.forms.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
@@ -69,9 +70,9 @@ public class MainUI extends UI implements IView
 		setContent(new UserRegisterForm(userRegisterCallback, userLoginEnterFormCallback));
 	}
 
-	public void showDashboardForm(String username)
+	public void showDashboardForm(String username, Boolean isAdmin)
 	{
-		setContent(new DashboardForm(username, userLogoutCallback));
+		setContent(new DashboardForm(username, isAdmin, userLogoutCallback));
 	}
 
 	public void showSysAdminLoginForm()

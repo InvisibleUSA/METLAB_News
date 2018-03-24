@@ -18,6 +18,8 @@ public class UserRegisterForm extends VerticalLayout
 	private final Button        buttonRegister      = new Button("Registrieren");
 	private final Button        buttonLogin         = new Button("Anmeldung");
 
+	private final HorizontalLayout buttonBar = new HorizontalLayout();
+
 	public UserRegisterForm(ICallbackFunction registerCallback,
 	                        ICallbackFunction enterUserLoginFormCallback)
 	{
@@ -29,10 +31,11 @@ public class UserRegisterForm extends VerticalLayout
 		buttonLogin.addClickListener((Button.ClickEvent event) ->
 				                             enterUserLoginFormCallback.execute(null));
 
+		buttonBar.addComponents(buttonRegister, buttonLogin);
 		this.addComponents(title,
 		                   textFieldFirstName, textFieldLastName, textFieldEmail, textFieldPassword_1,
 		                   textFieldPassword_2, textFieldCompany,
-		                   buttonRegister, buttonLogin);
+		                   buttonBar);
 	}
 
 	private void registerAction(ICallbackFunction registerCallback)
