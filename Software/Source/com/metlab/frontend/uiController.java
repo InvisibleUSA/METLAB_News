@@ -5,6 +5,7 @@ package com.metlab.frontend;
 import com.metlab.clippingDaemon.ClippingGenerator;
 import com.metlab.crawler.CrawlerController;
 import com.metlab.crawler.Source;
+import com.metlab.frontend.controller.SQLController;
 import com.metlab.frontend.view.IView;
 
 
@@ -112,9 +113,24 @@ public class uiController
 		String password = (String)param[1];
 		System.out.println(messageStart + "user " + email +
 				                   " logged in with password " + password);
-		// ToDo: check user
-		Boolean isAdmin = email.equals("admin");
-		userInterface.showDashboardForm(email, isAdmin);
+		switch(SQLController.getInstance().loginUser(email, password))
+		{
+			case 0:
+				//TODO: User not registered UI
+				return;
+			case 1:
+				//TODO: Wrong password UI
+				return;
+			case 2:
+				Boolean isAdmin = SQLController.getInstance().isAdmin(email);
+				userInterface.showDashboardForm(email, isAdmin);
+				return;
+			case -1:
+			default:
+				//TODO: Error UI
+
+		}
+
 	}
 
 	private void userRegisterEnterForm()
@@ -133,9 +149,15 @@ public class uiController
 		System.out.println(messageStart + "user " + email +
 				                   " named '" + nameFirst + "' '" + nameLast + "' registered using password " +
 				                   password + " with company code " + company);
-		// ToDo: check user
-		Boolean isAdmin = email.equals("admin");
-		userInterface.showDashboardForm(email, isAdmin);
+		if(SQLController.getInstance().registerUser(email, company, "N/A", nameLast, password, nameFirst))
+		{
+			Boolean isAdmin = SQLController.getInstance().isAdmin(email);
+			userInterface.showDashboardForm(email, isAdmin);
+		}
+		else
+		{
+			//TODO: User register failed event
+		}
 	}
 
 	private void userLogoutEvent(Object[] param)
