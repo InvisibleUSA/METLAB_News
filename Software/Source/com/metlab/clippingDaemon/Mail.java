@@ -5,6 +5,7 @@ import org.apache.commons.mail.SimpleEmail;
 
 
 
+@SuppressWarnings("FieldCanBeLocal")
 public class Mail
 {
 	public String To;
