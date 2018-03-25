@@ -185,6 +185,29 @@ public class SQLController
 		}
 	}
 
+	public Source getSource(String name)
+	{
+		try
+		{
+			String     conString = "jdbc:mariadb://46.101.223.95:3306/METLAB_DB?user=test&password=test";
+			Connection conn      = DriverManager.getConnection(conString);
+			Statement  stmt      = conn.createStatement();
+			ResultSet  rs        = stmt.executeQuery("SELECT * FROM Quellen where Name='" + name + "'");
+			if(rs.next())
+			{
+				String rss_link = rs.getString("RSS_Feed");
+				String link     = rs.getString("Link");
+				Source curr     = new Source(name, link, rss_link);
+				return curr;
+			}
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
+		return null;
+	}
+
 	public boolean addSource(Source src)
 	{
 		try
