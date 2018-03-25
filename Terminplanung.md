@@ -20,6 +20,7 @@
 | 25.03.2018       | wöchentlicher Aufwandsbericht | 
 | 26.03.2018       | Analysereview                 | 
 | 26.03.2018       | Meeting                       | 
+| 26.03.2018       | Architekturbesprechung        | 
 | 02.04.2018       | Pflichtenheft                 | 
 | 02.04.2018       | Glossar                       | 
 | 02.04.2018       | wöchentlicher Statusbericht   | 
