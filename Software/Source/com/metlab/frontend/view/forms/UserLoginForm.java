@@ -38,17 +38,17 @@ public class UserLoginForm extends VerticalLayout
 		                   buttonBar);
 	}
 
-	public void displayError_NotRegistered()
+	public void displayInfo_NotRegistered()
 	{
 		Notification.show("Email Adresse nicht registriert!");
 	}
 
-	public void displayError_PasswordIncorrect()
+	public void displayInfo_PasswordIncorrect()
 	{
 		Notification.show("Passwort nicht korrekt!");
 	}
 
-	public void displayError_UnknownError()
+	public void displayInfo_UnknownError()
 	{
 		Notification.show("Ein unbekannter Fehler ist aufgetreten.");
 	}
@@ -62,7 +62,7 @@ public class UserLoginForm extends VerticalLayout
 		{
 			Notification.show("Bitte geben Sie eine Email Adresse ein!");
 		}
-		if(password.isEmpty())
+		else if(password.isEmpty())
 		{
 			Notification.show("Bitte geben Sie ein Passwort ein!");
 		}

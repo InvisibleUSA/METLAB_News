@@ -60,4 +60,20 @@ public class DashboardForm extends VerticalLayout
 			this.addComponents(headerBar, layoutUser);
 		}
 	}
+
+	public void displayInfo_ProfileCreated()
+	{
+		Notification.show("Profil erstellt!");
+		profileName.setValue("");
+		email.setValue("");
+		sources.setValue("");
+		keywords.setValue("");
+		time.setValue("");
+
+	}
+
+	public void displayInfo_ProfileNotCreated()
+	{
+		Notification.show("Profil konnte nicht erstellt werden!");
+	}
 }
