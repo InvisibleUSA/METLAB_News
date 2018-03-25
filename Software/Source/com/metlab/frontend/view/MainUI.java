@@ -90,7 +90,8 @@ public class MainUI extends UI implements IView
 
 	public void showUserRegisterForm()
 	{
-		setContent(new UserRegisterForm(userRegisterCallback, userLoginEnterFormCallback));
+		userRegisterForm = new UserRegisterForm(userRegisterCallback, userLoginEnterFormCallback);
+		setContent(userRegisterForm);
 	}
 
 	public void showUserRegisterError_RegistrationFailed()
