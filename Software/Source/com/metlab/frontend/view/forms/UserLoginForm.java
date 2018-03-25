@@ -61,14 +61,14 @@ public class UserLoginForm extends VerticalLayout
 		if(email.isEmpty())
 		{
 			Notification.show("Bitte geben Sie eine Email Adresse ein!");
+			return;
 		}
 		else if(password.isEmpty())
 		{
 			Notification.show("Bitte geben Sie ein Passwort ein!");
+			return;
 		}
-		else
-		{
-			loginCallback.execute(new String[] {email, password});
-		}
+
+		loginCallback.execute(new String[] {email, password});
 	}
 }

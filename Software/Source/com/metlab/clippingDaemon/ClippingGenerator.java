@@ -33,8 +33,8 @@ public class ClippingGenerator implements Runnable
 		enqueueNextProfiles(7);
 		while(!m_stop)
 		{
-			if((m_profiles.size() <= 10) &&
-					(m_lastEnqueuing.plusMinutes(1).isBefore(LocalTime.now())))
+			if((m_profiles.size() <= 10) ||
+					(m_lastEnqueuing.plusSeconds(10).isBefore(LocalTime.now())))
 			{
 				enqueueNextProfiles(5);
 			}
@@ -61,6 +61,7 @@ public class ClippingGenerator implements Runnable
 		//set begin of enqueueing operation to temporarily pause queries and minimize database queries
 		m_lastEnqueuing = LocalTime.now();
 
+		//FIXME neue profile werden nicht korrekt einsortiert
 		//customize query string to return nprofiles profile (maximum)
 		LocalTime time = (!m_profiles.isEmpty()) ? m_profiles.getLast().getGenerationTime() : m_lastEnqueuing;
 		final String query = "fn:subsequence((for $profile in /profile " +

@@ -2,10 +2,8 @@ package com.metlab.controller;
 
 import org.basex.BaseXServer;
 import org.basex.core.Command;
-import org.basex.core.Context;
 import org.basex.core.cmd.Check;
 import org.basex.core.cmd.Close;
-import org.basex.core.cmd.CreateDB;
 import org.basex.core.cmd.Open;
 import org.basex.server.ClientSession;
 
@@ -24,6 +22,7 @@ public class BaseXController
 	final private String dbName      = "ClippingDB";
 	final private int    port        = 1984;
 	private static BaseXController m_bxc;
+	private        ClientSession   m_session;
 
 	private BaseXController()
 	{
@@ -31,6 +30,7 @@ public class BaseXController
 		{
 			server = new BaseXServer();
 			System.out.println(new Check(dbName).execute(server.context));
+			m_session = new ClientSession(hostaddress, port, username, pw);
 		}
 		catch(IOException e)
 		{
@@ -69,16 +69,14 @@ public class BaseXController
 	{
 		try
 		{
-			ClientSession session = new ClientSession(hostaddress, port, username, pw);
-			session.execute(new Open(dbName));
+			m_session.execute(new Open(dbName));
 			String[]      result  = new String[cmd.length];
 			int           i       = 0;
 			for(Command c : cmd)
 			{
-				result[i++] = session.execute(c);
+				result[i++] = m_session.execute(c);
 			}
-			session.execute(new Close());
-			session.close();
+			m_session.execute(new Close());
 			return result;
 		}
 		catch(IOException e)
@@ -92,11 +90,9 @@ public class BaseXController
 	{
 		try
 		{
-			ClientSession session = new ClientSession(hostaddress, port, username, pw);
-			session.execute(new Open(dbName));
-			String result = session.execute(command);
-			session.execute(new Close());
-			session.close();
+			m_session.execute(new Open(dbName));
+			String result = m_session.execute(command);
+			m_session.execute(new Close());
 			return result;
 		}
 		catch(IOException e)
@@ -110,11 +106,9 @@ public class BaseXController
 	{
 		try
 		{
-			ClientSession session = new ClientSession(hostaddress, port, username, pw);
-			session.execute(new Open(dbName));
-			String result = session.query(xQuery).execute();
-			session.execute(new Close());
-			session.close();
+			m_session.execute(new Open(dbName));
+			String result = m_session.query(xQuery).execute();
+			m_session.execute(new Close());
 			return result;
 		}
 		catch(IOException e)
@@ -128,6 +122,7 @@ public class BaseXController
 	{
 		try
 		{
+			m_session.close();
 			server.stop();
 		}
 		catch(IOException e)
