@@ -64,6 +64,12 @@ public class DashboardForm extends VerticalLayout
 	public void displayInfo_ProfileCreated()
 	{
 		Notification.show("Profil erstellt!");
+		profileName.setValue("");
+		email.setValue("");
+		sources.setValue("");
+		keywords.setValue("");
+		time.setValue("");
+
 	}
 
 	public void displayInfo_ProfileNotCreated()
