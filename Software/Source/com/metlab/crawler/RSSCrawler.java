@@ -19,7 +19,8 @@ import java.util.TimeZone;
 
 
 
-public class Crawler implements Runnable{
+public class RSSCrawler implements Runnable
+{
 
 	private boolean           debug   = false;
 	private boolean           running = true;
@@ -27,12 +28,12 @@ public class Crawler implements Runnable{
 
 	private int sleeptime = 1000;
 
-	public Crawler(Source source)
+	public RSSCrawler(Source source)
 	{
 		this.source = source;
 	}
 
-	public Crawler(int sleeptime, Source source)
+	public RSSCrawler(int sleeptime, Source source)
 	{
 		this.sleeptime = sleeptime;
 		this.source = source;
@@ -43,9 +44,9 @@ public class Crawler implements Runnable{
 	    {
 		    if(debug)
 		    {
-			    System.out.println("crawling " + source.getName() + " --> " + source.getLink());
+			    System.out.println("crawling " + source.getName() + " --> " + source.getRss_link());
 		    }
-		    String                 doc       = getHTTPResponse(source.getLink());
+		    String                 doc       = getHTTPResponse(source.getRss_link());
 		    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		    try
 		    {
@@ -373,5 +374,10 @@ public class Crawler implements Runnable{
 	public void setSleeptime(int sleeptime)
 	{
 		this.sleeptime = sleeptime;
+	}
+
+	public Source getSource()
+	{
+		return source;
 	}
 }

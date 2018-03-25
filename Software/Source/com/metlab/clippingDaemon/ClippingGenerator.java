@@ -119,7 +119,7 @@ public class ClippingGenerator implements Runnable
 		final String   guid        = t.child("guid").value();
 		final Calendar pubDate     = parseCalendar(t.child("pubDate").value());
 		final String   description = t.child("description").value();
-		final Source   source      = new Source(t.child("source").value(), "");
+		final Source   source      = new Source(t.child("source").value(), "", "");
 		return new Article(title, source, link, description, guid, pubDate);
 	}
 	private void sendClipping(Clipping c)
