@@ -7,6 +7,7 @@ import com.metlab.crawler.CrawlerController;
 import com.metlab.crawler.Source;
 import com.metlab.frontend.controller.SQLController;
 import com.metlab.frontend.view.IView;
+import org.basex.query.value.item.Int;
 
 
 
@@ -116,10 +117,10 @@ public class uiController
 		switch(SQLController.getInstance().loginUser(email, password))
 		{
 			case 0:
-				//TODO: User not registered UI
+				userInterface.showUserLoginError_NotRegistered();
 				return;
 			case 1:
-				//TODO: Wrong password UI
+				userInterface.showUserLoginError_PasswordIncorrect();
 				return;
 			case 2:
 				Boolean isAdmin = SQLController.getInstance().isAdmin(email);
@@ -127,10 +128,8 @@ public class uiController
 				return;
 			case -1:
 			default:
-				//TODO: Error UI
-
+				userInterface.showUserLoginError_UnknownError();
 		}
-
 	}
 
 	private void userRegisterEnterForm()
@@ -147,8 +146,9 @@ public class uiController
 		String nameLast  = (String)param[3];
 		String company   = (String)param[4];
 		System.out.println(messageStart + "user " + email +
-				                   " named '" + nameFirst + "' '" + nameLast + "' registered using password " +
-				                   password + " with company code " + company);
+				                   " named '" + nameFirst + "' '" + nameLast +
+				                   "' registered using password " + password +
+				                   " with company code " + company);
 		if(SQLController.getInstance().registerUser(email, company, "N/A", nameLast, password, nameFirst))
 		{
 			Boolean isAdmin = SQLController.getInstance().isAdmin(email);
@@ -156,7 +156,7 @@ public class uiController
 		}
 		else
 		{
-			//TODO: User register failed event
+			userInterface.showUserRegisterError_RegistrationFailed();
 		}
 	}
 

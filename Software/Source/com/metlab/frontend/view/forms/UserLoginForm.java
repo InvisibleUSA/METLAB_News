@@ -38,6 +38,21 @@ public class UserLoginForm extends VerticalLayout
 		                   buttonBar);
 	}
 
+	public void displayError_NotRegistered()
+	{
+		Notification.show("Email Adresse nicht registriert!");
+	}
+
+	public void displayError_PasswordIncorrect()
+	{
+		Notification.show("Passwort nicht korrekt!");
+	}
+
+	public void displayError_UnknownError()
+	{
+		Notification.show("Ein unbekannter Fehler ist aufgetreten.");
+	}
+
 	private void loginAction(ICallbackFunction loginCallback)
 	{
 		String email    = textFieldEmail.getValue();

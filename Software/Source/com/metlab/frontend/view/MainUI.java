@@ -11,6 +11,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
+import javafx.beans.binding.ObjectExpression;
 
 
 
@@ -39,6 +40,10 @@ public class MainUI extends UI implements IView
 	private ICallbackFunction sysAdminLoginCallback          = null;
 	private ICallbackFunction sysAdminLogoutCallback         = null;
 
+	private UserLoginForm userLoginForm = null;
+	private UserRegisterForm userRegisterForm = null;
+
+
 	public void registerCallbackFunctions(
 			ICallbackFunction userLoginEnterForm,
 			ICallbackFunction userLogin,
@@ -61,12 +66,33 @@ public class MainUI extends UI implements IView
 
 	public void showUserLoginForm()
 	{
-		setContent(new UserLoginForm(userLoginCallback, userRegisterEnterFormCallback, sysAdminLoginEnterFormCallback));
+		userLoginForm = new UserLoginForm(userLoginCallback, userRegisterEnterFormCallback, sysAdminLoginEnterFormCallback);
+		setContent(userLoginForm);
+	}
+
+	public void showUserLoginError_NotRegistered()
+	{
+		userLoginForm.displayError_NotRegistered();
+	}
+
+	public void showUserLoginError_PasswordIncorrect()
+	{
+		userLoginForm.displayError_PasswordIncorrect();
+	}
+
+	public void showUserLoginError_UnknownError()
+	{
+		userLoginForm.displayError_UnknownError();
 	}
 
 	public void showUserRegisterForm()
 	{
 		setContent(new UserRegisterForm(userRegisterCallback, userLoginEnterFormCallback));
+	}
+
+	public void showUserRegisterError_RegistrationFailed()
+	{
+		userRegisterForm.displayError_RegistrationFailed();
 	}
 
 	public void showDashboardForm(String username, Boolean isAdmin)

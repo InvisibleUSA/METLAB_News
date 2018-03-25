@@ -38,6 +38,11 @@ public class UserRegisterForm extends VerticalLayout
 		                   buttonBar);
 	}
 
+	public void displayError_RegistrationFailed()
+	{
+		Notification.show("Registrierung Fehlgeschlagen!");
+	}
+
 	private void registerAction(ICallbackFunction registerCallback)
 	{
 		String email      = textFieldEmail.getValue();

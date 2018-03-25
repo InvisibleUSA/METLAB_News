@@ -19,7 +19,11 @@ public interface IView
 	);
 
 	void showUserLoginForm();
+	void showUserLoginError_NotRegistered();
+	void showUserLoginError_PasswordIncorrect();
+	void showUserLoginError_UnknownError();
 	void showUserRegisterForm();
+	void showUserRegisterError_RegistrationFailed();
 	void showDashboardForm(String username, Boolean isAdmin);
 	void showSysAdminLoginForm();
 	void showSysAdminForm(String username);
