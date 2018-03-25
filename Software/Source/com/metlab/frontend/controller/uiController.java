@@ -126,10 +126,10 @@ public class uiController
 		switch(SQLController.getInstance().loginUser(email, password))
 		{
 			case 0:
-				userInterface.showUserLoginError_NotRegistered();
+				userInterface.showUserLoginInfo_NotRegistered();
 				return;
 			case 1:
-				userInterface.showUserLoginError_PasswordIncorrect();
+				userInterface.showUserLoginInfo_PasswordIncorrect();
 				return;
 			case 2:
 				Boolean isAdmin = SQLController.getInstance().isAdmin(email);
@@ -137,7 +137,7 @@ public class uiController
 				return;
 			case -1:
 			default:
-				userInterface.showUserLoginError_UnknownError();
+				userInterface.showUserLoginInfo_UnknownError();
 		}
 	}
 
@@ -165,7 +165,7 @@ public class uiController
 		}
 		else
 		{
-			userInterface.showUserRegisterError_RegistrationFailed();
+			userInterface.showUserRegisterInfo_RegistrationFailed();
 		}
 	}
 
@@ -223,6 +223,13 @@ public class uiController
 		xml.append("</sources></profile>");
 
 		Add add = new Add("/profiles/" + profileName, xml.toString());
-		BaseXController.getInstance().execute(add);
+		if(BaseXController.getInstance().execute(add).startsWith("result"))
+		{
+			userInterface.showCreateProfileInfo_ProfileCreated();
+		}
+		else
+		{
+			userInterface.showCreateProfileInfo_ProfileNotCreated();
+		}
 	}
 }

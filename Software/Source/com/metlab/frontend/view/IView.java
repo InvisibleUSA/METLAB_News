@@ -20,12 +20,14 @@ public interface IView
 	);
 
 	void showUserLoginForm();
-	void showUserLoginError_NotRegistered();
-	void showUserLoginError_PasswordIncorrect();
-	void showUserLoginError_UnknownError();
+	void showUserLoginInfo_NotRegistered();
+	void showUserLoginInfo_PasswordIncorrect();
+	void showUserLoginInfo_UnknownError();
 	void showUserRegisterForm();
-	void showUserRegisterError_RegistrationFailed();
+	void showUserRegisterInfo_RegistrationFailed();
 	void showDashboardForm(String username, Boolean isAdmin);
+	void showCreateProfileInfo_ProfileCreated();
+	void showCreateProfileInfo_ProfileNotCreated();
 	void showSysAdminLoginForm();
 	void showSysAdminForm(String username);
 }

@@ -42,6 +42,7 @@ public class MainUI extends UI implements IView
 
 	private UserLoginForm    userLoginForm    = null;
 	private UserRegisterForm userRegisterForm = null;
+	private DashboardForm    dashboardForm    = null;
 
 
 	public void registerCallbackFunctions(
@@ -73,19 +74,19 @@ public class MainUI extends UI implements IView
 		setContent(userLoginForm);
 	}
 
-	public void showUserLoginError_NotRegistered()
+	public void showUserLoginInfo_NotRegistered()
 	{
-		userLoginForm.displayError_NotRegistered();
+		userLoginForm.displayInfo_NotRegistered();
 	}
 
-	public void showUserLoginError_PasswordIncorrect()
+	public void showUserLoginInfo_PasswordIncorrect()
 	{
-		userLoginForm.displayError_PasswordIncorrect();
+		userLoginForm.displayInfo_PasswordIncorrect();
 	}
 
-	public void showUserLoginError_UnknownError()
+	public void showUserLoginInfo_UnknownError()
 	{
-		userLoginForm.displayError_UnknownError();
+		userLoginForm.displayInfo_UnknownError();
 	}
 
 	public void showUserRegisterForm()
@@ -94,14 +95,25 @@ public class MainUI extends UI implements IView
 		setContent(userRegisterForm);
 	}
 
-	public void showUserRegisterError_RegistrationFailed()
+	public void showUserRegisterInfo_RegistrationFailed()
 	{
 		userRegisterForm.displayError_RegistrationFailed();
 	}
 
 	public void showDashboardForm(String username, Boolean isAdmin)
 	{
-		setContent(new DashboardForm(username, isAdmin, userLogoutCallback, createProfileCallback));
+		dashboardForm = new DashboardForm(username, isAdmin, userLogoutCallback, createProfileCallback);
+		setContent(dashboardForm);
+	}
+
+	public void showCreateProfileInfo_ProfileCreated()
+	{
+		dashboardForm.displayInfo_ProfileCreated();
+	}
+
+	public void showCreateProfileInfo_ProfileNotCreated()
+	{
+		dashboardForm.displayInfo_ProfileNotCreated();
 	}
 
 	public void showSysAdminLoginForm()

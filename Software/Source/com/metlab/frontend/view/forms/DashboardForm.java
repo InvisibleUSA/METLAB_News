@@ -60,4 +60,14 @@ public class DashboardForm extends VerticalLayout
 			this.addComponents(headerBar, layoutUser);
 		}
 	}
+
+	public void displayInfo_ProfileCreated()
+	{
+		Notification.show("Profil erstellt!");
+	}
+
+	public void displayInfo_ProfileNotCreated()
+	{
+		Notification.show("Profil konnte nicht erstellt werden!");
+	}
 }
