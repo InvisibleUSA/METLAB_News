@@ -13,7 +13,7 @@ public class DashboardForm extends VerticalLayout
 	private final HorizontalLayout headerBar           = new HorizontalLayout();
 	private final TabSheet         layoutOptional      = new TabSheet();
 	private final HorizontalLayout layoutUser          = new HorizontalLayout();
-	private final Accordion        articleContainer    = new Accordion();
+	private final Panel            placeholder         = new Panel("Platzhalter");
 	private final VerticalLayout   profileSidebar      = new VerticalLayout();
 	private final TextField        profileName         = new TextField("Profilbezeichnung");
 	private final TextField        email               = new TextField("Email des Empfängers");
@@ -36,9 +36,6 @@ public class DashboardForm extends VerticalLayout
 		Page.getCurrent().setTitle("METLAB News");
 		title.setCaption("Nutzeranmeldung erfolgreich - Hallo " + userName);
 
-		title.setWidth("400px");
-		articleContainer.setWidth("400px");
-
 		buttonLogout.addClickListener((Button.ClickEvent event) ->
 				                              userLogoutCallback.execute(new String[] {userName}));
 		buttonCreateProfile.addClickListener((Button.ClickEvent event) ->
@@ -48,7 +45,7 @@ public class DashboardForm extends VerticalLayout
 								                                     time.getValue()})));
 
 		profileSidebar.addComponents(profileName, email, sources, keywords, time, buttonCreateProfile);
-		layoutUser.addComponents(articleContainer, profileSidebar);
+		layoutUser.addComponents(placeholder, profileSidebar);
 		headerBar.addComponents(title, buttonLogout);
 		if(isAdmin)
 		{
