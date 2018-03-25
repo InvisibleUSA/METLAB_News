@@ -3,7 +3,7 @@ package com.metlab.frontend.view;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
-import com.metlab.frontend.uiController;
+import com.metlab.frontend.controller.uiController;
 import com.metlab.frontend.ICallbackFunction;
 import com.metlab.frontend.view.forms.*;
 import com.vaadin.annotations.Theme;
@@ -11,7 +11,6 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
-import javafx.beans.binding.ObjectExpression;
 
 
 
@@ -39,8 +38,9 @@ public class MainUI extends UI implements IView
 	private ICallbackFunction sysAdminLoginEnterFormCallback = null;
 	private ICallbackFunction sysAdminLoginCallback          = null;
 	private ICallbackFunction sysAdminLogoutCallback         = null;
+	private ICallbackFunction createProfileCallback          = null;
 
-	private UserLoginForm userLoginForm = null;
+	private UserLoginForm    userLoginForm    = null;
 	private UserRegisterForm userRegisterForm = null;
 
 
@@ -52,7 +52,8 @@ public class MainUI extends UI implements IView
 			ICallbackFunction userLogout,
 			ICallbackFunction sysAdminLoginEnterForm,
 			ICallbackFunction sysAdminLogin,
-			ICallbackFunction sysAdminLogout)
+			ICallbackFunction sysAdminLogout,
+			ICallbackFunction createProfile)
 	{
 		userLoginEnterFormCallback = userLoginEnterForm;
 		userLoginCallback = userLogin;
@@ -62,11 +63,13 @@ public class MainUI extends UI implements IView
 		sysAdminLoginEnterFormCallback = sysAdminLoginEnterForm;
 		sysAdminLoginCallback = sysAdminLogin;
 		sysAdminLogoutCallback = sysAdminLogout;
+		createProfileCallback = createProfile;
 	}
 
 	public void showUserLoginForm()
 	{
-		userLoginForm = new UserLoginForm(userLoginCallback, userRegisterEnterFormCallback, sysAdminLoginEnterFormCallback);
+		userLoginForm = new UserLoginForm(userLoginCallback, userRegisterEnterFormCallback,
+		                                  sysAdminLoginEnterFormCallback);
 		setContent(userLoginForm);
 	}
 
@@ -87,7 +90,8 @@ public class MainUI extends UI implements IView
 
 	public void showUserRegisterForm()
 	{
-		setContent(new UserRegisterForm(userRegisterCallback, userLoginEnterFormCallback));
+		userRegisterForm = new UserRegisterForm(userRegisterCallback, userLoginEnterFormCallback);
+		setContent(userRegisterForm);
 	}
 
 	public void showUserRegisterError_RegistrationFailed()
@@ -97,7 +101,7 @@ public class MainUI extends UI implements IView
 
 	public void showDashboardForm(String username, Boolean isAdmin)
 	{
-		setContent(new DashboardForm(username, isAdmin, userLogoutCallback));
+		setContent(new DashboardForm(username, isAdmin, userLogoutCallback, createProfileCallback));
 	}
 
 	public void showSysAdminLoginForm()
@@ -109,7 +113,6 @@ public class MainUI extends UI implements IView
 	{
 		setContent(new SysAdminForm(username, sysAdminLogoutCallback));
 	}
-
 
 
 

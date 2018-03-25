@@ -15,7 +15,8 @@ public interface IView
 			ICallbackFunction userLogout,
 			ICallbackFunction sysAdminLoginEnterForm,
 			ICallbackFunction sysAdminLogin,
-			ICallbackFunction sysAdminLogout
+			ICallbackFunction sysAdminLogout,
+			ICallbackFunction createProfile
 	);
 
 	void showUserLoginForm();
