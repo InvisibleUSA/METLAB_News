@@ -1,13 +1,17 @@
-package com.metlab.frontend;
-
-
+package com.metlab.frontend.controller;
 
 import com.metlab.clippingDaemon.ClippingGenerator;
+import com.metlab.controller.BaseXController;
 import com.metlab.crawler.CrawlerController;
+import com.metlab.crawler.Profile;
 import com.metlab.crawler.Source;
-import com.metlab.frontend.controller.SQLController;
 import com.metlab.frontend.view.IView;
-import org.basex.query.value.item.Int;
+import org.basex.core.cmd.Add;
+import org.basex.query.value.item.Str;
+
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 
 
@@ -99,6 +103,11 @@ public class uiController
 				{
 					sysAdminLogoutEvent(param);
 					return null;
+				},
+				(Object[] param) ->
+				{
+					createProfileEvent(param);
+					return null;
 				});
 	}
 
@@ -187,5 +196,33 @@ public class uiController
 		String email = (String)param[0];
 		System.out.println(messageStart + "system admin " + email + " logged out");
 		userInterface.showSysAdminLoginForm();
+	}
+
+	private void createProfileEvent(Object[] param)
+	{
+		String       profileName = (String)param[0];
+		String       email       = (String)param[1];
+		List<String> sources     = Arrays.asList(((String)param[2]).split(","));
+		List<String> keywords    = Arrays.asList(((String)param[3]).split(","));
+		String       time        = (String)param[4];
+
+		StringBuilder xml = new StringBuilder();
+		xml.append("<profile><name>" + profileName + "</name>" +
+				           "<owner>" + email + "</owner>" +
+				           "<generationtime>" + time + "</generationtime>" +
+				           "<keywords>");
+		for(String key : keywords)
+		{
+			xml.append("<keyword>" + key + "</keyword>");
+		}
+		xml.append("</keywords><sources>");
+		for(String src : sources)
+		{
+			xml.append("<source>" + src + "</source>");
+		}
+		xml.append("</sources></profile>");
+
+		Add add = new Add("/profiles/" + profileName, xml.toString());
+		BaseXController.getInstance().execute(add);
 	}
 }
