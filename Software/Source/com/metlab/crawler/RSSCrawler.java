@@ -64,6 +64,7 @@ public class RSSCrawler implements Runnable
 		    }
 		    catch(SAXException | IOException | ParserConfigurationException e)
 		    {
+			    System.out.println("Errored on Source \"" + source.getName() + "\"");
 			    e.printStackTrace();
 		    }
 		    try
