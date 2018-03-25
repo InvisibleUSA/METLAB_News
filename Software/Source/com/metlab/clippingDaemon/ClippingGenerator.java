@@ -63,7 +63,7 @@ public class ClippingGenerator implements Runnable
 
 		//FIXME neue profile werden nicht korrekt einsortiert
 		//customize query string to return nprofiles profile (maximum)
-		LocalTime time = (!m_profiles.isEmpty()) ? m_profiles.getLast().getGenerationTime() : m_lastEnqueuing;
+		LocalTime time = m_lastEnqueuing;//= (!m_profiles.isEmpty()) ? m_profiles.getLast().getGenerationTime() : m_lastEnqueuing;
 		final String query = "fn:subsequence((for $profile in /profile " +
 				"where xs:time('" + time + "') < xs:time($profile/generationtime) " +
 				"order by $profile/generationtime return $profile), 1, " + nprofiles + ")";
@@ -78,10 +78,25 @@ public class ClippingGenerator implements Runnable
 		for(Tag profile : profiles.children("profile"))
 		{
 			Profile p = constructProfile(profile);
+
+			boolean isInserted = false;
+			for(Profile mp : m_profiles)
+			{
+				if(mp.equals(p))
+				{
+					isInserted = true;
+					break;
+				}
+			}
+			if(isInserted)
+			{
+				continue;
+			}
 			System.out.println(p);
 
 			m_profiles.addLast(p);
 		}
+		m_profiles.sort(Comparator.comparing(Profile::getGenerationTime));
 	}
 
 	private void writeToBaseX(Clipping c)

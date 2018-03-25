@@ -69,6 +69,16 @@ public class Profile
 		return m_generationTime;
 	}
 
+	public boolean equals(Object o)
+	{
+		if(o.getClass() != this.getClass())
+		{
+			return false;
+		}
+		Profile p = (Profile)o;
+		return profileName.equals(p.profileName);
+	}
+
 	@Override
 	public String toString()
 	{
