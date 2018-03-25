@@ -1,6 +1,9 @@
 package com.metlab.frontend.controller;
 
+import com.metlab.crawler.Source;
+
 import java.sql.*;
+import java.util.ArrayList;
 
 
 
@@ -154,6 +157,75 @@ public class SQLController
 		{
 			System.err.println("Exception in SQL Query: ");
 			System.err.println(e.getMessage());
+		}
+	}
+
+	public ArrayList<Source> getSources()
+	{
+		try
+		{
+			String            conString = "jdbc:mariadb://46.101.223.95:3306/METLAB_DB?user=test&password=test";
+			Connection        conn      = DriverManager.getConnection(conString);
+			Statement         stmt      = conn.createStatement();
+			ResultSet         rs        = stmt.executeQuery("SELECT * FROM Quellen");
+			ArrayList<Source> sources   = new ArrayList<>();
+			while(rs.next())
+			{
+				String name     = rs.getString("Name");
+				String rss_link = rs.getString("RSS_Feed");
+				String link     = rs.getString("Link");
+				Source curr     = new Source(name, link, rss_link);
+				sources.add(curr);
+			}
+			return sources;
+		}
+		catch(Exception e)
+		{
+			return new ArrayList<>();
+		}
+	}
+
+	public Source getSource(String name)
+	{
+		try
+		{
+			String     conString = "jdbc:mariadb://46.101.223.95:3306/METLAB_DB?user=test&password=test";
+			Connection conn      = DriverManager.getConnection(conString);
+			Statement  stmt      = conn.createStatement();
+			ResultSet  rs        = stmt.executeQuery("SELECT * FROM Quellen where Name='" + name + "'");
+			if(rs.next())
+			{
+				String rss_link = rs.getString("RSS_Feed");
+				String link     = rs.getString("Link");
+				Source curr     = new Source(name, link, rss_link);
+				return curr;
+			}
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
+		return null;
+	}
+
+	public boolean addSource(Source src)
+	{
+		try
+		{
+			String     conString = "jdbc:mariadb://46.101.223.95:3306/METLAB_DB?user=test&password=test";
+			Connection conn      = DriverManager.getConnection(conString);
+			Statement  statement = conn.createStatement();
+			statement.executeQuery("INSERT INTO Quellen (Name, Link, RSS_Feed) " +
+					                       "VALUES ('" + src.getName() + "', '" + src.getLink() + "', '" + src.getRss_link() + "')");
+			conn.close();
+			System.out.println("Source was added successfully");
+			return true;
+		}
+		catch(Exception e)
+		{
+			System.err.println("Exception in SQL Query: ");
+			System.err.println(e.getMessage());
+			return false;
 		}
 	}
 }
