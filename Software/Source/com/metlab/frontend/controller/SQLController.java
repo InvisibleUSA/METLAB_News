@@ -21,7 +21,7 @@ public class SQLController
 	 * @param PreName
 	 */
 
-	public static SQLController instance;
+	private static SQLController instance;
 
 	public static SQLController getInstance()
 	{
@@ -32,8 +32,21 @@ public class SQLController
 		return instance;
 	}
 
-	public SQLController()
+	private SQLController()
 	{
+		registerDriver();
+	}
+
+	private void registerDriver()
+	{
+		try
+		{
+			Class.forName("org.mariadb.jdbc.Driver");
+		}
+		catch(ClassNotFoundException e)
+		{
+			System.err.println("Cannot find the driver in the classpath!" + e.toString());
+		}
 	}
 
 	//TODO: Documentation
