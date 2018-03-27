@@ -3,13 +3,14 @@ package com.metlab.crawler;
 import com.metlab.frontend.controller.SQLController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 
 public class CrawlerController implements Runnable
 {
 	private static CrawlerController cc;
-	ArrayList<RSSCrawler> RSSCrawler = new ArrayList<>();
+	List<RSSCrawler> RSSCrawler = new ArrayList<>();
 
 	private Thread t;
 	private boolean running   = true;
@@ -76,7 +77,9 @@ public class CrawlerController implements Runnable
 				//look for a RSSCrawler on that source
 				for(RSSCrawler c : RSSCrawler)
 				{
-					if(c.getSource().getName().equals(curr_src.getName()))
+					if(curr_src.getName().equals(c.getSource().getName())
+							&& curr_src.getLink().equals(c.getSource().getLink())
+							&& curr_src.getRss_link().equals(c.getSource().getRss_link()))
 					{
 						curr_RSS_crawler = c;
 					}
@@ -88,25 +91,30 @@ public class CrawlerController implements Runnable
 					curr_RSS_crawler.setSleeptime(sleeptime);
 					curr_RSS_crawler.setDebug(debug);
 					RSSCrawler.add(curr_RSS_crawler);
-					new Thread(curr_RSS_crawler).start();
+					curr_RSS_crawler.start();
 				}
 			}
 			//go through all crawlers and kill crawlers with dead sources
+			ArrayList<RSSCrawler> toremove = new ArrayList<>();
 			for(RSSCrawler c : RSSCrawler)
 			{
 				boolean hasValidSource = false;
 				for(Source curr_src : sources)
 				{
-					if(curr_src.getName().equals(c.getSource().getName()))
+					if(curr_src.getName().equals(c.getSource().getName())
+							&& curr_src.getLink().equals(c.getSource().getLink())
+							&& curr_src.getRss_link().equals(c.getSource().getRss_link()))
 					{
 						hasValidSource = true;
 					}
 				}
 				if(!hasValidSource)
 				{
+					toremove.add(c);
 					c.stop();
 				}
 			}
+			RSSCrawler.removeAll(toremove);
 			try
 			{
 				Thread.sleep(sleeptime);
