@@ -33,11 +33,10 @@ public class uiController
 
 	private uiController(final IView userInterface)
 	{
-		//ClippingGenerator cg = new ClippingGenerator();
-		//new Thread(cg).start();
+		ClippingGenerator cg = new ClippingGenerator();
+		new Thread(cg).start();
 
 		CrawlerController cc = CrawlerController.getInstance();
-		//cc.setDebug(true);
 		cc.setSleeptime(2 * 10 * 1000);
 		cc.start();
 

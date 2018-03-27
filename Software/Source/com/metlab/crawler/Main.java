@@ -6,7 +6,7 @@ import static java.lang.System.exit;
 
 public class Main
 {
-	public static void main(String... args) throws InterruptedException
+	public static void main(String... args)
     {
 	    CrawlerController cc = CrawlerController.getInstance();
 
