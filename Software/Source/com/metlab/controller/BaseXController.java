@@ -11,6 +11,7 @@ import java.io.IOException;
 
 
 
+@SuppressWarnings("FieldCanBeLocal")
 public class BaseXController
 {
 
@@ -83,8 +84,8 @@ public class BaseXController
 		{
 			ClientSession session = getSession();
 			session.execute(new Open(dbName));
-			String[]      result  = new String[cmd.length];
-			int           i       = 0;
+			String[] result = new String[cmd.length];
+			int      i      = 0;
 			for(Command c : cmd)
 			{
 				result[i++] = session.execute(c);
@@ -158,7 +159,7 @@ public class BaseXController
 		}
 		catch(IOException e)
 		{
-			System.err.println(e);
+			System.err.println(e.toString());
 		}
 	}
 }
