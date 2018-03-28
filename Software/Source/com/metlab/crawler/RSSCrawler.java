@@ -22,11 +22,13 @@ import java.util.TimeZone;
 public class RSSCrawler implements Runnable
 {
 
-	private boolean           debug   = false;
-	private boolean           running = true;
+	private boolean debug   = false;
+	private boolean running = false;
 	private Source source;
 
 	private int sleeptime = 1000;
+
+	Thread t;
 
 	public RSSCrawler(Source source)
 	{
@@ -38,14 +40,22 @@ public class RSSCrawler implements Runnable
 		this.sleeptime = sleeptime;
 		this.source = source;
 	}
+
+	public void start()
+	{
+		if(!running)
+		{
+			running = true;
+			t = new Thread(this);
+			t.start();
+		}
+	}
     @Override
     public void run(){
+	    System.out.println("started crawler for \"" + source.getName() + "\"");
 	    while(running)
 	    {
-		    if(debug)
-		    {
-			    System.out.println("crawling " + source.getName() + " --> " + source.getRss_link());
-		    }
+		    System.out.println("crawling " + source.getName() + " --> " + source.getRss_link());
 		    String                 doc       = getHTTPResponse(source.getRss_link());
 		    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		    try
@@ -65,6 +75,9 @@ public class RSSCrawler implements Runnable
 		    catch(SAXException | IOException | ParserConfigurationException e)
 		    {
 			    System.out.println("Errored on Source \"" + source.getName() + "\"");
+			    System.out.println("link: \"" + source.getLink() + "\"");
+			    System.out.println("RSS_link: \"" + source.getRss_link() + "\"");
+			    System.out.println(doc);
 			    e.printStackTrace();
 		    }
 		    try
@@ -76,6 +89,7 @@ public class RSSCrawler implements Runnable
 			    e.printStackTrace();
 		    }
 	    }
+	    System.out.println("stopped crawler on \"" + source.getName() + "\"");
     }
 
 	private void writeToBaseX(Article a, Source source)
@@ -164,8 +178,8 @@ public class RSSCrawler implements Runnable
 
 	public void stop()
 	{
+		System.out.println("stopping crawler on \"" + source.getName() + "\"");
 		running = false;
-		Thread.currentThread().interrupt();
 	}
 
 	/**
@@ -351,11 +365,11 @@ public class RSSCrawler implements Runnable
 	 */
 	private String getHTTPResponse(String url){
 	    try{
-
-		    InputStream is = new URL(url).openStream();
-		    BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-		    StringBuilder sb = new StringBuilder();
-		    int cp;
+		    URL            doc_url = new URL(url);
+		    InputStream    is      = doc_url.openStream();
+		    BufferedReader rd      = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+		    StringBuilder  sb      = new StringBuilder();
+		    int            cp;
 		    while((cp = rd.read()) != -1)
 		    {
 			    sb.append((char)cp);

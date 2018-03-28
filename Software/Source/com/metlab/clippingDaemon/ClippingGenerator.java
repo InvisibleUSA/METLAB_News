@@ -41,6 +41,7 @@ public class ClippingGenerator implements Runnable
 
 			if(m_profiles.isEmpty())
 			{
+				Thread.yield();
 				continue;
 			}
 
@@ -48,11 +49,21 @@ public class ClippingGenerator implements Runnable
 			if(m_profiles.getFirst().getGenerationTime().isBefore(LocalTime.now()))
 			{
 				//Generate profile
+				System.out.println("Generating clipping for:");
+				System.out.println(m_profiles.peekFirst());
 				Clipping c = generateClipping(m_profiles.removeFirst());
 				writeToBaseX(c);
 				sendClipping(c);
 			}
 			Thread.yield();
+			try
+			{
+				Thread.sleep(1000);
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -63,9 +74,10 @@ public class ClippingGenerator implements Runnable
 
 		//FIXME neue profile werden nicht korrekt einsortiert
 		//customize query string to return nprofiles profile (maximum)
-		LocalTime time = m_lastEnqueuing;//= (!m_profiles.isEmpty()) ? m_profiles.getLast().getGenerationTime() : m_lastEnqueuing;
+		LocalTime    time    = m_lastEnqueuing;//= (!m_profiles.isEmpty()) ? m_profiles.getLast().getGenerationTime() : m_lastEnqueuing;
+		final String timestr = time.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 		final String query = "fn:subsequence((for $profile in /profile " +
-				"where xs:time('" + time + "') < xs:time($profile/generationtime) " +
+				"where xs:time('" + timestr + "') < xs:time($profile/generationtime) " +
 				"order by $profile/generationtime return $profile), 1, " + nprofiles + ")";
 
 		//fetch profile with customized query
@@ -92,7 +104,7 @@ public class ClippingGenerator implements Runnable
 			{
 				continue;
 			}
-			System.out.println(p);
+			System.out.println("Enqueued profile " + p.getName());
 
 			m_profiles.addLast(p);
 		}
