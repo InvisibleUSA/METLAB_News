@@ -8,6 +8,10 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
+import me.metlabnews.Presentation.Presenter;
+import me.metlabnews.Presentation.IUserInterface;
+import me.metlabnews.UserInterface.Views.UserLoginView;
+import me.metlabnews.UserInterface.Views.UserRegisterView;
 
 
 
@@ -19,12 +23,54 @@ import com.vaadin.ui.*;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("maintheme")
-public class MainUI extends UI
+public class MainUI extends UI implements IUserInterface
 {
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
+		Presenter.getInstance().connect(this);
+
+		openUserLoginView();
 	}
+
+
+	//region Callbacks
+	@Override
+	public void registerUserLoginCallback(IUserLoginCallback callback)
+	{
+		userLoginCallback = callback;
+	}
+
+	@Override
+	public void registerUserRegisterCallback(IUserRegisterCallback callback)
+	{
+		userRegisterCallback = callback;
+	}
+
+	private IUserLoginCallback userLoginCallback;
+	private IUserRegisterCallback userRegisterCallback;
+	//endregion
+
+
+	//region GUI Methods
+	public void openUserLoginView()
+	{
+		UserLoginView view = new UserLoginView(this);
+		setContent(view);
+	}
+
+	public void openUserRegisterView()
+	{
+		UserRegisterView view = new UserRegisterView(this);
+		setContent(view);
+	}
+
+	public void userLoginEvent(String email, String pw)
+	{
+		userLoginCallback.execute(email, pw);
+	}
+	//endregion
+
 
 
 	@WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)
@@ -35,6 +81,8 @@ public class MainUI extends UI
 		public void init() throws ServletException
 		{
 			super.init();
+			// Important!
+			Presenter.getInstance();
 		}
 	}
 }
