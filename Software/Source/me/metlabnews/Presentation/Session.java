@@ -9,6 +9,20 @@ class Session
 		m_uiInstance = ui;
 	}
 
+	enum SessionStates
+	{
+		NotYetLoggedIn,
+		LoginPending,
+		LoggedIn,
+		LoginDenied,
+		LoggedOut,
+		RegistrationPending,
+		RegistrationFailed,
+		VerificationPending,
+		VerificationDenied,
+		Registered
+	}
+
 
 
 	private IUserInterface m_uiInstance = null;

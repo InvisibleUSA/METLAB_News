@@ -3,7 +3,6 @@ package me.metlabnews.UserInterface.Views;
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 import me.metlabnews.UserInterface.MainUI;
-import sun.rmi.rmic.Main;
 
 
 
@@ -14,14 +13,14 @@ public class UserLoginView extends VerticalLayout
 		m_parent = parent;
 		Page.getCurrent().setTitle("Anmelden");
 
-		buttonLogin.addClickListener((Button.ClickEvent event) -> loginEvent());
+		buttonLogin.addClickListener((Button.ClickEvent event) -> loginAction());
 
 		buttonRegister.addClickListener((Button.ClickEvent event) -> m_parent.openUserRegisterView());
 
 		this.addComponents(title, textFieldEmail, textFieldPassword, buttonLogin, buttonRegister);
 	}
 
-	private void loginEvent()
+	private void loginAction()
 	{
 		String email    = textFieldEmail.getValue();
 		String password = textFieldPassword.getValue();
@@ -36,7 +35,7 @@ public class UserLoginView extends VerticalLayout
 		}
 		else
 		{
-			m_parent.userLoginEvent(email, password);
+			m_parent.userLoginAction(email, password);
 		}
 	}
 

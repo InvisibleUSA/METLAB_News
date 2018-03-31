@@ -1,24 +1,33 @@
 package me.metlabnews.Presentation;
 
-
-
 import me.metlabnews.Model.BusinessLogic.UserManager;
 
 
 
 public class Presenter
 {
-	public static Presenter getInstance()
+	public static Presenter getInstance() throws IllegalStateException
 	{
-		if(instance == null)
+		if(m_instance == null)
 		{
-			instance = new Presenter();
+			throw new IllegalStateException(
+					"Presenter has not been initialized");
 		}
-		return instance;
+		return m_instance;
+	}
+
+	public static Presenter create()
+	{
+		if(m_instance == null)
+		{
+			m_instance = new Presenter();
+		}
+		return m_instance;
 	}
 
 	private Presenter()
 	{
+		System.out.println("[MESSAGE] new Presenter created: " + this.toString());
 	}
 
 
@@ -29,5 +38,5 @@ public class Presenter
 
 
 
-	private static Presenter instance = null;
+	private static Presenter m_instance = null;
 }

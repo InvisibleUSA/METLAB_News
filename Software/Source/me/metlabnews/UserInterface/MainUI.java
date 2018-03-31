@@ -34,7 +34,28 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 
-	//region Callbacks
+	// region GUI Methods
+	public void openUserLoginView()
+	{
+		UserLoginView view = new UserLoginView(this);
+		setContent(view);
+	}
+
+	public void openUserRegisterView()
+	{
+		UserRegisterView view = new UserRegisterView(this);
+		setContent(view);
+	}
+
+	public void userLoginAction(String email, String pw)
+	{
+		userLoginCallback.execute(email, pw);
+	}
+	// endregion GUI Methods
+
+
+
+	// region Callbacks
 	@Override
 	public void registerUserLoginCallback(IUserLoginCallback callback)
 	{
@@ -49,27 +70,70 @@ public class MainUI extends UI implements IUserInterface
 
 	private IUserLoginCallback userLoginCallback;
 	private IUserRegisterCallback userRegisterCallback;
-	//endregion
+	// endregion Callbacks
 
 
-	//region GUI Methods
-	public void openUserLoginView()
+
+	// region Events
+	@Override
+	public void userLoginSuccessfulEvent()
 	{
-		UserLoginView view = new UserLoginView(this);
-		setContent(view);
 	}
 
-	public void openUserRegisterView()
+	@Override
+	public void userLoginFailedEvent(String errorMessage)
 	{
-		UserRegisterView view = new UserRegisterView(this);
-		setContent(view);
 	}
 
-	public void userLoginEvent(String email, String pw)
+	@Override
+	public void userRegistrationSuccessfulEvent()
 	{
-		userLoginCallback.execute(email, pw);
+
 	}
-	//endregion
+
+	@Override
+	public void userRegistrationFailedEvent(String errorMessage)
+	{
+
+	}
+
+	@Override
+	public void userVerificationSuccessfulEvent()
+	{
+
+	}
+
+	@Override
+	public void userVerificationDeniedEvent()
+	{
+
+	}
+
+	@Override
+	public void adminLoginSuccessfulEvent()
+	{
+
+	}
+
+	@Override
+	public void adminLoginFailedEvent(String errorMessage)
+	{
+
+	}
+
+	@Override
+	public void sysAdminLoginSuccessfulEvent()
+	{
+
+	}
+
+	@Override
+	public void sysAdminLoginFailedEvent(String errorMessage)
+	{
+
+	}
+	// endregion Events
+
 
 
 
@@ -81,8 +145,6 @@ public class MainUI extends UI implements IUserInterface
 		public void init() throws ServletException
 		{
 			super.init();
-			// Important!
-			Presenter.getInstance();
 		}
 	}
 }
