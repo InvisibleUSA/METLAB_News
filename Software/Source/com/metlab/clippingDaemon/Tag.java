@@ -216,7 +216,9 @@ public class Tag
 		{
 			m_attributes.put(n.getAttributes().item(i).getNodeName(), n.getAttributes().item(i).getNodeValue());
 		}
-		if((n.getChildNodes().getLength() == 1) && (n.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
+		if((n.getChildNodes().getLength() == 1) && (n.getChildNodes().item(
+				0).getNodeType() == Node.TEXT_NODE || n.getChildNodes().item(
+				0).getNodeType() == Node.CDATA_SECTION_NODE))
 		{
 			m_value = n.getChildNodes().item(0).getNodeValue();
 		}

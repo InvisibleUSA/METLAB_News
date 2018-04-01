@@ -1,5 +1,6 @@
 package com.metlab.crawler;
 
+import com.metlab.clippingDaemon.Tag;
 import com.metlab.controller.BaseXController;
 import org.basex.core.cmd.Add;
 import org.w3c.dom.Document;
@@ -57,12 +58,10 @@ public class RSSCrawler implements Runnable
 	    {
 		    System.out.println("crawling " + source.getName() + " --> " + source.getRss_link());
 		    String                 doc       = getHTTPResponse(source.getRss_link());
-		    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		    try
-		    {
-			    DocumentBuilder    dBuilder = dbFactory.newDocumentBuilder();
-			    Document           feed     = dBuilder.parse(new ByteArrayInputStream(doc.getBytes("UTF-8")));
-			    ArrayList<Article> articles = extractArticles(feed);
+		    //try
+		    //{
+		    Tag                rss_feed = new Tag(doc);
+		    ArrayList<Article> articles = extractArticles(rss_feed);
 			    for(Article a : articles)
 			    {
 				    boolean exists = articleExists(a);
@@ -71,7 +70,7 @@ public class RSSCrawler implements Runnable
 					    writeToBaseX(a, source);
 				    }
 			    }
-		    }
+		    /*}
 		    catch(SAXException | IOException | ParserConfigurationException e)
 		    {
 			    System.out.println("Errored on Source \"" + source.getName() + "\"");
@@ -79,7 +78,7 @@ public class RSSCrawler implements Runnable
 			    System.out.println("RSS_link: \"" + source.getRss_link() + "\"");
 			    System.out.println(doc);
 			    e.printStackTrace();
-		    }
+		    }*/
 		    try
 		    {
 			    Thread.sleep(sleeptime);
@@ -128,52 +127,51 @@ public class RSSCrawler implements Runnable
 	 * An article begins with an <item> tag and should contain title, description, link, guid and pubDate
 	 * But it must contain guid and a title
 	 *
-	 * @param top: XMLDocument in which to search for articles
+	 * @param feed: XMLDocument as Tag-Class in which to search for articles
 	 */
-	private ArrayList<Article> extractArticles(Document top)
+	private ArrayList<Article> extractArticles(Tag feed)
 	{
-		ArrayList<Node>    rss_articles = searchForArticle(top.getFirstChild());
-		ArrayList<Article> articles     = new ArrayList<>();
-		for(Node curr_article : rss_articles)
+		Tag channel = feed.child("channel");
+		if(channel != null)
 		{
-			String   title       = "";
-			String   description = "";
-			String   link        = "";
-			String   guid        = "";
-			Calendar pubDate     = Calendar.getInstance();
-			NodeList args        = curr_article.getChildNodes();
-			for(int j = 0; j < args.getLength(); j++)
+			ArrayList<Tag>     rss_articles = channel.children("item");
+			ArrayList<Article> articles     = new ArrayList<>();
+			for(Tag curr_article : rss_articles)
 			{
-				Node curr_field = args.item(j);
-				if(curr_field.getNodeType() == Node.ELEMENT_NODE)
+				String title = curr_article.child("title").value();
+				if(title != null)
 				{
-					switch(curr_field.getNodeName())
-					{
-						case "title":
-							title = getValueFromNode(curr_field).replace("\"", "'");
-							break;
-						case "description":
-							description = getValueFromNode(curr_field).replace("\"", "'");
-							break;
-						case "link":
-							link = getValueFromNode(curr_field).replace("\"", "'");
-							break;
-						case "guid":
-							guid = getValueFromNode(curr_field).replace("\"", "'");
-							break;
-						case "pubDate":
-							pubDate = parseCalendar(getValueFromNode(curr_field));
-							break;
-					}
+					title = title.replace("\"", "'");
+				}
+				String description = curr_article.child("description").value();
+				if(description != null)
+				{
+					description = description.replace("\"", "'");
+				}
+				String link = curr_article.child("link").value();
+				if(link != null)
+				{
+					link = link.replace("\"", "'");
+				}
+				String guid = curr_article.child("guid").value();
+				if(guid != null)
+				{
+					guid = guid.replace("\"", "'");
+				}
+				Calendar pubDate = parseCalendar(curr_article.child("pubDate").value());
+				if(!guid.equals("") && !title.equals(""))
+				{
+					Article a = new Article(title, source, link, description, guid, pubDate);
+					articles.add(a);
 				}
 			}
-			if(!guid.equals("") && !title.equals(""))
-			{
-				Article a = new Article(title, source, link, description, guid, pubDate);
-				articles.add(a);
-			}
+			return articles;
 		}
-		return articles;
+		else
+		{
+			System.out.println("NullPointerException on source:" + source.getName());
+			return null;
+		}
 	}
 
 	public void stop()
@@ -181,52 +179,6 @@ public class RSSCrawler implements Runnable
 		System.out.println("stopping crawler on \"" + source.getName() + "\"");
 		running = false;
 	}
-
-	/**
-	 * @param node the node to get the value from
-	 * @return text-value from the node
-	 */
-	private String getValueFromNode(Node node)
-	{
-		if(node.getNodeValue() != null)
-		{
-			return node.getNodeValue();
-		}
-		else if(node.hasChildNodes())
-		{
-			if(node.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE || node.getChildNodes().item(
-					0).getNodeType() == Node.CDATA_SECTION_NODE)
-			{
-				return node.getChildNodes().item(0).getNodeValue();
-			}
-		}
-		return "";
-	}
-
-	/**
-	 * @param node the node to check for the tag-name "item"
-	 * @return list of notes that match "item"
-	 */
-	private ArrayList<Node> searchForArticle(Node node)
-	{
-		ArrayList<Node> articles = new ArrayList<>();
-		if(node.hasChildNodes())
-		{
-			for(int i = 0; i < node.getChildNodes().getLength(); i++)
-			{
-				Node currNode = node.getChildNodes().item(i);
-				if(currNode.getNodeName().equals("item"))
-				{
-					articles.add(currNode);
-				}
-				else
-				{
-					articles.addAll(searchForArticle(currNode));
-				}
-			}
-		}
-		return articles;
-    }
 
 	/**
 	 * @param pubDate date to parse in format "ddd, DD MMM YYY HH:MM:SS zhhmm"
@@ -309,54 +261,6 @@ public class RSSCrawler implements Runnable
 			default:
 				return -1;
 		}
-	}
-
-	/**
-	 * prints out an XML document. Isn't working perfectly and only for debugging purposes
-	 *
-	 * @param last  top node which will be displayed
-	 * @param level always call with 0, used to get the right tab-count
-	 */
-	private void XMLToString(Node last, int level){
-		System.out.println("");
-		NodeList nodes = last.getChildNodes();
-		for(int i = 0; i< nodes.getLength(); i++){
-			Node curr = nodes.item(i);
-			for(int l = 0; l < level; l++)
-			{
-				System.out.print("\t");
-			}
-			if(!curr.getNodeName().equals(
-					"#text") && !curr.getNodeName().equals("#cdata-section") && !curr.getNodeName().equals("#comment")){
-				System.out.print("<" + curr.getNodeName());
-				if(curr.getAttributes() != null)
-				{
-					if(curr.getAttributes().getLength() > 0)
-					{
-						for(int j = 0; j < curr.getAttributes().getLength(); j++)
-						{
-							System.out.print(" " + curr.getAttributes().item(j).getNodeName() + "=\"" + curr.getAttributes().item(
-									j).getNodeValue() + "\"");
-						}
-					}
-				}
-				System.out.print(">");
-			}
-			if(curr.hasChildNodes()){
-				XMLToString(curr, level+1);
-			}else{
-				if(curr.getNodeValue() != null)
-				{
-					if(!curr.getNodeValue().equals(""))
-					{
-						System.out.print(curr.getNodeValue());
-					}
-				}
-			}
-		}
-		System.out.println("");
-		for(int i = 0; i<level-1; i++){ System.out.print("\t");}
-		System.out.print("</" + last.getNodeName() + ">");
 	}
 
 	/**
