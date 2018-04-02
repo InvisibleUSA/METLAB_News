@@ -23,7 +23,7 @@ public class Subscriber extends User
 
 
 
-	@JoinColumn(name = "ORGANISATION_ID")
+	@JoinColumn(name = "organisationId")
 	@ManyToOne(cascade = CascadeType.ALL)
 	public Organisation getOrganisation()
 	{
