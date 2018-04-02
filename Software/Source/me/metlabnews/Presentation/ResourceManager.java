@@ -1,5 +1,7 @@
 package me.metlabnews.Presentation;
 
+import me.metlabnews.Model.BusinessLogic.UserManager;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -18,7 +20,8 @@ public class ResourceManager implements ServletContextListener
 	{
 		System.out.println("[MESSAGE] Presentation.ResourceManager.contextInitialized()");
 		System.out.println("          Server Info: " + sce.getServletContext().getServerInfo());
-		Presenter.create();
+		UserManager userManager = UserManager.create();
+		Presenter.create(userManager);
 	}
 
 	@Override

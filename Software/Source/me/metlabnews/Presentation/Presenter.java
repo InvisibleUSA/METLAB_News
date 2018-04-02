@@ -16,27 +16,30 @@ public class Presenter
 		return m_instance;
 	}
 
-	public static Presenter create()
+	static Presenter create(UserManager userManager)
 	{
 		if(m_instance == null)
 		{
-			m_instance = new Presenter();
+			m_instance = new Presenter(userManager);
 		}
 		return m_instance;
 	}
 
-	private Presenter()
+
+	private Presenter(UserManager userManager)
 	{
+		m_userManager = userManager;
 		System.out.println("[MESSAGE] new Presenter created: " + this.toString());
 	}
 
 
 	public void connect(IUserInterface ui)
 	{
-		ui.registerUserLoginCallback(UserManager.getInstance()::userLogin);
+		ui.registerUserLoginCallback(m_userManager::subscriberLogin);
 	}
 
 
 
 	private static Presenter m_instance = null;
+	private UserManager m_userManager;
 }

@@ -64,7 +64,6 @@ public interface IUserInterface
 	// means that the admins attempt to login failed
 	void adminLoginFailedEvent(String errorMessage);
 	// endregion Admin Interaction
-	// endregion Events
 
 
 	// region System Admin Interaction

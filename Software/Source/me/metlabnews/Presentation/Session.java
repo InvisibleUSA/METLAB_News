@@ -9,7 +9,7 @@ class Session
 		m_uiInstance = ui;
 	}
 
-	enum SessionStates
+	enum SessionState
 	{
 		NotYetLoggedIn,
 		LoginPending,
@@ -25,5 +25,6 @@ class Session
 
 
 
+	private SessionState m_currentState = SessionState.NotYetLoggedIn;
 	private IUserInterface m_uiInstance = null;
 }
