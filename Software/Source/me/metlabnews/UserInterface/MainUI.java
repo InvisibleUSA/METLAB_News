@@ -10,6 +10,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.Presenter;
 import me.metlabnews.Presentation.IUserInterface;
+import me.metlabnews.UserInterface.Views.UserDashboardView;
 import me.metlabnews.UserInterface.Views.UserLoginView;
 import me.metlabnews.UserInterface.Views.UserRegisterView;
 
@@ -47,9 +48,21 @@ public class MainUI extends UI implements IUserInterface
 		setContent(view);
 	}
 
+	public void openUserDashboardView()
+	{
+		UserDashboardView view = new UserDashboardView(this);
+		setContent(view);
+	}
+
 	public void userLoginAction(String email, String pw)
 	{
 		userLoginCallback.execute(email, pw);
+	}
+
+	public void userRegisterAction(String firstName, String lastName, String company,
+	                               String email, String password)
+	{
+		userRegisterCallback.execute(firstName, lastName, company, email, password);
 	}
 	// endregion GUI Methods
 
@@ -78,23 +91,25 @@ public class MainUI extends UI implements IUserInterface
 	@Override
 	public void userLoginSuccessfulEvent()
 	{
+		openUserDashboardView();
 	}
 
 	@Override
 	public void userLoginFailedEvent(String errorMessage)
 	{
+		Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage);
 	}
 
 	@Override
 	public void userRegistrationSuccessfulEvent()
 	{
-
+		openUserDashboardView();
 	}
 
 	@Override
 	public void userRegistrationFailedEvent(String errorMessage)
 	{
-
+		Notification.show("Registrierung fehlgeschlagen\n" + errorMessage);
 	}
 
 	@Override

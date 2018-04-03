@@ -1,9 +1,6 @@
 package me.metlabnews.Model.Entities;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
 
 
@@ -32,6 +29,7 @@ public abstract class User
 		this.id = id;
 	}
 
+	@Column
 	public String getEmail()
 	{
 		return email;
@@ -42,6 +40,7 @@ public abstract class User
 		this.email = email;
 	}
 
+	@Column
 	public String getPassword()
 	{
 		return password;
@@ -52,6 +51,7 @@ public abstract class User
 		this.password = password;
 	}
 
+	@Column
 	public String getFirstName()
 	{
 		return firstName;
@@ -62,6 +62,7 @@ public abstract class User
 		this.firstName = firstName;
 	}
 
+	@Column
 	public String getLastName()
 	{
 		return lastName;

@@ -9,33 +9,36 @@ import javax.persistence.*;
 public class Subscriber extends User
 {
 	public Subscriber(String email, String password, String firstName, String lastName,
-	                  Organisation organisation)
+	                  Organisation organisation, boolean isOrganisationAdministrator)
 	{
 		super(email, password, firstName, lastName);
-		this.organisation = organisation;
+		this.organisationId = organisation;
+		this.isOrganisationAdministrator = isOrganisationAdministrator;
 	}
 
 	public Subscriber()
 	{
 		super("", "", "", "");
-		this.organisation = null;
+		this.organisationId = null;
+		this.isOrganisationAdministrator = false;
 	}
 
 
 
 	@JoinColumn(name = "organisationId")
 	@ManyToOne(cascade = CascadeType.ALL)
-	public Organisation getOrganisation()
+	public Organisation getOrganisationId()
 	{
-		return organisation;
+		return organisationId;
 	}
 
-	public void setOrganisation(Organisation organisation)
+	public void setOrganisationId(Organisation organisation)
 	{
-		this.organisation = organisation;
+		this.organisationId = organisation;
 	}
 
 
+	@Column(name = "isOrganisationAdministrator")
 	@org.hibernate.annotations.Type(type = "yes_no")
 	public boolean isOrganisationAdministrator()
 	{
@@ -49,6 +52,6 @@ public class Subscriber extends User
 
 
 
-	protected Organisation organisation;
+	protected Organisation organisationId;
 	protected boolean isOrganisationAdministrator = false;
 }

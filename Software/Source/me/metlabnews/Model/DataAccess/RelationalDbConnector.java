@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 
@@ -28,12 +30,12 @@ public class RelationalDbConnector
 		try
 		{
 			Configuration configuration = new Configuration();
-			//configuration.configure("hibernate.cfg.xml");
-			configuration.configure();
+			// Resources/hibernate.cfg.xml contains IP and PortNr of MariaDB
+			configuration.configure("hibernate.cfg.xml");
 			m_sessionFactory = configuration.buildSessionFactory();
 		} catch (Throwable e)
 		{
-			System.err.println("Failed to create sessionFactory object." + e);
+			System.err.println("[ERROR] Failed to create sessionFactory object." + e);
 			throw new ExceptionInInitializerError(e);
 		}
 	}
@@ -58,7 +60,7 @@ public class RelationalDbConnector
 		}
 		catch(HibernateException e)
 		{
-			System.err.println("Connection attempt to database failed:");
+			System.err.println("[ERROR] Connection attempt to database failed:");
 			System.err.println(e.getMessage());
 		}
 	}
@@ -94,7 +96,7 @@ public class RelationalDbConnector
 			{
 				m_transaction.rollback();
 			}
-			System.err.println("Failed to add new user:");
+			System.err.println("[ERROR] Failed to add new user:");
 			System.err.println(e.getMessage());
 		}
 		finally
@@ -111,7 +113,8 @@ public class RelationalDbConnector
 		{
 			Query query = m_session.createQuery("from Subscriber where email = :email");
 			query.setParameter("email", email);
-			subscriber = (Subscriber)query.getResultList().get(0);
+			subscriber = (Subscriber)query.getSingleResult();
+			//subscriber = (Subscriber)query.getResultList().get(0);
 			m_transaction.commit();
 		}
 		catch(HibernateException e)
@@ -120,10 +123,10 @@ public class RelationalDbConnector
 			{
 				m_transaction.rollback();
 			}
-			System.err.println("Failed to query user by email:");
+			System.err.println("[ERROR] Failed to query user by email:");
 			System.err.println(e.getMessage());
 		}
-		catch(IndexOutOfBoundsException e)
+		catch(NoResultException e)
 		{
 			throw new RequestedDataDoesNotExistException();
 		}
@@ -143,7 +146,7 @@ public class RelationalDbConnector
 		{
 			Query query = m_session.createQuery("from Organisation where name= :name");
 			query.setParameter("name", name);
-			organisation = (Organisation)query.getResultList().get(0);
+			organisation = (Organisation)query.getSingleResult();
 			m_transaction.commit();
 		}
 		catch(HibernateException e)
@@ -155,7 +158,7 @@ public class RelationalDbConnector
 			System.err.println("Failed to query organisation by name:");
 			System.err.println(e.getMessage());
 		}
-		catch(IndexOutOfBoundsException e)
+		catch(NoResultException e)
 		{
 			throw new RequestedDataDoesNotExistException();
 		}

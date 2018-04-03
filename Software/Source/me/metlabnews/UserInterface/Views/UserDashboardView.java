@@ -1,5 +1,25 @@
 package me.metlabnews.UserInterface.Views;
 
-public class UserDashboardView
+import com.vaadin.server.Page;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import me.metlabnews.UserInterface.MainUI;
+
+
+
+public class UserDashboardView extends VerticalLayout
 {
+	public UserDashboardView(MainUI parent)
+	{
+		m_parent = parent;
+		Page.getCurrent().setTitle("Dashboard");
+		this.addComponents(title);
+	}
+
+
+
+	private MainUI m_parent;
+
+	private final Label title = new Label("Willkommen bei METLAB-News - Dashboard");
 }

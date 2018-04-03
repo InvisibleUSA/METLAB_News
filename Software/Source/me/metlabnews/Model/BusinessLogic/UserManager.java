@@ -1,11 +1,11 @@
 package me.metlabnews.Model.BusinessLogic;
 
-
-
 import me.metlabnews.Model.DataAccess.RelationalDbConnector;
 import me.metlabnews.Model.DataAccess.RequestedDataDoesNotExistException;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
+import me.metlabnews.Presentation.Session;
+import org.basex.query.value.item.Str;
 
 
 
@@ -27,8 +27,8 @@ public class UserManager
 	}
 
 
-	public void registerNewSubscriber(String email, String password, String firstName, String lastName,
-	                                  String organisationName)
+	public void registerNewSubscriber(Session session, String email, String password,
+	                                  String firstName, String lastName, String organisationName)
 	{
 		boolean emailIsAlreadyTaken = true;
 		try
@@ -41,7 +41,8 @@ public class UserManager
 		}
 		if(emailIsAlreadyTaken)
 		{
-			System.out.println("[MESSAGE] Email is already in use!");
+			session.userRegistrationFailedEvent("Die angegebene E-Mail-Adresse " +
+					                             "wird bereits von einem anderen Nutzer verwendet!");
 			return;
 		}
 
@@ -52,17 +53,19 @@ public class UserManager
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{
-			System.out.println("[MESSAGE] No organisation with this name!");
+			session.userRegistrationFailedEvent("Die angegebene Organisation existiert nicht!");
 			return;
 		}
-		Subscriber subscriber = new Subscriber(email, password, firstName, lastName, organisation);
+		Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
+		                                       organisation, false);
 		m_dbConnector.addSubscriber(subscriber);
+		session.userRegistrationSuccessfulEvent();
 	}
 
 
-	public void subscriberLogin(String email, String password)
+	public void subscriberLogin(Session session, String email, String password)
 	{
-		System.out.println("[MESSAGE] Attempted Login with email: " + email + " ; pw: " + password);
+		System.out.println("[MESSAGE] Attempted Login with email: " + email + "; pw: " + password);
 		String correctPassword;
 		try
 		{
@@ -70,16 +73,17 @@ public class UserManager
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{
-			System.out.println("[MESSAGE] No user with this email!");
+			session.userLoginFailedEvent("Kein Benutzer mit dieser E-Mail vorhanden!");
 			return;
 		}
 		if(password.equals(correctPassword))
 		{
-			System.out.println("[MESSAGE] Login successful");
+			session.userLoginSuccessfulEvent();
+			return;
 		}
 		else
 		{
-			System.out.println("[MESSAGE] Wrong Password!");
+			session.userLoginFailedEvent("Falsches Passwort!");
 		}
 	}
 

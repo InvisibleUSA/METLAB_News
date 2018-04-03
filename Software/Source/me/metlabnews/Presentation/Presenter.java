@@ -1,6 +1,7 @@
 package me.metlabnews.Presentation;
 
-import me.metlabnews.Model.BusinessLogic.UserManager;
+import me.metlabnews.Model.BusinessLogic.*;
+import java.util.Vector;
 
 
 
@@ -35,11 +36,23 @@ public class Presenter
 
 	public void connect(IUserInterface ui)
 	{
-		ui.registerUserLoginCallback(m_userManager::subscriberLogin);
+		Session session = new Session(ui);
+
+		ui.registerUserLoginCallback((email, pw) ->
+				                             m_userManager.subscriberLogin(session, email, pw));
+		ui.registerUserRegisterCallback((email, pw, fName, lName, org) ->
+				                             m_userManager.registerNewSubscriber(session, email, pw,
+				                                                                 fName, lName, org));
+
+		m_sessions.add(session);
 	}
 
 
 
 	private static Presenter m_instance = null;
 	private UserManager m_userManager;
+	private final int       m_initialSessionCapacity = 20;
+	private final int       m_sessionCapacityIncrement = 5;
+	private Vector<Session> m_sessions  = new Vector<>(m_initialSessionCapacity,
+	                                                   m_sessionCapacityIncrement);
 }

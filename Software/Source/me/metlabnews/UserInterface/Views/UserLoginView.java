@@ -47,5 +47,5 @@ public class UserLoginView extends VerticalLayout
 	private final TextField        textFieldEmail    = new TextField("E-Mail:");
 	private final PasswordField    textFieldPassword = new PasswordField("Passwort:");
 	private final Button           buttonLogin       = new Button("Anmelden");
-	private final Button           buttonRegister    = new Button("Registrierung");
+	private final Button           buttonRegister    = new Button("Zur Registrierung");
 }
