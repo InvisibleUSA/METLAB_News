@@ -30,6 +30,7 @@
 
 		<mapping class="me.metlabnews.Model.Entities.Subscriber"/>
 		<mapping class="me.metlabnews.Model.Entities.Organisation"/>
+		<mapping class="me.metlabnews.Model.Entities.SystemAdministrator"/>
 
 	</session-factory>
 </hibernate-configuration>

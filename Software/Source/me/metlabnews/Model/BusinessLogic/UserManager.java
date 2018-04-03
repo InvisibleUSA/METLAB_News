@@ -4,8 +4,8 @@ import me.metlabnews.Model.DataAccess.RelationalDbConnector;
 import me.metlabnews.Model.DataAccess.RequestedDataDoesNotExistException;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
+import me.metlabnews.Presentation.Messages;
 import me.metlabnews.Presentation.Session;
-import org.basex.query.value.item.Str;
 
 
 
@@ -41,8 +41,7 @@ public class UserManager
 		}
 		if(emailIsAlreadyTaken)
 		{
-			session.userRegistrationFailedEvent("Die angegebene E-Mail-Adresse " +
-					                             "wird bereits von einem anderen Nutzer verwendet!");
+			session.userRegistrationFailedEvent(Messages.EmailAddressAlreadyInUse);
 			return;
 		}
 
@@ -53,7 +52,7 @@ public class UserManager
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{
-			session.userRegistrationFailedEvent("Die angegebene Organisation existiert nicht!");
+			session.userRegistrationFailedEvent(Messages.UnknownOrganisation);
 			return;
 		}
 		Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
@@ -65,7 +64,6 @@ public class UserManager
 
 	public void subscriberLogin(Session session, String email, String password)
 	{
-		System.out.println("[MESSAGE] Attempted Login with email: " + email + "; pw: " + password);
 		String correctPassword;
 		try
 		{
@@ -73,7 +71,7 @@ public class UserManager
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{
-			session.userLoginFailedEvent("Kein Benutzer mit dieser E-Mail vorhanden!");
+			session.userLoginFailedEvent(Messages.UnknownEmail);
 			return;
 		}
 		if(password.equals(correctPassword))
@@ -83,7 +81,7 @@ public class UserManager
 		}
 		else
 		{
-			session.userLoginFailedEvent("Falsches Passwort!");
+			session.userLoginFailedEvent(Messages.WrongPassword);
 		}
 	}
 

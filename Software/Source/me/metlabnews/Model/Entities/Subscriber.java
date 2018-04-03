@@ -39,7 +39,7 @@ public class Subscriber extends User
 
 
 	@Column(name = "isOrganisationAdministrator")
-	@org.hibernate.annotations.Type(type = "yes_no")
+	//@org.hibernate.annotations.Type(type="true_false")
 	public boolean isOrganisationAdministrator()
 	{
 		return isOrganisationAdministrator;

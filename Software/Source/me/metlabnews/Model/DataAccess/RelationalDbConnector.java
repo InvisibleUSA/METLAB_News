@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.util.Properties;
 
 
 
@@ -32,6 +33,9 @@ public class RelationalDbConnector
 			Configuration configuration = new Configuration();
 			// Resources/hibernate.cfg.xml contains IP and PortNr of MariaDB
 			configuration.configure("hibernate.cfg.xml");
+			Properties properties = new Properties();
+			properties.put("hibernate.id.new_generator_mappings","false");
+			configuration.addProperties(properties);
 			m_sessionFactory = configuration.buildSessionFactory();
 		} catch (Throwable e)
 		{
@@ -114,8 +118,11 @@ public class RelationalDbConnector
 			Query query = m_session.createQuery("from Subscriber where email = :email");
 			query.setParameter("email", email);
 			subscriber = (Subscriber)query.getSingleResult();
-			//subscriber = (Subscriber)query.getResultList().get(0);
 			m_transaction.commit();
+		}
+		catch(NoResultException e)
+		{
+			throw new RequestedDataDoesNotExistException();
 		}
 		catch(HibernateException e)
 		{
@@ -126,10 +133,6 @@ public class RelationalDbConnector
 			System.err.println("[ERROR] Failed to query user by email:");
 			System.err.println(e.getMessage());
 		}
-		catch(NoResultException e)
-		{
-			throw new RequestedDataDoesNotExistException();
-		}
 		finally
 		{
 			disconnect();
@@ -137,6 +140,30 @@ public class RelationalDbConnector
 		return subscriber;
 	}
 
+
+	public void addOrganisation(Organisation organisation)
+	{
+		connect();
+		try
+		{
+			Long id = (Long)m_session.save(organisation);
+			organisation.setId(id);
+			m_transaction.commit();
+		}
+		catch(HibernateException e)
+		{
+			if(m_transaction != null)
+			{
+				m_transaction.rollback();
+			}
+			System.err.println("[ERROR] Failed to add new organisation:");
+			System.err.println(e.getMessage());
+		}
+		finally
+		{
+			disconnect();
+		}
+	}
 
 	public Organisation getOrganisationByName(String name) throws RequestedDataDoesNotExistException
 	{
@@ -168,6 +195,7 @@ public class RelationalDbConnector
 		}
 		return organisation;
 	}
+
 
 
 	private static RelationalDbConnector m_instance = null;

@@ -28,24 +28,28 @@ public class Session implements IEventHandler
 	@Override
 	public void userLoginSuccessfulEvent()
 	{
+		setState(SessionState.LoggedIn);
 		m_uiInstance.userLoginSuccessfulEvent();
 	}
 
 	@Override
 	public void userLoginFailedEvent(String errorMessage)
 	{
+		setState(SessionState.NotYetLoggedIn);
 		m_uiInstance.userLoginFailedEvent(errorMessage);
 	}
 
 	@Override
 	public void userRegistrationSuccessfulEvent()
 	{
+		setState(SessionState.RegistrationPending);
 		m_uiInstance.userRegistrationSuccessfulEvent();
 	}
 
 	@Override
 	public void userRegistrationFailedEvent(String errorMessage)
 	{
+		setState(SessionState.RegistrationFailed);
 		m_uiInstance.userLoginFailedEvent(errorMessage);
 	}
 

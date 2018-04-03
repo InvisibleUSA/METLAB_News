@@ -103,7 +103,8 @@ public class MainUI extends UI implements IUserInterface
 	@Override
 	public void userRegistrationSuccessfulEvent()
 	{
-		openUserDashboardView();
+		Notification.show("Registrierung abgeschlossen\nWarte auf " +
+				                  "Verifikation durch Administrator");
 	}
 
 	@Override

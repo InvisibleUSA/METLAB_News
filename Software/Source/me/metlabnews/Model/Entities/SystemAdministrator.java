@@ -9,6 +9,11 @@ import javax.persistence.Table;
 @Table
 public class SystemAdministrator extends User
 {
+	public SystemAdministrator()
+	{
+		this("", "", "", "");
+	}
+
 	public SystemAdministrator(String email, String password, String firstName, String lastName)
 	{
 		super(email, password, firstName, lastName);

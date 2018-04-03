@@ -40,7 +40,7 @@ public class Presenter
 
 		ui.registerUserLoginCallback((email, pw) ->
 				                             m_userManager.subscriberLogin(session, email, pw));
-		ui.registerUserRegisterCallback((email, pw, fName, lName, org) ->
+		ui.registerUserRegisterCallback((fName, lName, org, email, pw) ->
 				                             m_userManager.registerNewSubscriber(session, email, pw,
 				                                                                 fName, lName, org));
 
