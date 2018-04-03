@@ -3,6 +3,7 @@ package me.metlabnews.Model.DataAccess;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 //import org.junit.jupiter.api.Test;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public class RelationalDbConnectorTest
 		}
 		catch(Exception e)
 		{
-			fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 	}
 
