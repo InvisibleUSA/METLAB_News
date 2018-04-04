@@ -3,6 +3,7 @@ package me.metlabnews.UserInterface;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
@@ -24,6 +25,7 @@ import me.metlabnews.UserInterface.Views.SubscriberRegisterView;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("maintheme")
+@PreserveOnRefresh
 public class MainUI extends UI implements IUserInterface
 {
 	@Override
