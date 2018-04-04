@@ -8,17 +8,33 @@ public interface IUserInterface extends IEventHandler
 	// Callback Functions are called by a UserInterface
 	// and executed by a class inside the Model package
 
-	interface IUserLoginCallback{ void execute(String email,
-	                                           String password); }
-	void registerUserLoginCallback(IUserLoginCallback callback);
+	interface ICallback
+	{ void execute(); }
+
+	interface ISubscriberLoginCallback
+	{ void execute(String email,
+	               String password); }
+	void registerCallbackSubscriberLogin(ISubscriberLoginCallback callback);
 
 
-	interface IUserRegisterCallback{ void execute(String firstName,
-	                                              String lastName,
-	                                              String company,
-	                                              String email,
-	                                              String password); }
-	void registerUserRegisterCallback(IUserRegisterCallback callback);
+	interface ISubscriberRegisterCallback
+	{ void execute(String firstName,
+	               String lastName,
+	               String company,
+	               String email,
+	               String password); }
+	void registerCallbackSubscriberRegistration(ISubscriberRegisterCallback callback);
+
+
+	void registerCallbackClientAdminLogin(ISubscriberLoginCallback callback);
+
+
+	void registerCallbackClientAdminRegistration(ISubscriberRegisterCallback callback);
+
+
+	void registerCallbackLogout(ICallback callback);
+
+
 
 	// endregion Callback Functions
 }

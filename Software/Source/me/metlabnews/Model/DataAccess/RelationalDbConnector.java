@@ -14,7 +14,7 @@ import java.util.Properties;
 
 
 
-public class RelationalDbConnector
+public class RelationalDbConnector implements AutoCloseable
 {
 	public static RelationalDbConnector getInstance()
 	{
@@ -45,13 +45,10 @@ public class RelationalDbConnector
 	}
 
 
-	// just ignore some of Oracle's ridiculous bullshit
-	@SuppressWarnings("deprecation")
 	@Override
-	protected void finalize() throws Throwable
+	public void close()
 	{
 		disconnect();
-		super.finalize();
 	}
 
 
@@ -59,8 +56,8 @@ public class RelationalDbConnector
 	{
 		try
 		{
-			m_session = m_sessionFactory.openSession();
-			m_transaction = m_session.beginTransaction();
+			m_session.set(m_sessionFactory.openSession());
+			m_transaction.set(m_session.get().beginTransaction());
 		}
 		catch(HibernateException e)
 		{
@@ -73,9 +70,9 @@ public class RelationalDbConnector
 	{
 		try
 		{
-			m_transaction = null;
-			m_session.close();
-			m_session = null;
+			m_transaction.remove();
+			m_session.get().close();
+			m_session.remove();
 		}
 		catch(Exception e)
 		{
@@ -90,15 +87,15 @@ public class RelationalDbConnector
 		connect();
 		try
 		{
-			Long id = (Long)m_session.save(subscriber);
+			Long id = (Long)m_session.get().save(subscriber);
 			subscriber.setId(id);
-			m_transaction.commit();
+			m_transaction.get().commit();
 		}
 		catch(HibernateException e)
 		{
 			if(m_transaction != null)
 			{
-				m_transaction.rollback();
+				m_transaction.get().rollback();
 			}
 			System.err.println("[ERROR] Failed to add new user:");
 			System.err.println(e.getMessage());
@@ -115,10 +112,10 @@ public class RelationalDbConnector
 		connect();
 		try
 		{
-			Query query = m_session.createQuery("from Subscriber where email = :email");
+			Query query = m_session.get().createQuery("from Subscriber where email = :email");
 			query.setParameter("email", email);
 			subscriber = (Subscriber)query.getSingleResult();
-			m_transaction.commit();
+			m_transaction.get().commit();
 		}
 		catch(NoResultException e)
 		{
@@ -128,7 +125,7 @@ public class RelationalDbConnector
 		{
 			if(m_transaction != null)
 			{
-				m_transaction.rollback();
+				m_transaction.get().rollback();
 			}
 			System.err.println("[ERROR] Failed to query user by email:");
 			System.err.println(e.getMessage());
@@ -146,15 +143,15 @@ public class RelationalDbConnector
 		connect();
 		try
 		{
-			Long id = (Long)m_session.save(organisation);
+			Long id = (Long)m_session.get().save(organisation);
 			organisation.setId(id);
-			m_transaction.commit();
+			m_transaction.get().commit();
 		}
 		catch(HibernateException e)
 		{
 			if(m_transaction != null)
 			{
-				m_transaction.rollback();
+				m_transaction.get().rollback();
 			}
 			System.err.println("[ERROR] Failed to add new organisation:");
 			System.err.println(e.getMessage());
@@ -171,16 +168,16 @@ public class RelationalDbConnector
 		connect();
 		try
 		{
-			Query query = m_session.createQuery("from Organisation where name= :name");
+			Query query = m_session.get().createQuery("from Organisation where name= :name");
 			query.setParameter("name", name);
 			organisation = (Organisation)query.getSingleResult();
-			m_transaction.commit();
+			m_transaction.get().commit();
 		}
 		catch(HibernateException e)
 		{
 			if(m_transaction != null)
 			{
-				m_transaction.rollback();
+				m_transaction.get().rollback();
 			}
 			System.err.println("Failed to query organisation by name:");
 			System.err.println(e.getMessage());
@@ -200,6 +197,6 @@ public class RelationalDbConnector
 
 	private static RelationalDbConnector m_instance = null;
 	private SessionFactory m_sessionFactory;
-	private Session m_session;
-	private Transaction m_transaction;
+	private ThreadLocal<Session> m_session = new ThreadLocal<>();
+	private ThreadLocal<Transaction> m_transaction = new ThreadLocal<>();
 }

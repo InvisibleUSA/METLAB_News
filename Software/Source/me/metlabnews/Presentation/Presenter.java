@@ -1,7 +1,7 @@
 package me.metlabnews.Presentation;
 
 import me.metlabnews.Model.BusinessLogic.*;
-import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 
@@ -30,29 +30,33 @@ public class Presenter
 	private Presenter(UserManager userManager)
 	{
 		m_userManager = userManager;
-		System.out.println("[MESSAGE] new Presenter created: " + this.toString());
+		m_sessions = new ConcurrentHashMap<>();
 	}
 
 
 	public void connect(IUserInterface ui)
 	{
 		Session session = new Session(ui);
-
-		ui.registerUserLoginCallback((email, pw) ->
+	// region Callbacks
+		ui.registerCallbackSubscriberLogin((email, pw) ->
 				                             m_userManager.subscriberLogin(session, email, pw));
-		ui.registerUserRegisterCallback((fName, lName, org, email, pw) ->
+		ui.registerCallbackSubscriberRegistration((fName, lName, org, email, pw) ->
 				                             m_userManager.registerNewSubscriber(session, email, pw,
 				                                                                 fName, lName, org));
+	// endregion Callbacks
 
-		m_sessions.add(session);
+		m_sessions.put(ui, session);
+	}
+
+
+	public void disconnect(IUserInterface ui)
+	{
+		m_sessions.remove(ui);
 	}
 
 
 
 	private static Presenter m_instance = null;
 	private UserManager m_userManager;
-	private final int       m_initialSessionCapacity = 20;
-	private final int       m_sessionCapacityIncrement = 5;
-	private Vector<Session> m_sessions  = new Vector<>(m_initialSessionCapacity,
-	                                                   m_sessionCapacityIncrement);
+	private ConcurrentHashMap<IUserInterface, Session> m_sessions;
 }

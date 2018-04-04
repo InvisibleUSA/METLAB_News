@@ -9,103 +9,156 @@ public class Session implements IEventHandler
 		m_uiInstance = uiInstance;
 	}
 
-	SessionState getState()
+	synchronized void close()
+	{
+		setState(SessionState.Dead);
+		m_uiInstance = null;
+	}
+
+	synchronized SessionState getState()
 	{
 		return m_currentState;
 	}
 
-	void setState(SessionState state)
+	synchronized void setState(SessionState state)
 	{
 		m_currentState = state;
 	}
 
-	IUserInterface getUiInstance()
+	synchronized IUserInterface getUiInstance()
 	{
 		return m_uiInstance;
 	}
 
 
 	@Override
-	public void userLoginSuccessfulEvent()
+	public void subscriberLoginSuccessfulEvent()
 	{
-		setState(SessionState.LoggedIn);
-		m_uiInstance.userLoginSuccessfulEvent();
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.LoggedInAsSubscriber);
+			m_uiInstance.subscriberLoginSuccessfulEvent();
+		}
 	}
 
 	@Override
-	public void userLoginFailedEvent(String errorMessage)
+	public void subscriberLoginFailedEvent(String errorMessage)
 	{
-		setState(SessionState.NotYetLoggedIn);
-		m_uiInstance.userLoginFailedEvent(errorMessage);
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.NotYetLoggedIn);
+			m_uiInstance.subscriberLoginFailedEvent(errorMessage);
+		}
 	}
 
 	@Override
-	public void userRegistrationSuccessfulEvent()
+	public void subscriberLogoutEvent()
 	{
-		setState(SessionState.RegistrationPending);
-		m_uiInstance.userRegistrationSuccessfulEvent();
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.LoggedOut);
+			m_uiInstance.subscriberLogoutEvent();
+		}
 	}
 
 	@Override
-	public void userRegistrationFailedEvent(String errorMessage)
+	public void subscriberVerificationPendingEvent()
 	{
-		setState(SessionState.RegistrationFailed);
-		m_uiInstance.userLoginFailedEvent(errorMessage);
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.VerificationPending);
+			m_uiInstance.subscriberVerificationPendingEvent();
+		}
 	}
 
 	@Override
-	public void userVerificationSuccessfulEvent()
+	public void subscriberRegistrationFailedEvent(String errorMessage)
 	{
-		m_uiInstance.userVerificationSuccessfulEvent();
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.RegistrationFailed);
+			m_uiInstance.subscriberLoginFailedEvent(errorMessage);
+		}
 	}
 
 	@Override
-	public void userVerificationDeniedEvent()
+	public void subscriberVerificationSuccessfulEvent()
 	{
-		m_uiInstance.userVerificationDeniedEvent();
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.Registered);
+			m_uiInstance.subscriberVerificationSuccessfulEvent();
+		}
 	}
 
 	@Override
-	public void adminLoginSuccessfulEvent()
+	public void subscriberVerificationDeniedEvent()
 	{
-		m_uiInstance.adminLoginSuccessfulEvent();
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.VerificationDenied);
+			m_uiInstance.subscriberVerificationDeniedEvent();
+		}
 	}
 
 	@Override
-	public void adminLoginFailedEvent(String errorMessage)
+	public void clientAdminLoginSuccessfulEvent()
 	{
-		m_uiInstance.adminLoginFailedEvent(errorMessage);
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.LoggedInAsClientAdmin);
+			m_uiInstance.clientAdminLoginSuccessfulEvent();
+		}
+	}
+
+	@Override
+	public void clientAdminLoginFailedEvent(String errorMessage)
+	{
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.LoginDenied);
+			m_uiInstance.clientAdminLoginFailedEvent(errorMessage);
+		}
 	}
 
 	@Override
 	public void sysAdminLoginSuccessfulEvent()
 	{
-		m_uiInstance.sysAdminLoginSuccessfulEvent();
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.LoggedInAsSysAdmin);
+			m_uiInstance.sysAdminLoginSuccessfulEvent();
+		}
 	}
 
 	@Override
 	public void sysAdminLoginFailedEvent(String errorMessage)
 	{
-		m_uiInstance.adminLoginFailedEvent(errorMessage);
+		if(getState() != SessionState.Dead)
+		{
+			setState(SessionState.LoginDenied);
+			m_uiInstance.clientAdminLoginFailedEvent(errorMessage);
+		}
 	}
 
 
 	enum SessionState
 	{
 		NotYetLoggedIn,
-		LoginPending,
-		LoggedIn,
+		LoggedInAsSubscriber,
+		LoggedInAsClientAdmin,
+		LoggedInAsSysAdmin,
 		LoginDenied,
 		LoggedOut,
-		RegistrationPending,
 		RegistrationFailed,
 		VerificationPending,
 		VerificationDenied,
-		Registered
+		Registered,
+		Dead
 	}
 
 
 
-	private SessionState   m_currentState = SessionState.NotYetLoggedIn;
-	private IUserInterface m_uiInstance = null;
+	private SessionState    m_currentState = SessionState.NotYetLoggedIn;
+	private IUserInterface  m_uiInstance;
 }

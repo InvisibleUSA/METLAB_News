@@ -8,9 +8,9 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class UserDashboardView extends VerticalLayout
+public class SubscriberDashboardView extends VerticalLayout
 {
-	public UserDashboardView(MainUI parent)
+	public SubscriberDashboardView(MainUI parent)
 	{
 		m_parent = parent;
 		Page.getCurrent().setTitle("Dashboard");

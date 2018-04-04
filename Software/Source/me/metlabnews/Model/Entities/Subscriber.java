@@ -39,7 +39,6 @@ public class Subscriber extends User
 
 
 	@Column(name = "isOrganisationAdministrator")
-	//@org.hibernate.annotations.Type(type="true_false")
 	public boolean isOrganisationAdministrator()
 	{
 		return isOrganisationAdministrator;
@@ -50,8 +49,20 @@ public class Subscriber extends User
 		isOrganisationAdministrator = organisationAdministrator;
 	}
 
+	@Column(name = "verificationPending")
+	public boolean isVerificationPending()
+	{
+		return verificationPending;
+	}
+
+	public void setVerificationPending(boolean verificationPending)
+	{
+		this.verificationPending = verificationPending;
+	}
+
 
 
 	protected Organisation organisationId;
-	protected boolean isOrganisationAdministrator = false;
+	protected boolean isOrganisationAdministrator;
+	protected boolean verificationPending = true;
 }

@@ -6,9 +6,9 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class UserLoginView extends VerticalLayout
+public class SubscriberLoginView extends VerticalLayout
 {
-	public UserLoginView(MainUI parent)
+	public SubscriberLoginView(MainUI parent)
 	{
 		m_parent = parent;
 		Page.getCurrent().setTitle("Anmelden");

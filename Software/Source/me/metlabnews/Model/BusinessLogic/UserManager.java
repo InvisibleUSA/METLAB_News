@@ -41,7 +41,7 @@ public class UserManager
 		}
 		if(emailIsAlreadyTaken)
 		{
-			session.userRegistrationFailedEvent(Messages.EmailAddressAlreadyInUse);
+			session.subscriberRegistrationFailedEvent(Messages.EmailAddressAlreadyInUse);
 			return;
 		}
 
@@ -52,13 +52,13 @@ public class UserManager
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{
-			session.userRegistrationFailedEvent(Messages.UnknownOrganisation);
+			session.subscriberRegistrationFailedEvent(Messages.UnknownOrganisation);
 			return;
 		}
 		Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
 		                                       organisation, false);
 		m_dbConnector.addSubscriber(subscriber);
-		session.userRegistrationSuccessfulEvent();
+		session.subscriberVerificationPendingEvent();
 	}
 
 
@@ -71,22 +71,22 @@ public class UserManager
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{
-			session.userLoginFailedEvent(Messages.UnknownEmail);
+			session.subscriberLoginFailedEvent(Messages.UnknownEmail);
 			return;
 		}
 		if(password.equals(correctPassword))
 		{
-			session.userLoginSuccessfulEvent();
+			session.subscriberLoginSuccessfulEvent();
 			return;
 		}
 		else
 		{
-			session.userLoginFailedEvent(Messages.WrongPassword);
+			session.subscriberLoginFailedEvent(Messages.WrongPassword);
 		}
 	}
 
 
 
-	private static UserManager m_instance = null;
+	private static       UserManager m_instance  = null;
 	private RelationalDbConnector m_dbConnector;
 }

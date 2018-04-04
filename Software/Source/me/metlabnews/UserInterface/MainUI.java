@@ -10,9 +10,9 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.Presenter;
 import me.metlabnews.Presentation.IUserInterface;
-import me.metlabnews.UserInterface.Views.UserDashboardView;
-import me.metlabnews.UserInterface.Views.UserLoginView;
-import me.metlabnews.UserInterface.Views.UserRegisterView;
+import me.metlabnews.UserInterface.Views.SubscriberDashboardView;
+import me.metlabnews.UserInterface.Views.SubscriberLoginView;
+import me.metlabnews.UserInterface.Views.SubscriberRegisterView;
 
 
 
@@ -38,31 +38,31 @@ public class MainUI extends UI implements IUserInterface
 	// region GUI Methods
 	public void openUserLoginView()
 	{
-		UserLoginView view = new UserLoginView(this);
+		SubscriberLoginView view = new SubscriberLoginView(this);
 		setContent(view);
 	}
 
 	public void openUserRegisterView()
 	{
-		UserRegisterView view = new UserRegisterView(this);
+		SubscriberRegisterView view = new SubscriberRegisterView(this);
 		setContent(view);
 	}
 
 	public void openUserDashboardView()
 	{
-		UserDashboardView view = new UserDashboardView(this);
+		SubscriberDashboardView view = new SubscriberDashboardView(this);
 		setContent(view);
 	}
 
 	public void userLoginAction(String email, String pw)
 	{
-		userLoginCallback.execute(email, pw);
+		subscriberLoginCallback.execute(email, pw);
 	}
 
 	public void userRegisterAction(String firstName, String lastName, String company,
 	                               String email, String password)
 	{
-		userRegisterCallback.execute(firstName, lastName, company, email, password);
+		subscriberRegisterCallback.execute(firstName, lastName, company, email, password);
 	}
 	// endregion GUI Methods
 
@@ -70,69 +70,96 @@ public class MainUI extends UI implements IUserInterface
 
 	// region Callbacks
 	@Override
-	public void registerUserLoginCallback(IUserLoginCallback callback)
+	public void registerCallbackSubscriberLogin(ISubscriberLoginCallback callback)
 	{
-		userLoginCallback = callback;
+		subscriberLoginCallback = callback;
 	}
 
 	@Override
-	public void registerUserRegisterCallback(IUserRegisterCallback callback)
+	public void registerCallbackSubscriberRegistration(ISubscriberRegisterCallback callback)
 	{
-		userRegisterCallback = callback;
+		subscriberRegisterCallback = callback;
 	}
 
-	private IUserLoginCallback userLoginCallback;
-	private IUserRegisterCallback userRegisterCallback;
+	@Override
+	public void registerCallbackClientAdminLogin(ISubscriberLoginCallback callback)
+	{
+
+	}
+
+	@Override
+	public void registerCallbackClientAdminRegistration(ISubscriberRegisterCallback callback)
+	{
+
+	}
+
+	@Override
+	public void registerCallbackLogout(ICallback callback)
+	{
+		logoutCallback = callback;
+	}
+
+
+	private ISubscriberLoginCallback    subscriberLoginCallback;
+	private ISubscriberRegisterCallback subscriberRegisterCallback;
+
+	private ICallback logoutCallback;
 	// endregion Callbacks
 
 
 
 	// region Events
 	@Override
-	public void userLoginSuccessfulEvent()
+	public void subscriberLoginSuccessfulEvent()
 	{
 		openUserDashboardView();
 	}
 
 	@Override
-	public void userLoginFailedEvent(String errorMessage)
+	public void subscriberLoginFailedEvent(String errorMessage)
 	{
 		Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage);
 	}
 
 	@Override
-	public void userRegistrationSuccessfulEvent()
+	public void subscriberLogoutEvent()
+	{
+
+	}
+
+	@Override
+	public void subscriberVerificationPendingEvent()
 	{
 		Notification.show("Registrierung abgeschlossen\nWarte auf " +
 				                  "Verifikation durch Administrator");
 	}
 
 	@Override
-	public void userRegistrationFailedEvent(String errorMessage)
+	public void subscriberRegistrationFailedEvent(String errorMessage)
 	{
 		Notification.show("Registrierung fehlgeschlagen\n" + errorMessage);
 	}
 
 	@Override
-	public void userVerificationSuccessfulEvent()
+	public void subscriberVerificationSuccessfulEvent()
 	{
 
 	}
 
 	@Override
-	public void userVerificationDeniedEvent()
+	public void subscriberVerificationDeniedEvent()
 	{
 
 	}
 
 	@Override
-	public void adminLoginSuccessfulEvent()
+	public void clientAdminLoginSuccessfulEvent()
 	{
 
 	}
 
 	@Override
-	public void adminLoginFailedEvent(String errorMessage)
+	public void clientAdminLoginFailedEvent(String errorMessage)
 	{
 
 	}

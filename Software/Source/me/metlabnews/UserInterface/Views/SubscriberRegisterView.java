@@ -8,9 +8,9 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class UserRegisterView extends VerticalLayout
+public class SubscriberRegisterView extends VerticalLayout
 {
-	public UserRegisterView(MainUI parent)
+	public SubscriberRegisterView(MainUI parent)
 	{
 		m_parent = parent;
 
