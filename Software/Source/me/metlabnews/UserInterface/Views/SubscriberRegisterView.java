@@ -19,11 +19,11 @@ public class SubscriberRegisterView extends VerticalLayout
 		buttonRegister.addClickListener((Button.ClickEvent event) -> registerAction());
 
 		buttonLogin.addClickListener((Button.ClickEvent event) ->
-				                             m_parent.openUserLoginView());
+				                             m_parent.openSubscriberLoginView());
 
 		buttonBar.addComponents(buttonRegister, buttonLogin);
 		this.addComponents(title, textFieldFirstName, textFieldLastName, textFieldCompany,
-		                   textFieldEmail, textFieldPassword, buttonBar);
+		                   textFieldEmail, textFieldPassword, checkBoxClientAdmin, buttonBar);
 	}
 
 	private void registerAction()
@@ -33,6 +33,7 @@ public class SubscriberRegisterView extends VerticalLayout
 		String company = textFieldCompany.getValue();
 		String email    = textFieldEmail.getValue();
 		String password = textFieldPassword.getValue();
+		boolean admin = checkBoxClientAdmin.getValue();
 
 		if(email.isEmpty())
 		{
@@ -44,7 +45,7 @@ public class SubscriberRegisterView extends VerticalLayout
 		}
 		else
 		{
-			m_parent.userRegisterAction(firstName, lastName, company, email, password);
+			m_parent.subscriberRegisterAction(firstName, lastName, company, email, password, admin);
 		}
 	}
 
@@ -58,6 +59,7 @@ public class SubscriberRegisterView extends VerticalLayout
 	private final TextField     textFieldCompany   = new TextField("Organisation:");
 	private final TextField     textFieldEmail     = new TextField("E-Mail:");
 	private final PasswordField textFieldPassword  = new PasswordField("Passwort:");
+	private final CheckBox      checkBoxClientAdmin = new CheckBox("Administrator Status beantragen");
 	private final Button        buttonRegister     = new Button("Registrieren");
 	private final Button        buttonLogin        = new Button("Zurück zur Anmeldung");
 	private final HorizontalLayout buttonBar = new HorizontalLayout();

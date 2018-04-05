@@ -59,7 +59,14 @@ public class RelationalDbConnectorTest
 	public void addOrganisation()
 	{
 		Organisation organisation = new Organisation("TestOrg");
-		RelationalDbConnector.getInstance().addOrganisation(organisation);
+		try
+		{
+			RelationalDbConnector.getInstance().addOrganisation(organisation);
+		}
+		catch(DataCouldNotBeAddedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Test

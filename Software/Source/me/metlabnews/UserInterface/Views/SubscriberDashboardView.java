@@ -14,7 +14,10 @@ public class SubscriberDashboardView extends VerticalLayout
 	{
 		m_parent = parent;
 		Page.getCurrent().setTitle("Dashboard");
-		this.addComponents(title);
+
+		buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.userLogoutAction());
+
+		this.addComponents(title, buttonLogout);
 	}
 
 
@@ -22,4 +25,5 @@ public class SubscriberDashboardView extends VerticalLayout
 	private MainUI m_parent;
 
 	private final Label title = new Label("Willkommen bei METLAB-News - Dashboard");
+	private final Button buttonLogout = new Button("Abmelden");
 }

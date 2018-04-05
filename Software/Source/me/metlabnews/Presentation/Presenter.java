@@ -39,10 +39,14 @@ public class Presenter
 		Session session = new Session(ui);
 	// region Callbacks
 		ui.registerCallbackSubscriberLogin((email, pw) ->
-				                             m_userManager.subscriberLogin(session, email, pw));
-		ui.registerCallbackSubscriberRegistration((fName, lName, org, email, pw) ->
-				                             m_userManager.registerNewSubscriber(session, email, pw,
-				                                                                 fName, lName, org));
+			m_userManager.subscriberLogin(session, email, pw));
+
+		ui.registerCallbackSubscriberRegistration((fName, lName, org, email, pw, admin) ->
+			m_userManager.registerNewSubscriber(session, email, pw,
+			                                    fName, lName, org, admin));
+
+		ui.registerCallbackLogout(session::userLogoutEvent);
+
 	// endregion Callbacks
 
 		m_sessions.put(ui, session);
@@ -51,6 +55,7 @@ public class Presenter
 
 	public void disconnect(IUserInterface ui)
 	{
+		m_sessions.get(ui).close();
 		m_sessions.remove(ui);
 	}
 

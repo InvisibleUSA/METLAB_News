@@ -2,14 +2,14 @@ package me.metlabnews.Model.DataAccess;
 
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import me.metlabnews.Presentation.Presenter;
+import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -51,7 +51,6 @@ public class RelationalDbConnector implements AutoCloseable
 		disconnect();
 	}
 
-
 	private void connect()
 	{
 		try
@@ -83,30 +82,51 @@ public class RelationalDbConnector implements AutoCloseable
 
 
 	public void addSubscriber(Subscriber subscriber)
+			throws DataCouldNotBeAddedException
 	{
-		connect();
-		try
-		{
-			Long id = (Long)m_session.get().save(subscriber);
-			subscriber.setId(id);
-			m_transaction.get().commit();
-		}
-		catch(HibernateException e)
-		{
-			if(m_transaction != null)
-			{
-				m_transaction.get().rollback();
-			}
-			System.err.println("[ERROR] Failed to add new user:");
-			System.err.println(e.getMessage());
-		}
-		finally
-		{
-			disconnect();
-		}
+		Long id = addEntity(subscriber);
+		subscriber.setId(id);
 	}
 
-	public Subscriber getSubscriberByEmail(String email) throws RequestedDataDoesNotExistException
+
+	public void addOrganisation(Organisation organisation)
+			throws DataCouldNotBeAddedException
+	{
+		Long id = addEntity(organisation);
+		organisation.setId(id);
+	}
+
+
+	public void deleteSubscriber(Subscriber subscriber)
+			throws RequestedDataDoesNotExistException
+	{
+		deleteEntity(subscriber);
+	}
+
+
+	public void deleteOrganisation(Organisation organisation)
+			throws RequestedDataDoesNotExistException
+	{
+		deleteEntity(organisation);
+	}
+
+
+	public void updateSubscriber(Subscriber subscriber)
+			throws DataUpdateFailedException
+	{
+		updateEntity(subscriber);
+	}
+
+
+	public void updateOrganisation(Organisation organisation)
+			throws DataUpdateFailedException
+	{
+		updateEntity(organisation);
+	}
+
+
+	public Subscriber getSubscriberByEmail(String email)
+			throws RequestedDataDoesNotExistException, UnexpectedDataException
 	{
 		Subscriber subscriber = null;
 		connect();
@@ -119,7 +139,11 @@ public class RelationalDbConnector implements AutoCloseable
 		}
 		catch(NoResultException e)
 		{
-			throw new RequestedDataDoesNotExistException();
+			throw new RequestedDataDoesNotExistException(e);
+		}
+		catch(NonUniqueResultException e)
+		{
+			throw new UnexpectedDataException(e);
 		}
 		catch(HibernateException e)
 		{
@@ -127,8 +151,6 @@ public class RelationalDbConnector implements AutoCloseable
 			{
 				m_transaction.get().rollback();
 			}
-			System.err.println("[ERROR] Failed to query user by email:");
-			System.err.println(e.getMessage());
 		}
 		finally
 		{
@@ -138,13 +160,16 @@ public class RelationalDbConnector implements AutoCloseable
 	}
 
 
-	public void addOrganisation(Organisation organisation)
+	public Subscriber[] getAllSubscribersOfOrganisation(Organisation organisation)
 	{
+		List<Subscriber> subscribers = null;
 		connect();
 		try
 		{
-			Long id = (Long)m_session.get().save(organisation);
-			organisation.setId(id);
+			Query query = m_session.get().createQuery("from Subscriber " +
+					                                          "where organisationId = :id");
+			query.setParameter("id", organisation.getId());
+			subscribers = query.getResultList();
 			m_transaction.get().commit();
 		}
 		catch(HibernateException e)
@@ -153,16 +178,17 @@ public class RelationalDbConnector implements AutoCloseable
 			{
 				m_transaction.get().rollback();
 			}
-			System.err.println("[ERROR] Failed to add new organisation:");
-			System.err.println(e.getMessage());
 		}
 		finally
 		{
 			disconnect();
 		}
+		return subscribers.toArray(new Subscriber[subscribers.size()]);
 	}
 
-	public Organisation getOrganisationByName(String name) throws RequestedDataDoesNotExistException
+
+	public Organisation getOrganisationByName(String name)
+			throws RequestedDataDoesNotExistException
 	{
 		Organisation organisation = null;
 		connect();
@@ -173,24 +199,96 @@ public class RelationalDbConnector implements AutoCloseable
 			organisation = (Organisation)query.getSingleResult();
 			m_transaction.get().commit();
 		}
+		catch(NoResultException e)
+		{
+			throw new RequestedDataDoesNotExistException(e);
+		}
 		catch(HibernateException e)
 		{
 			if(m_transaction != null)
 			{
 				m_transaction.get().rollback();
 			}
-			System.err.println("Failed to query organisation by name:");
-			System.err.println(e.getMessage());
-		}
-		catch(NoResultException e)
-		{
-			throw new RequestedDataDoesNotExistException();
 		}
 		finally
 		{
 			disconnect();
 		}
 		return organisation;
+	}
+
+
+
+	private Long addEntity(Object entity)
+			throws DataCouldNotBeAddedException
+	{
+		//TODO Find out why the fuck IntelliJ marks the following initialisation as redundant
+		Long id = -1L;
+		connect();
+		try
+		{
+			id = (Long)m_session.get().save(entity);
+			m_transaction.get().commit();
+		}
+		catch(HibernateException e)
+		{
+			if(m_transaction != null)
+			{
+				m_transaction.get().rollback();
+			}
+			throw new DataCouldNotBeAddedException(e);
+		}
+		finally
+		{
+			disconnect();
+		}
+		return id;
+	}
+
+	private void updateEntity(Object entity)
+			throws DataUpdateFailedException
+	{
+		connect();
+		try
+		{
+			m_session.get().update(entity);
+			m_transaction.get().commit();
+		}
+		catch(HibernateException e)
+		{
+			if(m_transaction != null)
+			{
+				m_transaction.get().rollback();
+			}
+			throw new DataUpdateFailedException(e);
+		}
+		finally
+		{
+			disconnect();
+		}
+	}
+
+	private void deleteEntity(Object entity)
+			throws RequestedDataDoesNotExistException
+	{
+		connect();
+		try
+		{
+			m_session.get().delete(entity);
+			m_transaction.get().commit();
+		}
+		catch(HibernateException e)
+		{
+			if(m_transaction != null)
+			{
+				m_transaction.get().rollback();
+			}
+			throw new RequestedDataDoesNotExistException(e);
+		}
+		finally
+		{
+			disconnect();
+		}
 	}
 
 

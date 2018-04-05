@@ -1,8 +1,13 @@
 package me.metlabnews.Presentation;
 
+import me.metlabnews.Model.Entities.User;
 
 
-public class Session implements IEventHandler
+
+public class Session implements ISubscriberEventHandler,
+                                IClientAdminEventHandler,
+                                ISysAdminEventHandler,
+                                ICommonEventHandler
 {
 	Session(IUserInterface uiInstance)
 	{
@@ -11,62 +16,70 @@ public class Session implements IEventHandler
 
 	synchronized void close()
 	{
-		setState(SessionState.Dead);
 		m_uiInstance = null;
 	}
 
-	synchronized SessionState getState()
+	private synchronized void onLogin()
 	{
-		return m_currentState;
+		m_loggedIn = true;
 	}
 
-	synchronized void setState(SessionState state)
+	private synchronized void onLogout()
 	{
-		m_currentState = state;
+		m_loggedIn = false;
 	}
 
-	synchronized IUserInterface getUiInstance()
+	public synchronized boolean isLoggedIn()
 	{
-		return m_uiInstance;
+		return m_loggedIn;
+	}
+
+
+	public synchronized User getUser()
+	{
+		return m_user;
+	}
+
+	public synchronized void setUser(User m_user)
+	{
+		this.m_user = m_user;
 	}
 
 
 	@Override
-	public void subscriberLoginSuccessfulEvent()
+	public void subscriberLoginSuccessfulEvent(boolean asAdmin)
 	{
-		if(getState() != SessionState.Dead)
+		if(m_uiInstance != null)
 		{
-			setState(SessionState.LoggedInAsSubscriber);
-			m_uiInstance.subscriberLoginSuccessfulEvent();
+			onLogin();
+			m_uiInstance.subscriberLoginSuccessfulEvent(asAdmin);
 		}
 	}
 
 	@Override
 	public void subscriberLoginFailedEvent(String errorMessage)
 	{
-		if(getState() != SessionState.Dead)
+		if(m_uiInstance != null)
 		{
-			setState(SessionState.NotYetLoggedIn);
 			m_uiInstance.subscriberLoginFailedEvent(errorMessage);
 		}
 	}
 
 	@Override
-	public void subscriberLogoutEvent()
+	public void userLogoutEvent()
 	{
-		if(getState() != SessionState.Dead)
+		if(m_uiInstance != null)
 		{
-			setState(SessionState.LoggedOut);
-			m_uiInstance.subscriberLogoutEvent();
+			onLogout();
+			m_uiInstance.userLogoutEvent();
 		}
 	}
 
 	@Override
 	public void subscriberVerificationPendingEvent()
 	{
-		if(getState() != SessionState.Dead)
+		if(m_uiInstance != null)
 		{
-			setState(SessionState.VerificationPending);
 			m_uiInstance.subscriberVerificationPendingEvent();
 		}
 	}
@@ -74,59 +87,54 @@ public class Session implements IEventHandler
 	@Override
 	public void subscriberRegistrationFailedEvent(String errorMessage)
 	{
-		if(getState() != SessionState.Dead)
+		if(m_uiInstance != null)
 		{
-			setState(SessionState.RegistrationFailed);
 			m_uiInstance.subscriberLoginFailedEvent(errorMessage);
 		}
 	}
 
 	@Override
+	public void subscriberVerificationFailedEvent(String errorMessage)
+	{
+		if(m_uiInstance != null)
+		{
+			m_uiInstance.subscriberVerificationFailedEvent(errorMessage);
+		}
+	}
+
+	@Override
+	public void subscriberVerificationDenialSuccessfulEvent()
+	{
+
+	}
+
+	@Override
+	public void getPendingVerificationRequestsSuccessfulEvent(SubscriberDataRepresentation[] data)
+	{
+
+	}
+
+	@Override
+	public void getPendingVerificationRequestsFailedEvent(String errorMessage)
+	{
+
+	}
+
+	@Override
 	public void subscriberVerificationSuccessfulEvent()
 	{
-		if(getState() != SessionState.Dead)
+		if(m_uiInstance != null)
 		{
-			setState(SessionState.Registered);
 			m_uiInstance.subscriberVerificationSuccessfulEvent();
-		}
-	}
-
-	@Override
-	public void subscriberVerificationDeniedEvent()
-	{
-		if(getState() != SessionState.Dead)
-		{
-			setState(SessionState.VerificationDenied);
-			m_uiInstance.subscriberVerificationDeniedEvent();
-		}
-	}
-
-	@Override
-	public void clientAdminLoginSuccessfulEvent()
-	{
-		if(getState() != SessionState.Dead)
-		{
-			setState(SessionState.LoggedInAsClientAdmin);
-			m_uiInstance.clientAdminLoginSuccessfulEvent();
-		}
-	}
-
-	@Override
-	public void clientAdminLoginFailedEvent(String errorMessage)
-	{
-		if(getState() != SessionState.Dead)
-		{
-			setState(SessionState.LoginDenied);
-			m_uiInstance.clientAdminLoginFailedEvent(errorMessage);
 		}
 	}
 
 	@Override
 	public void sysAdminLoginSuccessfulEvent()
 	{
-		if(getState() != SessionState.Dead)
+		if(m_uiInstance != null)
 		{
-			setState(SessionState.LoggedInAsSysAdmin);
+			onLogin();
 			m_uiInstance.sysAdminLoginSuccessfulEvent();
 		}
 	}
@@ -134,31 +142,51 @@ public class Session implements IEventHandler
 	@Override
 	public void sysAdminLoginFailedEvent(String errorMessage)
 	{
-		if(getState() != SessionState.Dead)
+		if(m_uiInstance != null)
 		{
-			setState(SessionState.LoginDenied);
-			m_uiInstance.clientAdminLoginFailedEvent(errorMessage);
+			m_uiInstance.sysAdminLoginFailedEvent(errorMessage);
+		}
+	}
+
+	@Override
+	public void addingOrganisationSuccessfulEvent()
+	{
+		if(m_uiInstance != null)
+		{
+			m_uiInstance.addingOrganisationSuccessfulEvent();
+		}
+	}
+
+	@Override
+	public void addingOrganisationFailedEvent(String errorMessage)
+	{
+		if(m_uiInstance != null)
+		{
+			m_uiInstance.addingOrganisationFailedEvent(errorMessage);
+		}
+	}
+
+	@Override
+	public void deletingOrganisationSuccessfulEvent()
+	{
+		if(m_uiInstance != null)
+		{
+			m_uiInstance.deletingOrganisationSuccessfulEvent();
+		}
+	}
+
+	@Override
+	public void deletingOrganisationFailedEvent(String errorMessage)
+	{
+		if(m_uiInstance != null)
+		{
+			m_uiInstance.deletingOrganisationFailedEvent(errorMessage);
 		}
 	}
 
 
-	enum SessionState
-	{
-		NotYetLoggedIn,
-		LoggedInAsSubscriber,
-		LoggedInAsClientAdmin,
-		LoggedInAsSysAdmin,
-		LoginDenied,
-		LoggedOut,
-		RegistrationFailed,
-		VerificationPending,
-		VerificationDenied,
-		Registered,
-		Dead
-	}
 
-
-
-	private SessionState    m_currentState = SessionState.NotYetLoggedIn;
 	private IUserInterface  m_uiInstance;
+	private User m_user;
+	private boolean m_loggedIn;
 }

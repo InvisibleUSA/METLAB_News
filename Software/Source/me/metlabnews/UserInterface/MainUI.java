@@ -6,14 +6,12 @@ import javax.servlet.annotation.WebServlet;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.*;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.Presenter;
 import me.metlabnews.Presentation.IUserInterface;
-import me.metlabnews.UserInterface.Views.SubscriberDashboardView;
-import me.metlabnews.UserInterface.Views.SubscriberLoginView;
-import me.metlabnews.UserInterface.Views.SubscriberRegisterView;
+import me.metlabnews.Presentation.SubscriberDataRepresentation;
+import me.metlabnews.UserInterface.Views.*;
 
 
 
@@ -31,40 +29,77 @@ public class MainUI extends UI implements IUserInterface
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
+		MainUIServlet.ui = this;
 		Presenter.getInstance().connect(this);
-
-		openUserLoginView();
+		openSubscriberLoginView();
 	}
 
 
 	// region GUI Methods
-	public void openUserLoginView()
+	public void openSubscriberLoginView()
 	{
 		SubscriberLoginView view = new SubscriberLoginView(this);
 		setContent(view);
 	}
 
-	public void openUserRegisterView()
+	public void openSystemAdminLoginView()
+	{
+		SystemAdminLoginView view = new SystemAdminLoginView(this);
+		setContent(view);
+	}
+
+	public void openSubscriberRegisterView()
 	{
 		SubscriberRegisterView view = new SubscriberRegisterView(this);
 		setContent(view);
 	}
 
-	public void openUserDashboardView()
+	public void openSubscriberDashboardView()
 	{
 		SubscriberDashboardView view = new SubscriberDashboardView(this);
 		setContent(view);
 	}
 
-	public void userLoginAction(String email, String pw)
+	public void openClientAdminDashboardView()
+	{
+		ClientAdminDashboardView view = new ClientAdminDashboardView(this);
+		setContent(view);
+	}
+
+	public void openSystemAdminDashboardView()
+	{
+		SystemAdminDashboardView view = new SystemAdminDashboardView(this);
+		setContent(view);
+	}
+
+	public void openLogoutView()
+	{
+		LogoutView view = new LogoutView(this);
+		setContent(view);
+	}
+
+
+
+	public void subscriberLoginAction(String email, String pw)
 	{
 		subscriberLoginCallback.execute(email, pw);
 	}
 
-	public void userRegisterAction(String firstName, String lastName, String company,
-	                               String email, String password)
+	public void sysAdminLoginAction(String email, String pw)
 	{
-		subscriberRegisterCallback.execute(firstName, lastName, company, email, password);
+		sysAdminLoginCallback.execute(email, pw);
+	}
+
+	public void subscriberRegisterAction(String firstName, String lastName, String company,
+	                                     String email, String password, boolean clientAdmin)
+	{
+		subscriberRegisterCallback.execute(firstName, lastName, company, email,
+		                                   password, clientAdmin);
+	}
+
+	public void userLogoutAction()
+	{
+		logoutCallback.execute();
 	}
 	// endregion GUI Methods
 
@@ -84,15 +119,9 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
-	public void registerCallbackClientAdminLogin(ISubscriberLoginCallback callback)
+	public void registerCallbackSysAdminLogin(ISubscriberLoginCallback callback)
 	{
-
-	}
-
-	@Override
-	public void registerCallbackClientAdminRegistration(ISubscriberRegisterCallback callback)
-	{
-
+		sysAdminLoginCallback = callback;
 	}
 
 	@Override
@@ -103,6 +132,7 @@ public class MainUI extends UI implements IUserInterface
 
 
 	private ISubscriberLoginCallback    subscriberLoginCallback;
+	private ISubscriberLoginCallback    sysAdminLoginCallback;
 	private ISubscriberRegisterCallback subscriberRegisterCallback;
 
 	private ICallback logoutCallback;
@@ -111,10 +141,18 @@ public class MainUI extends UI implements IUserInterface
 
 
 	// region Events
+
 	@Override
-	public void subscriberLoginSuccessfulEvent()
+	public void subscriberLoginSuccessfulEvent(boolean asAdmin)
 	{
-		openUserDashboardView();
+		if(asAdmin)
+		{
+			openClientAdminDashboardView();
+		}
+		else
+		{
+			openSubscriberDashboardView();
+		}
 	}
 
 	@Override
@@ -124,9 +162,9 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
-	public void subscriberLogoutEvent()
+	public void userLogoutEvent()
 	{
-
+		openLogoutView();
 	}
 
 	@Override
@@ -149,19 +187,25 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
-	public void subscriberVerificationDeniedEvent()
+	public void subscriberVerificationFailedEvent(String errorMessage)
 	{
 
 	}
 
 	@Override
-	public void clientAdminLoginSuccessfulEvent()
+	public void subscriberVerificationDenialSuccessfulEvent()
 	{
 
 	}
 
 	@Override
-	public void clientAdminLoginFailedEvent(String errorMessage)
+	public void getPendingVerificationRequestsSuccessfulEvent(SubscriberDataRepresentation[] data)
+	{
+
+	}
+
+	@Override
+	public void getPendingVerificationRequestsFailedEvent(String errorMessage)
 	{
 
 	}
@@ -177,6 +221,31 @@ public class MainUI extends UI implements IUserInterface
 	{
 
 	}
+
+	@Override
+	public void addingOrganisationSuccessfulEvent()
+	{
+
+	}
+
+	@Override
+	public void addingOrganisationFailedEvent(String errorMessage)
+	{
+
+	}
+
+	@Override
+	public void deletingOrganisationSuccessfulEvent()
+	{
+
+	}
+
+	@Override
+	public void deletingOrganisationFailedEvent(String errorMessage)
+	{
+
+	}
+
 	// endregion Events
 
 
@@ -185,11 +254,33 @@ public class MainUI extends UI implements IUserInterface
 	@WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)
 	@VaadinServletConfiguration(ui = MainUI.class, productionMode = false)
 	public static class MainUIServlet extends VaadinServlet
+			implements SessionInitListener, SessionDestroyListener
 	{
 		@Override
 		public void init() throws ServletException
 		{
 			super.init();
+		}
+
+		static MainUI ui = null;
+
+		@Override
+		public void sessionInit(SessionInitEvent event)
+		{
+		}
+
+		@Override
+		protected void servletInitialized() throws ServletException
+		{
+			super.servletInitialized();
+			getService().addSessionInitListener(this);
+			getService().addSessionDestroyListener(this);
+		}
+
+		@Override
+		public void sessionDestroy(SessionDestroyEvent event)
+		{
+			Presenter.getInstance().disconnect(ui);
 		}
 	}
 }

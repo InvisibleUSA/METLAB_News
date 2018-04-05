@@ -32,6 +32,7 @@ public class Organisation
 		this.id = id;
 	}
 
+	@Column(unique = true)
 	public String getName()
 	{
 		return name;

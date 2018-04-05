@@ -6,20 +6,20 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SubscriberLoginView extends VerticalLayout
+public class SystemAdminLoginView extends VerticalLayout
 {
-	public SubscriberLoginView(MainUI parent)
+	public SystemAdminLoginView(MainUI parent)
 	{
 		m_parent = parent;
 		Page.getCurrent().setTitle("Anmelden");
 
 		buttonLogin.addClickListener((Button.ClickEvent event) -> loginAction());
 
-		buttonRegister.addClickListener((Button.ClickEvent event)
-				                                -> m_parent.openSubscriberRegisterView());
+		buttonSubscriberLogin.addClickListener((Button.ClickEvent event)
+				                                -> m_parent.openSubscriberLoginView());
 
 		this.addComponents(title, textFieldEmail, textFieldPassword, buttonLogin,
-		                   buttonRegister, buttonSysAdminLogin);
+		                   buttonSubscriberLogin, buttonSysAdminLogin);
 	}
 
 	private void loginAction()
@@ -37,7 +37,7 @@ public class SubscriberLoginView extends VerticalLayout
 		}
 		else
 		{
-			m_parent.subscriberLoginAction(email, password);
+			m_parent.sysAdminLoginAction(email, password);
 		}
 	}
 
@@ -50,5 +50,5 @@ public class SubscriberLoginView extends VerticalLayout
 	private final PasswordField    textFieldPassword = new PasswordField("Passwort:");
 	private final Button           buttonLogin       = new Button("Anmelden");
 	private final Button           buttonSysAdminLogin  = new Button("Zum Systemadministrator Login");
-	private final Button           buttonRegister    = new Button("Zur Registrierung");
+	private final Button           buttonSubscriberLogin = new Button("Zurück zur Anmeldeseite");
 }
