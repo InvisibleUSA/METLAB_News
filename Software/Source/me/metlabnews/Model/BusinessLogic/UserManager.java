@@ -286,6 +286,36 @@ public class UserManager
 
 	// region System Admin Interaction
 
+	public void systemAdministratorLogin(Session session, String email, String password)
+	{
+		SystemAdministrator admin;
+		String correctPassword;
+		try
+		{
+			admin = m_dbConnector.getSystemAdministratorByEmail(email);
+			correctPassword = admin.getPassword();
+		}
+		catch(RequestedDataDoesNotExistException e)
+		{
+			session.subscriberLoginFailedEvent(Messages.UnknownEmail);
+			return;
+		}
+		catch(UnexpectedDataException e)
+		{
+			session.subscriberLoginFailedEvent(Messages.UnknownError);
+			return;
+		}
+		if(password.equals(correctPassword))
+		{
+			session.setUser(admin);
+			session.sysAdminLoginSuccessfulEvent();
+		}
+		else
+		{
+			session.sysAdminLoginFailedEvent(Messages.WrongPassword);
+		}
+	}
+
 	public void addOrganisation(Session session, String organisationName)
 	{
 		if(!session.isLoggedIn())

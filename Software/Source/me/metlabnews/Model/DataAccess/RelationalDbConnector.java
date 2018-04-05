@@ -2,6 +2,8 @@ package me.metlabnews.Model.DataAccess;
 
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
+import me.metlabnews.Model.Entities.SystemAdministrator;
+import me.metlabnews.Model.Entities.User;
 import me.metlabnews.Presentation.Presenter;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
@@ -157,6 +159,42 @@ public class RelationalDbConnector implements AutoCloseable
 			disconnect();
 		}
 		return subscriber;
+	}
+
+	// TODO: merge with getSubscriberByEmail()
+	public SystemAdministrator getSystemAdministratorByEmail(String email)
+			throws RequestedDataDoesNotExistException, UnexpectedDataException
+	{
+		SystemAdministrator admin = null;
+		connect();
+		try
+		{
+			Query query = m_session.get().createQuery("from " +
+					"SystemAdministrator where email = :email");
+			query.setParameter("email", email);
+			admin = (SystemAdministrator)query.getSingleResult();
+			m_transaction.get().commit();
+		}
+		catch(NoResultException e)
+		{
+			throw new RequestedDataDoesNotExistException(e);
+		}
+		catch(NonUniqueResultException e)
+		{
+			throw new UnexpectedDataException(e);
+		}
+		catch(HibernateException e)
+		{
+			if(m_transaction != null)
+			{
+				m_transaction.get().rollback();
+			}
+		}
+		finally
+		{
+			disconnect();
+		}
+		return admin;
 	}
 
 

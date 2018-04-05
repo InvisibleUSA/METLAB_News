@@ -18,6 +18,9 @@ public class SubscriberLoginView extends VerticalLayout
 		buttonRegister.addClickListener((Button.ClickEvent event)
 				                                -> m_parent.openSubscriberRegisterView());
 
+		buttonSysAdminLogin.addClickListener((Button.ClickEvent event)
+												-> m_parent.openSystemAdminLoginView());
+
 		this.addComponents(title, textFieldEmail, textFieldPassword, buttonLogin,
 		                   buttonRegister, buttonSysAdminLogin);
 	}

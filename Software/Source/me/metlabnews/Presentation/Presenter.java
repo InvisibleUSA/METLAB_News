@@ -47,6 +47,9 @@ public class Presenter
 
 		ui.registerCallbackLogout(session::userLogoutEvent);
 
+		ui.registerCallbackSysAdminLogin((email, pw) ->
+				m_userManager.systemAdministratorLogin(session, email, pw));
+
 	// endregion Callbacks
 
 		m_sessions.put(ui, session);

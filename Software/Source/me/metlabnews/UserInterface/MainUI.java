@@ -213,7 +213,7 @@ public class MainUI extends UI implements IUserInterface
 	@Override
 	public void sysAdminLoginSuccessfulEvent()
 	{
-
+		openSystemAdminDashboardView();
 	}
 
 	@Override
