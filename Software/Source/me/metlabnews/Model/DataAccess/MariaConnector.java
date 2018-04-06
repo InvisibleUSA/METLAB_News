@@ -2,19 +2,21 @@ package me.metlabnews.Model.DataAccess;
 
 
 
+import java.sql.ResultSet;
+
+
+
 public class MariaConnector
 {
-	public static MariaConnector getInstance()
+
+	protected ResultSet query(String q)
 	{
-		if(m_instance == null)
-		{
-			m_instance = new MariaConnector();
-		}
-		return m_instance;
+		//TODO: Implement
+		return null;
 	}
 
 
-	private MariaConnector()
+	MariaConnector()
 	{
 	}
 
@@ -27,6 +29,4 @@ public class MariaConnector
 	{
 	}
 
-
-	private static MariaConnector m_instance = null;
 }
