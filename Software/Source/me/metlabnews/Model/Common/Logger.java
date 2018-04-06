@@ -1,7 +1,5 @@
 package me.metlabnews.Model.Common;
 
-import me.metlabnews.Model.DataAccess.LoggerFailedException;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -164,9 +162,6 @@ public class Logger
 					break;
 				case ToConsole:
 					// not implemented - coming soon.... TO DO
-					break;
-				default:
-					new LoggerFailedException("Logger failed to handle your operation!");
 					break;
 			}
 		}
