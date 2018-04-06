@@ -1,34 +1,35 @@
 package me.metlabnews.Model.DataAccess;
 
+import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
+import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
+import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
+import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedDataException;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Model.Entities.SystemAdministrator;
-import me.metlabnews.Model.Entities.User;
-import me.metlabnews.Presentation.Presenter;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 
 
-public class RelationalDbConnector implements AutoCloseable
+public class MariaConnector implements AutoCloseable
 {
-	public static RelationalDbConnector getInstance()
+	public static MariaConnector getInstance()
 	{
 		if(m_instance == null)
 		{
-			m_instance = new RelationalDbConnector();
+			m_instance = new MariaConnector();
 		}
 		return m_instance;
 	}
 
 
-	private RelationalDbConnector()
+	private MariaConnector()
 	{
 		try
 		{
@@ -261,6 +262,8 @@ public class RelationalDbConnector implements AutoCloseable
 			throws DataCouldNotBeAddedException
 	{
 		//TODO Find out why the fuck IntelliJ marks the following initialisation as redundant
+		//Klar ist das redundant wenn du das 3 Zeilen weiter sowieso wieder ueberschreibst
+
 		Long id = -1L;
 		connect();
 		try
@@ -331,7 +334,7 @@ public class RelationalDbConnector implements AutoCloseable
 
 
 
-	private static RelationalDbConnector m_instance = null;
+	private static MariaConnector m_instance = null;
 	private SessionFactory m_sessionFactory;
 	private ThreadLocal<Session> m_session = new ThreadLocal<>();
 	private ThreadLocal<Transaction> m_transaction = new ThreadLocal<>();

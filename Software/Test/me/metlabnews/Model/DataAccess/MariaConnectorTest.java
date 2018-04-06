@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess;
 
+import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 //import org.junit.jupiter.api.Test;
@@ -10,12 +11,9 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-
 
 @RunWith(JUnit4.class)
-public class RelationalDbConnectorTest
+public class MariaConnectorTest
 {
 
 	@Before
@@ -42,7 +40,7 @@ public class RelationalDbConnectorTest
 
 			Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
 			                                       organisation, true);
-			RelationalDbConnector.getInstance().addSubscriber(subscriber);
+			MariaConnector.getInstance().addSubscriber(subscriber);
 		}
 		catch(Exception e)
 		{
@@ -61,7 +59,7 @@ public class RelationalDbConnectorTest
 		Organisation organisation = new Organisation("TestOrg");
 		try
 		{
-			RelationalDbConnector.getInstance().addOrganisation(organisation);
+			MariaConnector.getInstance().addOrganisation(organisation);
 		}
 		catch(DataCouldNotBeAddedException e)
 		{

@@ -1,10 +1,10 @@
 package me.metlabnews.Model.BusinessLogic;
 
-import me.metlabnews.Model.DataAccess.DataCouldNotBeAddedException;
-import me.metlabnews.Model.DataAccess.DataUpdateFailedException;
-import me.metlabnews.Model.DataAccess.RelationalDbConnector;
-import me.metlabnews.Model.DataAccess.RequestedDataDoesNotExistException;
-import me.metlabnews.Model.DataAccess.UnexpectedDataException;
+import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
+import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
+import me.metlabnews.Model.DataAccess.MariaConnector;
+import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
+import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedDataException;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Model.Entities.SystemAdministrator;
@@ -31,7 +31,7 @@ public class UserManager
 
 	private UserManager()
 	{
-		m_dbConnector = RelationalDbConnector.getInstance();
+		m_dbConnector = MariaConnector.getInstance();
 	}
 
 
@@ -389,5 +389,5 @@ public class UserManager
 
 
 	private static UserManager m_instance = null;
-	private RelationalDbConnector m_dbConnector;
+	private MariaConnector m_dbConnector;
 }

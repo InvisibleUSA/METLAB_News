@@ -20,7 +20,7 @@
 		</property>
 
 		<property name = "hibernate.connection.username">
-			root
+			test
 		</property>
 
 		<property name = "hibernate.connection.password">

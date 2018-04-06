@@ -1,4 +1,4 @@
-package me.metlabnews.Model.DataAccess;
+package me.metlabnews.Model.DataAccess.Exceptions;
 
 
 
