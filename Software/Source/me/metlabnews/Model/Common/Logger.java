@@ -1,6 +1,9 @@
 package me.metlabnews.Model.Common;
 
+import me.metlabnews.Model.DataAccess.LoggerFailedException;
+
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -11,18 +14,26 @@ import java.util.Calendar;
 /**
  * This Class is for logging the whole error's and debug outputs of the application.
  * It will be written to a local .txt file.
+ * The File and the Subfolders are created automatically.
  */
 public class Logger
 {
 	private int m_logCounterTotal = 0;
-
-
 	private static Logger instance;
 
+
+	/**
+	 * Private Constructor of Singleton
+	 */
 	private Logger()
 	{
 	}
 
+
+	/**
+	 * Singleton call
+	 * @return instance of this Class
+	 */
 	public static synchronized Logger getInstance()
 	{
 		if(Logger.instance == null)
@@ -32,10 +43,11 @@ public class Logger
 		return Logger.instance;
 	}
 
+
 	/**
 	 * This Enum is for the channels to log the output message to the specific channel.
 	 */
-	private enum channel
+	public enum enum_channel
 	{
 		ClippingDaemon,
 		Crawler,
@@ -48,12 +60,22 @@ public class Logger
 
 
 	/**
+	 * This Enum is for logging to Console or to File
+	 */
+	public enum enum_logType
+	{
+		ToFile,
+		ToConsole
+	}
+
+
+	/**
 	 * This Enum represents the Priority of the logged message. It will be possible to set the
 	 * internal Priority higher than the called Priority. This allows the user to filter some logs.
 	 * If e.g. the Priority of the internal logger is higher than the called Priority, than the message
 	 * will NOT be logged.
 	 */
-	private enum logPriority
+	public enum enum_logPriority
 	{
 		DEBUG,
 		WARNING,
@@ -66,15 +88,19 @@ public class Logger
 	 *
 	 * @param msg the Message you want to write to the file
 	 */
-	private void writeToFile(String msg)
+	private void writeToFile(enum_channel channel, int cntr, enum_logPriority priority, String msg)
 	{
 		if(msg != null)
 		{
-			final String file = "C:\\test\\filename.txt";
+			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
+			String fullFilePath = "C:\\SWE-LOGS\\" + channel.name() + "\\" + fileName;
+
+			File file = new File(fullFilePath);
+			file.getParentFile().mkdirs();
 
 			try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true)))
 			{
-				bw.write(this.getTimeStamp() + " : " + msg);
+				bw.write("#" + cntr + " | " + priority.name() + " | " + this.getTimeStamp() + " : " + msg + "\n");
 			}
 			catch(IOException e)
 			{
@@ -91,14 +117,23 @@ public class Logger
 	 */
 	private String getTimeStamp()
 	{
-		return new SimpleDateFormat("dd.MM.yyyy [HH:mm:ss]").format(Calendar.getInstance().getTime());
+		return new SimpleDateFormat("[HH:mm:ss]").format(Calendar.getInstance().getTime());
+	}
+
+
+	/**
+	 * This Method returns a Date to check if a file already exists
+	 */
+	private String getDateString()
+	{
+		return new SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().getTime());
 	}
 
 
 	/**
 	 * this Method returns the number of the total logged elements as Number
 	 */
-	public int getLogCounterTotal()
+	private int getLogCounterTotal()
 	{
 		return m_logCounterTotal;
 	}
@@ -110,15 +145,32 @@ public class Logger
 	 * current date (e.g. 05-04-2018-Crawler-log.txt)
 	 * @param channel       the Channel from where you call the log-method
 	 * @param msg           the log-message
-	 * @param logPriority   the priority you want to log with (DEBUG, WARNING, ERROR)
+	 * @param priority   the priority you want to log with (DEBUG, WARNING, ERROR)
 	 */
-	public void logToFile(channel channel, String msg, logPriority logPriority)
+	public void log(enum_channel channel, enum_logPriority priority, enum_logType type, String msg)
 	{
-		this.m_logCounterTotal++;
-		// TO DO
+		if(msg != null)
+		{
+			// TO DO
+			// ...
+			// ...
 
-		// ...
-		// ...
-		this.writeToFile(msg);
+
+
+			switch(type)
+			{
+				case ToFile:
+					this.writeToFile(channel, ++this.m_logCounterTotal, priority, msg);
+					break;
+				case ToConsole:
+					// not implemented - coming soon.... TO DO
+					break;
+				default:
+					new LoggerFailedException("Logger failed to handle your operation!");
+					break;
+			}
+		}
 	}
+
+
 }
