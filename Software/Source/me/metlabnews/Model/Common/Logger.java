@@ -1,6 +1,6 @@
 package me.metlabnews.Model.Common;
 
-import me.metlabnews.Model.DataAccess.LoggerFailedException;
+import me.metlabnews.Model.DataAccess.Exceptions.LoggerFailedException;
 
 import java.io.BufferedWriter;
 import java.io.File;
