@@ -5,6 +5,7 @@ import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
 import me.metlabnews.Model.DataAccess.MariaConnector;
 import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
 import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedDataException;
+import me.metlabnews.Model.DataAccess.Queries.QueryGetUser;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Model.Entities.SystemAdministrator;
@@ -43,7 +44,10 @@ public class UserManager
 		boolean emailIsAlreadyTaken = true;
 		try
 		{
-			m_dbConnector.getSubscriberByEmail(email);
+			//TODO: Implement GetSubQuery
+			QueryGetUser qgu = new QueryGetUser();
+			qgu.email = email;
+			qgu.execute();
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{

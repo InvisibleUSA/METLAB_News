@@ -1,12 +1,25 @@
 package me.metlabnews.Model.DataAccess;
 
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+
+
 public class DatabaseConnector
 {
 	private MariaConnector mariaConnector = new MariaConnector();
 	private BaseXConnector baseXConnector = new BaseXConnector();
 
-	public void bla()
+	public String baseXQuery()
 	{
-		mariaConnector.query("Hallo");
+		//baseXConnector.query(null);
+		return null;
+	}
+
+	public ResultSet mariaQuery(String query) throws SQLException
+	{
+		mariaConnector.query(query);
+		return null;
 	}
 }
