@@ -47,6 +47,7 @@ public class Logger
 	 */
 	public enum enum_channel
 	{
+		ConfigurationManager,
 		ClippingDaemon,
 		Crawler,
 		UI,

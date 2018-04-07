@@ -2,6 +2,8 @@ package me.metlabnews.Model.DataAccess;
 
 
 
+import me.metlabnews.Model.Common.Logger;
+
 import java.io.*;
 import java.util.Properties;
 
@@ -9,8 +11,11 @@ import java.util.Properties;
 
 public class ConfigurationManager
 {
-	private static ConfigurationManager instance;
+	private final String m_XMLFilePath =
+			(System.getProperty("user.dir") + "\\Software\\Source\\me\\metlabnews\\Model\\DataAccess\\Settings.XML");
 
+
+	private static ConfigurationManager instance;
 
 	/**
 	 * Private Constructor of Singleton
@@ -34,95 +39,166 @@ public class ConfigurationManager
 		return ConfigurationManager.instance;
 	}
 
-
+	/**
+	 * Prefered Type to Crawl
+	 */
 	private enum TypePrefered
 	{
 		RSSFeed,
 		Website
 	}
 
+	/**
+	 * This is the main-method of the XML Properties. It returns the values of the given
+	 * String-keyvalue.
+	 *
+	 * @param keyvalue The String-key of the value
+	 * @return the value of the property
+	 */
+	private String returnProperty(String keyvalue)
+	{
+		Properties properties = new Properties();
+		try(InputStream inputStream = new FileInputStream(new File(m_XMLFilePath)))
+		{
+			properties.loadFromXML(inputStream);
+			return properties.getProperty(keyvalue);
+		}
+		catch(Exception e)
+		{
+			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
+			                         Logger.enum_logPriority.ERROR,
+			                         Logger.enum_logType.ToFile,
+			                         e.getMessage());
+			return null;
+		}
+	}
+
 
 	// Benny
 	public long getCrawlerTimeout()
 	{
-		Properties props = new Properties();
 		try
 		{
-
-			File        configFile  = new File("Settings.XML");
-			InputStream inputStream = new FileInputStream(configFile);
-			props.loadFromXML(inputStream);
+			return Long.parseLong(this.returnProperty("CrawlerTimeout"));
 		}
-		catch(IOException e)
+		catch(NumberFormatException e)
 		{
-			e.printStackTrace();
+			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
+			                         Logger.enum_logPriority.ERROR,
+			                         Logger.enum_logType.ToFile,
+			                         e.toString());
+			return 0L;
 		}
-		System.out.println(props.getProperty("TEST"));
-		return 0L;
 	}
 
 	public int getMaxDocsPerDomain()
 	{
-		return 0;
+		try
+		{
+			return Integer.parseInt(this.returnProperty("MaxDocsPerDomain"));
+		}
+		catch(NumberFormatException e)
+		{
+			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
+			                         Logger.enum_logPriority.ERROR,
+			                         Logger.enum_logType.ToFile,
+			                         e.toString());
+			return 0;
+		}
 	}
 
 	public TypePrefered getTypePrefered()
 	{
-		return TypePrefered.RSSFeed;
+		try
+		{
+			switch(String.format(this.returnProperty("TypePrefered")))
+			{
+				case "RSSFeed":
+					return TypePrefered.RSSFeed;
+				case "Website":
+					return TypePrefered.Website;
+				default:
+					return null;
+			}
+		}
+		catch(NumberFormatException e)
+		{
+			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
+			                         Logger.enum_logPriority.ERROR,
+			                         Logger.enum_logType.ToFile,
+			                         e.toString());
+			return null;
+		}
 	}
 
 
 	// Erik
 	public String getBaseXLoginUsername()
 	{
-		return "";
+		return this.returnProperty("BaseXLoginUsername");
 	}
 
 	public String getBaseXLoginPassword()
 	{
-		return "";
+		return this.returnProperty("BaseXLoginPassword");
 	}
 
 	public String getBaseXPath()
 	{
-		return "";
+		return this.returnProperty("BaseXPath");
 	}
 
 	public String getSQLLoginUsername()
 	{
-		return "";
+		return this.returnProperty("SQLLoginUsername");
 	}
 
 	public String getSQLLoginPassword()
 	{
-		return "";
+		return this.returnProperty("SQLLoginPassword");
 	}
 
 	public String getMailFromAddress()
 	{
-		return "";
+		return this.returnProperty("MailFromAddress");
 	}
 
 	public String getMailLoginPassword()
 	{
-		return "";
+		return this.returnProperty("MailLoginPassword");
 	}
 
 	public String getMailSMTPServer()
 	{
-		return "";
+		return this.returnProperty("MailSMTPServer");
 	}
 
 	public long getClippingDaemonEnqueingTimeOut()
 	{
-		return 0L;
+		try
+		{
+			return Long.parseLong(this.returnProperty("ClippingDaemonEnqueingTimeOut"));
+		}
+		catch(NumberFormatException e)
+		{
+			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
+			                         Logger.enum_logPriority.ERROR,
+			                         Logger.enum_logType.ToFile,
+			                         e.toString());
+			return 0L;
+		}
 	}
 
 
 	// Tobias
+
+	/**
+	 * Gets the File Path of the Logger
+	 * @return the Path of the Logger
+	 */
 	public String getLoggerLogFilePath()
 	{
-		return "";
+		return this.returnProperty("LoggerLogFilePath");
 	}
 
 

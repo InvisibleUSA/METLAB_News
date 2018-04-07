@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-	<comment>Crawler</comment>
-	<entry key="TEST">1234509876eFruit">pomegranate</entry>
-	<entry key="favoriteDay">today</entry>
+	<!-- Benny -->
+	<entry key="CrawlerTimeout">12345</entry>
+	<entry key="MaxDocsPerDomain">12345</entry>
+	<entry key="TypePrefered">RSSFeed</entry>
+
+	<!-- Erik -->
+	<entry key="BaseXLoginUsername">ADMIN</entry>
+	<entry key="BaseXLoginPassword">ADMIN</entry>
+	<entry key="BaseXPath">C:\\USERS\\PORN</entry>
+	<entry key="SQLLoginUsername">ROOT</entry>
+	<entry key="SQLLoginPassword">ROOT</entry>
+	<entry key="MailFromAddress">???</entry>
+	<entry key="MailLoginPassword">!!!</entry>
+	<entry key="MailSMTPServer">12345</entry>
+	<entry key="ClippingDaemonEnqueingTimeOut">12345</entry>
+
+	<!-- Tobias -->
+	<entry key="LoggerLogFilePath">C:\\USERS\\PORN</entry>
 </properties>
