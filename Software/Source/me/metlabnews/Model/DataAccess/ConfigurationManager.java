@@ -2,6 +2,11 @@ package me.metlabnews.Model.DataAccess;
 
 
 
+import java.io.*;
+import java.util.Properties;
+
+
+
 public class ConfigurationManager
 {
 	private static ConfigurationManager instance;
@@ -40,7 +45,20 @@ public class ConfigurationManager
 	// Benny
 	public long getCrawlerTimeout()
 	{
-		return 0;
+		Properties props = new Properties();
+		try
+		{
+
+			File        configFile  = new File("Settings.XML");
+			InputStream inputStream = new FileInputStream(configFile);
+			props.loadFromXML(inputStream);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		System.out.println(props.getProperty("TEST"));
+		return 0L;
 	}
 
 	public int getMaxDocsPerDomain()
@@ -93,6 +111,11 @@ public class ConfigurationManager
 	public String getMailSMTPServer()
 	{
 		return "";
+	}
+
+	public long getClippingDaemonEnqueingTimeOut()
+	{
+		return 0L;
 	}
 
 
