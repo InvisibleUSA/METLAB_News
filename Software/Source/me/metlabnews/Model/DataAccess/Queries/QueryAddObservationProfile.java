@@ -1,11 +1,10 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
-
 import java.sql.ResultSet;
 
 
 
-public class QueryLoginUser extends QueryBase
+public class QueryAddObservationProfile extends QueryBase
 {
 	public String username;
 	public String password;

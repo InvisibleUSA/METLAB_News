@@ -1,10 +1,6 @@
 package me.metlabnews.Model.BusinessLogic;
 
-import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
-import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
-import me.metlabnews.Model.DataAccess.MariaConnector;
-import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
-import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedDataException;
+import me.metlabnews.Model.DataAccess.Queries.*;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Model.Entities.SystemAdministrator;
@@ -31,79 +27,56 @@ public class UserManager
 
 	private UserManager()
 	{
-		m_dbConnector = MariaConnector.getInstance();
 	}
 
 
     // region Subscriber Interaction
 	public void registerNewSubscriber(Session session, String email, String password,
 	                                  String firstName, String lastName,
-	                                  String organisationName, boolean clientAdmin)
+	                                  String organisationName, boolean asClientAdmin)
 	{
-		boolean emailIsAlreadyTaken = true;
-		try
-		{
-			m_dbConnector.getSubscriberByEmail(email);
-		}
-		catch(RequestedDataDoesNotExistException e)
-		{
-			emailIsAlreadyTaken = false;
-		}
-		catch(UnexpectedDataException e)
-		{
-			session.subscriberRegistrationFailedEvent(Messages.UnknownError);
-			return;
-		}
+		GetSubscriberQuery subscriberQuery = new GetSubscriberQuery(email);
+		boolean emailIsAlreadyTaken = !subscriberQuery.execute();
 		if(emailIsAlreadyTaken)
 		{
 			session.subscriberRegistrationFailedEvent(Messages.EmailAddressAlreadyInUse);
 			return;
 		}
 
-		Organisation organisation;
-		try
-		{
-			organisation = m_dbConnector.getOrganisationByName(organisationName);
-		}
-		catch(RequestedDataDoesNotExistException e)
+		GetOrganisationQuery organisationQuery =
+				new GetOrganisationQuery(organisationName);
+		boolean organisationExists = organisationQuery.execute();
+		if(!organisationExists)
 		{
 			session.subscriberRegistrationFailedEvent(Messages.UnknownOrganisation);
 			return;
 		}
+
 		Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
-		                                       organisation, clientAdmin);
-		session.setUser(subscriber);
-		try
-		{
-			m_dbConnector.addSubscriber(subscriber);
-		}
-		catch(DataCouldNotBeAddedException e)
+		                                       organisationQuery.getResult(), asClientAdmin);
+		AddSubscriberQuery query = new AddSubscriberQuery(subscriber);
+		if(!query.execute())
 		{
 			session.subscriberRegistrationFailedEvent(Messages.UnknownError);
 		}
+		session.setUser(subscriber);
 		session.subscriberVerificationPendingEvent();
 	}
 
 
 	public void subscriberLogin(Session session, String email, String password)
 	{
-		Subscriber subscriber;
-		String correctPassword;
-		try
-		{
-			subscriber = m_dbConnector.getSubscriberByEmail(email);
-			correctPassword = subscriber.getPassword();
-		}
-		catch(RequestedDataDoesNotExistException e)
+		GetSubscriberQuery query = new GetSubscriberQuery(email);
+		if(!query.execute())
 		{
 			session.subscriberLoginFailedEvent(Messages.UnknownEmail);
 			return;
 		}
-		catch(UnexpectedDataException e)
-		{
-			session.subscriberLoginFailedEvent(Messages.UnknownError);
-			return;
-		}
+
+		Subscriber subscriber = query.getResult();
+		String correctPassword = subscriber.getPassword();
+
+
 		if(password.equals(correctPassword))
 		{
 			session.setUser(subscriber);
@@ -146,11 +119,12 @@ public class UserManager
 			return;
 		}
 		Organisation organisation = ((Subscriber)session.getUser()).getOrganisationId();
-		Subscriber[] matchingSubscribers =
-				m_dbConnector.getAllSubscribersOfOrganisation(organisation);
-		List<SubscriberDataRepresentation> table = new ArrayList<>();
+		GetSubscribersOfOrganisationQuery query =
+				new GetSubscribersOfOrganisationQuery(organisation);
+		query.execute();
 
-		for(Subscriber subscriber : matchingSubscribers)
+		List<SubscriberDataRepresentation> table = new ArrayList<>();
+		for(Subscriber subscriber : query.getResult())
 		{
 			table.add(new SubscriberDataRepresentation(subscriber.getEmail(),
 			                                           subscriber.getFirstName(),
@@ -164,8 +138,6 @@ public class UserManager
 
 	public void verifySubscriber(Session session, String subscriberEmail)
 	{
-		// TODO: replace redundant code
-
 		if(!session.isLoggedIn())
 		{
 			session.subscriberVerificationFailedEvent(Messages.NotLoggedIn);
@@ -181,35 +153,27 @@ public class UserManager
 			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
 			return;
 		}
-		Subscriber subscriber;
-		try
-		{
-			subscriber = m_dbConnector.getSubscriberByEmail(subscriberEmail);
-		}
-		catch(RequestedDataDoesNotExistException e)
+
+		GetSubscriberQuery query = new GetSubscriberQuery(subscriberEmail);
+		if(!query.execute())
 		{
 			session.subscriberVerificationFailedEvent(Messages.UnknownEmail);
 			return;
 		}
-		catch(UnexpectedDataException e)
-		{
-			session.subscriberVerificationFailedEvent(Messages.UnknownError);
-			return;
-		}
+		Subscriber subscriber = query.getResult();
+
 		String subscriberOrganisationName = subscriber.getOrganisationId().getName();
 		String adminOrganisationName = subscriber.getOrganisationId().getName();
 		if(!subscriberOrganisationName.equals(adminOrganisationName))
 		{
 			session.subscriberVerificationFailedEvent(Messages.IllegalOperation);
+			return;
 		}
 		if(subscriber.isVerificationPending())
 		{
 			subscriber.setVerificationPending(false);
-			try
-			{
-				m_dbConnector.updateSubscriber(subscriber);
-			}
-			catch(DataUpdateFailedException e)
+			UpdateSubscriberQuery updateQuery = new UpdateSubscriberQuery(subscriber);
+			if(!updateQuery.execute())
 			{
 				session.subscriberVerificationFailedEvent(Messages.UnknownError);
 			}
@@ -240,38 +204,29 @@ public class UserManager
 			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
 			return;
 		}
-		Subscriber subscriber;
-		//TODO: replace redundant code
-		try
-		{
-			subscriber = m_dbConnector.getSubscriberByEmail(subscriberEmail);
-		}
-		catch(RequestedDataDoesNotExistException e)
+
+		GetSubscriberQuery fetchQuery = new GetSubscriberQuery(subscriberEmail);
+		if(!fetchQuery.execute())
 		{
 			session.subscriberVerificationFailedEvent(Messages.UnknownEmail);
 			return;
 		}
-		catch(UnexpectedDataException e)
-		{
-			session.subscriberVerificationFailedEvent(Messages.UnknownError);
-			return;
-		}
+		Subscriber subscriber = new Subscriber();
+
 		String subscriberOrganisationName = subscriber.getOrganisationId().getName();
 		String adminOrganisationName = subscriber.getOrganisationId().getName();
 		if(!subscriberOrganisationName.equals(adminOrganisationName))
 		{
 			session.subscriberVerificationFailedEvent(Messages.IllegalOperation);
+			return;
 		}
 		if(subscriber.isVerificationPending())
 		{
-			try
-			{
-				m_dbConnector.deleteSubscriber(subscriber);
-			}
-			catch(RequestedDataDoesNotExistException e)
+			subscriber.setVerificationPending(false);
+			UpdateSubscriberQuery updateQuery = new UpdateSubscriberQuery(subscriber);
+			if(!updateQuery.execute())
 			{
 				session.subscriberVerificationFailedEvent(Messages.UnknownError);
-				return;
 			}
 			session.subscriberVerificationDenialSuccessfulEvent();
 		}
@@ -288,23 +243,16 @@ public class UserManager
 
 	public void systemAdministratorLogin(Session session, String email, String password)
 	{
-		SystemAdministrator admin;
-		String correctPassword;
-		try
-		{
-			admin = m_dbConnector.getSystemAdministratorByEmail(email);
-			correctPassword = admin.getPassword();
-		}
-		catch(RequestedDataDoesNotExistException e)
+		GetSystemAdministratorQuery query = new GetSystemAdministratorQuery(email);
+		if(!query.execute())
 		{
 			session.subscriberLoginFailedEvent(Messages.UnknownEmail);
 			return;
 		}
-		catch(UnexpectedDataException e)
-		{
-			session.subscriberLoginFailedEvent(Messages.UnknownError);
-			return;
-		}
+
+		SystemAdministrator admin = query.getResult();
+		String correctPassword = admin.getPassword();
+
 		if(password.equals(correctPassword))
 		{
 			session.setUser(admin);
@@ -328,33 +276,22 @@ public class UserManager
 			session.subscriberVerificationFailedEvent(Messages.NotSystemAdmin);
 			return;
 		}
-		boolean nameIsAlreadyTaken = true;
-		try
-		{
-			m_dbConnector.getSubscriberByEmail(organisationName);
-		}
-		catch(RequestedDataDoesNotExistException e)
-		{
-			// TODO: more efficient "already in use" check (avoid intended exceptions)
-			nameIsAlreadyTaken = false;
-		}
-		catch(UnexpectedDataException e)
-		{
-			session.addingOrganisationFailedEvent(Messages.UnknownError);
-			return;
-		}
+
+		GetOrganisationQuery organisationQuery = new GetOrganisationQuery(organisationName);
+		boolean nameIsAlreadyTaken = organisationQuery.execute();
 		if(nameIsAlreadyTaken)
 		{
 			session.addingOrganisationFailedEvent(Messages.OrganisationNameAlreadyTaken);
 			return;
 		}
+
 		Organisation organisation = new Organisation(organisationName);
-		try
+		AddOrganisationQuery addQuery = new AddOrganisationQuery(organisation);
+		if(addQuery.execute())
 		{
-			m_dbConnector.addOrganisation(organisation);
 			session.addingOrganisationSuccessfulEvent();
 		}
-		catch(DataCouldNotBeAddedException e)
+		else
 		{
 			session.addingOrganisationFailedEvent(Messages.UnknownError);
 		}
@@ -362,26 +299,23 @@ public class UserManager
 
 	public void deleteOrganisation(Session session, String organisationName)
 	{
-		Organisation organisation;
-		try
-		{
-			organisation = m_dbConnector.getOrganisationByName(organisationName);
-		}
-		catch(RequestedDataDoesNotExistException e)
+		GetOrganisationQuery fetchQuery = new GetOrganisationQuery(organisationName);
+		if(!fetchQuery.execute())
 		{
 			session.deletingOrganisationFailedEvent(Messages.UnknownOrganisation);
 			return;
 		}
-		try
+
+		Organisation organisation = fetchQuery.getResult();
+		RemoveOrganisationQuery removeQuery = new RemoveOrganisationQuery(organisation);
+		if(removeQuery.execute())
 		{
-			m_dbConnector.deleteOrganisation(organisation);
+			session.deletingOrganisationSuccessfulEvent();
 		}
-		catch(RequestedDataDoesNotExistException e)
+		else
 		{
 			session.deletingOrganisationFailedEvent(Messages.UnknownError);
-			return;
 		}
-		session.deletingOrganisationSuccessfulEvent();
 	}
 
 	// endregion Client Admin Interaction
@@ -389,5 +323,4 @@ public class UserManager
 
 
 	private static UserManager m_instance = null;
-	private MariaConnector m_dbConnector;
 }

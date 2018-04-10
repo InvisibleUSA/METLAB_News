@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess;
 
+import me.metlabnews.Model.DataAccess.DbConnectors.MariaDbConnector;
 import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
@@ -13,7 +14,7 @@ import org.junit.runners.JUnit4;
 
 
 @RunWith(JUnit4.class)
-public class MariaConnectorTest
+public class MariaDbConnectorTest
 {
 
 	@Before
@@ -40,7 +41,7 @@ public class MariaConnectorTest
 
 			Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
 			                                       organisation, true);
-			MariaConnector.getInstance().addSubscriber(subscriber);
+			MariaDbConnector.getInstance().addSubscriber(subscriber);
 		}
 		catch(Exception e)
 		{
@@ -59,7 +60,7 @@ public class MariaConnectorTest
 		Organisation organisation = new Organisation("TestOrg");
 		try
 		{
-			MariaConnector.getInstance().addOrganisation(organisation);
+			MariaDbConnector.getInstance().addOrganisation(organisation);
 		}
 		catch(DataCouldNotBeAddedException e)
 		{

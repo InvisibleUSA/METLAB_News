@@ -1,26 +1,17 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.sql.ResultSet;
 
 
 
-public class QuerryAddClipping extends QueryBase
+public class QuerryAddClipping implements IQuery
 {
 	@Override
-	protected String createBaseXQuery()
+	public boolean execute()
 	{
-		return null;
-	}
-
-	@Override
-	protected String createSQLQuery()
-	{
-		return null;
-	}
-
-	@Override
-	protected void processResults(ResultSet rs, String str)
-	{
-
+		// TODO: implements
+		throw new NotImplementedException();
 	}
 }
