@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 
 
-public class QueryGetUser extends QueryBase
+public class QueryGetOrganisation extends QueryBase
 {
-	public String  email;
-	public boolean userExists;
+	public String  organisationName;
+	public boolean organisationExists = false;
 
 	@Override
 	protected String createBaseXQuery()
@@ -19,27 +19,27 @@ public class QueryGetUser extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return "SELECT * FROM Abonnenten WHERE EMail = '" + email + "'";
+		return "SELECT * FROM Klienten WHERE Name = '" + organisationName + "'";
 	}
 
 	@Override
 	protected void processResults(ResultSet rs, String str)
 	{
-		String email = "";
+		String orgname = "";
 		try
 		{
 			while(rs.next())
 			{
-				email = rs.getString("EMail");
+				orgname = rs.getString("Name");
 			}
 		}
 		catch(SQLException e)
 		{
 			return;
 		}
-		if(!email.isEmpty())
+		if(!orgname.isEmpty())
 		{
-			userExists = true;
+			organisationExists = true;
 		}
 	}
 }

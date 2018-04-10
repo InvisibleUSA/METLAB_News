@@ -5,6 +5,8 @@ import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
 import me.metlabnews.Model.DataAccess.MariaConnector;
 import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
 import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedDataException;
+import me.metlabnews.Model.DataAccess.Queries.QueryAddUser;
+import me.metlabnews.Model.DataAccess.Queries.QueryGetOrganisation;
 import me.metlabnews.Model.DataAccess.Queries.QueryGetUser;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
@@ -32,67 +34,76 @@ public class UserManager
 
 	private UserManager()
 	{
-		m_dbConnector = MariaConnector.getInstance();
+		//m_dbConnector = MariaConnector.getInstance();
 	}
 
 
-    // region Subscriber Interaction
+	// region Subscriber Interaction
 	public void registerNewSubscriber(Session session, String email, String password,
 	                                  String firstName, String lastName,
 	                                  String organisationName, boolean clientAdmin)
 	{
-		boolean emailIsAlreadyTaken = true;
-		try
+		if(userExists(email))
 		{
-			//TODO: Implement GetSubQuery
-			QueryGetUser qgu = new QueryGetUser();
-			qgu.email = email;
-			qgu.execute();
+			return; //TODO: Implement Error User exists
 		}
-		catch(RequestedDataDoesNotExistException e)
+		if(!organisationExists(organisationName))
 		{
-			emailIsAlreadyTaken = false;
+			return; //TODO: Implement Error Oranization does not exist
 		}
-		catch(UnexpectedDataException e)
+		if(checkPassworRequirements(password) != Passwordrequirements.NONE)
 		{
-			session.subscriberRegistrationFailedEvent(Messages.UnknownError);
-			return;
-		}
-		if(emailIsAlreadyTaken)
-		{
-			session.subscriberRegistrationFailedEvent(Messages.EmailAddressAlreadyInUse);
-			return;
+			return; //TODO: Implement Passwordrequirements not met
 		}
 
-		Organisation organisation;
-		try
+		QueryAddUser qau = new QueryAddUser();
+		qau.email = email;
+		qau.password = password;
+		qau.firstName = firstName;
+		qau.lastName = lastName;
+		qau.organisationName = organisationName;
+		qau.clientAdmin = clientAdmin;
+		if(!qau.execute())
 		{
-			organisation = m_dbConnector.getOrganisationByName(organisationName);
+			; //TODO: Error
 		}
-		catch(RequestedDataDoesNotExistException e)
-		{
-			session.subscriberRegistrationFailedEvent(Messages.UnknownOrganisation);
-			return;
-		}
-		Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
-		                                       organisation, clientAdmin);
-		session.setUser(subscriber);
-		try
-		{
-			m_dbConnector.addSubscriber(subscriber);
-		}
-		catch(DataCouldNotBeAddedException e)
-		{
-			session.subscriberRegistrationFailedEvent(Messages.UnknownError);
-		}
-		session.subscriberVerificationPendingEvent();
 	}
 
+	private Passwordrequirements checkPassworRequirements(String password)
+	{
+		if(password.length() < 5)
+		{
+			return Passwordrequirements.LENGTH;
+		}
+		return Passwordrequirements.NONE;
+	}
+
+	private boolean organisationExists(String organisationName)
+	{
+		QueryGetOrganisation qgo = new QueryGetOrganisation();
+		qgo.organisationName = organisationName;
+		if(!qgo.execute())
+		{
+			return false; //TODO: Error handling
+		}
+		return qgo.organisationExists;
+	}
+
+	private boolean userExists(String email)
+	{
+		QueryGetUser qgu = new QueryGetUser();
+		qgu.email = email;
+		if(qgu.execute())
+		{
+			return false; //TODO: Error handling
+		}
+		return qgu.userExists;
+	}
 
 	public void subscriberLogin(Session session, String email, String password)
 	{
 		Subscriber subscriber;
-		String correctPassword;
+		String     correctPassword;
 		try
 		{
 			subscriber = m_dbConnector.getSubscriberByEmail(email);
@@ -201,7 +212,7 @@ public class UserManager
 			return;
 		}
 		String subscriberOrganisationName = subscriber.getOrganisationId().getName();
-		String adminOrganisationName = subscriber.getOrganisationId().getName();
+		String adminOrganisationName      = subscriber.getOrganisationId().getName();
 		if(!subscriberOrganisationName.equals(adminOrganisationName))
 		{
 			session.subscriberVerificationFailedEvent(Messages.IllegalOperation);
@@ -261,7 +272,7 @@ public class UserManager
 			return;
 		}
 		String subscriberOrganisationName = subscriber.getOrganisationId().getName();
-		String adminOrganisationName = subscriber.getOrganisationId().getName();
+		String adminOrganisationName      = subscriber.getOrganisationId().getName();
 		if(!subscriberOrganisationName.equals(adminOrganisationName))
 		{
 			session.subscriberVerificationFailedEvent(Messages.IllegalOperation);
@@ -293,7 +304,7 @@ public class UserManager
 	public void systemAdministratorLogin(Session session, String email, String password)
 	{
 		SystemAdministrator admin;
-		String correctPassword;
+		String              correctPassword;
 		try
 		{
 			admin = m_dbConnector.getSystemAdministratorByEmail(email);
@@ -392,6 +403,6 @@ public class UserManager
 
 
 
-	private static UserManager m_instance = null;
-	private MariaConnector m_dbConnector;
+	private static UserManager    m_instance = null;
+	private        MariaConnector m_dbConnector;
 }

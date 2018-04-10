@@ -19,7 +19,6 @@ public class DatabaseConnector
 
 	public ResultSet mariaQuery(String query) throws SQLException
 	{
-		mariaConnector.query(query);
-		return null;
+		return mariaConnector.query(query);
 	}
 }
