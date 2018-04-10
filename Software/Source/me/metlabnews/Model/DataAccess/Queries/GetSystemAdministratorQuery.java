@@ -27,7 +27,7 @@ public class GetSystemAdministratorQuery implements IQuery<SystemAdministrator>
 		{
 			// TODO: replace property string with reflection
 			m_result = (SystemAdministrator)MariaDbConnector.getInstance().getUniqueEntity(
-					"email", m_email);
+					SystemAdministrator.class.getSimpleName(), "email", m_email);
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{

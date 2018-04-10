@@ -26,7 +26,7 @@ public class GetSubscriberQuery implements IQuery<Subscriber>
 		{
 			// TODO: replace property string with reflection
 			m_result = (Subscriber)MariaDbConnector.getInstance().getUniqueEntity(
-					"email", m_email);
+					Subscriber.class.getSimpleName(), "email", m_email);
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{

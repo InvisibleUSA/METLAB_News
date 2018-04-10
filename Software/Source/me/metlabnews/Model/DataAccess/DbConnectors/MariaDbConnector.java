@@ -47,16 +47,14 @@ public class MariaDbConnector implements AutoCloseable
 	}
 
 
-	public List<Object> getEntityList(String property, String value)
+	public List<Object> getEntityList(String entity, String property, String value)
 	{
 		List<Object>resultSet = null;
-		String table = Object.class.getName();
 		connect();
 		try
 		{
-			Query query = m_session.get().createQuery("from " + table
-					                                          + "where " + property
-					                                          + " = :val");
+			String queryString = "from " + entity + " where " + property + " = :val";
+			Query query = m_session.get().createQuery(queryString);
 			query.setParameter("val", value);
 			resultSet = query.getResultList();
 			m_transaction.get().commit();
@@ -75,17 +73,16 @@ public class MariaDbConnector implements AutoCloseable
 		return resultSet;
 	}
 
-	public Object getUniqueEntity(String property, String value)
+
+	public Object getUniqueEntity(String entity, String property, String value)
 			throws RequestedDataDoesNotExistException, UnexpectedNonUniqueDataException
 	{
 		Object result = null;
-		String table = Object.class.getName();
 		connect();
 		try
 		{
-			Query query = m_session.get().createQuery("from " + table
-					                                          + "where " + property
-					                                          + " = :val");
+			String queryString = "from " + entity + " where " + property + " = :val";
+			Query query = m_session.get().createQuery(queryString);
 			query.setParameter("val", value);
 			result = query.getSingleResult();
 			m_transaction.get().commit();

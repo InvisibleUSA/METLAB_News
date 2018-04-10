@@ -28,7 +28,8 @@ public class GetSubscribersOfOrganisationQuery implements IQuery<List<Subscriber
 		boolean success = true;
 		// TODO: replace property string with reflection
 		List<Object> result = MariaDbConnector.getInstance().getEntityList(
-				"organisationId", Long.toString(m_organisation.getId()));
+				Organisation.class.getSimpleName(), "organisationId",
+				Long.toString(m_organisation.getId()));
 		// cast List<Object> to List<Subscriber>
 		m_result = result.stream()
 				.map( (object) -> (Subscriber)object )

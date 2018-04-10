@@ -26,7 +26,7 @@ public class GetOrganisationQuery implements IQuery<Organisation>
 		{
 			// TODO: replace property string with reflection
 			m_result = (Organisation)MariaDbConnector.getInstance().getUniqueEntity(
-					"name", m_name);
+					Organisation.class.getSimpleName(), "name", m_name);
 		}
 		catch(RequestedDataDoesNotExistException e)
 		{
