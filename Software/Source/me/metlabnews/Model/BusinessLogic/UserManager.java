@@ -443,6 +443,34 @@ public class UserManager
 		}
 	}
 
+	public void getAllOrganisations(Session session, IGetStringArrayEvent onSuccess,
+	                                IGenericFailureEvent onFailure)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != SystemAdministrator.class)
+		{
+			onFailure.execute(Messages.NotSystemAdmin);
+			return;
+		}
+		GetAllOrganisationsQuery query = new GetAllOrganisationsQuery();
+		if(query.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+		List<Organisation> resultSet = query.getResult();
+		List<String> list = new ArrayList<>();
+		for(Organisation organisation : resultSet)
+		{
+			list.add(organisation.getName());
+		}
+		onSuccess.execute(list.toArray(new String[list.size()]));
+	}
+
 	// endregion Client Admin Interaction
 
 

@@ -12,6 +12,8 @@ public interface IUserInterface
 	interface IGenericFailureEvent
 	{ void execute(String errorMessage); }
 
+	interface IGetStringArrayEvent
+	{ void execute(String[] result); }
 
 	interface IFetchPendingVerificationRequestsEvent
 	{ void execute(UserDataRepresentation[] data); }
@@ -110,6 +112,12 @@ public interface IUserInterface
 	               IGenericFailureEvent onFailure,
 	               String organisationName); }
 	void registerCallbackRemoveOrganisation(IRemoveOrganisationCallback callback);
+
+
+	interface IFetchOrganisationsCallback
+	{void execute(IGetStringArrayEvent onSuccess,
+	              IGenericFailureEvent onFailure); }
+	void registerCallbackFetchOrganisations(IFetchOrganisationsCallback callback);
 
 	// endregion System Admin Interaction
 

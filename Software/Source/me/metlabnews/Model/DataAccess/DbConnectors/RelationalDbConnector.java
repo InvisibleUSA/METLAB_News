@@ -32,6 +32,32 @@ public class RelationalDbConnector implements IInitilizable, AutoCloseable
 	}
 
 
+	public List<Object> getEntityList(String entity)
+	{
+		List<Object>resultSet = null;
+		connect();
+		try
+		{
+			String queryString = "from " + entity;
+			Query query = m_session.get().createQuery(queryString);
+			resultSet = query.getResultList();
+			m_transaction.get().commit();
+		}
+		catch(HibernateException e)
+		{
+			if(m_transaction != null)
+			{
+				m_transaction.get().rollback();
+			}
+		}
+		finally
+		{
+			disconnect();
+		}
+		return resultSet;
+	}
+
+
 	public List<Object> getEntityList(String entity, String property, Object value)
 	{
 		List<Object>resultSet = null;

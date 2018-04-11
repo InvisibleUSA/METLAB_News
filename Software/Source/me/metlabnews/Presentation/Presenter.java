@@ -80,6 +80,9 @@ public class Presenter
 		ui.registerCallbackRemoveOrganisation((onSuccess, onFailure, organisationName) ->
 			userManager.removeOrganisation(session, onSuccess, onFailure, organisationName));
 
+		ui.registerCallbackFetchOrganisations((onSuccess, onFailure) ->
+			userManager.getAllOrganisations(session, onSuccess, onFailure));
+
 	}
 
 

@@ -167,6 +167,12 @@ public class MainUI extends UI implements IUserInterface
 		m_removeOrganisationCallback.execute(onSuccess, onFailure, organisationName);
 	}
 
+	public void getAllOrganisations(IGetStringArrayEvent onSuccess,
+	                               IGenericFailureEvent onFailure)
+	{
+		m_FetchOrganisationsCallback.execute(onSuccess, onFailure);
+	}
+
 	// endregion GUI Methods
 
 	public UserDataRepresentation whoAmI()
@@ -232,6 +238,12 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
+	public void registerCallbackFetchOrganisations(IFetchOrganisationsCallback callback)
+	{
+		m_FetchOrganisationsCallback = callback;
+	}
+
+	@Override
 	public void registerCallbackLogout(ILogoutCallback callback)
 	{
 		m_logoutCallback = callback;
@@ -248,19 +260,15 @@ public class MainUI extends UI implements IUserInterface
 	private IDenySubscriberCallback                   m_denySubscriberCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
 	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
+	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
 
 	// endregion Callbacks
 
 
 
 	// region Events
-	public void genericErrorEvent(String errorMessage)
-	{
-		Notification.show("Fehler\n" + errorMessage);
-	}
 
-
-	public void loginSuccessfulEvent()
+	private void loginSuccessfulEvent()
 	{
 		UserDataRepresentation myself = Presenter.getInstance().whoAmI(this);
 		if(myself.isSystemAdministrator())
@@ -277,26 +285,26 @@ public class MainUI extends UI implements IUserInterface
 		}
 	}
 
-	public void loginFailedEvent(String errorMessage)
+	private void loginFailedEvent(String errorMessage)
 	{
 		Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage);
 	}
 
 
-	public void logoutEvent()
+	private void logoutEvent()
 	{
 		openLogoutView();
 	}
 
 
-	public void subscriberVerificationPendingEvent()
+	private void subscriberVerificationPendingEvent()
 	{
 		Notification.show("Verifizierung ausstehend\nWarten Sie auf die " +
 				                  "Verifikation durch einen Administrator");
 	}
 
 
-	public void registrationFailedEvent(String errorMessage)
+	private void registrationFailedEvent(String errorMessage)
 	{
 		Notification.show("Registrierung fehlgeschlagen\n" + errorMessage);
 	}
