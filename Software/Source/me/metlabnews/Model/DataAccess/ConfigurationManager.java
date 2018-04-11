@@ -3,6 +3,7 @@ package me.metlabnews.Model.DataAccess;
 
 
 import me.metlabnews.Model.Common.Logger;
+import sun.rmi.runtime.Log;
 
 import java.io.*;
 import java.util.Properties;
@@ -11,8 +12,7 @@ import java.util.Properties;
 
 public class ConfigurationManager
 {
-	private final String m_XMLFilePath =
-			(System.getProperty("user.dir") + "\\Software\\Source\\me\\metlabnews\\Model\\DataAccess\\Settings.XML");
+	private final String m_XMLFilePath = (System.getProperty("user.dir") + "\\Software\\Resources\\Settings.XML");
 
 
 	private static ConfigurationManager instance;
@@ -63,7 +63,7 @@ public class ConfigurationManager
 			properties.loadFromXML(inputStream);
 			return properties.getProperty(keyvalue);
 		}
-		catch(Exception e)
+		catch(IOException e)
 		{
 			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
 			                         Logger.enum_logPriority.ERROR,
@@ -198,7 +198,30 @@ public class ConfigurationManager
 	 */
 	public String getLoggerLogFilePath()
 	{
-		return this.returnProperty("LoggerLogFilePath");
+		return (System.getProperty("user.dir")) + this.returnProperty("LoggerLogFilePath");
+	}
+
+
+	/**
+	 * This Method checks the Settings file and returns true or false if the specified Setting
+	 * is filtered. Then all the filtered Prioritys will be ignored.
+	 *
+	 * @param priority The Priority
+	 * @return true or false
+	 */
+	public boolean getFilteredPriorities(String priority)
+	{
+		switch(priority)
+		{
+			case "DEBUG":
+				return Boolean.parseBoolean(this.returnProperty("FilterDEBUG"));
+			case "WARNING":
+				return Boolean.parseBoolean(this.returnProperty("FilterWARNING"));
+			case "ERROR":
+				return Boolean.parseBoolean(this.returnProperty("FilterERROR"));
+			default:
+				return true;
+		}
 	}
 
 
