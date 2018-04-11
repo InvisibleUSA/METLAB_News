@@ -18,7 +18,7 @@ import java.util.Calendar;
  */
 public class Logger
 {
-	private        int    m_logCounterTotal = 0;
+	//private        int    m_logCounterTotal = 0;
 	/**
 	 * Counter Variable
 	 */
