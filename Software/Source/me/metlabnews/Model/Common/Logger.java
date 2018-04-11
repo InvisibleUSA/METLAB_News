@@ -1,5 +1,7 @@
 package me.metlabnews.Model.Common;
 
+import me.metlabnews.Model.DataAccess.ConfigurationManager;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,7 +18,14 @@ import java.util.Calendar;
  */
 public class Logger
 {
+	/**
+	 * Counter Variable
+	 */
 	private int m_logCounterTotal = 0;
+
+	/**
+	 * Member Variable for Singleton
+	 */
 	private static Logger instance;
 
 
@@ -30,6 +39,7 @@ public class Logger
 
 	/**
 	 * Singleton call
+	 *
 	 * @return instance of this Class
 	 */
 	public static synchronized Logger getInstance()
@@ -59,12 +69,17 @@ public class Logger
 
 
 	/**
-	 * This Enum is for logging to Console or to File
+	 * This Enum is for the source you want to log the Message in.
+	 * You can decide between:
+	 * - To File (saved under: (System.getProperty("user.dir"))//Logs//...)
+	 * - To Console
+	 * - To Database
 	 */
 	public enum enum_logType
 	{
 		ToFile,
-		ToConsole
+		ToConsole,
+		ToDatabase
 	}
 
 
@@ -83,6 +98,20 @@ public class Logger
 
 
 	/**
+	 * This Method will return the final string which is logged to the target
+	 *
+	 * @param cntr     The Counter of the logs
+	 * @param priority The priority of the logs
+	 * @param msg      The Message you want to log
+	 * @return A parsed String to log
+	 */
+	private String setLogString(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	{
+		return ("#" + cntr + " | " + priority.name() + " | " + this.getTimeStamp() + " : " + msg + "\n");
+	}
+
+
+	/**
 	 * This Method will write the message to a .txt-file
 	 *
 	 * @param msg the Message you want to write to the file
@@ -92,18 +121,19 @@ public class Logger
 		if(msg != null)
 		{
 			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
-			String fullFilePath = "C:\\SWE-LOGS\\" + channel.name() + "\\" + fileName;
+			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
 
 			File file = new File(fullFilePath);
 			file.getParentFile().mkdirs();
 
 			try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true)))
 			{
-				bw.write("#" + cntr + " | " + priority.name() + " | " + this.getTimeStamp() + " : " + msg + "\n");
+				bw.write(setLogString(channel, cntr, priority, msg));
+				System.err.println("Error detected and logged into file in: " + fullFilePath);
 			}
 			catch(IOException e)
 			{
-				System.out.println(e.getMessage());
+				System.err.println(e.getMessage());
 			}
 		}
 	}
@@ -162,11 +192,12 @@ public class Logger
 					this.writeToFile(channel, ++this.m_logCounterTotal, priority, msg);
 					break;
 				case ToConsole:
+					System.err.println(this.setLogString(channel, ++this.m_logCounterTotal, priority, msg));
+					break;
+				case ToDatabase:
 					// not implemented - coming soon.... TO DO
 					break;
 			}
 		}
 	}
-
-
 }

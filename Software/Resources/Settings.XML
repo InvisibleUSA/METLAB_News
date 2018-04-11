@@ -18,5 +18,5 @@
 	<entry key="ClippingDaemonEnqueingTimeOut">12345</entry>
 
 	<!-- Tobias -->
-	<entry key="LoggerLogFilePath">C:\\USERS\\PORN</entry>
+	<entry key="LoggerLogFilePath">\Logs\</entry>
 </properties>

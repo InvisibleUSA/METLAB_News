@@ -11,8 +11,7 @@ import java.util.Properties;
 
 public class ConfigurationManager
 {
-	private final String m_XMLFilePath =
-			(System.getProperty("user.dir") + "\\Software\\Source\\me\\metlabnews\\Model\\DataAccess\\Settings.XML");
+	private final String m_XMLFilePath = (System.getProperty("user.dir") + "\\Software\\Resources\\Settings.XML");
 
 
 	private static ConfigurationManager instance;
@@ -63,7 +62,7 @@ public class ConfigurationManager
 			properties.loadFromXML(inputStream);
 			return properties.getProperty(keyvalue);
 		}
-		catch(Exception e)
+		catch(IOException e)
 		{
 			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
 			                         Logger.enum_logPriority.ERROR,
@@ -198,7 +197,7 @@ public class ConfigurationManager
 	 */
 	public String getLoggerLogFilePath()
 	{
-		return this.returnProperty("LoggerLogFilePath");
+		return (System.getProperty("user.dir")) + this.returnProperty("LoggerLogFilePath");
 	}
 
 
