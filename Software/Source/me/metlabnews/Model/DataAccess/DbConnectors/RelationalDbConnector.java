@@ -4,9 +4,7 @@ import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
 import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
 import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
 import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedNonUniqueDataException;
-import me.metlabnews.Model.Entities.Organisation;
-import me.metlabnews.Model.Entities.Subscriber;
-import me.metlabnews.Model.Entities.SystemAdministrator;
+import me.metlabnews.Model.ResourceManagement.IInitilizable;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 
@@ -17,33 +15,20 @@ import java.util.Properties;
 
 
 
-public class MariaDbConnector implements AutoCloseable
+
+public class RelationalDbConnector implements IInitilizable, AutoCloseable
 {
-	public static MariaDbConnector getInstance()
+	public static RelationalDbConnector getInstance()
 	{
 		if(m_instance == null)
 		{
-			m_instance = new MariaDbConnector();
+			m_instance = new RelationalDbConnector();
 		}
 		return m_instance;
 	}
 
-	private MariaDbConnector()
+	private RelationalDbConnector()
 	{
-		try
-		{
-			Configuration configuration = new Configuration();
-			// Resources/hibernate.cfg.xml contains IP and PortNr of MariaDB
-			configuration.configure("hibernate.cfg.xml");
-			Properties properties = new Properties();
-			properties.put("hibernate.id.new_generator_mappings","false");
-			configuration.addProperties(properties);
-			m_sessionFactory = configuration.buildSessionFactory();
-		} catch (Throwable e)
-		{
-			System.err.println("[ERROR] Failed to create sessionFactory object." + e);
-			throw new ExceptionInInitializerError(e);
-		}
 	}
 
 
@@ -218,9 +203,28 @@ public class MariaDbConnector implements AutoCloseable
 		disconnect();
 	}
 
+	@Override
+	public void initialize()
+	{
+		try
+		{
+			Configuration configuration = new Configuration();
+			// Resources/hibernate.cfg.xml contains IP and PortNr of MariaDB
+			configuration.configure("hibernate.cfg.xml");
+			Properties properties = new Properties();
+			properties.put("hibernate.id.new_generator_mappings","false");
+			configuration.addProperties(properties);
+			m_sessionFactory = configuration.buildSessionFactory();
+		}
+		catch (Throwable e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 
-	private static MariaDbConnector m_instance = null;
+
+	private static RelationalDbConnector m_instance = null;
 	private SessionFactory m_sessionFactory;
 	private ThreadLocal<Session> m_session = new ThreadLocal<>();
 	private ThreadLocal<Transaction> m_transaction = new ThreadLocal<>();

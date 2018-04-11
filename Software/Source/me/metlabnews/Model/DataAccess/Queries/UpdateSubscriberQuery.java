@@ -1,6 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
-import me.metlabnews.Model.DataAccess.DbConnectors.MariaDbConnector;
+import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
 import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
 import me.metlabnews.Model.Entities.Subscriber;
 
@@ -23,7 +23,7 @@ public class UpdateSubscriberQuery implements IQuery<Void>
 		boolean success = true;
 		try
 		{
-			MariaDbConnector.getInstance().updateEntity(m_subscriber);
+			RelationalDbConnector.getInstance().updateEntity(m_subscriber);
 		}
 		catch(DataUpdateFailedException e)
 		{

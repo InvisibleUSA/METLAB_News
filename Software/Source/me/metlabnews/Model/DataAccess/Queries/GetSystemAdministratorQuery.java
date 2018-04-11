@@ -1,6 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
-import me.metlabnews.Model.DataAccess.DbConnectors.MariaDbConnector;
+import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
 import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
 import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedNonUniqueDataException;
 import me.metlabnews.Model.Entities.SystemAdministrator;
@@ -26,7 +26,7 @@ public class GetSystemAdministratorQuery implements IQuery<SystemAdministrator>
 		try
 		{
 			// TODO: replace property string with reflection
-			m_result = (SystemAdministrator)MariaDbConnector.getInstance().getUniqueEntity(
+			m_result = (SystemAdministrator)RelationalDbConnector.getInstance().getUniqueEntity(
 					SystemAdministrator.class.getSimpleName(), "email", m_email);
 		}
 		catch(RequestedDataDoesNotExistException e)

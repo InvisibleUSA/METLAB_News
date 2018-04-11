@@ -1,6 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
-import me.metlabnews.Model.DataAccess.DbConnectors.MariaDbConnector;
+import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
 import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
 import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedNonUniqueDataException;
 import me.metlabnews.Model.Entities.Organisation;
@@ -25,7 +25,7 @@ public class GetOrganisationQuery implements IQuery<Organisation>
 		try
 		{
 			// TODO: replace property string with reflection
-			m_result = (Organisation)MariaDbConnector.getInstance().getUniqueEntity(
+			m_result = (Organisation)RelationalDbConnector.getInstance().getUniqueEntity(
 					Organisation.class.getSimpleName(), "name", m_name);
 		}
 		catch(RequestedDataDoesNotExistException e)

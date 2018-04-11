@@ -1,58 +1,85 @@
 package me.metlabnews.Presentation;
 
 import me.metlabnews.Model.BusinessLogic.*;
+
+import javax.validation.constraints.NotNull;
 import java.util.concurrent.ConcurrentHashMap;
 
 
 
 public class Presenter
 {
-	public static Presenter getInstance() throws IllegalStateException
+	public static Presenter getInstance()
 	{
 		if(m_instance == null)
 		{
-			throw new IllegalStateException(
-					"Presenter has not been initialized");
-		}
-		return m_instance;
-	}
-
-	static Presenter create(UserManager userManager)
-	{
-		if(m_instance == null)
-		{
-			m_instance = new Presenter(userManager);
+			m_instance = new Presenter();
 		}
 		return m_instance;
 	}
 
 
-	private Presenter(UserManager userManager)
+	private Presenter()
 	{
-		m_userManager = userManager;
-		m_sessions = new ConcurrentHashMap<>();
+		m_sessions = new ConcurrentHashMap<>(initialSessionCapacity);
 	}
 
 
-	public void connect(IUserInterface ui)
+	public void connect(@NotNull IUserInterface ui)
 	{
-		Session session = new Session(ui);
-	// region Callbacks
-		ui.registerCallbackSubscriberLogin((email, pw) ->
-			m_userManager.subscriberLogin(session, email, pw));
+		Session session = new Session();
 
-		ui.registerCallbackSubscriberRegistration((fName, lName, org, email, pw, admin) ->
-			m_userManager.registerNewSubscriber(session, email, pw,
-			                                    fName, lName, org, admin));
-
-		ui.registerCallbackLogout(session::userLogoutEvent);
-
-		ui.registerCallbackSysAdminLogin((email, pw) ->
-				m_userManager.systemAdministratorLogin(session, email, pw));
-
-	// endregion Callbacks
+		registerCallbacks(ui, session);
 
 		m_sessions.put(ui, session);
+	}
+
+	private void registerCallbacks(IUserInterface ui, Session session)
+	{
+		UserManager userManager = UserManager.getInstance();
+		ui.registerCallbackSubscriberLogin((onSuccess, onVerificationPending,
+		                                    onFailure, email, password) ->
+			userManager.subscriberLogin(session, onSuccess,
+			                            onVerificationPending,
+			                            onFailure, email, password));
+
+		ui.registerCallbackSubscriberRegistration((onSuccess, onFailure,
+		                                           fName, lName, org, email, pw, admin) ->
+			userManager.registerNewSubscriber(session, onSuccess,
+			                                  onFailure, email, pw,
+			                                  fName, lName, org,
+			                                  admin));
+
+		ui.registerCallbackSysAdminLogin((onSuccess, onFailure, email, pw) ->
+			userManager.systemAdministratorLogin(session, onSuccess, onFailure,
+			                                     email, pw));
+
+		ui.registerCallbackLogout(session::logout);
+
+
+		ui.registerCallbackFetchPendingVerificationRequests((onSuccess, onFailure) ->
+			userManager.getPendingVerificationRequests(session, onSuccess, onFailure));
+
+		ui.registerCallbackVerifySubscriber((onSuccess, onFailure, email, grantAdminStatus) ->
+			userManager.verifySubscriber(session, onSuccess, onFailure, email, grantAdminStatus));
+
+		ui.registerCallbackDenySubscriber((onSuccess, onFailure, email) ->
+			userManager.denySubscriberVerification(session, onSuccess, onFailure, email));
+
+		ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email) ->
+			userManager.removeSubscriber(session, onSuccess, onFailure, email));
+
+
+		ui.registerCallbackAddOrganisation((onSuccess, onFailure, organisationName,
+		                                    adminFirstName, adminLastName, adminEmail,
+		                                    adminPassword) ->
+			userManager.addOrganisation(session, onSuccess, onFailure,
+			                            organisationName, adminFirstName, adminLastName,
+			                            adminEmail, adminPassword));
+
+		ui.registerCallbackRemoveOrganisation((onSuccess, onFailure, organisationName) ->
+			userManager.removeOrganisation(session, onSuccess, onFailure, organisationName));
+
 	}
 
 
@@ -63,8 +90,20 @@ public class Presenter
 	}
 
 
+	public UserDataRepresentation whoAmI(@NotNull IUserInterface sender)
+			throws IllegalArgumentException
+	{
+		Session session = m_sessions.get(sender);
+		if(session == null)
+		{
+			throw new IllegalArgumentException("invalid sender");
+		}
+		return new UserDataRepresentation(session.getUser());
+	}
+
+
 
 	private static Presenter m_instance = null;
-	private UserManager m_userManager;
 	private ConcurrentHashMap<IUserInterface, Session> m_sessions;
+	private final int initialSessionCapacity = 50;
 }

@@ -4,18 +4,22 @@ import me.metlabnews.Model.DataAccess.Queries.*;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Model.Entities.SystemAdministrator;
+import me.metlabnews.Presentation.IUserInterface.IGenericEvent;
+import me.metlabnews.Presentation.IUserInterface.IGenericFailureEvent;
 import me.metlabnews.Presentation.Messages;
 import me.metlabnews.Presentation.Session;
-import me.metlabnews.Presentation.SubscriberDataRepresentation;
+import me.metlabnews.Presentation.UserDataRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static me.metlabnews.Presentation.IUserInterface.*;
 
 
 
 public class UserManager
 {
-	public static UserManager create()
+	public static UserManager getInstance()
 	{
 		if(m_instance == null)
 		{
@@ -31,15 +35,17 @@ public class UserManager
 
 
     // region Subscriber Interaction
-	public void registerNewSubscriber(Session session, String email, String password,
+	public void registerNewSubscriber(Session session, IGenericEvent onSuccess,
+	                                  IGenericFailureEvent onFailure,
+	                                  String email, String password,
 	                                  String firstName, String lastName,
-	                                  String organisationName, boolean asClientAdmin)
+	                                  String organisationName, boolean requestAdminStatus)
 	{
 		GetSubscriberQuery subscriberQuery = new GetSubscriberQuery(email);
-		boolean emailIsAlreadyTaken = !subscriberQuery.execute();
+		boolean emailIsAlreadyTaken = subscriberQuery.execute();
 		if(emailIsAlreadyTaken)
 		{
-			session.subscriberRegistrationFailedEvent(Messages.EmailAddressAlreadyInUse);
+			onFailure.execute(Messages.EmailAddressAlreadyInUse);
 			return;
 		}
 
@@ -48,28 +54,33 @@ public class UserManager
 		boolean organisationExists = organisationQuery.execute();
 		if(!organisationExists)
 		{
-			session.subscriberRegistrationFailedEvent(Messages.UnknownOrganisation);
+			onFailure.execute(Messages.UnknownOrganisation);
 			return;
 		}
 
 		Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
-		                                       organisationQuery.getResult(), asClientAdmin);
+		                                       organisationQuery.getResult(), requestAdminStatus);
 		AddSubscriberQuery query = new AddSubscriberQuery(subscriber);
 		if(!query.execute())
 		{
-			session.subscriberRegistrationFailedEvent(Messages.UnknownError);
+			onFailure.execute(Messages.UnknownError);
+			return;
 		}
-		session.setUser(subscriber);
-		session.subscriberVerificationPendingEvent();
+		session.login(subscriber);
+		onSuccess.execute();
 	}
 
 
-	public void subscriberLogin(Session session, String email, String password)
+	public void subscriberLogin(Session session,
+	                            IGenericEvent onSuccess,
+	                            IGenericEvent onVerificationPending,
+	                            IGenericFailureEvent onFailure,
+	                            String email, String password)
 	{
 		GetSubscriberQuery query = new GetSubscriberQuery(email);
 		if(!query.execute())
 		{
-			session.subscriberLoginFailedEvent(Messages.UnknownEmail);
+			onFailure.execute(Messages.UnknownEmail);
 			return;
 		}
 
@@ -79,43 +90,110 @@ public class UserManager
 
 		if(password.equals(correctPassword))
 		{
-			session.setUser(subscriber);
+			session.login(subscriber);
 			if(subscriber.isVerificationPending())
 			{
-				session.subscriberVerificationPendingEvent();
+				onVerificationPending.execute();
 			}
 			else
 			{
-				session.subscriberLoginSuccessfulEvent(
-						subscriber.isOrganisationAdministrator());
+				onSuccess.execute();
 			}
 		}
 		else
 		{
-			session.subscriberLoginFailedEvent(Messages.WrongPassword);
+			onFailure.execute(Messages.WrongPassword);
 		}
 	}
+
+
+	public void removeSubscriber(Session session, IGenericEvent onSuccess,
+	                             IGenericFailureEvent onFailure,
+	                             String subscriberEmail)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.NotClientAdmin);
+			return;
+		}
+
+		Subscriber subscriber;
+		boolean removesHimself = session.getUser().getEmail().equals(subscriberEmail);
+		if(removesHimself)
+		{
+			subscriber = (Subscriber)session.getUser();
+		}
+		else
+		{
+			boolean isAdmin = ((Subscriber)session.getUser()).isOrganisationAdministrator();
+			if(!isAdmin)
+			{
+				onFailure.execute(Messages.NotClientAdmin);
+				return;
+			}
+			GetSubscriberQuery fetchQuery = new GetSubscriberQuery(subscriberEmail);
+			if(!fetchQuery.execute())
+			{
+				onFailure.execute(Messages.UnknownEmail);
+				return;
+			}
+			subscriber = fetchQuery.getResult();
+
+			boolean sameOrganisation = ((Subscriber)session.getUser()).
+					getOrganisationId().getName().equals(subscriber.getOrganisationId().getName());
+			if(!sameOrganisation)
+			{
+				onFailure.execute(Messages.IllegalOperation);
+				return;
+			}
+		}
+
+		RemoveSubscriberQuery removeQuery = new RemoveSubscriberQuery(subscriber);
+		if(removeQuery.execute())
+		{
+			if(removesHimself)
+			{
+				session.logout(onSuccess);
+			}
+			else
+			{
+				onSuccess.execute();
+			}
+		}
+		else
+		{
+			onFailure.execute(Messages.UnknownError);
+		}
+	}
+
 
 	// endregion Subscriber Interaction
 
 
 	// region Client Admin Interaction
 
-	public void getPendingVerificationRequests(Session session)
+	public void getPendingVerificationRequests(Session session,
+	                                           IFetchPendingVerificationRequestsEvent onSuccess,
+	                                           IGenericFailureEvent onFailure)
 	{
 		if(!session.isLoggedIn())
 		{
-			session.getPendingVerificationRequestsFailedEvent(Messages.NotLoggedIn);
+			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
 		if(session.getUser().getClass() != Subscriber.class)
 		{
-			session.getPendingVerificationRequestsFailedEvent(Messages.NotClientAdmin);
+			onFailure.execute(Messages.NotClientAdmin);
 			return;
 		}
 		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
 		{
-			session.getPendingVerificationRequestsFailedEvent(Messages.NotClientAdmin);
+			onFailure.execute(Messages.NotClientAdmin);
 			return;
 		}
 		Organisation organisation = ((Subscriber)session.getUser()).getOrganisationId();
@@ -123,41 +201,40 @@ public class UserManager
 				new GetSubscribersOfOrganisationQuery(organisation);
 		query.execute();
 
-		List<SubscriberDataRepresentation> table = new ArrayList<>();
+		List<UserDataRepresentation> table = new ArrayList<>();
 		for(Subscriber subscriber : query.getResult())
 		{
-			table.add(new SubscriberDataRepresentation(subscriber.getEmail(),
-			                                           subscriber.getFirstName(),
-			                                           subscriber.getLastName(),
-			                                           subscriber.isOrganisationAdministrator(),
-			                                           true));
+			table.add(new UserDataRepresentation(subscriber));
 		}
-		session.getPendingVerificationRequestsSuccessfulEvent(
-				table.toArray(new SubscriberDataRepresentation[table.size()]));
+		onSuccess.execute(table.toArray(new UserDataRepresentation[table.size()]));
 	}
 
-	public void verifySubscriber(Session session, String subscriberEmail)
+	public void verifySubscriber(Session session,
+	                             IGenericEvent onSuccess,
+	                             IGenericFailureEvent onFailure,
+	                             String subscriberEmail,
+	                             boolean grantAdminStatus)
 	{
 		if(!session.isLoggedIn())
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotLoggedIn);
+			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
 		if(session.getUser().getClass() != Subscriber.class)
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
+			onFailure.execute(Messages.NotClientAdmin);
 			return;
 		}
 		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
+			onFailure.execute(Messages.NotClientAdmin);
 			return;
 		}
 
 		GetSubscriberQuery query = new GetSubscriberQuery(subscriberEmail);
 		if(!query.execute())
 		{
-			session.subscriberVerificationFailedEvent(Messages.UnknownEmail);
+			onFailure.execute(Messages.UnknownEmail);
 			return;
 		}
 		Subscriber subscriber = query.getResult();
@@ -166,49 +243,55 @@ public class UserManager
 		String adminOrganisationName = subscriber.getOrganisationId().getName();
 		if(!subscriberOrganisationName.equals(adminOrganisationName))
 		{
-			session.subscriberVerificationFailedEvent(Messages.IllegalOperation);
+			onFailure.execute(Messages.IllegalOperation);
 			return;
 		}
 		if(subscriber.isVerificationPending())
 		{
 			subscriber.setVerificationPending(false);
+			if(subscriber.isOrganisationAdministrator())
+			{
+				subscriber.setOrganisationAdministrator(grantAdminStatus);
+			}
 			UpdateSubscriberQuery updateQuery = new UpdateSubscriberQuery(subscriber);
 			if(!updateQuery.execute())
 			{
-				session.subscriberVerificationFailedEvent(Messages.UnknownError);
+				onFailure.execute(Messages.UnknownError);
 			}
-			session.subscriberVerificationSuccessfulEvent();
+			onSuccess.execute();
 		}
 		else
 		{
-			session.subscriberVerificationFailedEvent(Messages.UserIsAlreadyVerified);
+			onFailure.execute(Messages.UserIsAlreadyVerified);
 		}
 	}
 
 
-	// TODO: merge with verifySubscriber()
-	public void denySubscriberVerification(Session session, String subscriberEmail)
+	public void denySubscriberVerification(Session session,
+	                                       IGenericEvent onSuccess,
+	                                       IGenericFailureEvent onFailure,
+	                                       String subscriberEmail)
 	{
 		if(!session.isLoggedIn())
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotLoggedIn);
+			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
 		if(session.getUser().getClass() != Subscriber.class)
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
+			onFailure.execute(Messages.NotClientAdmin);
 			return;
 		}
 		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
+			onFailure.execute(Messages.NotClientAdmin);
 			return;
 		}
 
 		GetSubscriberQuery fetchQuery = new GetSubscriberQuery(subscriberEmail);
 		if(!fetchQuery.execute())
 		{
-			session.subscriberVerificationFailedEvent(Messages.UnknownEmail);
+			onFailure.execute(Messages.UnknownEmail);
 			return;
 		}
 		Subscriber subscriber = new Subscriber();
@@ -217,22 +300,21 @@ public class UserManager
 		String adminOrganisationName = subscriber.getOrganisationId().getName();
 		if(!subscriberOrganisationName.equals(adminOrganisationName))
 		{
-			session.subscriberVerificationFailedEvent(Messages.IllegalOperation);
+			onFailure.execute(Messages.IllegalOperation);
 			return;
 		}
 		if(subscriber.isVerificationPending())
 		{
-			subscriber.setVerificationPending(false);
-			UpdateSubscriberQuery updateQuery = new UpdateSubscriberQuery(subscriber);
-			if(!updateQuery.execute())
+			RemoveSubscriberQuery removalQuery = new RemoveSubscriberQuery(subscriber);
+			if(!removalQuery.execute())
 			{
-				session.subscriberVerificationFailedEvent(Messages.UnknownError);
+				onFailure.execute(Messages.UnknownError);
 			}
-			session.subscriberVerificationDenialSuccessfulEvent();
+			onSuccess.execute();
 		}
 		else
 		{
-			session.subscriberVerificationFailedEvent(Messages.UserIsAlreadyVerified);
+			onFailure.execute(Messages.UserIsAlreadyVerified);
 		}
 	}
 
@@ -241,12 +323,15 @@ public class UserManager
 
 	// region System Admin Interaction
 
-	public void systemAdministratorLogin(Session session, String email, String password)
+	public void systemAdministratorLogin(Session session,
+	                                     IGenericEvent onSuccess,
+	                                     IGenericFailureEvent onFailure,
+	                                     String email, String password)
 	{
 		GetSystemAdministratorQuery query = new GetSystemAdministratorQuery(email);
 		if(!query.execute())
 		{
-			session.subscriberLoginFailedEvent(Messages.UnknownEmail);
+			onFailure.execute(Messages.UnknownEmail);
 			return;
 		}
 
@@ -255,25 +340,30 @@ public class UserManager
 
 		if(password.equals(correctPassword))
 		{
-			session.setUser(admin);
-			session.sysAdminLoginSuccessfulEvent();
+			session.login(admin);
+			onSuccess.execute();
 		}
 		else
 		{
-			session.sysAdminLoginFailedEvent(Messages.WrongPassword);
+			onFailure.execute(Messages.WrongPassword);
 		}
 	}
 
-	public void addOrganisation(Session session, String organisationName)
+	public void addOrganisation(Session session,
+	                            IGenericEvent onSuccess,
+	                            IGenericFailureEvent onFailure,
+	                            String organisationName,
+	                            String adminFirstName, String adminLastName,
+	                            String adminEmail, String adminPassword)
 	{
 		if(!session.isLoggedIn())
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotLoggedIn);
+			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
 		if(session.getUser().getClass() != SystemAdministrator.class)
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotSystemAdmin);
+			onFailure.execute(Messages.NotSystemAdmin);
 			return;
 		}
 
@@ -281,28 +371,60 @@ public class UserManager
 		boolean nameIsAlreadyTaken = organisationQuery.execute();
 		if(nameIsAlreadyTaken)
 		{
-			session.addingOrganisationFailedEvent(Messages.OrganisationNameAlreadyTaken);
+			onFailure.execute(Messages.OrganisationNameAlreadyTaken);
+			return;
+		}
+
+		GetSubscriberQuery subscriberQuery = new GetSubscriberQuery(adminEmail);
+		boolean emailIsAlreadyTaken = !subscriberQuery.execute();
+		if(emailIsAlreadyTaken)
+		{
+			onFailure.execute(Messages.EmailAddressAlreadyInUse);
 			return;
 		}
 
 		Organisation organisation = new Organisation(organisationName);
-		AddOrganisationQuery addQuery = new AddOrganisationQuery(organisation);
-		if(addQuery.execute())
+		AddOrganisationQuery addOrganisationQuery = new AddOrganisationQuery(organisation);
+		if(!addOrganisationQuery.execute())
 		{
-			session.addingOrganisationSuccessfulEvent();
+			onFailure.execute(Messages.UnknownError);
+		}
+
+		Subscriber admin = new Subscriber(adminEmail, adminPassword, adminFirstName, adminLastName,
+		                                       organisation, true);
+		admin.setVerificationPending(false);
+
+		AddSubscriberQuery addSubscriberQuery = new AddSubscriberQuery(admin);
+		if(addSubscriberQuery.execute())
+		{
+			onSuccess.execute();
 		}
 		else
 		{
-			session.addingOrganisationFailedEvent(Messages.UnknownError);
+			onFailure.execute(Messages.UnknownError);
 		}
 	}
 
-	public void deleteOrganisation(Session session, String organisationName)
+	public void removeOrganisation(Session session,
+	                               IGenericEvent onSuccess,
+	                               IGenericFailureEvent onFailure,
+	                               String organisationName)
 	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != SystemAdministrator.class)
+		{
+			onFailure.execute(Messages.NotSystemAdmin);
+			return;
+		}
+
 		GetOrganisationQuery fetchQuery = new GetOrganisationQuery(organisationName);
 		if(!fetchQuery.execute())
 		{
-			session.deletingOrganisationFailedEvent(Messages.UnknownOrganisation);
+			onFailure.execute(Messages.UnknownOrganisation);
 			return;
 		}
 
@@ -310,11 +432,11 @@ public class UserManager
 		RemoveOrganisationQuery removeQuery = new RemoveOrganisationQuery(organisation);
 		if(removeQuery.execute())
 		{
-			session.deletingOrganisationSuccessfulEvent();
+			onSuccess.execute();
 		}
 		else
 		{
-			session.deletingOrganisationFailedEvent(Messages.UnknownError);
+			onFailure.execute(Messages.UnknownError);
 		}
 	}
 

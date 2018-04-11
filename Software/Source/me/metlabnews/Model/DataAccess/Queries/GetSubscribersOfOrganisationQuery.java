@@ -2,8 +2,7 @@ package me.metlabnews.Model.DataAccess.Queries;
 
 
 
-import me.metlabnews.Model.DataAccess.DbConnectors.MariaDbConnector;
-import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
+import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 import java.util.List;
@@ -27,7 +26,7 @@ public class GetSubscribersOfOrganisationQuery implements IQuery<List<Subscriber
 	{
 		boolean success = true;
 		// TODO: replace property string with reflection
-		List<Object> result = MariaDbConnector.getInstance().getEntityList(
+		List<Object> result = RelationalDbConnector.getInstance().getEntityList(
 				Organisation.class.getSimpleName(), "organisationId",
 				Long.toString(m_organisation.getId()));
 		// cast List<Object> to List<Subscriber>

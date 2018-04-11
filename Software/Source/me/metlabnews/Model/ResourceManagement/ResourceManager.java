@@ -1,7 +1,7 @@
-package me.metlabnews.Presentation;
+package me.metlabnews.Model.ResourceManagement;
 
-import me.metlabnews.Model.BusinessLogic.UserManager;
-
+import me.metlabnews.Model.DataAccess.DbConnectors.BaseXConnector;
+import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -18,11 +18,11 @@ public class ResourceManager implements ServletContextListener
 	@Override
 	public void contextInitialized(ServletContextEvent sce)
 	{
-		System.out.println("[MESSAGE] Presentation.ResourceManager.contextInitialized()");
+		System.out.println("[MESSAGE] Initializing...");
 		System.out.println("          Server Info: " + sce.getServletContext().getServerInfo());
-		UserManager userManager = UserManager.create();
-		Presenter.create(userManager);
-		//TODO den ganzen rest starten
+
+		RelationalDbConnector.getInstance().initialize();
+		BaseXConnector.getInstance().initialize();
 	}
 
 	@Override

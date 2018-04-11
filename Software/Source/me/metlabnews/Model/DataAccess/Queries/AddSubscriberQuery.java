@@ -1,6 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
-import me.metlabnews.Model.DataAccess.DbConnectors.MariaDbConnector;
+import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
 import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
 import me.metlabnews.Model.Entities.Subscriber;
 
@@ -22,7 +22,7 @@ public class AddSubscriberQuery implements IQuery<Void>
 		boolean success = true;
 		try
 		{
-			MariaDbConnector.getInstance().addEntity(m_subscriber);
+			RelationalDbConnector.getInstance().addEntity(m_subscriber);
 		}
 		catch(DataCouldNotBeAddedException e)
 		{

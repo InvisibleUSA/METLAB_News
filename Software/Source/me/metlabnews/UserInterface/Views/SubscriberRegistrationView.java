@@ -8,9 +8,9 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SubscriberRegisterView extends VerticalLayout
+public class SubscriberRegistrationView extends VerticalLayout
 {
-	public SubscriberRegisterView(MainUI parent)
+	public SubscriberRegistrationView(MainUI parent)
 	{
 		m_parent = parent;
 
@@ -45,7 +45,7 @@ public class SubscriberRegisterView extends VerticalLayout
 		}
 		else
 		{
-			m_parent.subscriberRegisterAction(firstName, lastName, company, email, password, admin);
+			m_parent.subscriberRegistrationAction(firstName, lastName, company, email, password, admin);
 		}
 	}
 
