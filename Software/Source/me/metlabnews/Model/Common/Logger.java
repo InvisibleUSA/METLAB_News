@@ -18,10 +18,12 @@ import java.util.Calendar;
  */
 public class Logger
 {
+	private        int    m_logCounterTotal = 0;
 	/**
 	 * Counter Variable
 	 */
 	private int m_logCounterTotal = 0;
+
 
 	/**
 	 * Member Variable for Singleton
@@ -39,7 +41,6 @@ public class Logger
 
 	/**
 	 * Singleton call
-	 *
 	 * @return instance of this Class
 	 */
 	public static synchronized Logger getInstance()
@@ -98,48 +99,6 @@ public class Logger
 
 
 	/**
-	 * This Method will return the final string which is logged to the target
-	 *
-	 * @param cntr     The Counter of the logs
-	 * @param priority The priority of the logs
-	 * @param msg      The Message you want to log
-	 * @return A parsed String to log
-	 */
-	private String setLogString(enum_channel channel, int cntr, enum_logPriority priority, String msg)
-	{
-		return ("#" + cntr + " | " + priority.name() + " | " + this.getTimeStamp() + " : " + msg + "\n");
-	}
-
-
-	/**
-	 * This Method will write the message to a .txt-file
-	 *
-	 * @param msg the Message you want to write to the file
-	 */
-	private void writeToFile(enum_channel channel, int cntr, enum_logPriority priority, String msg)
-	{
-		if(msg != null)
-		{
-			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
-			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
-
-			File file = new File(fullFilePath);
-			file.getParentFile().mkdirs();
-
-			try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true)))
-			{
-				bw.write(setLogString(channel, cntr, priority, msg));
-				System.err.println("Error detected and logged into file in: " + fullFilePath);
-			}
-			catch(IOException e)
-			{
-				System.err.println(e.getMessage());
-			}
-		}
-	}
-
-
-	/**
 	 * This Method returns a simple TimeStamp for the logger.
 	 *
 	 * @return Timestamp in Format: "dd.MM.yyyy [HH:mm:ss]"
@@ -169,6 +128,20 @@ public class Logger
 
 
 	/**
+	 * This Method will return the final string which is logged to the target
+	 *
+	 * @param cntr     The Counter of the logs
+	 * @param priority The priority of the logs
+	 * @param msg      The Message you want to log
+	 * @return A parsed String to log
+	 */
+	private String createLogString(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	{
+		return ("#" + cntr + " | " + priority.name() + " | " + this.getTimeStamp() + " : " + msg + "\n");
+	}
+
+
+	/**
 	 * This Method will return the value of the filtered Priority. If e.g. the DEBUG-Priority
 	 * is filtered, then every called DEBUG-calls will be ignored.
 	 *
@@ -188,6 +161,65 @@ public class Logger
 			default:
 				return true;
 		}
+	}
+
+
+	/**
+	 * This Message will write ein Error-Message to a File.
+	 * @param channel The specified Channel
+	 * @param cntr The internal counter
+	 * @param priority The log-priority
+	 * @param msg The log-Message
+	 */
+	private void writeToFile(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	{
+		if(msg != null)
+		{
+			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
+			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
+
+			File file = new File(fullFilePath);
+			file.getParentFile().mkdirs();
+
+			try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true)))
+			{
+				bw.write(this.createLogString(channel, cntr, priority, msg));
+			}
+			catch(IOException e)
+			{
+				System.err.println(e.getMessage());
+			}
+		}
+	}
+
+
+	/**
+	 * This Message will write ein Error-Message to the Console.
+	 * @param channel The specified Channel
+	 * @param cntr The internal counter
+	 * @param priority The log-priority
+	 * @param msg The log-Message
+	 */
+	private void writeToConsole(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	{
+		if(msg != null)
+		{
+			System.err.println(this.createLogString(channel, ++this.m_logCounterTotal, priority, msg));
+		}
+	}
+
+
+	/**
+	 * This Message will write ein Error-Message to the Database.
+	 * @param channel The specified Channel
+	 * @param cntr The internal counter
+	 * @param priority The log-priority
+	 * @param msg The log-Message
+	 */
+	private void writeToDatabase(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	{
+		// TODO
+		// not implemented
 	}
 
 
@@ -211,10 +243,10 @@ public class Logger
 						this.writeToFile(channel, ++this.m_logCounterTotal, priority, msg);
 						break;
 					case ToConsole:
-						System.err.println(this.setLogString(channel, ++this.m_logCounterTotal, priority, msg));
+						this.writeToConsole(channel, ++this.m_logCounterTotal, priority, msg);
 						break;
 					case ToDatabase:
-						// not implemented - coming soon.... TO DO
+						this.writeToDatabase(channel, ++this.m_logCounterTotal, priority, msg);
 						break;
 				}
 			}

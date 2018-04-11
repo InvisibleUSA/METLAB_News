@@ -194,6 +194,7 @@ public class ConfigurationManager
 
 	/**
 	 * Gets the File Path of the Logger
+	 *
 	 * @return the Path of the Logger
 	 */
 	public String getLoggerLogFilePath()
@@ -223,6 +224,4 @@ public class ConfigurationManager
 				return true;
 		}
 	}
-
-
 }
