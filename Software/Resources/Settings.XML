@@ -19,4 +19,7 @@
 
 	<!-- Tobias -->
 	<entry key="LoggerLogFilePath">\Logs\</entry>
+	<entry key="FilterERROR">false</entry> <!-- {false, true} -->
+	<entry key="FilterWARNING">false</entry> <!-- {false, true} -->
+	<entry key="FilterDEBUG">false</entry> <!-- {false, true} -->
 </properties>

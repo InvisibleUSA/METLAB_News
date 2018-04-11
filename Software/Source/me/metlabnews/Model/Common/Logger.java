@@ -168,6 +168,29 @@ public class Logger
 	}
 
 
+	/**
+	 * This Method will return the value of the filtered Priority. If e.g. the DEBUG-Priority
+	 * is filtered, then every called DEBUG-calls will be ignored.
+	 *
+	 * @param priority the Priority (e.g. DEBUG, WARNING, ERROR)
+	 * @return True = Filtered
+	 */
+	private boolean isPriorityFiltered(enum_logPriority priority)
+	{
+		switch(priority)
+		{
+			case DEBUG:
+				return ConfigurationManager.getInstance().getFilteredPriorities("DEBUG");
+			case WARNING:
+				return ConfigurationManager.getInstance().getFilteredPriorities("WARNING");
+			case ERROR:
+				return ConfigurationManager.getInstance().getFilteredPriorities("ERROR");
+			default:
+				return true;
+		}
+	}
+
+
 	/***
 	 * This Method logs the specific message to a log-file.
 	 * The file is found in the specific channel-folder with the name of the
@@ -180,24 +203,24 @@ public class Logger
 	{
 		if(msg != null)
 		{
-			// TO DO
-			// ...
-			// ...
-
-
-
-			switch(type)
+			if(!this.isPriorityFiltered(priority))
 			{
-				case ToFile:
-					this.writeToFile(channel, ++this.m_logCounterTotal, priority, msg);
-					break;
-				case ToConsole:
-					System.err.println(this.setLogString(channel, ++this.m_logCounterTotal, priority, msg));
-					break;
-				case ToDatabase:
-					// not implemented - coming soon.... TO DO
-					break;
+				switch(type)
+				{
+					case ToFile:
+						this.writeToFile(channel, ++this.m_logCounterTotal, priority, msg);
+						break;
+					case ToConsole:
+						System.err.println(this.setLogString(channel, ++this.m_logCounterTotal, priority, msg));
+						break;
+					case ToDatabase:
+						// not implemented - coming soon.... TO DO
+						break;
+				}
 			}
 		}
 	}
+
+
+
 }
