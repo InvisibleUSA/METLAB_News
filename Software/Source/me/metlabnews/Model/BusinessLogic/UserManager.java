@@ -204,7 +204,10 @@ public class UserManager
 		List<UserDataRepresentation> table = new ArrayList<>();
 		for(Subscriber subscriber : query.getResult())
 		{
-			table.add(new UserDataRepresentation(subscriber));
+			if(subscriber.isVerificationPending())
+			{
+				table.add(new UserDataRepresentation(subscriber));
+			}
 		}
 		onSuccess.execute(table.toArray(new UserDataRepresentation[table.size()]));
 	}
@@ -376,7 +379,7 @@ public class UserManager
 		}
 
 		GetSubscriberQuery subscriberQuery = new GetSubscriberQuery(adminEmail);
-		boolean emailIsAlreadyTaken = !subscriberQuery.execute();
+		boolean emailIsAlreadyTaken = subscriberQuery.execute();
 		if(emailIsAlreadyTaken)
 		{
 			onFailure.execute(Messages.EmailAddressAlreadyInUse);

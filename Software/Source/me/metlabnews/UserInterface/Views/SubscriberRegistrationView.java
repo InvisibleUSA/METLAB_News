@@ -45,7 +45,7 @@ public class SubscriberRegistrationView extends VerticalLayout
 		}
 		else
 		{
-			m_parent.subscriberRegistrationAction(firstName, lastName, company, email, password, admin);
+			m_parent.registerSubscriber(firstName, lastName, company, email, password, admin);
 		}
 	}
 

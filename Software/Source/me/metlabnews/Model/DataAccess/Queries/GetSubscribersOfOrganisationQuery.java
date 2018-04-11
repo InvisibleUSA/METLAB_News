@@ -27,8 +27,8 @@ public class GetSubscribersOfOrganisationQuery implements IQuery<List<Subscriber
 		boolean success = true;
 		// TODO: replace property string with reflection
 		List<Object> result = RelationalDbConnector.getInstance().getEntityList(
-				Organisation.class.getSimpleName(), "organisationId",
-				Long.toString(m_organisation.getId()));
+				Subscriber.class.getSimpleName(), "organisationId",
+				m_organisation);
 		// cast List<Object> to List<Subscriber>
 		m_result = result.stream()
 				.map( (object) -> (Subscriber)object )

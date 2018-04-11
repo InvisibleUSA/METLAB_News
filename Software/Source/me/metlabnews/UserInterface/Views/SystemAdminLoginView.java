@@ -15,11 +15,11 @@ public class SystemAdminLoginView extends VerticalLayout
 
 		buttonLogin.addClickListener((Button.ClickEvent event) -> loginAction());
 
-		buttonSubscriberLogin.addClickListener((Button.ClickEvent event)
+		buttonToSubscriberLogin.addClickListener((Button.ClickEvent event)
 				                                -> m_parent.openSubscriberLoginView());
 
 		this.addComponents(title, textFieldEmail, textFieldPassword, buttonLogin,
-		                   buttonSubscriberLogin, buttonSysAdminLogin);
+		                   buttonToSubscriberLogin);
 	}
 
 	private void loginAction()
@@ -37,7 +37,7 @@ public class SystemAdminLoginView extends VerticalLayout
 		}
 		else
 		{
-			m_parent.sysAdminLoginAction(email, password);
+			m_parent.loginSysAdmin(email, password);
 		}
 	}
 
@@ -45,10 +45,9 @@ public class SystemAdminLoginView extends VerticalLayout
 
 	private MainUI m_parent;
 
-	private final Label            title             = new Label("Willkommen bei METLAB-News - Anmeldung");
-	private final TextField        textFieldEmail    = new TextField("E-Mail:");
-	private final PasswordField    textFieldPassword = new PasswordField("Passwort:");
-	private final Button           buttonLogin       = new Button("Anmelden");
-	private final Button           buttonSysAdminLogin  = new Button("Zum Systemadministrator Login");
-	private final Button           buttonSubscriberLogin = new Button("Zurück zur Anmeldeseite");
+	private final Label         title                   = new Label("Willkommen bei METLAB-News - Anmeldung");
+	private final TextField     textFieldEmail          = new TextField("E-Mail:");
+	private final PasswordField textFieldPassword       = new PasswordField("Passwort:");
+	private final Button        buttonLogin             = new Button("Anmelden");
+	private final Button        buttonToSubscriberLogin = new Button("Zurück zur Anmeldeseite für Abonnenten");
 }

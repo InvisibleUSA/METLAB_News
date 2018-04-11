@@ -81,118 +81,173 @@ public class MainUI extends UI implements IUserInterface
 		setContent(m_systemAdminDashboardView);
 	}
 
-	private void openLogoutView()
+	public void openLogoutView()
 	{
 		setContent(m_logoutView);
 	}
 
 
 
-	public void subscriberLoginAction(String email, String pw)
+	public void loginSubscriber(String email, String pw)
 	{
-		subscriberLoginCallback.execute(this::loginSuccessfulEvent,
-		                                this::subscriberVerificationPendingEvent,
+		m_subscriberLoginCallback.execute(this::loginSuccessfulEvent,
+		                                  this::subscriberVerificationPendingEvent,
+		                                  this::loginFailedEvent,
+		                                  email, pw);
+	}
+
+	public void loginSysAdmin(String email, String pw)
+	{
+		m_sysAdminLoginCallback.execute(this::loginSuccessfulEvent,
 		                                this::loginFailedEvent,
 		                                email, pw);
 	}
 
-	public void sysAdminLoginAction(String email, String pw)
+	public void registerSubscriber(String firstName, String lastName, String company,
+	                               String email, String password, boolean clientAdmin)
 	{
-		sysAdminLoginCallback.execute(this::loginSuccessfulEvent,
-		                              this::loginFailedEvent,
-		                              email, pw);
+		m_subscriberRegistrationCallback.execute(this::subscriberVerificationPendingEvent,
+		                                         this::registrationFailedEvent,
+		                                         firstName, lastName, company, email,
+		                                         password, clientAdmin);
 	}
 
-	public void subscriberRegistrationAction(String firstName, String lastName, String company,
-	                                         String email, String password, boolean clientAdmin)
+	public void logout()
 	{
-		subscriberRegistrationCallback.execute(this::subscriberVerificationPendingEvent,
-		                                       this::registrationFailedEvent,
-		                                       firstName, lastName, company, email,
-		                                       password, clientAdmin);
+		m_logoutCallback.execute(this::logoutEvent);
 	}
 
-	public void userLogoutAction()
+
+	public void removeSubscriber(IGenericEvent onSuccess,
+	                             IGenericFailureEvent onFailure,
+	                             String email)
 	{
-		logoutCallback.execute(this::logoutEvent);
+		m_removeSubscriberCallback.execute(onSuccess, onFailure, email);
 	}
+
+	public void fetchPendingSubscriberVerifications(
+			IFetchPendingVerificationRequestsEvent onSuccess,
+			IGenericFailureEvent onFailure)
+	{
+		m_fetchPendingVerificationRequestsCallback.execute(onSuccess, onFailure);
+	}
+
+	public void verifySubscriber(IGenericEvent onSuccess,
+	                             IGenericFailureEvent onFailure,
+	                             String email, boolean grantAdminStatus)
+	{
+		m_verifySubscriberCallback.execute(onSuccess, onFailure, email, grantAdminStatus);
+	}
+
+	public void denySubscriber(IGenericEvent onSuccess,
+	                           IGenericFailureEvent onFailure,
+	                           String email)
+	{
+		m_denySubscriberCallback.execute(onSuccess, onFailure, email);
+	}
+
+
+	public void addOrganisation(IGenericEvent onSuccess,
+	                            IGenericFailureEvent onFailure,
+	                            String organisationName,
+	                            String adminFirstName,
+	                            String adminLastName,
+	                            String adminEmail,
+	                            String adminPassword)
+	{
+		m_addOrganisationCallback.execute(onSuccess, onFailure, organisationName,
+		                                  adminFirstName, adminLastName, adminEmail,
+		                                  adminPassword);
+	}
+
+	public void removeOrganisation(IGenericEvent onSuccess,
+	                            IGenericFailureEvent onFailure,
+	                            String organisationName)
+	{
+		m_removeOrganisationCallback.execute(onSuccess, onFailure, organisationName);
+	}
+
 	// endregion GUI Methods
 
+	public UserDataRepresentation whoAmI()
+	{
+		return Presenter.getInstance().whoAmI(this);
+	}
 
 
 	// region Callbacks
 	@Override
 	public void registerCallbackSubscriberLogin(ISubscriberLoginCallback callback)
 	{
-		subscriberLoginCallback = callback;
+		m_subscriberLoginCallback = callback;
 	}
 
 	@Override
 	public void registerCallbackSubscriberRegistration(ISubscriberRegisterCallback callback)
 	{
-		subscriberRegistrationCallback = callback;
+		m_subscriberRegistrationCallback = callback;
 	}
 
 	@Override
 	public void registerCallbackSubscriberRemoval(IRemoveSubscriberCallback callback)
 	{
-		removeSubscriberCallback = callback;
+		m_removeSubscriberCallback = callback;
 	}
 
 	@Override
 	public void registerCallbackFetchPendingVerificationRequests(
 			IFetchPendingVerificationRequestsCallback callback)
 	{
-		fetchPendingVerificationRequestsCallback = callback;
+		m_fetchPendingVerificationRequestsCallback = callback;
 	}
 
 	@Override
 	public void registerCallbackVerifySubscriber(IVerifySubscriberCallback callback)
 	{
-		verifySubscriberCallback = callback;
+		m_verifySubscriberCallback = callback;
 	}
 
 	@Override
 	public void registerCallbackDenySubscriber(IDenySubscriberCallback callback)
 	{
-		denySubscriberCallback = callback;
+		m_denySubscriberCallback = callback;
 	}
 
 	@Override
 	public void registerCallbackSysAdminLogin(ISysAdminLoginCallback callback)
 	{
-		sysAdminLoginCallback = callback;
+		m_sysAdminLoginCallback = callback;
 	}
 
 	@Override
 	public void registerCallbackAddOrganisation(IAddOrganisationCallback callback)
 	{
-		addOrganisationCallback = callback;
+		m_addOrganisationCallback = callback;
 	}
 
 	@Override
 	public void registerCallbackRemoveOrganisation(IRemoveOrganisationCallback callback)
 	{
-		removeOrganisationCallback = callback;
+		m_removeOrganisationCallback = callback;
 	}
 
 	@Override
 	public void registerCallbackLogout(ILogoutCallback callback)
 	{
-		logoutCallback = callback;
+		m_logoutCallback = callback;
 	}
 
 
-	private ISubscriberLoginCallback    subscriberLoginCallback;
-	private ISysAdminLoginCallback      sysAdminLoginCallback;
-	private ISubscriberRegisterCallback subscriberRegistrationCallback;
-	private ILogoutCallback             logoutCallback;
-	private IRemoveSubscriberCallback   removeSubscriberCallback;
-	private IFetchPendingVerificationRequestsCallback fetchPendingVerificationRequestsCallback;
-	private IVerifySubscriberCallback   verifySubscriberCallback;
-	private IDenySubscriberCallback     denySubscriberCallback;
-	private IAddOrganisationCallback    addOrganisationCallback;
-	private IRemoveOrganisationCallback removeOrganisationCallback;
+	private ISubscriberLoginCallback                  m_subscriberLoginCallback;
+	private ISysAdminLoginCallback                    m_sysAdminLoginCallback;
+	private ISubscriberRegisterCallback               m_subscriberRegistrationCallback;
+	private ILogoutCallback                           m_logoutCallback;
+	private IRemoveSubscriberCallback                 m_removeSubscriberCallback;
+	private IFetchPendingVerificationRequestsCallback m_fetchPendingVerificationRequestsCallback;
+	private IVerifySubscriberCallback                 m_verifySubscriberCallback;
+	private IDenySubscriberCallback                   m_denySubscriberCallback;
+	private IAddOrganisationCallback                  m_addOrganisationCallback;
+	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
 
 	// endregion Callbacks
 
@@ -244,62 +299,6 @@ public class MainUI extends UI implements IUserInterface
 	public void registrationFailedEvent(String errorMessage)
 	{
 		Notification.show("Registrierung fehlgeschlagen\n" + errorMessage);
-	}
-
-
-	public void subscriberRemovedEvent()
-	{
-
-	}
-
-	public void subscriberRemovalFailedEvent(String errorMessage)
-	{
-
-	}
-
-	public void subscriberVerificationSuccessfulEvent()
-	{
-
-	}
-
-	public void subscriberVerificationFailedEvent(String errorMessage)
-	{
-
-	}
-
-	public void subscriberVerificationDenialSuccessfulEvent()
-	{
-
-	}
-
-	public void getPendingVerificationRequestsSuccessfulEvent(UserDataRepresentation[] data)
-	{
-
-	}
-
-	public void getPendingVerificationRequestsFailedEvent(String errorMessage)
-	{
-
-	}
-
-	public void addingOrganisationSuccessfulEvent()
-	{
-
-	}
-
-	public void addingOrganisationFailedEvent(String errorMessage)
-	{
-
-	}
-
-	public void deletingOrganisationSuccessfulEvent()
-	{
-
-	}
-
-	public void deletingOrganisationFailedEvent(String errorMessage)
-	{
-
 	}
 
 	// endregion Events

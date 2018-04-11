@@ -32,7 +32,7 @@ public class RelationalDbConnector implements IInitilizable, AutoCloseable
 	}
 
 
-	public List<Object> getEntityList(String entity, String property, String value)
+	public List<Object> getEntityList(String entity, String property, Object value)
 	{
 		List<Object>resultSet = null;
 		connect();
