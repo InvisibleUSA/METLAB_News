@@ -2,8 +2,8 @@ package me.metlabnews.Model.ResourceManagement;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
-import me.metlabnews.Model.DataAccess.DbConnectors.BaseXConnector_Marco;
-import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector_Marco;
+import me.metlabnews.Model.DataAccess.DbConnectors.BaseXConnector;
+import me.metlabnews.Model.DataAccess.DbConnectors.MariaConnector;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -27,8 +27,8 @@ public class ResourceManager implements ServletContextListener
 		ConfigurationManager.getInstance().initialize();
 		// ConfigurationManager has to be initialized second!
 		Logger.getInstance().initialize();
-		RelationalDbConnector_Marco.getInstance().initialize();
-		BaseXConnector_Marco.getInstance().initialize();
+		MariaConnector mc = new MariaConnector();//.getInstance().initialize();
+		BaseXConnector bc = new BaseXConnector(); //.getInstance().initialize();
 	}
 
 	@Override

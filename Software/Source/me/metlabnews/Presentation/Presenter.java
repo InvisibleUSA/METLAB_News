@@ -39,49 +39,47 @@ public class Presenter
 		UserManager userManager = new UserManager();
 		ui.registerCallbackSubscriberLogin((onSuccess, onVerificationPending,
 		                                    onFailure, email, password) ->
-			userManager.subscriberLogin(session, onSuccess,
-			                            onVerificationPending,
-			                            onFailure, email, password));
+				                                   userManager.subscriberLogin(session, email, password));
 
 		ui.registerCallbackSubscriberRegistration((onSuccess, onFailure,
 		                                           fName, lName, org, email, pw, admin) ->
-			userManager.registerNewSubscriber(session, onSuccess,
-			                                  onFailure, email, pw,
-			                                  fName, lName, org,
-			                                  admin));
+				                                          userManager.registerNewSubscriber(session, email, pw,
+				                                                                            fName, lName, org,
+				                                                                            admin));
 
 		ui.registerCallbackSysAdminLogin((onSuccess, onFailure, email, pw) ->
-			userManager.systemAdministratorLogin(session, onSuccess, onFailure,
-			                                     email, pw));
+				                                 userManager.systemAdministratorLogin(session, email, pw));
 
 		ui.registerCallbackLogout(session::logout);
 
 
 		ui.registerCallbackFetchPendingVerificationRequests((onSuccess, onFailure) ->
-			userManager.getPendingVerificationRequests(session, onSuccess, onFailure));
+				                                                    userManager.getPendingVerificationRequests(
+						                                                    session));
 
 		ui.registerCallbackVerifySubscriber((onSuccess, onFailure, email, grantAdminStatus) ->
-			userManager.verifySubscriber(session, onSuccess, onFailure, email, grantAdminStatus));
+				                                    userManager.verifySubscriber(session, email, grantAdminStatus));
 
 		ui.registerCallbackDenySubscriber((onSuccess, onFailure, email) ->
-			userManager.denySubscriberVerification(session, onSuccess, onFailure, email));
+				                                  userManager.denySubscriberVerification(session, email));
 
-		ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email) ->
-			userManager.removeSubscriber(session, onSuccess, onFailure, email));
+		//ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email) ->
+		//userManager.removeSubscriber(session, onSuccess, onFailure, email));
 
 
 		ui.registerCallbackAddOrganisation((onSuccess, onFailure, organisationName,
 		                                    adminFirstName, adminLastName, adminEmail,
 		                                    adminPassword) ->
-			userManager.addOrganisation(session, onSuccess, onFailure,
-			                            organisationName, adminFirstName, adminLastName,
-			                            adminEmail, adminPassword));
+				                                   userManager.addOrganisation(session,
+				                                                               organisationName, adminFirstName,
+				                                                               adminLastName,
+				                                                               adminEmail, adminPassword));
 
-		ui.registerCallbackRemoveOrganisation((onSuccess, onFailure, organisationName) ->
-			userManager.removeOrganisation(session, onSuccess, onFailure, organisationName));
+		//ui.registerCallbackRemoveOrganisation((onSuccess, onFailure, organisationName) ->
+		//userManager.removeOrganisation(session, onSuccess, onFailure, organisationName));
 
-		ui.registerCallbackFetchOrganisations((onSuccess, onFailure) ->
-			userManager.getAllOrganisations(session, onSuccess, onFailure));
+		//ui.registerCallbackFetchOrganisations((onSuccess, onFailure) ->
+		//userManager.getAllOrganisations(session, onSuccess, onFailure));
 
 	}
 

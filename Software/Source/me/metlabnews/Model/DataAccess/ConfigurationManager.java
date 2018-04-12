@@ -312,6 +312,7 @@ public class ConfigurationManager implements IResource
 
 
 	private static ConfigurationManager m_instance;
-	private final String m_XMLFilePath = (System.getProperty("user.dir") + "\\Resources\\Settings.XML");
-	private Properties m_properties;
+	private final  String               m_XMLFilePath = (System.getProperty("user.dir") + "/Resources/Settings.XML");
+	//FIXME: Change to OS independent Path
+	private        Properties           m_properties;
 }

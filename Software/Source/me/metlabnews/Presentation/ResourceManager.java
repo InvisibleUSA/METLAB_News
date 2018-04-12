@@ -21,7 +21,7 @@ public class ResourceManager implements ServletContextListener
 		System.out.println("[MESSAGE] Presentation.ResourceManager.contextInitialized()");
 		System.out.println("          Server Info: " + sce.getServletContext().getServerInfo());
 		UserManager userManager = new UserManager();
-		Presenter.create(userManager);
+		//Presenter.create(userManager);
 	}
 
 	@Override

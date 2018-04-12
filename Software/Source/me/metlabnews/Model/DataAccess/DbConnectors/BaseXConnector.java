@@ -1,7 +1,7 @@
 package me.metlabnews.Model.DataAccess.DbConnectors;
 
 
-class BaseXConnector
+public class BaseXConnector
 {
 
 

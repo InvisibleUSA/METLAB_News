@@ -113,7 +113,7 @@ public class UserManager
 		//TODO: Mails treatment
 	}
 
-	public void verifySubscriber(Session session, String subscriberEmail)
+	public void verifySubscriber(Session session, String subscriberEmail, Boolean grantAdmin)
 	{
 		QueryVerifyUser qvu = new QueryVerifyUser();
 		qvu.email = subscriberEmail;
@@ -156,7 +156,7 @@ public class UserManager
 		//TODO: Admin Login
 	}
 
-	public void addOrganisation(Session session, String organisationName)
+	public void addOrganisation(Session session, String organisationName, String adminFirstName, String adminLastName, String adminEmail, String adminPassword)
 	{
 		QueryAddOrganisation qao = new QueryAddOrganisation();
 		qao.orgName = organisationName;
