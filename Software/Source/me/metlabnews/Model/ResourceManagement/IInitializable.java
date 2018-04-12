@@ -2,7 +2,7 @@ package me.metlabnews.Model.ResourceManagement;
 
 
 
-public interface IInitilizable
+public interface IInitializable
 {
 	void initialize();
 }
