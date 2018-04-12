@@ -37,7 +37,7 @@ import java.util.HashMap;
  * }
  *
  * @author Erik Hennig
- * @version 1.0
+ * @version 1.1
  */
 @SuppressWarnings("WeakerAccess")
 public class XMLTag
@@ -60,6 +60,7 @@ public class XMLTag
 
 	public XMLTag(String xmlData)
 	{
+		Logger                 l         = Logger.getInstance();
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		try
 		{
@@ -69,20 +70,19 @@ public class XMLTag
 		}
 		catch(SAXException e)
 		{
-			e.printStackTrace();
-			System.out.println("Parsing exception.");
+			l.log(LOGMODULE, Logger.LogPriority.ERROR, Logger.LogType.ToFile,
+			      "Parsing exception:\n" + e.toString());
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
-			System.out.println("IO Exception.");
+			l.log(LOGMODULE, Logger.LogPriority.ERROR, Logger.LogType.ToFile,
+			      "IO exception:\n" + e.toString());
 		}
 		catch(ParserConfigurationException e)
 		{
-			e.printStackTrace();
-			System.out.println("Parser is not correctly configured. Exception.");
+			l.log(LOGMODULE, Logger.LogPriority.ERROR, Logger.LogType.ToFile,
+			      "Parser is not correctly configured. Exception.");
 		}
-		//TODO implement correct logging and/or throw error in case of invalid xml
 	}
 
 	/**
@@ -98,6 +98,7 @@ public class XMLTag
 	 */
 	public XMLTag child(String tagName)
 	{
+
 		return child(tagName, 0);
 	}
 
@@ -119,6 +120,8 @@ public class XMLTag
 	@SuppressWarnings("WeakerAccess")
 	public XMLTag child(String tagName, int position)
 	{
+		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+		                         "child " + tagName + "at position " + position + "requested. (Parent:" + m_name + ")");
 		Key k = new Key(tagName, position);
 		return m_children.get(k);
 	}
@@ -140,6 +143,8 @@ public class XMLTag
 		Key               k   = new Key(tagName, 0);
 		ArrayList<XMLTag> alt = new ArrayList<>();
 		XMLTag            t;
+		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+		                         "all children " + tagName + "requested. (Parent:" + m_name + ")");
 		while((t = m_children.get(k)) != null)
 		{
 			alt.add(t);
@@ -156,6 +161,8 @@ public class XMLTag
 	 */
 	public String attribute(String name)
 	{
+		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+		                         "attribute " + name + "requested. (Parent:" + m_name + ")");
 		return m_attributes.get(name);
 	}
 
@@ -218,13 +225,19 @@ public class XMLTag
 	private void construct(Node n)
 	{
 		m_name = n.getNodeName();
+		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+		                         "constructing node " + m_name);
 		for(int i = 0; i < n.getAttributes().getLength(); i++)
 		{
+			Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+			                         "adding attribute " + n.getAttributes().item(i).getNodeName());
 			m_attributes.put(n.getAttributes().item(i).getNodeName(), n.getAttributes().item(i).getNodeValue());
 		}
 		if((n.getChildNodes().getLength() == 1) && (n.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
 		{
 			m_value = n.getChildNodes().item(0).getNodeValue();
+			Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+			                         "added text " + m_value);
 		}
 		else
 		{
@@ -249,29 +262,43 @@ public class XMLTag
 	{
 		StringBuilder s      = new StringBuilder("<" + m_name);
 		StringBuilder indent = new StringBuilder();
+		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+		                         "printing level " + indentlevel + ". making indent string");
 		for(int i = 0; i < indentlevel; i++)
 		{
 			indent.append(" ");
 		}
 		s.insert(0, indent);
+		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+		                         "printing level " + indentlevel + ". adding node attributes");
 		for(HashMap.Entry<String, String> entry : m_attributes.entrySet())
 		{
 			s.append(" ").append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
 		}
 		s.append(">\n");
+		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+		                         "printing level " + indentlevel + ". printing children");
 		for(HashMap.Entry<Key, XMLTag> entry : m_children.entrySet())
 		{
 			s.append(entry.getValue().print(indentlevel + 2));
 		}
 		s.append(indent).append("</").append(m_name).append(">\n");
+		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+		                         "done printing level " + indentlevel + ".");
 		return s.toString();
 	}
+
+	private static final Logger.Channel LOGMODULE = Logger.Channel.XmlTag;
 
 	private HashMap<Key, XMLTag>    m_children   = new HashMap<>();
 	private HashMap<String, String> m_attributes = new HashMap<>();
 	private String                  m_name;
 	private String                  m_value;
 
+	/**
+	 * Class used for implementation of XMLTag.
+	 * Necessary to put tags in Hashmap as they don't allow multiple values.
+	 */
 	private class Key
 	{
 		String name;
@@ -279,6 +306,8 @@ public class XMLTag
 
 		Key(String n, int p)
 		{
+			Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
+			                         "new Key " + n + " requested with position " + p);
 			name = n;
 			position = p;
 		}

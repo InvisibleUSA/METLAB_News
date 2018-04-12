@@ -172,7 +172,7 @@ public class Logger implements IResource
 
 
 	/**
-	 * This Message will write ein Error-Message to a File.
+	 * This Message will write an Error-Message to a File.
 	 *
 	 * @param channel  The specified Channel
 	 * @param cntr     The internal counter
@@ -262,6 +262,7 @@ public class Logger implements IResource
 	 * This Method logs the specific message to a log-file.
 	 * The file is found in the specific channel-folder with the name of the
 	 * current date (e.g. 05-04-2018-Crawler-log.txt)
+	 * Newline is automatically appended when logging toFile and toConsole
 	 * @param channel       the Channel from where you call the log-method
 	 * @param msg           the log-message
 	 * @param priority   the priority you want to log with (DEBUG, WARNING, ERROR)
