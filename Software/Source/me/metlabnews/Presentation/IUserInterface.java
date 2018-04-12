@@ -4,77 +4,131 @@ package me.metlabnews.Presentation;
 
 public interface IUserInterface
 {
+	// region Events
+
+	interface IGenericEvent
+	{ void execute(); }
+
+	interface IGenericFailureEvent
+	{ void execute(String errorMessage); }
+
+	interface IGetStringArrayEvent
+	{ void execute(String[] result); }
+
+	interface IFetchPendingVerificationRequestsEvent
+	{ void execute(UserDataRepresentation[] data); }
+
+	// endregion Events
+
+
+
 	// region Callback Functions
-	// Callback Functions are called by a UserInterface
+	// Callback Functions are called by UserInterface
 	// and executed by a class inside the Model package
 
-	interface IUserLoginCallback{ void execute(String email,
-	                                           String password); }
-	void registerUserLoginCallback(IUserLoginCallback callback);
-
-
-	interface IUserRegisterCallback{ void execute(String firstName,
-	                                              String lastName,
-	                                              String company,
-	                                              String email,
-	                                              String password); }
-	void registerUserRegisterCallback(IUserRegisterCallback callback);
-
-	// endregion Callback Functions
+	interface IGenericCallback
+	{ void execute(IGenericEvent onSuccess,
+	               IGenericFailureEvent onFailure); }
 
 
 
-	// region Events
-	// Events occur within the Model or Presentation
-	// and are handled by a User Interface
+	// region Subscriber Interaction
 
-	// region User Interaction
-	// Deals with ordinary Users (Subscribers)
-
-	// means that the user is now logged in
-	void userLoginSuccessfulEvent();
-
-	// means that the users attempt to login failed
-	void userLoginFailedEvent(String errorMessage);
-
-	// means that the user was registered and now has to wait until
-	// he has been verified by a administrator
-	void userRegistrationSuccessfulEvent();
-
-	// means that the data entered by the user was invalid
-	// (or the user simply is an annoying dipshit)
-	void userRegistrationFailedEvent(String errorMessage);
-
-	// means that the user was registered and verified, so now he can login
-	void userVerificationSuccessfulEvent();
-
-	// means that the user tried to register but was denied by an admin,
-	// so now he can go fuck himself
-	void userVerificationDeniedEvent();
-
-	// endregion User Interaction
+	interface ISubscriberLoginCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericEvent onVerificationPending,
+		             IGenericFailureEvent onFailure,
+		             String email,
+		             String password);
+	}
+	void registerCallbackSubscriberLogin(ISubscriberLoginCallback callback);
 
 
-	// region Admin Interaction
-	// Deals with Administrators of a client company
+	interface ISubscriberRegisterCallback
+	{ void execute(IGenericEvent onSuccess,
+	               IGenericFailureEvent onFailure,
+	               String firstName,
+	               String lastName,
+	               String company,
+	               String email,
+	               String password,
+	               boolean clientAdmin); }
+	void registerCallbackSubscriberRegistration(ISubscriberRegisterCallback callback);
 
-	// means that the admin is now logged in
-	void adminLoginSuccessfulEvent();
 
-	// means that the admins attempt to login failed
-	void adminLoginFailedEvent(String errorMessage);
-	// endregion Admin Interaction
-	// endregion Events
+	interface IRemoveSubscriberCallback
+	{ void execute(IGenericEvent onSuccess,
+	               IGenericFailureEvent onFailure,
+	               String email); }
+	void registerCallbackSubscriberRemoval(IRemoveSubscriberCallback callback);
+
+	// endregion Subscriber Interaction
+
+
+	// region Client Admin Interaction
+
+	interface IFetchPendingVerificationRequestsCallback
+	{ void execute(IFetchPendingVerificationRequestsEvent onSuccess,
+	               IGenericFailureEvent onFailure); }
+	void registerCallbackFetchPendingVerificationRequests(
+			IFetchPendingVerificationRequestsCallback callback);
+
+	interface IVerifySubscriberCallback
+	{ void execute(IGenericEvent onSuccess,
+	               IGenericFailureEvent onFailure,
+	               String email, boolean grantAdminStatus); }
+	void registerCallbackVerifySubscriber(IVerifySubscriberCallback callback);
+
+	interface IDenySubscriberCallback
+	{ void execute(IGenericEvent onSuccess,
+	               IGenericFailureEvent onFailure,
+	               String email); }
+	void registerCallbackDenySubscriber(IDenySubscriberCallback callback);
+
+	// endregion Client Admin Interaction
 
 
 	// region System Admin Interaction
-	// Deals with System Administrators
+	interface ISysAdminLoginCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String email, String password); }
+	void registerCallbackSysAdminLogin(ISysAdminLoginCallback callback);
 
-	// means that the admin is now logged in
-	void sysAdminLoginSuccessfulEvent();
+	interface IAddOrganisationCallback { void execute(IGenericEvent onSuccess,
+	                                                  IGenericFailureEvent onFailure,
+	                                                  String organisationName,
+	                                                  String adminFirstName,
+	                                                  String adminLastName,
+	                                                  String adminEmail,
+	                                                  String adminPassword); }
+	void registerCallbackAddOrganisation(IAddOrganisationCallback callback);
 
-	// means that the admins attempt to login failed
-	void sysAdminLoginFailedEvent(String errorMessage);
-	// endregion Admin Interaction
-	// endregion Events
+
+	interface IRemoveOrganisationCallback
+	{ void execute(IGenericEvent onSuccess,
+	               IGenericFailureEvent onFailure,
+	               String organisationName); }
+	void registerCallbackRemoveOrganisation(IRemoveOrganisationCallback callback);
+
+
+	interface IFetchOrganisationsCallback
+	{void execute(IGetStringArrayEvent onSuccess,
+	              IGenericFailureEvent onFailure); }
+	void registerCallbackFetchOrganisations(IFetchOrganisationsCallback callback);
+
+	// endregion System Admin Interaction
+
+
+	// region Common Interaction
+
+	interface ILogoutCallback
+	{ void execute(IGenericEvent onExecute); }
+	void registerCallbackLogout(ILogoutCallback callback);
+
+	// endregion Common Interaction
+
+	// endregion Callback Functions
 }

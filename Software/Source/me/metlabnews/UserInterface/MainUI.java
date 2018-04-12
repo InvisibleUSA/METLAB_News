@@ -3,15 +3,15 @@ package me.metlabnews.UserInterface;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.*;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.Presenter;
 import me.metlabnews.Presentation.IUserInterface;
-import me.metlabnews.UserInterface.Views.UserLoginView;
-import me.metlabnews.UserInterface.Views.UserRegisterView;
+import me.metlabnews.Presentation.UserDataRepresentation;
+import me.metlabnews.UserInterface.Views.*;
 
 
 
@@ -23,116 +23,303 @@ import me.metlabnews.UserInterface.Views.UserRegisterView;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("maintheme")
+@PreserveOnRefresh
 public class MainUI extends UI implements IUserInterface
 {
+	public MainUI()
+	{
+	}
+
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
-		Presenter.getInstance().connect(this);
+		MainUIServlet.ui = this;
 
-		openUserLoginView();
+		m_subscriberLoginView = new SubscriberLoginView(this);
+		m_systemAdminLoginView = new SystemAdminLoginView(this);
+		m_subscriberRegistrationView = new SubscriberRegistrationView(this);
+		m_subscriberDashboardView = new SubscriberDashboardView(this);
+		m_clientAdminDashboardView = new ClientAdminDashboardView(this);
+		m_systemAdminDashboardView = new SystemAdminDashboardView(this);
+		m_logoutView = new LogoutView(this);
+
+		Presenter.getInstance().connect(this);
+		openSubscriberLoginView();
 	}
 
 
 	// region GUI Methods
-	public void openUserLoginView()
+	public void openSubscriberLoginView()
 	{
-		UserLoginView view = new UserLoginView(this);
-		setContent(view);
+		setContent(m_subscriberLoginView);
 	}
 
-	public void openUserRegisterView()
+	public void openSystemAdminLoginView()
 	{
-		UserRegisterView view = new UserRegisterView(this);
-		setContent(view);
+
+		setContent(m_systemAdminLoginView);
 	}
 
-	public void userLoginAction(String email, String pw)
+	public void openSubscriberRegisterView()
 	{
-		userLoginCallback.execute(email, pw);
+
+		setContent(m_subscriberRegistrationView);
 	}
+
+	private void openSubscriberDashboardView()
+	{
+		setContent(m_subscriberDashboardView);
+	}
+
+	private void openClientAdminDashboardView()
+	{
+		setContent(m_clientAdminDashboardView);
+	}
+
+	private void openSystemAdminDashboardView()
+	{
+		setContent(m_systemAdminDashboardView);
+	}
+
+	public void openLogoutView()
+	{
+		setContent(m_logoutView);
+	}
+
+
+
+	public void loginSubscriber(String email, String pw)
+	{
+		m_subscriberLoginCallback.execute(this::loginSuccessfulEvent,
+		                                  this::subscriberVerificationPendingEvent,
+		                                  this::loginFailedEvent,
+		                                  email, pw);
+	}
+
+	public void loginSysAdmin(String email, String pw)
+	{
+		m_sysAdminLoginCallback.execute(this::loginSuccessfulEvent,
+		                                this::loginFailedEvent,
+		                                email, pw);
+	}
+
+	public void registerSubscriber(String firstName, String lastName, String company,
+	                               String email, String password, boolean clientAdmin)
+	{
+		m_subscriberRegistrationCallback.execute(this::subscriberVerificationPendingEvent,
+		                                         this::registrationFailedEvent,
+		                                         firstName, lastName, company, email,
+		                                         password, clientAdmin);
+	}
+
+	public void logout()
+	{
+		m_logoutCallback.execute(this::logoutEvent);
+	}
+
+
+	public void removeSubscriber(IGenericEvent onSuccess,
+	                             IGenericFailureEvent onFailure,
+	                             String email)
+	{
+		m_removeSubscriberCallback.execute(onSuccess, onFailure, email);
+	}
+
+	public void fetchPendingSubscriberVerifications(
+			IFetchPendingVerificationRequestsEvent onSuccess,
+			IGenericFailureEvent onFailure)
+	{
+		m_fetchPendingVerificationRequestsCallback.execute(onSuccess, onFailure);
+	}
+
+	public void verifySubscriber(IGenericEvent onSuccess,
+	                             IGenericFailureEvent onFailure,
+	                             String email, boolean grantAdminStatus)
+	{
+		m_verifySubscriberCallback.execute(onSuccess, onFailure, email, grantAdminStatus);
+	}
+
+	public void denySubscriber(IGenericEvent onSuccess,
+	                           IGenericFailureEvent onFailure,
+	                           String email)
+	{
+		m_denySubscriberCallback.execute(onSuccess, onFailure, email);
+	}
+
+
+	public void addOrganisation(IGenericEvent onSuccess,
+	                            IGenericFailureEvent onFailure,
+	                            String organisationName,
+	                            String adminFirstName,
+	                            String adminLastName,
+	                            String adminEmail,
+	                            String adminPassword)
+	{
+		m_addOrganisationCallback.execute(onSuccess, onFailure, organisationName,
+		                                  adminFirstName, adminLastName, adminEmail,
+		                                  adminPassword);
+	}
+
+	public void removeOrganisation(IGenericEvent onSuccess,
+	                            IGenericFailureEvent onFailure,
+	                            String organisationName)
+	{
+		m_removeOrganisationCallback.execute(onSuccess, onFailure, organisationName);
+	}
+
+	public void getAllOrganisations(IGetStringArrayEvent onSuccess,
+	                               IGenericFailureEvent onFailure)
+	{
+		m_FetchOrganisationsCallback.execute(onSuccess, onFailure);
+	}
+
 	// endregion GUI Methods
 
+	public UserDataRepresentation whoAmI()
+	{
+		return Presenter.getInstance().whoAmI(this);
+	}
 
 
 	// region Callbacks
 	@Override
-	public void registerUserLoginCallback(IUserLoginCallback callback)
+	public void registerCallbackSubscriberLogin(ISubscriberLoginCallback callback)
 	{
-		userLoginCallback = callback;
+		m_subscriberLoginCallback = callback;
 	}
 
 	@Override
-	public void registerUserRegisterCallback(IUserRegisterCallback callback)
+	public void registerCallbackSubscriberRegistration(ISubscriberRegisterCallback callback)
 	{
-		userRegisterCallback = callback;
+		m_subscriberRegistrationCallback = callback;
 	}
 
-	private IUserLoginCallback userLoginCallback;
-	private IUserRegisterCallback userRegisterCallback;
+	@Override
+	public void registerCallbackSubscriberRemoval(IRemoveSubscriberCallback callback)
+	{
+		m_removeSubscriberCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackFetchPendingVerificationRequests(
+			IFetchPendingVerificationRequestsCallback callback)
+	{
+		m_fetchPendingVerificationRequestsCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackVerifySubscriber(IVerifySubscriberCallback callback)
+	{
+		m_verifySubscriberCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackDenySubscriber(IDenySubscriberCallback callback)
+	{
+		m_denySubscriberCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackSysAdminLogin(ISysAdminLoginCallback callback)
+	{
+		m_sysAdminLoginCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackAddOrganisation(IAddOrganisationCallback callback)
+	{
+		m_addOrganisationCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackRemoveOrganisation(IRemoveOrganisationCallback callback)
+	{
+		m_removeOrganisationCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackFetchOrganisations(IFetchOrganisationsCallback callback)
+	{
+		m_FetchOrganisationsCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackLogout(ILogoutCallback callback)
+	{
+		m_logoutCallback = callback;
+	}
+
+
+	private ISubscriberLoginCallback                  m_subscriberLoginCallback;
+	private ISysAdminLoginCallback                    m_sysAdminLoginCallback;
+	private ISubscriberRegisterCallback               m_subscriberRegistrationCallback;
+	private ILogoutCallback                           m_logoutCallback;
+	private IRemoveSubscriberCallback                 m_removeSubscriberCallback;
+	private IFetchPendingVerificationRequestsCallback m_fetchPendingVerificationRequestsCallback;
+	private IVerifySubscriberCallback                 m_verifySubscriberCallback;
+	private IDenySubscriberCallback                   m_denySubscriberCallback;
+	private IAddOrganisationCallback                  m_addOrganisationCallback;
+	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
+	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
+
 	// endregion Callbacks
 
 
 
 	// region Events
-	@Override
-	public void userLoginSuccessfulEvent()
+
+	private void loginSuccessfulEvent()
 	{
+		UserDataRepresentation myself = Presenter.getInstance().whoAmI(this);
+		if(myself.isSystemAdministrator())
+		{
+			openSystemAdminDashboardView();
+		}
+		else if(myself.isOrganisationAdministrator())
+		{
+			openClientAdminDashboardView();
+		}
+		else
+		{
+			openSubscriberDashboardView();
+		}
 	}
 
-	@Override
-	public void userLoginFailedEvent(String errorMessage)
+	private void loginFailedEvent(String errorMessage)
 	{
+		Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage);
 	}
 
-	@Override
-	public void userRegistrationSuccessfulEvent()
-	{
 
+	private void logoutEvent()
+	{
+		openLogoutView();
 	}
 
-	@Override
-	public void userRegistrationFailedEvent(String errorMessage)
-	{
 
+	private void subscriberVerificationPendingEvent()
+	{
+		Notification.show("Verifizierung ausstehend\nWarten Sie auf die " +
+				                  "Verifikation durch einen Administrator");
 	}
 
-	@Override
-	public void userVerificationSuccessfulEvent()
-	{
 
+	private void registrationFailedEvent(String errorMessage)
+	{
+		Notification.show("Registrierung fehlgeschlagen\n" + errorMessage);
 	}
 
-	@Override
-	public void userVerificationDeniedEvent()
-	{
-
-	}
-
-	@Override
-	public void adminLoginSuccessfulEvent()
-	{
-
-	}
-
-	@Override
-	public void adminLoginFailedEvent(String errorMessage)
-	{
-
-	}
-
-	@Override
-	public void sysAdminLoginSuccessfulEvent()
-	{
-
-	}
-
-	@Override
-	public void sysAdminLoginFailedEvent(String errorMessage)
-	{
-
-	}
 	// endregion Events
+
+
+
+	private SubscriberLoginView        m_subscriberLoginView;
+	private SystemAdminLoginView       m_systemAdminLoginView;
+	private SubscriberRegistrationView m_subscriberRegistrationView;
+	private SubscriberDashboardView    m_subscriberDashboardView;
+	private ClientAdminDashboardView   m_clientAdminDashboardView;
+	private SystemAdminDashboardView   m_systemAdminDashboardView;
+	private LogoutView                 m_logoutView;
 
 
 
@@ -140,11 +327,33 @@ public class MainUI extends UI implements IUserInterface
 	@WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)
 	@VaadinServletConfiguration(ui = MainUI.class, productionMode = false)
 	public static class MainUIServlet extends VaadinServlet
+			implements SessionInitListener, SessionDestroyListener
 	{
 		@Override
 		public void init() throws ServletException
 		{
 			super.init();
+		}
+
+		static MainUI ui = null;
+
+		@Override
+		public void sessionInit(SessionInitEvent event)
+		{
+		}
+
+		@Override
+		protected void servletInitialized() throws ServletException
+		{
+			super.servletInitialized();
+			getService().addSessionInitListener(this);
+			getService().addSessionDestroyListener(this);
+		}
+
+		@Override
+		public void sessionDestroy(SessionDestroyEvent event)
+		{
+			Presenter.getInstance().disconnect(ui);
 		}
 	}
 }

@@ -1,29 +1,42 @@
 package me.metlabnews.Presentation;
 
+import me.metlabnews.Model.Entities.User;
 
 
-class Session
+
+public class Session
 {
-	public Session(IUserInterface ui)
+	Session()
 	{
-		m_uiInstance = ui;
 	}
 
-	enum SessionStates
+	synchronized void close()
 	{
-		NotYetLoggedIn,
-		LoginPending,
-		LoggedIn,
-		LoginDenied,
-		LoggedOut,
-		RegistrationPending,
-		RegistrationFailed,
-		VerificationPending,
-		VerificationDenied,
-		Registered
+		m_user = null;
+	}
+
+	public synchronized void login(User user)
+	{
+		m_user = user;
+	}
+
+	public synchronized void logout(IUserInterface.IGenericEvent onExecute)
+	{
+		onExecute.execute();
+		m_user = null;
+	}
+
+	public synchronized boolean isLoggedIn()
+	{
+		return m_user != null;
+	}
+
+	public synchronized User getUser()
+	{
+		return m_user;
 	}
 
 
 
-	private IUserInterface m_uiInstance = null;
+	private User m_user;
 }
