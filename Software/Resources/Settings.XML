@@ -21,7 +21,7 @@
 	<entry key="RDBMS.Driver">org.mariadb.jdbc.Driver</entry>
 	<entry key="RDBMS.RemoteURL">jdbc:mariadb://metlabnews.me:3306/METLAB_DB</entry>
 	<entry key="RDBMS.LocalURL">jdbc:mariadb://localhost:3306/METLAB_DB</entry>
-	<entry key="RDBMS.UseLocalDB">true</entry> <!-- {false, true} -->
+	<entry key="RDBMS.UseLocalDB">false</entry> <!-- {false, true} -->
 	<entry key="RDBMS.Username">test</entry>
 	<entry key="RDBMS.Password">test</entry>
 	<entry key="RDBMS.SQLDialect">org.hibernate.dialect.MySQLDialect</entry>
@@ -29,9 +29,9 @@
 
 
 	<!-- Mail -->
-	<entry key="Mail.SMTPServer">12345</entry>
-	<entry key="Mail.Password">!!!</entry>
-	<entry key="Mail.FromAddress">???</entry>
+	<entry key="Mail.SMTPServer">smtp.gmail.com</entry>
+	<entry key="Mail.Password">metlabnews54321</entry>
+	<entry key="Mail.FromAddress">metlabnews@gmail.com</entry>
 
 
 	<!-- Logger -->
