@@ -26,7 +26,6 @@ public class Presenter
 		return m_instance;
 	}
 
-
 	private Presenter(UserManager userManager)
 	{
 		m_userManager = userManager;

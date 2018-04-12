@@ -1,7 +1,6 @@
 package me.metlabnews.Model.BusinessLogic;
 
 import me.metlabnews.Model.Common.Logger;
-import me.metlabnews.Model.DataAccess.MariaConnector;
 import me.metlabnews.Model.DataAccess.Queries.*;
 import me.metlabnews.Presentation.Session;
 
@@ -13,7 +12,6 @@ public class UserManager
 
 	public UserManager()
 	{
-		//m_dbConnector = MariaConnector.getInstance();
 	}
 
 
