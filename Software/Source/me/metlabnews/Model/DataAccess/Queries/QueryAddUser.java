@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 
 public class QueryAddUser extends QueryBase
 {
+
 	public String  email;
 	public String  password;
 	public String  firstName;

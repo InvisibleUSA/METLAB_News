@@ -9,6 +9,7 @@ import java.sql.ResultSet;
  */
 public class QueryVerifyUser extends QueryBase
 {
+
 	public String email;
 	public int status = 0;
 

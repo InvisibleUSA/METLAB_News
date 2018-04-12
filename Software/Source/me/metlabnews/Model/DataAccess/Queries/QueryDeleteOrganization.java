@@ -9,6 +9,7 @@ import java.sql.ResultSet;
  */
 public class QueryDeleteOrganization extends QueryBase
 {
+
 	public String orgName;
 
 	@Override

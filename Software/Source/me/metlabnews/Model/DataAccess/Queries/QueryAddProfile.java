@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 
 public class QueryAddProfile extends QueryBase
 {
+
 	public String username;
 	public String password;
 

@@ -9,6 +9,7 @@ import java.sql.ResultSet;
  */
 public class QueryGetVerificationstatus extends QueryBase
 {
+
 	public String email;
 
 	@Override

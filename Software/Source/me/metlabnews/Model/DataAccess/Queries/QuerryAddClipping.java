@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 
 public class QuerryAddClipping extends QueryBase
 {
+
+
 	@Override
 	protected String createBaseXQuery()
 	{

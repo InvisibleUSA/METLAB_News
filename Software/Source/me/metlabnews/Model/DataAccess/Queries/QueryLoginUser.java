@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 public class QueryLoginUser extends QueryBase
 {
+
 	public String email;
 	public String password;
 	public boolean userLoginSuccessful = false;

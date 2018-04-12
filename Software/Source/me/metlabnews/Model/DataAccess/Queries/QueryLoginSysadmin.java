@@ -10,6 +10,7 @@ import java.sql.SQLException;
  */
 public class QueryLoginSysadmin extends QueryBase
 {
+
 	public String email;
 	public String password;
 	public boolean adminLoginSuccessful = false;

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 public class QueryGetUser extends QueryBase
 {
+
 	public String  email;
 	public boolean userExists;
 

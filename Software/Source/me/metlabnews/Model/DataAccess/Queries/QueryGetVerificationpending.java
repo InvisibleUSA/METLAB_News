@@ -10,6 +10,7 @@ import java.sql.SQLException;
  */
 public class QueryGetVerificationpending extends QueryBase
 {
+
 	public String[] mails;
 
 	@Override

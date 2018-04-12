@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 public class QueryGetOrganisation extends QueryBase
 {
+
 	public String  organisationName;
 	public boolean organisationExists = false;
 

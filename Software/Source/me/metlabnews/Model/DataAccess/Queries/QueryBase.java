@@ -12,6 +12,7 @@ import java.sql.SQLException;
 
 public abstract class QueryBase
 {
+
 	public static DatabaseConnector m_dbConnector = new DatabaseConnector();
 
 	public boolean execute()

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 
 public class QueryGetClippings extends QueryBase
 {
+
 	@Override
 	protected String createBaseXQuery()
 	{
