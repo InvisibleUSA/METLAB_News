@@ -12,63 +12,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 
-@RunWith(JUnit4.class)
+
+//@RunWith(JUnit4.class)
 public class MariaConnectorTest
 {
-
-	@Before
-	public void setUp()
-	{
-	}
-
-	@After
-	public void tearDown()
-	{
-	}
-
-
-	@Test
-	public void addSubscriber()
-	{
-		try
-		{
-			Organisation organisation = new Organisation("TestOrg");
-			String email = "mm1@test.de";
-			String password = "pass";
-			String firstName = "Max";
-			String lastName = "Mustermann";
-
-			Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
-			                                       organisation, true);
-			MariaConnector.getInstance().addSubscriber(subscriber);
-		}
-		catch(Exception e)
-		{
-			Assert.fail(e.getMessage());
-		}
-	}
-
-	@Test
-	public void getSubscriberByEmail()
-	{
-	}
-
-	@Test
-	public void addOrganisation()
-	{
-		Organisation organisation = new Organisation("TestOrg");
-		try
-		{
-			MariaConnector.getInstance().addOrganisation(organisation);
-		}
-		catch(DataCouldNotBeAddedException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	@Test
-	public void getOrganisationByName()
-	{
-	}
 }
