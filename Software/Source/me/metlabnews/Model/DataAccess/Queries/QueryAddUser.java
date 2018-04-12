@@ -25,7 +25,7 @@ public class QueryAddUser extends QueryBase
 	protected String createSQLQuery()
 	{
 
-		return "INSERT INTO Abonennt (EMail, Firma";
+		return "INSERT INTO Abonnent (EMail, Name, VName, PW, Firma, isAdmin, isVerified) VALUES ('" + email + "','" + lastName + "','" + firstName + "','" + password + "','" + organisationName + "', 0, 0)";
 	}
 
 	@Override

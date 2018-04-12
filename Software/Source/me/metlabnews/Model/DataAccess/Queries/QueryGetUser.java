@@ -20,7 +20,7 @@ public class QueryGetUser extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return "SELECT * FROM Abonnenten WHERE EMail = '" + email + "'";
+		return "SELECT * FROM Abonnent WHERE EMail = '" + email + "'";
 	}
 
 	@Override

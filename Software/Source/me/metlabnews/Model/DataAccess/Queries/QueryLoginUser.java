@@ -23,7 +23,7 @@ public class QueryLoginUser extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return "SELECT EMail, PW FROM Abonennten WHERE EMail = '" + email + "'";
+		return "SELECT EMail, PW FROM Abonnent WHERE EMail = '" + email + "'";
 	}
 
 	@Override
@@ -36,14 +36,14 @@ public class QueryLoginUser extends QueryBase
 			while(rs.next())
 			{
 				email = rs.getString("EMail");
-				password = rs.getString("PW");
+				readPassword = rs.getString("PW");
 			}
 		}
 		catch(SQLException e)
 		{
 			return;
 		}
-		if(!email.isEmpty())
+		if(email == "")
 		{
 			userExists = false;
 			userLoginSuccessful = false;
@@ -55,7 +55,7 @@ public class QueryLoginUser extends QueryBase
 			userLoginSuccessful = false;
 			return;
 		}
-		userLoginSuccessful = true;
+		userExists = true;
 		userLoginSuccessful = true;
 	}
 }

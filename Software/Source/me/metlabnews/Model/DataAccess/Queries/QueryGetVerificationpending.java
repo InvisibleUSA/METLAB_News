@@ -22,7 +22,7 @@ public class QueryGetVerificationpending extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return "SELECT EMail FROM Abonennten WHERE isVeryfied = 0";
+		return "SELECT EMail FROM Abonnent WHERE isVeryfied = 0";
 	}
 
 	@Override

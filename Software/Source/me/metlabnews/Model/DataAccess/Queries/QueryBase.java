@@ -22,11 +22,11 @@ public abstract class QueryBase
 			ResultSet rs    = null; //initialize resultset for SQL Query
 			String    sql   = createSQLQuery(); //
 			String    basex = createBaseXQuery();
-			if(!basex.isEmpty())
+			if(basex != null)
 			{
 				str = m_dbConnector.baseXQuery(/*basex*/);
 			}
-			if(!sql.isEmpty())
+			if(sql != null)
 			{
 				rs = m_dbConnector.mariaQuery(sql);
 			}

@@ -21,7 +21,7 @@ public class QueryGetVerificationstatus extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return "SELECT isVeryfied FROM Abonennten WHERE EMail = '" + email + "'";
+		return "SELECT isVeryfied FROM Abonnent WHERE EMail = '" + email + "'";
 	}
 
 	@Override

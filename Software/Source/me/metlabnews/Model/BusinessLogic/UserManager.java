@@ -90,10 +90,13 @@ public class UserManager
 		{
 			if(!qlu.userExists)
 			{
+				System.out.println("User nonexistent");
 				return; //TODO: Error handling User doesn't exist
 			}
+			System.out.println("Wrong password");
 			return; //TODO: Error handling invalid password
 		}
+		System.out.println("Login successful");
 		//TODO: User Login
 	}
 
