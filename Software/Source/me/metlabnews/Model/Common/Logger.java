@@ -6,6 +6,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -22,6 +26,7 @@ public class Logger
 	 * Counter Variable
 	 */
 	private int m_logCounterTotal = 0;
+
 
 	/**
 	 * Member Variable for Singleton
@@ -98,48 +103,6 @@ public class Logger
 
 
 	/**
-	 * This Method will return the final string which is logged to the target
-	 *
-	 * @param cntr     The Counter of the logs
-	 * @param priority The priority of the logs
-	 * @param msg      The Message you want to log
-	 * @return A parsed String to log
-	 */
-	private String setLogString(enum_channel channel, int cntr, enum_logPriority priority, String msg)
-	{
-		return ("#" + cntr + " | " + priority.name() + " | " + this.getTimeStamp() + " : " + msg + "\n");
-	}
-
-
-	/**
-	 * This Method will write the message to a .txt-file
-	 *
-	 * @param msg the Message you want to write to the file
-	 */
-	private void writeToFile(enum_channel channel, int cntr, enum_logPriority priority, String msg)
-	{
-		if(msg != null)
-		{
-			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
-			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
-
-			File file = new File(fullFilePath);
-			file.getParentFile().mkdirs();
-
-			try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true)))
-			{
-				bw.write(setLogString(channel, cntr, priority, msg));
-				System.err.println("Error detected and logged into file in: " + fullFilePath);
-			}
-			catch(IOException e)
-			{
-				System.err.println(e.getMessage());
-			}
-		}
-	}
-
-
-	/**
 	 * This Method returns a simple TimeStamp for the logger.
 	 *
 	 * @return Timestamp in Format: "dd.MM.yyyy [HH:mm:ss]"
@@ -169,6 +132,20 @@ public class Logger
 
 
 	/**
+	 * This Method will return the final string which is logged to the target
+	 *
+	 * @param cntr     The Counter of the logs
+	 * @param priority The priority of the logs
+	 * @param msg      The Message you want to log
+	 * @return A parsed String to log
+	 */
+	private String createLogString(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	{
+		return ("#" + cntr + " | " + priority.name() + " | " + this.getTimeStamp() + " : " + msg + "\n");
+	}
+
+
+	/**
 	 * This Method will return the value of the filtered Priority. If e.g. the DEBUG-Priority
 	 * is filtered, then every called DEBUG-calls will be ignored.
 	 *
@@ -191,6 +168,92 @@ public class Logger
 	}
 
 
+	/**
+	 * This Message will write ein Error-Message to a File.
+	 *
+	 * @param channel  The specified Channel
+	 * @param cntr     The internal counter
+	 * @param priority The log-priority
+	 * @param msg      The log-Message
+	 */
+	private void writeToFile(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	{
+		if(msg != null)
+		{
+			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
+			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
+
+			File file = new File(fullFilePath);
+			file.getParentFile().mkdirs();
+
+			try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true)))
+			{
+				bw.write(this.createLogString(channel, cntr, priority, msg));
+			}
+			catch(IOException e)
+			{
+				System.err.println("Error in Logger: " + e.getMessage());
+			}
+		}
+	}
+
+
+	/**
+	 * This Message will write ein Error-Message to the Console.
+	 *
+	 * @param channel  The specified Channel
+	 * @param cntr     The internal counter
+	 * @param priority The log-priority
+	 * @param msg      The log-Message
+	 */
+	private void writeToConsole(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	{
+		if(msg != null)
+		{
+			System.err.println(this.createLogString(channel, ++this.m_logCounterTotal, priority, msg));
+		}
+	}
+
+
+	/**
+	 * This Message will write ein Error-Message to the Database.
+	 *
+	 * @param channel  The specified Channel
+	 * @param cntr     The internal counter
+	 * @param priority The log-priority
+	 * @param msg      The log-Message
+	 */
+	private void writeToDatabase(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	{
+		java.sql.Connection con      = null;
+		PreparedStatement   pst      = null;
+		ResultSet           rs       = null;
+		String              url      = "jdbc:mariadb://46.101.223.95/METLAB_LOGS";
+		String              user     = "test";
+		String              password = "test";
+
+		try
+		{
+			con = DriverManager.getConnection(url, user, password);
+			Statement st = (Statement)con.createStatement();
+
+			st.executeUpdate("INSERT INTO LOG VALUES " +
+					                 "(NULL, " +
+					                 "'" + String.format(this.getTimeStamp().toString()) + "', " +
+					                 "'" + String.format(channel.toString()) + "', " +
+					                 "'" + String.format(priority.toString()) + "', " +
+					                 "'" + String.format(msg) + "'" +
+					                 ")");
+			con.close();
+		}
+
+		catch(Exception e)
+		{
+			System.err.println(e);
+		}
+	}
+
+
 	/***
 	 * This Method logs the specific message to a log-file.
 	 * The file is found in the specific channel-folder with the name of the
@@ -209,18 +272,16 @@ public class Logger
 				{
 					case ToFile:
 						this.writeToFile(channel, ++this.m_logCounterTotal, priority, msg);
+						this.writeToDatabase(channel, ++this.m_logCounterTotal, priority, msg);
 						break;
 					case ToConsole:
-						System.err.println(this.setLogString(channel, ++this.m_logCounterTotal, priority, msg));
+						this.writeToConsole(channel, ++this.m_logCounterTotal, priority, msg);
 						break;
 					case ToDatabase:
-						// not implemented - coming soon.... TO DO
+						this.writeToDatabase(channel, ++this.m_logCounterTotal, priority, msg);
 						break;
 				}
 			}
 		}
 	}
-
-
-
 }
