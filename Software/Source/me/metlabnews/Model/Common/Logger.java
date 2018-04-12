@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
+// this.getClass().getCanonicalName()
+
 
 /**
  * This Class is for logging the whole error's and debug outputs of the application.
@@ -264,33 +266,28 @@ public class Logger implements IResource
 	 * current date (e.g. 05-04-2018-Crawler-log.txt)
 	 * Newline is automatically appended when logging toFile and toConsole
 	 * @param channel       the Channel from where you call the log-method
-	 * @param msg           the log-message
 	 * @param priority   the priority you want to log with (DEBUG, WARNING, ERROR)
+	 * @param msg           the log-message
 	 */
-	public void log(Channel channel, LogPriority priority, LogType type, String msg)
+	public void log(Channel channel, LogPriority priority, String msg)
 	{
-		if(!m_hasBeenInitialized)
-		{
-			type = LogType.ToConsole;
-		}
-
 		if(msg != null)
 		{
 			if(isPriorityAllowed(priority))
 			{
-				switch(type)
+				switch(String.format(ConfigurationManager.getInstance().getLogType()))
 				{
-					case ToFile:
+					case "ToFile":
 						this.writeToFile(channel, ++m_logCounterTotal, priority, msg);
 						break;
-					case ToConsole:
+					case "ToConsole":
 						this.writeToConsole(channel, ++m_logCounterTotal, priority, msg);
 						break;
-					case ToDatabase:
+					case "ToDatabase":
 						this.writeToDatabase(channel, ++m_logCounterTotal, priority, msg);
 						break;
-						default:
-							break;
+					default:
+						break;
 				}
 			}
 		}
@@ -298,10 +295,10 @@ public class Logger implements IResource
 
 
 
-	private int m_logCounterTotal = 0;
-	private static Logger m_instance;
-	private boolean m_hasBeenInitialized;
-	private boolean m_debugIsAllowed = true;
-	private boolean m_warningIsAllowed = true;
-	private boolean m_errorIsAllowed = true;
+	private        int     m_logCounterTotal  = 0;
+	private static Logger  m_instance;
+	private        boolean m_hasBeenInitialized;
+	private        boolean m_debugIsAllowed   = true;
+	private        boolean m_warningIsAllowed = true;
+	private        boolean m_errorIsAllowed   = true;
 }

@@ -41,7 +41,6 @@ public class ConfigurationManager implements IResource
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
 			                         Logger.LogPriority.ERROR,
-			                         Logger.LogType.ToFile,
 			                         m_XMLFilePath + " not found:\n"
 			                         + e.toString());
 		}
@@ -49,14 +48,12 @@ public class ConfigurationManager implements IResource
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
 			                         Logger.LogPriority.ERROR,
-			                         Logger.LogType.ToFile,
 			                         e.toString());
 		}
 		catch(IOException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
 			                         Logger.LogPriority.ERROR,
-			                         Logger.LogType.ToFile,
 			                         e.toString());
 		}
 	}
@@ -80,7 +77,6 @@ public class ConfigurationManager implements IResource
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
 			                         Logger.LogPriority.ERROR,
-			                         Logger.LogType.ToFile,
 			                         e.toString());
 			return 0L;
 		}
@@ -96,7 +92,6 @@ public class ConfigurationManager implements IResource
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
 			                         Logger.LogPriority.ERROR,
-			                         Logger.LogType.ToFile,
 			                         e.toString());
 			return 0;
 		}
@@ -120,7 +115,6 @@ public class ConfigurationManager implements IResource
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
 			                         Logger.LogPriority.ERROR,
-			                         Logger.LogType.ToFile,
 			                         e.toString());
 			return null;
 		}
@@ -141,7 +135,6 @@ public class ConfigurationManager implements IResource
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
 			                         Logger.LogPriority.ERROR,
-			                         Logger.LogType.ToFile,
 			                         e.toString());
 			return 0L;
 		}
@@ -243,6 +236,12 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	public String getLogType()
+	{
+		return (System.getProperty("user.dir")) + this.returnProperty("Logger.LogType");
+	}
+
+
 	/**
 	 * This Method checks the Settings file and returns true or false if the specified Setting
 	 * is filtered. Then all the filtered Prioritys will be ignored.
@@ -302,7 +301,6 @@ public class ConfigurationManager implements IResource
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
 			                         Logger.LogPriority.ERROR,
-			                         Logger.LogType.ToFile,
 			                         "Key " + key + " not found in !"
 					                         + m_XMLFilePath);
 		}
@@ -312,6 +310,6 @@ public class ConfigurationManager implements IResource
 
 
 	private static ConfigurationManager m_instance;
-	private final String m_XMLFilePath = (System.getProperty("user.dir") + "\\Resources\\Settings.XML");
+	private final String m_XMLFilePath = (System.getProperty("user.dir") + "/Resources/Settings.XML");
 	private Properties m_properties;
 }
