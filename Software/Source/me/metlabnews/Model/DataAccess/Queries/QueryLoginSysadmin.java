@@ -1,17 +1,19 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
 
-public class QueryLoginUser extends QueryBase
+/**
+ * Created by ln on 12.04.18.
+ */
+public class QueryLoginSysadmin extends QueryBase
 {
 	public String email;
 	public String password;
-	public boolean userLoginSuccessful = false;
-	public boolean userExists          = false;
+	public boolean adminLoginSuccessful = false;
+	public boolean userExists           = false;
 
 	@Override
 	protected String createBaseXQuery()
@@ -22,7 +24,7 @@ public class QueryLoginUser extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return "SELECT EMail, PW FROM Abonennten WHERE EMail = '" + email + "'";
+		return null;
 	}
 
 	@Override
@@ -45,16 +47,14 @@ public class QueryLoginUser extends QueryBase
 		if(!email.isEmpty())
 		{
 			userExists = false;
-			userLoginSuccessful = false;
-			return;
+			adminLoginSuccessful = false;
 		}
 		if(!readPassword.equals(password))
 		{
 			userExists = true;
-			userLoginSuccessful = false;
-			return;
+			adminLoginSuccessful = false;
 		}
-		userLoginSuccessful = true;
-		userLoginSuccessful = true;
+		userExists = true;
+		adminLoginSuccessful = true;
 	}
 }

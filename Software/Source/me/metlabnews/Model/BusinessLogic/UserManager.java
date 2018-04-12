@@ -1,22 +1,9 @@
 package me.metlabnews.Model.BusinessLogic;
 
-import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
-import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
+import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.MariaConnector;
-import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
-import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedDataException;
-import me.metlabnews.Model.DataAccess.Queries.QueryAddUser;
-import me.metlabnews.Model.DataAccess.Queries.QueryGetOrganisation;
-import me.metlabnews.Model.DataAccess.Queries.QueryGetUser;
-import me.metlabnews.Model.Entities.Organisation;
-import me.metlabnews.Model.Entities.Subscriber;
-import me.metlabnews.Model.Entities.SystemAdministrator;
-import me.metlabnews.Presentation.Messages;
+import me.metlabnews.Model.DataAccess.Queries.*;
 import me.metlabnews.Presentation.Session;
-import me.metlabnews.Presentation.SubscriberDataRepresentation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 
@@ -49,9 +36,9 @@ public class UserManager
 		}
 		if(!organisationExists(organisationName))
 		{
-			return; //TODO: Implement Error Oranization does not exist
+			return; //TODO: Implement Error Organization does not exist
 		}
-		if(checkPassworRequirements(password) != Passwordrequirements.NONE)
+		if(checkPasswordRequirements(password) != Passwordrequirements.NONE)
 		{
 			return; //TODO: Implement Passwordrequirements not met
 		}
@@ -65,11 +52,11 @@ public class UserManager
 		qau.clientAdmin = clientAdmin;
 		if(!qau.execute())
 		{
-			; //TODO: Error
+			return; //TODO: Error
 		}
 	}
 
-	private Passwordrequirements checkPassworRequirements(String password)
+	private Passwordrequirements checkPasswordRequirements(String password)
 	{
 		if(password.length() < 5)
 		{
@@ -93,7 +80,7 @@ public class UserManager
 	{
 		QueryGetUser qgu = new QueryGetUser();
 		qgu.email = email;
-		if(qgu.execute())
+		if(!qgu.execute())
 		{
 			return false; //TODO: Error handling
 		}
@@ -102,40 +89,24 @@ public class UserManager
 
 	public void subscriberLogin(Session session, String email, String password)
 	{
-		Subscriber subscriber;
-		String     correctPassword;
-		try
+		QueryLoginUser qlu = new QueryLoginUser();
+		qlu.password = password;
+		qlu.email = email;
+		if(!qlu.execute())
 		{
-			subscriber = m_dbConnector.getSubscriberByEmail(email);
-			correctPassword = subscriber.getPassword();
+			Logger.getInstance().log(Logger.enum_channel.DataBase, Logger.enum_logPriority.ERROR,
+			                         Logger.enum_logType.ToFile, "SQL Failed at Subscriber Login");
+			return; //TODO: Error handling
 		}
-		catch(RequestedDataDoesNotExistException e)
+		if(!qlu.userLoginSuccessful)
 		{
-			session.subscriberLoginFailedEvent(Messages.UnknownEmail);
-			return;
-		}
-		catch(UnexpectedDataException e)
-		{
-			session.subscriberLoginFailedEvent(Messages.UnknownError);
-			return;
-		}
-		if(password.equals(correctPassword))
-		{
-			session.setUser(subscriber);
-			if(subscriber.isVerificationPending())
+			if(!qlu.userExists)
 			{
-				session.subscriberVerificationPendingEvent();
+				return; //TODO: Error handling User doesn't exist
 			}
-			else
-			{
-				session.subscriberLoginSuccessfulEvent(
-						subscriber.isOrganisationAdministrator());
-			}
+			return; //TODO: Error handling invalid password
 		}
-		else
-		{
-			session.subscriberLoginFailedEvent(Messages.WrongPassword);
-		}
+		//TODO: User Login
 	}
 
 	// endregion Subscriber Interaction
@@ -145,94 +116,23 @@ public class UserManager
 
 	public void getPendingVerificationRequests(Session session)
 	{
-		if(!session.isLoggedIn())
+		QueryGetVerificationpending qgvp = new QueryGetVerificationpending();
+		if(!qgvp.execute())
 		{
-			session.getPendingVerificationRequestsFailedEvent(Messages.NotLoggedIn);
-			return;
+			return; //TODO: Error handling
 		}
-		if(session.getUser().getClass() != Subscriber.class)
-		{
-			session.getPendingVerificationRequestsFailedEvent(Messages.NotClientAdmin);
-			return;
-		}
-		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
-		{
-			session.getPendingVerificationRequestsFailedEvent(Messages.NotClientAdmin);
-			return;
-		}
-		Organisation organisation = ((Subscriber)session.getUser()).getOrganisationId();
-		Subscriber[] matchingSubscribers =
-				m_dbConnector.getAllSubscribersOfOrganisation(organisation);
-		List<SubscriberDataRepresentation> table = new ArrayList<>();
-
-		for(Subscriber subscriber : matchingSubscribers)
-		{
-			table.add(new SubscriberDataRepresentation(subscriber.getEmail(),
-			                                           subscriber.getFirstName(),
-			                                           subscriber.getLastName(),
-			                                           subscriber.isOrganisationAdministrator(),
-			                                           true));
-		}
-		session.getPendingVerificationRequestsSuccessfulEvent(
-				table.toArray(new SubscriberDataRepresentation[table.size()]));
+		String[] mails = qgvp.mails;
+		//TODO: Mails treatment
 	}
 
 	public void verifySubscriber(Session session, String subscriberEmail)
 	{
-		// TODO: replace redundant code
-
-		if(!session.isLoggedIn())
+		QueryVerifyUser qvu = new QueryVerifyUser();
+		qvu.email = subscriberEmail;
+		qvu.status = 1;
+		if(!qvu.execute())
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotLoggedIn);
-			return;
-		}
-		if(session.getUser().getClass() != Subscriber.class)
-		{
-			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
-			return;
-		}
-		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
-		{
-			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
-			return;
-		}
-		Subscriber subscriber;
-		try
-		{
-			subscriber = m_dbConnector.getSubscriberByEmail(subscriberEmail);
-		}
-		catch(RequestedDataDoesNotExistException e)
-		{
-			session.subscriberVerificationFailedEvent(Messages.UnknownEmail);
-			return;
-		}
-		catch(UnexpectedDataException e)
-		{
-			session.subscriberVerificationFailedEvent(Messages.UnknownError);
-			return;
-		}
-		String subscriberOrganisationName = subscriber.getOrganisationId().getName();
-		String adminOrganisationName      = subscriber.getOrganisationId().getName();
-		if(!subscriberOrganisationName.equals(adminOrganisationName))
-		{
-			session.subscriberVerificationFailedEvent(Messages.IllegalOperation);
-		}
-		if(subscriber.isVerificationPending())
-		{
-			subscriber.setVerificationPending(false);
-			try
-			{
-				m_dbConnector.updateSubscriber(subscriber);
-			}
-			catch(DataUpdateFailedException e)
-			{
-				session.subscriberVerificationFailedEvent(Messages.UnknownError);
-			}
-			session.subscriberVerificationSuccessfulEvent();
-		}
-		else
-		{
-			session.subscriberVerificationFailedEvent(Messages.UserIsAlreadyVerified);
+			return; //TODO: Error handling
 		}
 	}
 
@@ -240,60 +140,7 @@ public class UserManager
 	// TODO: merge with verifySubscriber()
 	public void denySubscriberVerification(Session session, String subscriberEmail)
 	{
-		if(!session.isLoggedIn())
-		{
-			session.subscriberVerificationFailedEvent(Messages.NotLoggedIn);
-			return;
-		}
-		if(session.getUser().getClass() != Subscriber.class)
-		{
-			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
-			return;
-		}
-		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
-		{
-			session.subscriberVerificationFailedEvent(Messages.NotClientAdmin);
-			return;
-		}
-		Subscriber subscriber;
-		//TODO: replace redundant code
-		try
-		{
-			subscriber = m_dbConnector.getSubscriberByEmail(subscriberEmail);
-		}
-		catch(RequestedDataDoesNotExistException e)
-		{
-			session.subscriberVerificationFailedEvent(Messages.UnknownEmail);
-			return;
-		}
-		catch(UnexpectedDataException e)
-		{
-			session.subscriberVerificationFailedEvent(Messages.UnknownError);
-			return;
-		}
-		String subscriberOrganisationName = subscriber.getOrganisationId().getName();
-		String adminOrganisationName      = subscriber.getOrganisationId().getName();
-		if(!subscriberOrganisationName.equals(adminOrganisationName))
-		{
-			session.subscriberVerificationFailedEvent(Messages.IllegalOperation);
-		}
-		if(subscriber.isVerificationPending())
-		{
-			try
-			{
-				m_dbConnector.deleteSubscriber(subscriber);
-			}
-			catch(RequestedDataDoesNotExistException e)
-			{
-				session.subscriberVerificationFailedEvent(Messages.UnknownError);
-				return;
-			}
-			session.subscriberVerificationDenialSuccessfulEvent();
-		}
-		else
-		{
-			session.subscriberVerificationFailedEvent(Messages.UserIsAlreadyVerified);
-		}
+		//TODO: Figure out what to do here
 	}
 
 	// endregion Client Admin Interaction
@@ -303,100 +150,42 @@ public class UserManager
 
 	public void systemAdministratorLogin(Session session, String email, String password)
 	{
-		SystemAdministrator admin;
-		String              correctPassword;
-		try
+		QueryLoginSysadmin qls = new QueryLoginSysadmin();
+		qls.email = email;
+		qls.password = password;
+		if(!qls.execute())
 		{
-			admin = m_dbConnector.getSystemAdministratorByEmail(email);
-			correctPassword = admin.getPassword();
+			return; //TODO: Error handling
 		}
-		catch(RequestedDataDoesNotExistException e)
+		if(!qls.adminLoginSuccessful)
 		{
-			session.subscriberLoginFailedEvent(Messages.UnknownEmail);
-			return;
+			if(!qls.userExists)
+			{
+				return; //TODO: Error handling User doesn't exist
+			}
+			return; //TODO: Error handling invalid password
 		}
-		catch(UnexpectedDataException e)
-		{
-			session.subscriberLoginFailedEvent(Messages.UnknownError);
-			return;
-		}
-		if(password.equals(correctPassword))
-		{
-			session.setUser(admin);
-			session.sysAdminLoginSuccessfulEvent();
-		}
-		else
-		{
-			session.sysAdminLoginFailedEvent(Messages.WrongPassword);
-		}
+		//TODO: Admin Login
 	}
 
 	public void addOrganisation(Session session, String organisationName)
 	{
-		if(!session.isLoggedIn())
+		QueryAddOrganisation qao = new QueryAddOrganisation();
+		qao.orgName = organisationName;
+		if(!qao.execute())
 		{
-			session.subscriberVerificationFailedEvent(Messages.NotLoggedIn);
-			return;
-		}
-		if(session.getUser().getClass() != SystemAdministrator.class)
-		{
-			session.subscriberVerificationFailedEvent(Messages.NotSystemAdmin);
-			return;
-		}
-		boolean nameIsAlreadyTaken = true;
-		try
-		{
-			m_dbConnector.getSubscriberByEmail(organisationName);
-		}
-		catch(RequestedDataDoesNotExistException e)
-		{
-			// TODO: more efficient "already in use" check (avoid intended exceptions)
-			nameIsAlreadyTaken = false;
-		}
-		catch(UnexpectedDataException e)
-		{
-			session.addingOrganisationFailedEvent(Messages.UnknownError);
-			return;
-		}
-		if(nameIsAlreadyTaken)
-		{
-			session.addingOrganisationFailedEvent(Messages.OrganisationNameAlreadyTaken);
-			return;
-		}
-		Organisation organisation = new Organisation(organisationName);
-		try
-		{
-			m_dbConnector.addOrganisation(organisation);
-			session.addingOrganisationSuccessfulEvent();
-		}
-		catch(DataCouldNotBeAddedException e)
-		{
-			session.addingOrganisationFailedEvent(Messages.UnknownError);
+			return; //TODO: Error handling
 		}
 	}
 
 	public void deleteOrganisation(Session session, String organisationName)
 	{
-		Organisation organisation;
-		try
+		QueryDeleteOrganization qdo = new QueryDeleteOrganization();
+		qdo.orgName = organisationName;
+		if(!qdo.execute())
 		{
-			organisation = m_dbConnector.getOrganisationByName(organisationName);
+			return; //TODO: Error handling
 		}
-		catch(RequestedDataDoesNotExistException e)
-		{
-			session.deletingOrganisationFailedEvent(Messages.UnknownOrganisation);
-			return;
-		}
-		try
-		{
-			m_dbConnector.deleteOrganisation(organisation);
-		}
-		catch(RequestedDataDoesNotExistException e)
-		{
-			session.deletingOrganisationFailedEvent(Messages.UnknownError);
-			return;
-		}
-		session.deletingOrganisationSuccessfulEvent();
 	}
 
 	// endregion Client Admin Interaction
