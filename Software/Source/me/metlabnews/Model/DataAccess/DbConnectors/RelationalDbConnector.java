@@ -1,9 +1,13 @@
 package me.metlabnews.Model.DataAccess.DbConnectors;
 
+import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
 import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
 import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
 import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedNonUniqueDataException;
+import me.metlabnews.Model.Entities.Organisation;
+import me.metlabnews.Model.Entities.Subscriber;
+import me.metlabnews.Model.Entities.SystemAdministrator;
 import me.metlabnews.Model.ResourceManagement.IResource;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
@@ -29,6 +33,61 @@ public class RelationalDbConnector implements IResource
 
 	private RelationalDbConnector()
 	{
+	}
+
+
+	@Override
+	public void initialize()
+	{
+		try
+		{
+			Properties properties = new Properties();
+			// properties.put("hibernate.id.new_generator_mappings","false");
+
+			ConfigurationManager configManager = ConfigurationManager.getInstance();
+
+			properties.setProperty("hibernate.connection.driver_class",
+			                       configManager.getRdbmsDriver());
+			properties.setProperty("dialect",
+			                       configManager.getRdbmsSqlDialect());
+
+			if(configManager.getRdmsUseLocalDb())
+			{
+				properties.setProperty("hibernate.connection.url",
+				                       configManager.getRdbmsLocalUrl());
+			}
+			else
+			{
+				properties.setProperty("hibernate.connection.url",
+				                       configManager.getRdbmsRemoteUrl());
+			}
+
+			properties.setProperty("hibernate.connection.username",
+			                       configManager.getRdbmsUsername());
+			properties.setProperty("hibernate.connection.password",
+			                       configManager.getRdbmsPassword());
+
+			Configuration configuration = new Configuration();
+			configuration.addProperties(properties);
+
+			// Just to be sure
+			configuration.addAnnotatedClass(Subscriber.class);
+			configuration.addAnnotatedClass(SystemAdministrator.class);
+			configuration.addAnnotatedClass(Organisation.class);
+
+			m_sessionFactory = configuration.buildSessionFactory();
+		}
+		catch (Throwable e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+	}
+
+
+	@Override
+	public void close()
+	{
+		disconnect();
 	}
 
 
@@ -219,32 +278,6 @@ public class RelationalDbConnector implements IResource
 		{
 			System.err.println("Failed to disconnect from database:");
 			System.err.println(e.getMessage());
-		}
-	}
-
-
-	@Override
-	public void close()
-	{
-		disconnect();
-	}
-
-	@Override
-	public void initialize()
-	{
-		try
-		{
-			Configuration configuration = new Configuration();
-			// Resources/hibernate.cfg.xml contains IP and PortNr of MariaDB
-			configuration.configure("hibernate.cfg.xml");
-			Properties properties = new Properties();
-			properties.put("hibernate.id.new_generator_mappings","false");
-			configuration.addProperties(properties);
-			m_sessionFactory = configuration.buildSessionFactory();
-		}
-		catch (Throwable e)
-		{
-			throw new ExceptionInInitializerError(e);
 		}
 	}
 

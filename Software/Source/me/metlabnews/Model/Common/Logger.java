@@ -1,6 +1,7 @@
 package me.metlabnews.Model.Common;
 
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
+import me.metlabnews.Model.ResourceManagement.IResource;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,28 +21,8 @@ import java.util.Calendar;
  * It will be written to a local .txt file.
  * The File and the Subfolders are created automatically.
  */
-public class Logger
+public class Logger implements IResource
 {
-	/**
-	 * Counter Variable
-	 */
-	private int m_logCounterTotal = 0;
-
-
-	/**
-	 * Member Variable for Singleton
-	 */
-	private static Logger instance;
-
-
-	/**
-	 * Private Constructor of Singleton
-	 */
-	private Logger()
-	{
-	}
-
-
 	/**
 	 * Singleton call
 	 *
@@ -49,18 +30,40 @@ public class Logger
 	 */
 	public static synchronized Logger getInstance()
 	{
-		if(Logger.instance == null)
+		if(m_instance == null)
 		{
-			Logger.instance = new Logger();
+			m_instance = new Logger();
 		}
-		return Logger.instance;
+		return m_instance;
+	}
+
+	private Logger()
+	{
+	}
+
+
+	@Override
+	public void initialize()
+	{
+		ConfigurationManager config = ConfigurationManager.getInstance();
+		m_debugIsAllowed = config.getFilteredPriorities("DEBUG");
+		m_warningIsAllowed = config.getFilteredPriorities("WARNING");
+		m_errorIsAllowed = config.getFilteredPriorities("ERROR");
+
+		m_hasBeenInitialized = true;
+	}
+
+	@Override
+	public void close()
+	{
+
 	}
 
 
 	/**
 	 * This Enum is for the channels to log the output message to the specific channel.
 	 */
-	public enum enum_channel
+	public enum Channel
 	{
 		ConfigurationManager,
 		ClippingDaemon,
@@ -80,7 +83,7 @@ public class Logger
 	 * - To Console
 	 * - To Database
 	 */
-	public enum enum_logType
+	public enum LogType
 	{
 		ToFile,
 		ToConsole,
@@ -94,7 +97,7 @@ public class Logger
 	 * If e.g. the Priority of the internal logger is higher than the called Priority, than the message
 	 * will NOT be logged.
 	 */
-	public enum enum_logPriority
+	public enum LogPriority
 	{
 		DEBUG,
 		WARNING,
@@ -139,9 +142,9 @@ public class Logger
 	 * @param msg      The Message you want to log
 	 * @return A parsed String to log
 	 */
-	private String createLogString(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	private String createLogString(Channel channel, int cntr, LogPriority priority, String msg)
 	{
-		return ("#" + cntr + " | " + priority.name() + " | " + this.getTimeStamp() + " : " + msg + "\n");
+		return ("#" + cntr + " | " + priority.name() + " | " + getTimeStamp() + " : " + msg + "\n");
 	}
 
 
@@ -152,18 +155,18 @@ public class Logger
 	 * @param priority the Priority (e.g. DEBUG, WARNING, ERROR)
 	 * @return True = Filtered
 	 */
-	private boolean isPriorityFiltered(enum_logPriority priority)
+	private boolean isPriorityAllowed(LogPriority priority)
 	{
 		switch(priority)
 		{
 			case DEBUG:
-				return ConfigurationManager.getInstance().getFilteredPriorities("DEBUG");
+				return m_debugIsAllowed;
 			case WARNING:
-				return ConfigurationManager.getInstance().getFilteredPriorities("WARNING");
+				return m_warningIsAllowed;
 			case ERROR:
-				return ConfigurationManager.getInstance().getFilteredPriorities("ERROR");
+				return m_errorIsAllowed;
 			default:
-				return true;
+				return false;
 		}
 	}
 
@@ -176,7 +179,7 @@ public class Logger
 	 * @param priority The log-priority
 	 * @param msg      The log-Message
 	 */
-	private void writeToFile(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	private synchronized void writeToFile(Channel channel, int cntr, LogPriority priority, String msg)
 	{
 		if(msg != null)
 		{
@@ -186,9 +189,9 @@ public class Logger
 			File file = new File(fullFilePath);
 			file.getParentFile().mkdirs();
 
-			try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true)))
+			try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true)))
 			{
-				bw.write(this.createLogString(channel, cntr, priority, msg));
+				bufferedWriter.write(createLogString(channel, cntr, priority, msg));
 			}
 			catch(IOException e)
 			{
@@ -206,7 +209,7 @@ public class Logger
 	 * @param priority The log-priority
 	 * @param msg      The log-Message
 	 */
-	private void writeToConsole(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	private void writeToConsole(Channel channel, int cntr, LogPriority priority, String msg)
 	{
 		if(msg != null)
 		{
@@ -223,7 +226,8 @@ public class Logger
 	 * @param priority The log-priority
 	 * @param msg      The log-Message
 	 */
-	private void writeToDatabase(enum_channel channel, int cntr, enum_logPriority priority, String msg)
+	// TODO: WHAT THE FUCKING FUCK?!
+	private void writeToDatabase(Channel channel, int cntr, LogPriority priority, String msg)
 	{
 		java.sql.Connection con      = null;
 		PreparedStatement   pst      = null;
@@ -262,26 +266,41 @@ public class Logger
 	 * @param msg           the log-message
 	 * @param priority   the priority you want to log with (DEBUG, WARNING, ERROR)
 	 */
-	public void log(enum_channel channel, enum_logPriority priority, enum_logType type, String msg)
+	public void log(Channel channel, LogPriority priority, LogType type, String msg)
 	{
+		if(!m_hasBeenInitialized)
+		{
+			type = LogType.ToConsole;
+		}
+
 		if(msg != null)
 		{
-			if(!this.isPriorityFiltered(priority))
+			if(isPriorityAllowed(priority))
 			{
 				switch(type)
 				{
 					case ToFile:
-						this.writeToFile(channel, ++this.m_logCounterTotal, priority, msg);
-						this.writeToDatabase(channel, ++this.m_logCounterTotal, priority, msg);
+						this.writeToFile(channel, ++m_logCounterTotal, priority, msg);
 						break;
 					case ToConsole:
-						this.writeToConsole(channel, ++this.m_logCounterTotal, priority, msg);
+						this.writeToConsole(channel, ++m_logCounterTotal, priority, msg);
 						break;
 					case ToDatabase:
-						this.writeToDatabase(channel, ++this.m_logCounterTotal, priority, msg);
+						this.writeToDatabase(channel, ++m_logCounterTotal, priority, msg);
 						break;
+						default:
+							break;
 				}
 			}
 		}
 	}
+
+
+
+	private int m_logCounterTotal = 0;
+	private static Logger m_instance;
+	private boolean m_hasBeenInitialized;
+	private boolean m_debugIsAllowed = true;
+	private boolean m_warningIsAllowed = true;
+	private boolean m_errorIsAllowed = true;
 }

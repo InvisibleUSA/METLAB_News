@@ -39,24 +39,24 @@ public class ConfigurationManager implements IResource
 		}
 		catch(FileNotFoundException e)
 		{
-			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
-			                         Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile,
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         Logger.LogType.ToFile,
 			                         m_XMLFilePath + " not found:\n"
 			                         + e.toString());
 		}
 		catch(InvalidPropertiesFormatException e)
 		{
-			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
-			                         Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile,
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         Logger.LogType.ToFile,
 			                         e.toString());
 		}
 		catch(IOException e)
 		{
-			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
-			                         Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile,
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         Logger.LogType.ToFile,
 			                         e.toString());
 		}
 	}
@@ -78,9 +78,9 @@ public class ConfigurationManager implements IResource
 		}
 		catch(NumberFormatException e)
 		{
-			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
-			                         Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile,
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         Logger.LogType.ToFile,
 			                         e.toString());
 			return 0L;
 		}
@@ -94,9 +94,9 @@ public class ConfigurationManager implements IResource
 		}
 		catch(NumberFormatException e)
 		{
-			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
-			                         Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile,
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         Logger.LogType.ToFile,
 			                         e.toString());
 			return 0;
 		}
@@ -118,9 +118,9 @@ public class ConfigurationManager implements IResource
 		}
 		catch(NumberFormatException e)
 		{
-			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
-			                         Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile,
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         Logger.LogType.ToFile,
 			                         e.toString());
 			return null;
 		}
@@ -139,9 +139,9 @@ public class ConfigurationManager implements IResource
 		}
 		catch(NumberFormatException e)
 		{
-			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
-			                         Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile,
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         Logger.LogType.ToFile,
 			                         e.toString());
 			return 0L;
 		}
@@ -300,9 +300,9 @@ public class ConfigurationManager implements IResource
 		String value =  m_properties.getProperty(key);
 		if(value == null)
 		{
-			Logger.getInstance().log(Logger.enum_channel.ConfigurationManager,
-			                         Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile,
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         Logger.LogType.ToFile,
 			                         "Key " + key + " not found in !"
 					                         + m_XMLFilePath);
 		}
@@ -312,6 +312,6 @@ public class ConfigurationManager implements IResource
 
 
 	private static ConfigurationManager m_instance;
-	private final String m_XMLFilePath = (System.getProperty("user.dir") + "\\Software\\Resources\\Settings.XML");
+	private final String m_XMLFilePath = (System.getProperty("user.dir") + "\\Resources\\Settings.XML");
 	private Properties m_properties;
 }

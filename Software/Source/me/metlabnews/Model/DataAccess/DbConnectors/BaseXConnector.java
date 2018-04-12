@@ -17,19 +17,17 @@ public class BaseXConnector implements IResource
 
 
 	private BaseXConnector()
+	{ }
+
+
+	@Override
+	public void initialize()
 	{
-
 	}
-
 
 
 	@Override
 	public void close()
-	{
-	}
-
-	@Override
-	public void initialize()
 	{
 	}
 
