@@ -1,10 +1,10 @@
 package me.metlabnews.Model.DataAccess.DbConnectors;
 
-import me.metlabnews.Model.ResourceManagement.IInitializable;
+import me.metlabnews.Model.ResourceManagement.IResource;
 
 
 
-public class BaseXConnector implements IInitializable, AutoCloseable
+public class BaseXConnector implements IResource
 {
 	public static BaseXConnector getInstance()
 	{

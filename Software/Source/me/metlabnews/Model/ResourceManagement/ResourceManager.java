@@ -1,5 +1,6 @@
 package me.metlabnews.Model.ResourceManagement;
 
+import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.DbConnectors.BaseXConnector;
 import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
 import javax.servlet.ServletContextEvent;
@@ -20,6 +21,9 @@ public class ResourceManager implements ServletContextListener
 	{
 		System.out.println("[MESSAGE] Initializing...");
 		System.out.println("          Server Info: " + sce.getServletContext().getServerInfo());
+
+		// ConfigurationManager has to be initialized first!
+		ConfigurationManager.getInstance().initialize();
 
 		RelationalDbConnector.getInstance().initialize();
 		BaseXConnector.getInstance().initialize();

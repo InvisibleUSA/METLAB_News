@@ -2,7 +2,7 @@ package me.metlabnews.Model.ResourceManagement;
 
 
 
-public interface IInitializable
+public interface IResource extends AutoCloseable
 {
 	void initialize();
 }

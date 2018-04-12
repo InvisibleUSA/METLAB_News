@@ -4,7 +4,7 @@ import me.metlabnews.Model.DataAccess.Exceptions.DataCouldNotBeAddedException;
 import me.metlabnews.Model.DataAccess.Exceptions.DataUpdateFailedException;
 import me.metlabnews.Model.DataAccess.Exceptions.RequestedDataDoesNotExistException;
 import me.metlabnews.Model.DataAccess.Exceptions.UnexpectedNonUniqueDataException;
-import me.metlabnews.Model.ResourceManagement.IInitializable;
+import me.metlabnews.Model.ResourceManagement.IResource;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 
@@ -16,7 +16,7 @@ import java.util.Properties;
 
 
 
-public class RelationalDbConnector implements IInitializable, AutoCloseable
+public class RelationalDbConnector implements IResource
 {
 	public static RelationalDbConnector getInstance()
 	{
