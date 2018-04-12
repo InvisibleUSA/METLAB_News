@@ -2,6 +2,8 @@ package me.metlabnews.Model.BusinessLogic;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.*;
+import me.metlabnews.Model.Entities.Subscriber;
+import me.metlabnews.Presentation.IUserInterface;
 import me.metlabnews.Presentation.Session;
 
 
@@ -77,7 +79,7 @@ public class UserManager
 		return qgu.userExists;
 	}
 
-	public void subscriberLogin(Session session, String email, String password)
+	public void subscriberLogin(Session session, IUserInterface.IGenericEvent onSuccess, String email, String password)
 	{
 		QueryLoginUser qlu = new QueryLoginUser();
 		qlu.password = password;
@@ -97,6 +99,9 @@ public class UserManager
 			return; //TODO: Error handling invalid password
 		}
 		System.out.println("Login successful");
+		Subscriber subscriber = new Subscriber();
+		session.login(subscriber);
+		onSuccess.execute();
 		//TODO: User Login
 	}
 

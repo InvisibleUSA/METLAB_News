@@ -39,7 +39,7 @@ public class Presenter
 		UserManager userManager = new UserManager();
 		ui.registerCallbackSubscriberLogin((onSuccess, onVerificationPending,
 		                                    onFailure, email, password) ->
-				                                   userManager.subscriberLogin(session, email, password));
+				                                   userManager.subscriberLogin(session, onSuccess, email, password));
 
 		ui.registerCallbackSubscriberRegistration((onSuccess, onFailure,
 		                                           fName, lName, org, email, pw, admin) ->
