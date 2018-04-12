@@ -1,5 +1,6 @@
 package me.metlabnews.Model.Crawler;
 
+import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.Entities.Source;
 
 import java.util.ArrayList;
@@ -7,13 +8,14 @@ import java.util.List;
 
 
 
-public class CrawlerController implements Runnable
+public class CrawlerController //implements Runnable
 {
-	private static CrawlerController cc;
-	List<RSSCrawler> RSSCrawler = new ArrayList<>();
+	/*
+	private static CrawlerController m_cc;
+	List<RSSCrawler> m_RSSCrawler = new ArrayList<>();
 
-	private Thread  t;
-	private boolean running = true;
+	private Thread  m_t;
+	private boolean m_running = true;
 
 	private CrawlerController()
 	{
@@ -22,66 +24,66 @@ public class CrawlerController implements Runnable
 
 	public static CrawlerController getInstance()
 	{
-		if(cc == null)
+		if(m_cc == null)
 		{
-			cc = new CrawlerController();
+			m_cc = new CrawlerController();
 		}
-		return cc;
+		return m_cc;
 	}
 
 	public void stop()
 	{
-		for(RSSCrawler c : RSSCrawler)
+		for(RSSCrawler c : m_RSSCrawler)
 		{
 			c.stop();
 		}
-		stop();
+		m_running = false;
 	}
 
 	public void start()
 	{
-		t = new Thread(this);
-		t.start();
+		m_t = new Thread(this);
+		m_t.start();
 	}
 
 	@Override
 	public void run()
 	{
-		while(running)
+		while(m_running)
 		{
 			ArrayList<Source> sources = SQLController.getInstance().getSources();
 			//go through all sources
 			for(Source curr_src : sources)
 			{
 				RSSCrawler curr_RSS_crawler = null;
-				//look for a RSSCrawler on that source
-				for(RSSCrawler c : RSSCrawler)
+				//look for a m_RSSCrawler on that source
+				for(RSSCrawler c : m_RSSCrawler)
 				{
-					if(curr_src.getName().equals(c.getSource().getName())
-							&& curr_src.getLink().equals(c.getSource().getLink())
-							&& curr_src.getRss_link().equals(c.getSource().getRss_link()))
+					if(curr_src.getName().equals(c.getM_source().getName())
+							&& curr_src.getLink().equals(c.getM_source().getLink())
+							&& curr_src.getRss_link().equals(c.getM_source().getRss_link()))
 					{
 						curr_RSS_crawler = c;
 					}
 				}
-				//if there is no RSSCrawler for that source --> create one
+				//if there is no m_RSSCrawler for that source --> create one
 				if(curr_RSS_crawler == null)
 				{
 					curr_RSS_crawler = new RSSCrawler(curr_src);
-					RSSCrawler.add(curr_RSS_crawler);
+					m_RSSCrawler.add(curr_RSS_crawler);
 					curr_RSS_crawler.start();
 				}
 			}
 			//go through all crawlers and kill crawlers with dead sources
 			ArrayList<RSSCrawler> toremove = new ArrayList<>();
-			for(RSSCrawler c : RSSCrawler)
+			for(RSSCrawler c : m_RSSCrawler)
 			{
 				boolean hasValidSource = false;
 				for(Source curr_src : sources)
 				{
-					if(curr_src.getName().equals(c.getSource().getName())
-							&& curr_src.getLink().equals(c.getSource().getLink())
-							&& curr_src.getRss_link().equals(c.getSource().getRss_link()))
+					if(curr_src.getName().equals(c.getM_source().getName())
+							&& curr_src.getLink().equals(c.getM_source().getLink())
+							&& curr_src.getRss_link().equals(c.getM_source().getRss_link()))
 					{
 						hasValidSource = true;
 					}
@@ -92,10 +94,10 @@ public class CrawlerController implements Runnable
 					c.stop();
 				}
 			}
-			RSSCrawler.removeAll(toremove);
+			m_RSSCrawler.removeAll(toremove);
 			try
 			{
-				Thread.sleep();
+				Thread.sleep(ConfigurationManager.getInstance().getCrawlerTimeout());
 			}
 			catch(InterruptedException e)
 			{
@@ -103,4 +105,5 @@ public class CrawlerController implements Runnable
 			}
 		}
 	}
+	*/
 }
