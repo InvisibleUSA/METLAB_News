@@ -18,7 +18,6 @@ import java.util.Calendar;
  */
 public class Logger
 {
-	//private        int    m_logCounterTotal = 0;
 	/**
 	 * Counter Variable
 	 */
@@ -41,6 +40,7 @@ public class Logger
 
 	/**
 	 * Singleton call
+	 *
 	 * @return instance of this Class
 	 */
 	public static synchronized Logger getInstance()
@@ -166,10 +166,11 @@ public class Logger
 
 	/**
 	 * This Message will write ein Error-Message to a File.
-	 * @param channel The specified Channel
-	 * @param cntr The internal counter
+	 *
+	 * @param channel  The specified Channel
+	 * @param cntr     The internal counter
 	 * @param priority The log-priority
-	 * @param msg The log-Message
+	 * @param msg      The log-Message
 	 */
 	private void writeToFile(enum_channel channel, int cntr, enum_logPriority priority, String msg)
 	{
@@ -178,11 +179,9 @@ public class Logger
 			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
 			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
 
-			File file = new File(fullFilePath);
-			file.getParentFile().mkdirs();
-
-			try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true)))
+			try(BufferedWriter bw = new BufferedWriter(new FileWriter(File file = new File(fullFilePath), true)))
 			{
+				file.getParentFile().mkdirs();
 				bw.write(this.createLogString(channel, cntr, priority, msg));
 			}
 			catch(IOException e)
@@ -195,10 +194,11 @@ public class Logger
 
 	/**
 	 * This Message will write ein Error-Message to the Console.
-	 * @param channel The specified Channel
-	 * @param cntr The internal counter
+	 *
+	 * @param channel  The specified Channel
+	 * @param cntr     The internal counter
 	 * @param priority The log-priority
-	 * @param msg The log-Message
+	 * @param msg      The log-Message
 	 */
 	private void writeToConsole(enum_channel channel, int cntr, enum_logPriority priority, String msg)
 	{
@@ -211,10 +211,11 @@ public class Logger
 
 	/**
 	 * This Message will write ein Error-Message to the Database.
-	 * @param channel The specified Channel
-	 * @param cntr The internal counter
+	 *
+	 * @param channel  The specified Channel
+	 * @param cntr     The internal counter
 	 * @param priority The log-priority
-	 * @param msg The log-Message
+	 * @param msg      The log-Message
 	 */
 	private void writeToDatabase(enum_channel channel, int cntr, enum_logPriority priority, String msg)
 	{
@@ -252,7 +253,4 @@ public class Logger
 			}
 		}
 	}
-
-
-
 }
