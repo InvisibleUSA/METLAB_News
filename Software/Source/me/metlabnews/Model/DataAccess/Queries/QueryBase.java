@@ -1,9 +1,7 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
 
-import me.metlabnews.Model.DataAccess.DatabaseConnector;
-import me.metlabnews.Model.DataAccess.MariaConnector;
-import org.basex.query.value.item.Str;
+import me.metlabnews.Model.DataAccess.DbConnectors.DatabaseConnector;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

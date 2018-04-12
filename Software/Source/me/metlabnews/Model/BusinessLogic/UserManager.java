@@ -84,8 +84,6 @@ public class UserManager
 		qlu.email = email;
 		if(!qlu.execute())
 		{
-			Logger.getInstance().log(Logger.enum_channel.DataBase, Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile, "SQL Failed at Subscriber Login");
 			return; //TODO: Error handling
 		}
 		if(!qlu.userLoginSuccessful)

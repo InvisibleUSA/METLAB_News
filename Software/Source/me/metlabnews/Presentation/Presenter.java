@@ -36,7 +36,7 @@ public class Presenter
 
 	private void registerCallbacks(IUserInterface ui, Session session)
 	{
-		UserManager userManager = UserManager.getInstance();
+		UserManager userManager = new UserManager();
 		ui.registerCallbackSubscriberLogin((onSuccess, onVerificationPending,
 		                                    onFailure, email, password) ->
 			userManager.subscriberLogin(session, onSuccess,

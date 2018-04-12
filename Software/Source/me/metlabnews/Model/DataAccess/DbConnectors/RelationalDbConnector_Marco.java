@@ -19,19 +19,18 @@ import java.util.Properties;
 
 
 
-
-public class RelationalDbConnector implements IResource
+public class RelationalDbConnector_Marco implements IResource
 {
-	public static RelationalDbConnector getInstance()
+	public static RelationalDbConnector_Marco getInstance()
 	{
 		if(m_instance == null)
 		{
-			m_instance = new RelationalDbConnector();
+			m_instance = new RelationalDbConnector_Marco();
 		}
 		return m_instance;
 	}
 
-	private RelationalDbConnector()
+	private RelationalDbConnector_Marco()
 	{
 	}
 
@@ -283,8 +282,8 @@ public class RelationalDbConnector implements IResource
 
 
 
-	private static RelationalDbConnector m_instance = null;
-	private SessionFactory m_sessionFactory;
-	private ThreadLocal<Session> m_session = new ThreadLocal<>();
-	private ThreadLocal<Transaction> m_transaction = new ThreadLocal<>();
+	private static RelationalDbConnector_Marco m_instance    = null;
+	private        SessionFactory              m_sessionFactory;
+	private        ThreadLocal<Session>        m_session     = new ThreadLocal<>();
+	private        ThreadLocal<Transaction>    m_transaction = new ThreadLocal<>();
 }
