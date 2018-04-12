@@ -186,7 +186,7 @@ public class Logger
 			}
 			catch(IOException e)
 			{
-				System.err.println(e.getMessage());
+				System.err.println("Error in Logger: " + e.getMessage());
 			}
 		}
 	}
@@ -219,8 +219,27 @@ public class Logger
 	 */
 	private void writeToDatabase(enum_channel channel, int cntr, enum_logPriority priority, String msg)
 	{
-		// TODO
-		// not implemented
+		private java.sql.Connection con      = null;
+		private PreparedStatement   pst      = null;
+		private ResultSet           rs       = null;
+		private String              url      = "jdbc:mysql://http://46.101.223.95:8080/METLAB_LOGS";
+		private String              user     = "test";
+		private String              password = "test";
+
+		try
+		{
+			con = DriverManager.getConnection(url, user, password);
+			Statement st = (Statement)con.createStatement();
+
+			st.executeUpdate("INSERT INTO LOG " +
+					                 "VALUES (NULL, " + this.getTimeStamp() + ", " + channel + ", " + priority + ", " + msg + ")");
+			con.close();
+		}
+
+		catch(Exception e)
+		{
+			System.err.println(e);
+		}
 	}
 
 
