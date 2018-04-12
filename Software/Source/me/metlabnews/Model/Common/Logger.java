@@ -6,6 +6,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -179,9 +183,11 @@ public class Logger
 			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
 			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
 
-			try(BufferedWriter bw = new BufferedWriter(new FileWriter(File file = new File(fullFilePath), true)))
+			File file = new File(fullFilePath);
+			file.getParentFile().mkdirs();
+
+			try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true)))
 			{
-				file.getParentFile().mkdirs();
 				bw.write(this.createLogString(channel, cntr, priority, msg));
 			}
 			catch(IOException e)
@@ -219,20 +225,25 @@ public class Logger
 	 */
 	private void writeToDatabase(enum_channel channel, int cntr, enum_logPriority priority, String msg)
 	{
-		private java.sql.Connection con      = null;
-		private PreparedStatement   pst      = null;
-		private ResultSet           rs       = null;
-		private String              url      = "jdbc:mysql://http://46.101.223.95:8080/METLAB_LOGS";
-		private String              user     = "test";
-		private String              password = "test";
+		java.sql.Connection con      = null;
+		PreparedStatement   pst      = null;
+		ResultSet           rs       = null;
+		String              url      = "jdbc:mariadb://46.101.223.95/METLAB_LOGS";
+		String              user     = "test";
+		String              password = "test";
 
 		try
 		{
 			con = DriverManager.getConnection(url, user, password);
 			Statement st = (Statement)con.createStatement();
 
-			st.executeUpdate("INSERT INTO LOG " +
-					                 "VALUES (NULL, " + this.getTimeStamp() + ", " + channel + ", " + priority + ", " + msg + ")");
+			st.executeUpdate("INSERT INTO LOG VALUES " +
+					                 "(NULL, " +
+					                 "'" + String.format(this.getTimeStamp().toString()) + "', " +
+					                 "'" + String.format(channel.toString()) + "', " +
+					                 "'" + String.format(priority.toString()) + "', " +
+					                 "'" + String.format(msg) + "'" +
+					                 ")");
 			con.close();
 		}
 
@@ -261,6 +272,7 @@ public class Logger
 				{
 					case ToFile:
 						this.writeToFile(channel, ++this.m_logCounterTotal, priority, msg);
+						this.writeToDatabase(channel, ++this.m_logCounterTotal, priority, msg);
 						break;
 					case ToConsole:
 						this.writeToConsole(channel, ++this.m_logCounterTotal, priority, msg);
