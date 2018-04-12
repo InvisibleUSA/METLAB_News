@@ -9,17 +9,9 @@ import me.metlabnews.Presentation.Session;
 
 public class UserManager
 {
-	public static UserManager create()
-	{
-		if(m_instance == null)
-		{
-			m_instance = new UserManager();
-		}
-		return m_instance;
-	}
 
 
-	private UserManager()
+	public UserManager()
 	{
 		//m_dbConnector = MariaConnector.getInstance();
 	}
@@ -190,8 +182,4 @@ public class UserManager
 
 	// endregion Client Admin Interaction
 
-
-
-	private static UserManager    m_instance = null;
-	private        MariaConnector m_dbConnector;
 }
