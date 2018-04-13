@@ -31,29 +31,28 @@ public class ConfigurationManager implements IResource
 	@Override
 	public void initialize()
 	{
-		try
+		try(InputStream inputStream = new FileInputStream(new File(m_XMLFilePath)))
 		{
-			InputStream inputStream = new FileInputStream(new File(m_XMLFilePath));
 			m_properties.loadFromXML(inputStream);
-			inputStream.close();
+			m_hasBeenInitialized = true;
 		}
 		catch(FileNotFoundException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
+			                         Logger.logPriority.ERROR,
 			                         m_XMLFilePath + " not found:\n"
-			                         + e.toString());
+					                         + e.toString());
 		}
 		catch(InvalidPropertiesFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
+			                         Logger.logPriority.ERROR,
 			                         e.toString());
 		}
 		catch(IOException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
+			                         Logger.logPriority.ERROR,
 			                         e.toString());
 		}
 	}
@@ -71,12 +70,12 @@ public class ConfigurationManager implements IResource
 	{
 		try
 		{
-			return Long.parseLong(this.returnProperty("Crawler.Timeout"));
+			return Long.parseLong(returnProperty("Crawler.Timeout"));
 		}
 		catch(NumberFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
+			                         Logger.logPriority.ERROR,
 			                         e.toString());
 			return 0L;
 		}
@@ -86,12 +85,12 @@ public class ConfigurationManager implements IResource
 	{
 		try
 		{
-			return Integer.parseInt(this.returnProperty("Crawler.MaxDocsPerDomain"));
+			return Integer.parseInt(returnProperty("Crawler.MaxDocsPerDomain"));
 		}
 		catch(NumberFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
+			                         Logger.logPriority.ERROR,
 			                         e.toString());
 			return 0;
 		}
@@ -101,7 +100,7 @@ public class ConfigurationManager implements IResource
 	{
 		try
 		{
-			switch(String.format(this.returnProperty("Crawler.TypePreferred")))
+			switch(String.format(returnProperty("Crawler.TypePreferred")))
 			{
 				case "RSSFeed":
 					return TypePreferred.RSSFeed;
@@ -114,7 +113,7 @@ public class ConfigurationManager implements IResource
 		catch(NumberFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
+			                         Logger.logPriority.ERROR,
 			                         e.toString());
 			return null;
 		}
@@ -129,12 +128,12 @@ public class ConfigurationManager implements IResource
 	{
 		try
 		{
-			return Long.parseLong(this.returnProperty("ClippingDaemon.EnqueuingTimeOut"));
+			return Long.parseLong(returnProperty("ClippingDaemon.EnqueuingTimeOut"));
 		}
 		catch(NumberFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
+			                         Logger.logPriority.ERROR,
 			                         e.toString());
 			return 0L;
 		}
@@ -147,17 +146,17 @@ public class ConfigurationManager implements IResource
 
 	public String getBaseXPath()
 	{
-		return this.returnProperty("BaseX.Path");
+		return returnProperty("BaseX.Path");
 	}
 
 	public String getBaseXUsername()
 	{
-		return this.returnProperty("BaseX.Username");
+		return returnProperty("BaseX.Username");
 	}
 
 	public String getBaseXPassword()
 	{
-		return this.returnProperty("BaseX.Password");
+		return returnProperty("BaseX.Password");
 	}
 
 	// endregion BaseX
@@ -167,37 +166,37 @@ public class ConfigurationManager implements IResource
 
 	public String getRdbmsDriver()
 	{
-		return this.returnProperty("RDBMS.Driver");
+		return returnProperty("RDBMS.Driver");
 	}
 
 	public String getRdbmsRemoteUrl()
 	{
-		return this.returnProperty("RDBMS.RemoteURL");
+		return returnProperty("RDBMS.RemoteURL");
 	}
 
 	public String getRdbmsLocalUrl()
 	{
-		return this.returnProperty("RDBMS.LocalURL");
+		return returnProperty("RDBMS.LocalURL");
 	}
 
-	public boolean getRdmsUseLocalDb()
+	public boolean getRdbmsUseLocalDB()
 	{
-		return Boolean.parseBoolean(this.returnProperty("RDBMS.UseLocalDB"));
+		return Boolean.parseBoolean(returnProperty("RDBMS.UseLocalDB"));
 	}
 
 	public String getRdbmsUsername()
 	{
-		return this.returnProperty("RDBMS.Username");
+		return returnProperty("RDBMS.Username");
 	}
 
 	public String getRdbmsPassword()
 	{
-		return this.returnProperty("RDBMS.Password");
+		return returnProperty("RDBMS.Password");
 	}
 
 	public String getRdbmsSqlDialect()
 	{
-		return this.returnProperty("RDBMS.SQLDialect");
+		return returnProperty("RDBMS.SQLDialect");
 	}
 
 	// endregion RDBMS
@@ -207,17 +206,17 @@ public class ConfigurationManager implements IResource
 
 	public String getMailFromAddress()
 	{
-		return this.returnProperty("Mail/FromAddress");
+		return returnProperty("Mail.FromAddress");
 	}
 
 	public String getMailPassword()
 	{
-		return this.returnProperty("Mail.Password");
+		return returnProperty("Mail.Password");
 	}
 
 	public String getMailSMTPServer()
 	{
-		return this.returnProperty("Mail.SMTPServer");
+		return returnProperty("Mail.SMTPServer");
 	}
 
 	// endregion Mail
@@ -232,13 +231,13 @@ public class ConfigurationManager implements IResource
 	 */
 	public String getLoggerLogFilePath()
 	{
-		return (System.getProperty("user.dir")) + this.returnProperty("Logger.LogFilePath");
+		return (System.getProperty("user.dir")) + returnProperty("Logger.LogFilePath");
 	}
 
 
 	public String getLogType()
 	{
-		return (System.getProperty("user.dir")) + this.returnProperty("Logger.LogType");
+		return (System.getProperty("user.dir")) + returnProperty("Logger.LogType");
 	}
 
 
@@ -251,17 +250,7 @@ public class ConfigurationManager implements IResource
 	 */
 	public boolean getFilteredPriorities(String priority)
 	{
-		switch(priority)
-		{
-			case "DEBUG":
-				return Boolean.parseBoolean(this.returnProperty("Logger.FilterDEBUG"));
-			case "WARNING":
-				return Boolean.parseBoolean(this.returnProperty("Logger.FilterWARNING"));
-			case "ERROR":
-				return Boolean.parseBoolean(this.returnProperty("Logger.FilterERROR"));
-			default:
-				return true;
-		}
+		return Boolean.parseBoolean(returnProperty("Logger.Filter" + priority + ""));
 	}
 
 	// endregion Logger
@@ -296,20 +285,32 @@ public class ConfigurationManager implements IResource
 	 */
 	private String returnProperty(String key)
 	{
-		String value =  m_properties.getProperty(key);
-		if(value == null)
+		if(m_hasBeenInitialized)
+		{
+			String value = m_properties.getProperty(key);
+			if(value == null)
+			{
+				Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+				                         Logger.logPriority.ERROR,
+				                         "Key '" + key + "' not found in: "
+						                         + m_XMLFilePath);
+			}
+			return value;
+		}
+		else
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         "Key " + key + " not found in !"
-					                         + m_XMLFilePath);
+			                         Logger.logPriority.ERROR,
+			                         "Initialization Error returning property for key '" + key + "'. " +
+					                         "Logger has not been initialized!");
+			return null;
 		}
-		return value;
 	}
 
 
-
+	private boolean m_hasBeenInitialized = false;
 	private static ConfigurationManager m_instance;
-	private final String m_XMLFilePath = (System.getProperty("user.dir") + "/Resources/Settings.XML");
+	private final String m_XMLFilePath = (System.getProperty(
+			"user.dir") + "" + File.separator + "Resources" + File.separator + "Settings.XML");
 	private Properties m_properties;
 }

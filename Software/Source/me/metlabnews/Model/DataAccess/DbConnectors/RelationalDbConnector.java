@@ -51,7 +51,7 @@ public class RelationalDbConnector implements IResource
 			properties.setProperty("dialect",
 			                       configManager.getRdbmsSqlDialect());
 
-			if(configManager.getRdmsUseLocalDb())
+			if(configManager.getRdbmsUseLocalDB())
 			{
 				properties.setProperty("hibernate.connection.url",
 				                       configManager.getRdbmsLocalUrl());

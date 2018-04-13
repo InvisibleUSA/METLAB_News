@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-// this.getClass().getCanonicalName()
+// getClass().getCanonicalName()
 
 
 /**
@@ -99,7 +99,7 @@ public class Logger implements IResource
 	 * If e.g. the Priority of the internal logger is higher than the called Priority, than the message
 	 * will NOT be logged.
 	 */
-	public enum LogPriority
+	public enum logPriority
 	{
 		DEBUG,
 		WARNING,
@@ -144,7 +144,7 @@ public class Logger implements IResource
 	 * @param msg      The Message you want to log
 	 * @return A parsed String to log
 	 */
-	private String createLogString(Channel channel, int cntr, LogPriority priority, String msg)
+	private String createLogString(Channel channel, int cntr, logPriority priority, String msg)
 	{
 		return ("#" + cntr + " | " + priority.name() + " | " + getTimeStamp() + " : " + msg + "\n");
 	}
@@ -157,7 +157,7 @@ public class Logger implements IResource
 	 * @param priority the Priority (e.g. DEBUG, WARNING, ERROR)
 	 * @return True = Filtered
 	 */
-	private boolean isPriorityAllowed(LogPriority priority)
+	private boolean isPriorityAllowed(logPriority priority)
 	{
 		switch(priority)
 		{
@@ -181,11 +181,11 @@ public class Logger implements IResource
 	 * @param priority The log-priority
 	 * @param msg      The log-Message
 	 */
-	private synchronized void writeToFile(Channel channel, int cntr, LogPriority priority, String msg)
+	private synchronized void writeToFile(Channel channel, int cntr, logPriority priority, String msg)
 	{
 		if(msg != null)
 		{
-			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
+			String fileName     = getDateString() + "-" + channel.name() + "-" + "log.txt";
 			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
 
 			File file = new File(fullFilePath);
@@ -211,11 +211,11 @@ public class Logger implements IResource
 	 * @param priority The log-priority
 	 * @param msg      The log-Message
 	 */
-	private void writeToConsole(Channel channel, int cntr, LogPriority priority, String msg)
+	private void writeToConsole(Channel channel, int cntr, logPriority priority, String msg)
 	{
 		if(msg != null)
 		{
-			System.err.println(this.createLogString(channel, ++this.m_logCounterTotal, priority, msg));
+			System.err.println(createLogString(channel, ++m_logCounterTotal, priority, msg));
 		}
 	}
 
@@ -229,7 +229,7 @@ public class Logger implements IResource
 	 * @param msg      The log-Message
 	 */
 	// TODO: WHAT THE FUCKING FUCK?!
-	private void writeToDatabase(Channel channel, int cntr, LogPriority priority, String msg)
+	private void writeToDatabase(Channel channel, int cntr, logPriority priority, String msg)
 	{
 		java.sql.Connection con      = null;
 		PreparedStatement   pst      = null;
@@ -245,7 +245,7 @@ public class Logger implements IResource
 
 			st.executeUpdate("INSERT INTO LOG VALUES " +
 					                 "(NULL, " +
-					                 "'" + String.format(this.getTimeStamp().toString()) + "', " +
+					                 "'" + String.format(getTimeStamp().toString()) + "', " +
 					                 "'" + String.format(channel.toString()) + "', " +
 					                 "'" + String.format(priority.toString()) + "', " +
 					                 "'" + String.format(msg) + "'" +
@@ -269,36 +269,47 @@ public class Logger implements IResource
 	 * @param priority   the priority you want to log with (DEBUG, WARNING, ERROR)
 	 * @param msg           the log-message
 	 */
-	public void log(Channel channel, LogPriority priority, String msg)
+	public void log(Channel channel, logPriority priority, String msg)
 	{
-		if(msg != null)
+		boolean isPriorityAllowed;
+		String  typeDefault;
+
+		if(!m_hasBeenInitialized)
 		{
-			if(isPriorityAllowed(priority))
+			isPriorityAllowed = true; // log everything by default
+			typeDefault = "ToConsole"; // log ToConsole by default
+		}
+		else
+		{
+			isPriorityAllowed = isPriorityAllowed(priority);
+			typeDefault = String.format(ConfigurationManager.getInstance().getLogType());
+		}
+
+		if(isPriorityAllowed)
+		{
+			switch(typeDefault)
 			{
-				switch(String.format(ConfigurationManager.getInstance().getLogType()))
-				{
-					case "ToFile":
-						this.writeToFile(channel, ++m_logCounterTotal, priority, msg);
-						break;
-					case "ToConsole":
-						this.writeToConsole(channel, ++m_logCounterTotal, priority, msg);
-						break;
-					case "ToDatabase":
-						this.writeToDatabase(channel, ++m_logCounterTotal, priority, msg);
-						break;
-					default:
-						break;
-				}
+				case "ToFile":
+					writeToFile(channel, ++m_logCounterTotal, priority, msg);
+					break;
+				case "ToConsole":
+					writeToConsole(channel, ++m_logCounterTotal, priority, msg);
+					break;
+				case "ToDatabase":
+					writeToDatabase(channel, ++m_logCounterTotal, priority, msg);
+					break;
+				default:
+					break;
 			}
 		}
 	}
 
 
 
-	private        int     m_logCounterTotal  = 0;
+	private int m_logCounterTotal = 0;
 	private static Logger  m_instance;
 	private        boolean m_hasBeenInitialized;
-	private        boolean m_debugIsAllowed   = true;
-	private        boolean m_warningIsAllowed = true;
-	private        boolean m_errorIsAllowed   = true;
+	private boolean m_debugIsAllowed   = true;
+	private boolean m_warningIsAllowed = true;
+	private boolean m_errorIsAllowed   = true;
 }
