@@ -39,20 +39,20 @@ public class ConfigurationManager implements IResource
 		catch(FileNotFoundException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.logPriority.ERROR,
+			                         Logger.LogPriority.ERROR,
 			                         m_XMLFilePath + " not found:\n"
 					                         + e.toString());
 		}
 		catch(InvalidPropertiesFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.logPriority.ERROR,
+			                         Logger.LogPriority.ERROR,
 			                         e.toString());
 		}
 		catch(IOException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.logPriority.ERROR,
+			                         Logger.LogPriority.ERROR,
 			                         e.toString());
 		}
 	}
@@ -75,7 +75,7 @@ public class ConfigurationManager implements IResource
 		catch(NumberFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.logPriority.ERROR,
+			                         Logger.LogPriority.ERROR,
 			                         e.toString());
 			return 0L;
 		}
@@ -90,7 +90,7 @@ public class ConfigurationManager implements IResource
 		catch(NumberFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.logPriority.ERROR,
+			                         Logger.LogPriority.ERROR,
 			                         e.toString());
 			return 0;
 		}
@@ -113,7 +113,7 @@ public class ConfigurationManager implements IResource
 		catch(NumberFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.logPriority.ERROR,
+			                         Logger.LogPriority.ERROR,
 			                         e.toString());
 			return null;
 		}
@@ -133,7 +133,7 @@ public class ConfigurationManager implements IResource
 		catch(NumberFormatException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.logPriority.ERROR,
+			                         Logger.LogPriority.ERROR,
 			                         e.toString());
 			return 0L;
 		}
@@ -291,7 +291,7 @@ public class ConfigurationManager implements IResource
 			if(value == null)
 			{
 				Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-				                         Logger.logPriority.ERROR,
+				                         Logger.LogPriority.ERROR,
 				                         "Key '" + key + "' not found in: "
 						                         + m_XMLFilePath);
 			}
@@ -300,7 +300,7 @@ public class ConfigurationManager implements IResource
 		else
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.logPriority.ERROR,
+			                         Logger.LogPriority.ERROR,
 			                         "Initialization Error returning property for key '" + key + "'. " +
 					                         "Logger has not been initialized!");
 			return null;
