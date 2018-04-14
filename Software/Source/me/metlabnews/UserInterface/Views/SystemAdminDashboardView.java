@@ -6,12 +6,12 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SystemAdminDashboardView extends VerticalLayout
+public class SystemAdminDashboardView
+		extends VerticalLayout implements IView
 {
 	public SystemAdminDashboardView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Dashboard");
 
 		final FormLayout outerContent = new FormLayout();
 		final FormLayout innerContent = new FormLayout();
@@ -54,6 +54,14 @@ public class SystemAdminDashboardView extends VerticalLayout
 		buttonLogout.addClickListener((Button.ClickEvent event)
 				                              -> m_parent.logout());
 		this.addComponents(title, panelNewOrganisation, buttonLogout);
+	}
+
+
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+		Page.getCurrent().setTitle("Dashboard");
 	}
 
 

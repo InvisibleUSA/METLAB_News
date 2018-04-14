@@ -43,7 +43,6 @@ public class MainUI extends UI implements IUserInterface
 		m_systemAdminDashboardView = new SystemAdminDashboardView(this);
 		m_logoutView = new LogoutView(this);
 
-		Presenter.getInstance().connect(this);
 		openSubscriberLoginView();
 	}
 
@@ -338,16 +337,17 @@ public class MainUI extends UI implements IUserInterface
 		static MainUI ui = null;
 
 		@Override
-		public void sessionInit(SessionInitEvent event)
-		{
-		}
-
-		@Override
 		protected void servletInitialized() throws ServletException
 		{
 			super.servletInitialized();
 			getService().addSessionInitListener(this);
 			getService().addSessionDestroyListener(this);
+		}
+
+		@Override
+		public void sessionInit(SessionInitEvent event)
+		{
+			Presenter.getInstance().connect(ui);
 		}
 
 		@Override

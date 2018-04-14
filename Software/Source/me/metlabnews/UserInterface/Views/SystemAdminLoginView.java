@@ -6,7 +6,8 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SystemAdminLoginView extends VerticalLayout
+public class SystemAdminLoginView
+		extends VerticalLayout implements IView
 {
 	public SystemAdminLoginView(MainUI parent)
 	{
@@ -21,6 +22,15 @@ public class SystemAdminLoginView extends VerticalLayout
 		this.addComponents(title, textFieldEmail, textFieldPassword, buttonLogin,
 		                   buttonToSubscriberLogin);
 	}
+
+
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+		Page.getCurrent().setTitle("Anmelden");
+	}
+
 
 	private void loginAction()
 	{

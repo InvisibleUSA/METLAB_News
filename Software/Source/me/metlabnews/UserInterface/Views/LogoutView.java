@@ -8,17 +8,24 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class LogoutView extends VerticalLayout
+public class LogoutView extends VerticalLayout implements IView
 {
 	public LogoutView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Abgemeldet");
 
 		buttonLogin.addClickListener((Button.ClickEvent event)
 				                             -> m_parent.openSubscriberLoginView());
 
 		this.addComponents(title, buttonLogin);
+	}
+
+
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+		Page.getCurrent().setTitle("Abgemeldet");
 	}
 
 

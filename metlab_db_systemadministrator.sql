@@ -1,1 +1,0 @@
-INSERT INTO metlab_db.systemadministrator (id, firstName, lastName, password, email) VALUES (1, 'System', 'Administrator', 'SuperSecurePassword', 'admin@web.de');

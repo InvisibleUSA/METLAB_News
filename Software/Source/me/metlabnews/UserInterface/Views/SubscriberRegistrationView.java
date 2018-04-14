@@ -8,15 +8,13 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SubscriberRegistrationView extends VerticalLayout
+public class SubscriberRegistrationView extends VerticalLayout implements IView
 {
 	public SubscriberRegistrationView(MainUI parent)
 	{
 		m_parent = parent;
 
-		Page.getCurrent().setTitle("Registrieren");
-
-		buttonRegister.addClickListener((Button.ClickEvent event) -> registerAction());
+		buttonRegister.addClickListener((Button.ClickEvent event) -> register());
 
 		buttonLogin.addClickListener((Button.ClickEvent event) ->
 				                             m_parent.openSubscriberLoginView());
@@ -26,7 +24,16 @@ public class SubscriberRegistrationView extends VerticalLayout
 		                   textFieldEmail, textFieldPassword, checkBoxClientAdmin, buttonBar);
 	}
 
-	private void registerAction()
+
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+		Page.getCurrent().setTitle("Registrieren");
+	}
+
+
+	private void register()
 	{
 		String firstName = textFieldFirstName.getValue();
 		String lastName = textFieldLastName.getValue();
@@ -53,7 +60,7 @@ public class SubscriberRegistrationView extends VerticalLayout
 
 	private MainUI m_parent;
 
-	private final Label         title              = new Label("Willkommen bei METLAB-News - Anmeldung");
+	private final Label         title              = new Label("Willkommen bei METLAB-News - Registrierung");
 	private final TextField     textFieldFirstName = new TextField("Vorname:");
 	private final TextField     textFieldLastName  = new TextField("Nachname:");
 	private final TextField     textFieldCompany   = new TextField("Organisation:");
