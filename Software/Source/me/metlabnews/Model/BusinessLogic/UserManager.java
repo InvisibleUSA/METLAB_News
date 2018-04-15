@@ -59,14 +59,14 @@ public class UserManager
 			return;
 		}
 
-		if(!Validator.validatePassword(password))
-		{
-			onFailure.execute(Messages.PasswordDoesNotMatchRequirements);
-			return;
-		}
 		if(!Validator.validateEmailAddress(email))
 		{
 			onFailure.execute(Messages.InvalidEmailAddress);
+			return;
+		}
+		if(!Validator.validatePassword(password))
+		{
+			onFailure.execute(Messages.PasswordDoesNotMatchRequirements);
 			return;
 		}
 
@@ -498,7 +498,7 @@ public class UserManager
 			}
 			else
 			{
-				StringBuilder regex = new StringBuilder();
+				StringBuilder regex = new StringBuilder("([^.]+?)");
 				if(digitIsRequired) regex.append("(?=.*[0-9])");
 				if(lowerCaseLetterIsRequired)regex.append("(?=.*[a-z])");
 				if(upperCaseLetterIsRequired)regex.append("(?=.*[A-Z])");
