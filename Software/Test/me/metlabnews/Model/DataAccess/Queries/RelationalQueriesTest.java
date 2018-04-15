@@ -47,6 +47,14 @@ class RelationalQueriesTest
 	}
 
 	@Test
+	public void addAndRemoveTempOrganisation()
+	{
+		Organisation temp = new Organisation("TEMP");
+		assertTrue(new AddOrganisationQuery(temp).execute());
+		assertTrue(new RemoveOrganisationQuery(temp).execute());
+	}
+
+	@Test
 	public void addAndRemoveSubscriber()
 	{
 		Subscriber subscriber = new Subscriber("max.mustermann@test.de", "123",
