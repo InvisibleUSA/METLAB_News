@@ -43,6 +43,7 @@ public class Logger implements IResource
 	 *
 	 * @return instance of this Class with all its methods
 	 */
+	// TODO: remove 'synchronized'
 	public static synchronized Logger getInstance()
 	{
 		if(m_instance == null)

@@ -42,7 +42,7 @@ public class RelationalDbConnector implements IResource
 		try
 		{
 			Properties properties = new Properties();
-			// properties.put("hibernate.id.new_generator_mappings","false");
+			properties.put("hibernate.id.new_generator_mappings", "false");
 
 			ConfigurationManager configManager = ConfigurationManager.getInstance();
 

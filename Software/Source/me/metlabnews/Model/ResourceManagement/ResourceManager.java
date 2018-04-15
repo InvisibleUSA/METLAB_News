@@ -29,6 +29,8 @@ public class ResourceManager implements ServletContextListener
 		Logger.getInstance().initialize();
 		RelationalDbConnector.getInstance().initialize();
 		BaseXConnector.getInstance().initialize();
+		// Crawler.getInstance().initialize();
+		// ClippingDaemon.getInstance().initialize();
 	}
 
 	@Override
