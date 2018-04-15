@@ -24,8 +24,8 @@ class RelationalQueriesTest
 	{
 		ConfigurationManager.getInstance().initialize();
 		RelationalDbConnector.getInstance().initialize();
-		m_Organisation = new Organisation(m_organisationName);
-		assertTrue(new AddOrganisationQuery(m_Organisation).execute());
+		m_organisation = new Organisation(m_organisationName);
+		assertTrue(new AddOrganisationQuery(m_organisation).execute());
 	}
 
 	@AfterAll
@@ -33,7 +33,7 @@ class RelationalQueriesTest
 	{
 		try
 		{
-			new RemoveOrganisationQuery(m_Organisation).execute();
+			new RemoveOrganisationQuery(m_organisation).execute();
 		}
 		catch(Exception e)
 		{
@@ -77,7 +77,7 @@ class RelationalQueriesTest
 	private void addSubscriber()
 	{
 		m_subscriber = new Subscriber("max.mustermann@test.de", "123",
-		                              "Max", "Mustermann", m_Organisation,
+		                              "Max", "Mustermann", m_organisation,
 		                              false);
 		assertTrue(new AddSubscriberQuery(m_subscriber).execute());
 	}
@@ -95,7 +95,7 @@ class RelationalQueriesTest
 
 
 
-	private static Organisation m_Organisation;
+	private static Organisation m_organisation;
 	private final static String m_organisationName = "TestOrg";
 	private static Subscriber m_subscriber;
 }

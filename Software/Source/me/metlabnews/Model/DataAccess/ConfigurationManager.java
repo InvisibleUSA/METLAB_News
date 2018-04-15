@@ -6,7 +6,6 @@ import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.ResourceManagement.IResource;
 
 import java.io.*;
-import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
 
@@ -43,12 +42,6 @@ public class ConfigurationManager implements IResource
 			                         m_XMLFilePath + " not found:\n"
 					                         + e.toString());
 		}
-		catch(InvalidPropertiesFormatException e)
-		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         e.toString());
-		}
 		catch(IOException e)
 		{
 			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
@@ -62,6 +55,41 @@ public class ConfigurationManager implements IResource
 	{
 
 	}
+
+
+	// region Security
+
+	public int getSecurityPasswordMinimumLength()
+	{
+		return Integer.parseInt(returnProperty("Security.Password.MinimumLength"));
+	}
+
+	public boolean getSecurityPasswordLowerCaseLetterRequired()
+	{
+		return Boolean.parseBoolean(returnProperty("Security.Password.LowerCaseLetterRequired"));
+	}
+
+	public boolean getSecurityPasswordUpperCaseLetterRequired()
+	{
+		return Boolean.parseBoolean(returnProperty("Security.Password.UpperCaseLetterRequired"));
+	}
+
+	public boolean getSecurityPasswordSpecialCharacterRequired()
+	{
+		return Boolean.parseBoolean(returnProperty("Security.Password.SpecialCharacterRequired"));
+	}
+
+	public boolean getSecurityPasswordDigitRequired()
+	{
+		return Boolean.parseBoolean(returnProperty("Security.Password.DigitRequired"));
+	}
+
+	public boolean getSecurityPasswordWhitespaceForbidden()
+	{
+		return Boolean.parseBoolean(returnProperty("Security.Password.WhitespaceForbidden"));
+	}
+
+	// endregion Security
 
 
 	// region Crawler

@@ -1,5 +1,6 @@
 package me.metlabnews.Model.ResourceManagement;
 
+import me.metlabnews.Model.BusinessLogic.UserManager;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.DbConnectors.BaseXConnector;
@@ -33,8 +34,10 @@ public class ResourceManager implements ServletContextListener
 		BaseXConnector.getInstance().initialize();
 		// Crawler.getInstance().initialize();
 		// ClippingDaemon.getInstance().initialize();
+		UserManager.Validator.getInstance().initialize();
 		Presenter.getInstance().initialize();
 	}
+
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce)

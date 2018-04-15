@@ -24,7 +24,6 @@ public class GetOrganisationQuery implements IQuery<Organisation>
 		m_result = null;
 		try
 		{
-			// TODO: replace property string with reflection
 			m_result = (Organisation)RelationalDbConnector.getInstance().getUniqueEntity(
 					Organisation.class.getSimpleName(), "name", m_name);
 		}

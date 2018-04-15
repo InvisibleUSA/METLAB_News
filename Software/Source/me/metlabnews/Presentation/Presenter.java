@@ -42,6 +42,7 @@ public class Presenter implements IResource
 
 	public void connect(@NotNull IUserInterface ui)
 	{
+		// TODO: replace with non-blocking approach
 		while(!m_hasBeenInitialized)
 		{
 			try
@@ -56,6 +57,7 @@ public class Presenter implements IResource
 		registerCallbacks(ui, session);
 		m_sessions.put(ui, session);
 	}
+
 
 	private void registerCallbacks(IUserInterface ui, Session session)
 	{

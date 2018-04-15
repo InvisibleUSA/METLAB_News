@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
+	<!-- Security -->
+	<entry key="Security.Password.MinimumLength">1</entry>
+	<entry key="Security.Password.LowerCaseLetterRequired">false</entry> <!-- {false, true} -->
+	<entry key="Security.Password.UpperCaseLetterRequired">false</entry> <!-- {false, true} -->
+	<entry key="Security.Password.DigitRequired">false</entry> <!-- {false, true} -->
+	<entry key="Security.Password.SpecialCharacterRequired">false</entry> <!-- {false, true} -->
+	<entry key="Security.Password.WhitespaceForbidden">false</entry> <!-- {false, true} -->
+
+
 	<!-- Crawler -->
 	<entry key="Crawler.Timeout">12345</entry>
 	<entry key="Crawler.MaxDocsPerDomain">12345</entry>
@@ -25,7 +34,6 @@
 	<entry key="RDBMS.Username">test</entry>
 	<entry key="RDBMS.Password">test</entry>
 	<entry key="RDBMS.SQLDialect">org.hibernate.dialect.MySQLDialect</entry>
-
 
 
 	<!-- Mail -->
