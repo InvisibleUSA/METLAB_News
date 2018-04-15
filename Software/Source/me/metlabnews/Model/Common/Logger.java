@@ -43,8 +43,7 @@ public class Logger implements IResource
 	 *
 	 * @return instance of this Class with all its methods
 	 */
-	// TODO: remove 'synchronized'
-	public static synchronized Logger getInstance()
+	public static Logger getInstance()
 	{
 		if(m_instance == null)
 		{
@@ -189,8 +188,17 @@ public class Logger implements IResource
 	{
 		if(msg != null)
 		{
-			String fileName     = getDateString() + "-" + channel.name() + "-" + "log.txt";
-			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
+			String fullFilePath;
+			String fileName = getDateString() + "-" + channel.name() + "-" + "log.txt"; // e.g.: 04-05-2018-WebCrawler-log.txt
+
+			if(!m_hasBeenInitialized)
+			{
+				fullFilePath = File.separator + "Logs" + File.separator; // by default: ..\Logs\..
+			}
+			else
+			{
+				fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + File.separator + fileName;
+			}
 
 			File file = new File(fullFilePath);
 			file.getParentFile().mkdirs();
@@ -201,7 +209,7 @@ public class Logger implements IResource
 			}
 			catch(IOException e)
 			{
-				System.err.println("Error in Logger: " + e.getMessage());
+				System.err.println("IO Exception! Error in Logger: " + e.getMessage());
 			}
 		}
 	}
@@ -216,10 +224,7 @@ public class Logger implements IResource
 	 */
 	private void writeToConsole(Channel channel, LogPriority priority, String msg)
 	{
-		if(msg != null)
-		{
-			System.err.println(createLogString(channel, ++m_logCounterTotal, priority, msg));
-		}
+		System.err.println(createLogString(channel, ++m_logCounterTotal, priority, msg));
 	}
 
 
@@ -240,20 +245,19 @@ public class Logger implements IResource
 		try
 		{
 			con = DriverManager.getConnection(url, user, password);
-			Statement st = (Statement)con.createStatement();
+			Statement st = con.createStatement();
 
 			st.executeUpdate("INSERT INTO LOG VALUES " +
 					                 "(NULL, " +
-					                 "'" + String.format(getTimeStamp().toString()) + "', " +
-					                 "'" + String.format(channel.toString()) + "', " +
-					                 "'" + String.format(priority.toString()) + "', " +
-					                 "'" + String.format(msg) + "'" +
+					                 "'" + channel.toString() + "', " +
+					                 "'" + priority.toString() + "', " +
+					                 "'" + msg + "'" +
 					                 ")");
 			con.close();
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
+			System.err.println("Error in Logger @ writeToDatabase() : " + e.toString());
 		}
 	}
 
@@ -271,9 +275,10 @@ public class Logger implements IResource
 	 * Logger.Priority.DEBUG,
 	 * "Enter your log-message here...");
 	 * }
-	 * @param channel       the Channel from where you call the log-method
-	 * @param priority   the priority you want to log with (DEBUG, WARNING, ERROR)
-	 * @param msg           the log-message
+	 *
+	 * @param channel  the Channel from where you call the log-method
+	 * @param priority the priority you want to log with (DEBUG, WARNING, ERROR)
+	 * @param msg      the log-message
 	 */
 	public void log(Channel channel, LogPriority priority, String msg)
 	{
@@ -312,10 +317,10 @@ public class Logger implements IResource
 
 
 
-	private int m_logCounterTotal = 0;
+	private        int     m_logCounterTotal  = 0;
 	private static Logger  m_instance;
 	private        boolean m_hasBeenInitialized;
-	private boolean m_debugIsAllowed   = true;
-	private boolean m_warningIsAllowed = true;
-	private boolean m_errorIsAllowed   = true;
+	private        boolean m_debugIsAllowed   = true;
+	private        boolean m_warningIsAllowed = true;
+	private        boolean m_errorIsAllowed   = true;
 }
