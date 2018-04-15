@@ -4,18 +4,23 @@ import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
+//import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+//import org.junit.runners.MethodSorters;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 
+// Does not work in JUnit 5
+// @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// Fuck you JUnit! Just fuck you!
 class RelationalQueriesTest
 {
 	@BeforeAll
-	public static void initialize()
+	static void initialize()
 	{
 		ConfigurationManager.getInstance().initialize();
 		RelationalDbConnector.getInstance().initialize();
@@ -24,7 +29,7 @@ class RelationalQueriesTest
 	}
 
 	@AfterAll
-	public static void close()
+	static void close()
 	{
 		try
 		{
@@ -41,13 +46,13 @@ class RelationalQueriesTest
 
 
 	@Test
-	public void getOrganisation()
+	void getOrganisation()
 	{
 		assertTrue(new GetOrganisationQuery(m_organisationName).execute());
 	}
 
 	@Test
-	public void addAndRemoveTempOrganisation()
+	void addAndRemoveTempOrganisation()
 	{
 		Organisation temp = new Organisation("TEMP");
 		assertTrue(new AddOrganisationQuery(temp).execute());
@@ -55,23 +60,42 @@ class RelationalQueriesTest
 	}
 
 	@Test
-	public void addAndRemoveSubscriber()
+	void getSystemAdministrator()
 	{
-		Subscriber subscriber = new Subscriber("max.mustermann@test.de", "123",
-		                                       "Max", "Mustermann", m_Organisation,
-		                                       false);
-		assertTrue(new AddSubscriberQuery(subscriber).execute());
-		assertTrue(new RemoveSubscriberQuery(subscriber).execute());
+		assertTrue(new GetSystemAdministratorQuery("sys.admin@test.de").execute());
 	}
 
 	@Test
-	public void getSystemAdministrator()
+	void addVerifyRemoveSubscriber()
 	{
-		assertTrue(new GetSystemAdministratorQuery("sys.admin@test.de").execute());
+		// necessary because JUnit is a useless heap of shit
+		addSubscriber();
+		verifySubscriber();
+		removeSubscriber();
+	}
+
+	private void addSubscriber()
+	{
+		m_subscriber = new Subscriber("max.mustermann@test.de", "123",
+		                              "Max", "Mustermann", m_Organisation,
+		                              false);
+		assertTrue(new AddSubscriberQuery(m_subscriber).execute());
+	}
+
+	private void verifySubscriber()
+	{
+		m_subscriber.setVerificationPending(false);
+		assertTrue(new UpdateSubscriberQuery(m_subscriber).execute());
+	}
+
+	private void removeSubscriber()
+	{
+		assertTrue(new RemoveSubscriberQuery(m_subscriber).execute());
 	}
 
 
 
 	private static Organisation m_Organisation;
 	private final static String m_organisationName = "TestOrg";
+	private static Subscriber m_subscriber;
 }
