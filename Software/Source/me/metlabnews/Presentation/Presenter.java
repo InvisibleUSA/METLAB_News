@@ -1,13 +1,14 @@
 package me.metlabnews.Presentation;
 
 import me.metlabnews.Model.BusinessLogic.*;
+import me.metlabnews.Model.ResourceManagement.IResource;
 
 import javax.validation.constraints.NotNull;
 import java.util.concurrent.ConcurrentHashMap;
 
 
 
-public class Presenter
+public class Presenter implements IResource
 {
 	public static Presenter getInstance()
 	{
@@ -25,12 +26,34 @@ public class Presenter
 	}
 
 
+	@Override
+	public void initialize()
+	{
+		m_hasBeenInitialized = true;
+	}
+
+	@Override
+	public void close()
+	{
+		m_sessions.forEach((ui, session) -> session.close() );
+		m_sessions.clear();
+	}
+
+
 	public void connect(@NotNull IUserInterface ui)
 	{
+		while(!m_hasBeenInitialized)
+		{
+			try
+			{
+				Thread.sleep(100);
+			}
+			catch(InterruptedException e)
+			{
+			}
+		}
 		Session session = new Session();
-
 		registerCallbacks(ui, session);
-
 		m_sessions.put(ui, session);
 	}
 
@@ -107,6 +130,7 @@ public class Presenter
 
 
 	private static Presenter m_instance = null;
+	private boolean m_hasBeenInitialized;
 	private ConcurrentHashMap<IUserInterface, Session> m_sessions;
 	private final int initialSessionCapacity = 50;
 }

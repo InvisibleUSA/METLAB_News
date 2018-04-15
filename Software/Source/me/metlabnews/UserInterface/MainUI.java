@@ -43,6 +43,8 @@ public class MainUI extends UI implements IUserInterface
 		m_systemAdminDashboardView = new SystemAdminDashboardView(this);
 		m_logoutView = new LogoutView(this);
 
+		Presenter.getInstance().connect(this);
+
 		openSubscriberLoginView();
 	}
 
@@ -347,7 +349,6 @@ public class MainUI extends UI implements IUserInterface
 		@Override
 		public void sessionInit(SessionInitEvent event)
 		{
-			Presenter.getInstance().connect(ui);
 		}
 
 		@Override

@@ -4,6 +4,8 @@ import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.DbConnectors.BaseXConnector;
 import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
+import me.metlabnews.Presentation.Presenter;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -31,6 +33,7 @@ public class ResourceManager implements ServletContextListener
 		BaseXConnector.getInstance().initialize();
 		// Crawler.getInstance().initialize();
 		// ClippingDaemon.getInstance().initialize();
+		Presenter.getInstance().initialize();
 	}
 
 	@Override

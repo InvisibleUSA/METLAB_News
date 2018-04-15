@@ -9,6 +9,7 @@ import me.metlabnews.Presentation.IUserInterface.IGenericFailureEvent;
 import me.metlabnews.Presentation.Messages;
 import me.metlabnews.Presentation.Session;
 import me.metlabnews.Presentation.UserDataRepresentation;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,17 @@ public class UserManager
 		if(!organisationExists)
 		{
 			onFailure.execute(Messages.UnknownOrganisation);
+			return;
+		}
+
+		if(!Validator.validatePassword(password))
+		{
+			onFailure.execute(Messages.PasswordDoesNotMatchRequirements);
+			return;
+		}
+		if(!Validator.validateEmailAddress(email))
+		{
+			onFailure.execute(Messages.InvalidEmailAddress);
 			return;
 		}
 
@@ -474,6 +486,46 @@ public class UserManager
 	// endregion Client Admin Interaction
 
 
+	private static class Validator
+	{
 
-	private static UserManager m_instance = null;
+		static boolean validatePassword(String password)
+		{
+			boolean valid;
+			if(password.length() < minimumPasswordLength)
+			{
+				valid = false;
+			}
+			else
+			{
+				StringBuilder regex = new StringBuilder();
+				if(digitIsRequired) regex.append("(?=.*[0-9])");
+				if(lowerCaseLetterIsRequired)regex.append("(?=.*[a-z])");
+				if(upperCaseLetterIsRequired)regex.append("(?=.*[A-Z])");
+				if(specialCharacterIsRequired)regex.append("(?=.*[@#$%^&+=])");
+				if(whitespaceIsForbidden)regex.append("(?=\\S+$)");
+				valid = password.matches(regex.toString());
+			}
+			return valid;
+		}
+
+		static boolean validateEmailAddress(String address)
+		{
+			return EmailValidator.getInstance().isValid(address);
+		}
+
+
+		// region password requirements
+		private static final int minimumPasswordLength = 1;
+		private static final boolean digitIsRequired   = false;
+		private static final boolean lowerCaseLetterIsRequired   = false;
+		private static final boolean upperCaseLetterIsRequired   = false;
+		private static final boolean specialCharacterIsRequired   = false;
+		private static final boolean whitespaceIsForbidden = false;
+		// endregion password requirements
+	}
+
+
+
+	private static UserManager m_instance              = null;
 }

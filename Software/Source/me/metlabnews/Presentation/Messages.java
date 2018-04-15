@@ -23,6 +23,7 @@ public final class Messages
 			", um diese Operation ausführen zu können!";
 	public static final String PasswordDoesNotMatchRequirements            = "Das eingegebene Passwort" +
 			"erfüllt die Sicherheitsanforderungen nicht!";
+	public static final String InvalidEmailAddress = "Die angegebene E-Mail-Adresse ist ungültig!";
 
 
 
