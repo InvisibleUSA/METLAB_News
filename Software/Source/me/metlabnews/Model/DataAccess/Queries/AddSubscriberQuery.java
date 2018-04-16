@@ -6,16 +6,27 @@ import me.metlabnews.Model.Entities.Subscriber;
 
 
 
+/**
+ * Add subscriber to database
+ */
 public class AddSubscriberQuery implements IQuery<Void>
 {
+	/**
+	 * @param subscriber Subscriber to add
+	 */
 	public AddSubscriberQuery(Subscriber subscriber)
 	{
 		m_subscriber = subscriber;
 	}
 
+	@SuppressWarnings("unused")
 	private AddSubscriberQuery()
 	{}
 
+	/**
+	 * @return returns false in case of an error
+	 *         returns true otherwise
+	 */
 	@Override
 	public boolean execute()
 	{

@@ -1,6 +1,7 @@
 package me.metlabnews.Presentation;
 
 import me.metlabnews.Model.Entities.User;
+import me.metlabnews.Presentation.IUserInterface.IGenericEvent;
 
 
 
@@ -20,7 +21,7 @@ public class Session
 		m_user = user;
 	}
 
-	public synchronized void logout(IUserInterface.IGenericEvent onExecute)
+	public synchronized void logout(IGenericEvent onExecute)
 	{
 		onExecute.execute();
 		m_user = null;

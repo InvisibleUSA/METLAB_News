@@ -4,9 +4,11 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.*;
+import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.Presenter;
 import me.metlabnews.Presentation.IUserInterface;
@@ -23,7 +25,7 @@ import me.metlabnews.UserInterface.Views.*;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("maintheme")
-@PreserveOnRefresh
+@PreserveOnRefresh @Push(PushMode.AUTOMATIC)
 public class MainUI extends UI implements IUserInterface
 {
 	public MainUI()
@@ -69,22 +71,22 @@ public class MainUI extends UI implements IUserInterface
 
 	private void openSubscriberDashboardView()
 	{
-		setContent(m_subscriberDashboardView);
+		access(() -> setContent(m_subscriberDashboardView));
 	}
 
 	private void openClientAdminDashboardView()
 	{
-		setContent(m_clientAdminDashboardView);
+		access(() -> setContent(m_clientAdminDashboardView));
 	}
 
 	private void openSystemAdminDashboardView()
 	{
-		setContent(m_systemAdminDashboardView);
+		access(() -> setContent(m_systemAdminDashboardView));
 	}
 
 	public void openLogoutView()
 	{
-		setContent(m_logoutView);
+		access(() -> setContent(m_logoutView));
 	}
 
 
@@ -288,26 +290,26 @@ public class MainUI extends UI implements IUserInterface
 
 	private void loginFailedEvent(String errorMessage)
 	{
-		Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage);
+		access(() -> Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage));
 	}
 
 
 	private void logoutEvent()
 	{
-		openLogoutView();
+		access(this::openLogoutView);
 	}
 
 
 	private void subscriberVerificationPendingEvent()
 	{
-		Notification.show("Verifizierung ausstehend\nWarten Sie auf die " +
-				                  "Verifikation durch einen Administrator");
+		access(() -> Notification.show("Verifizierung ausstehend\nWarten Sie auf die " +
+				                    "Verifikation durch einen Administrator"));
 	}
 
 
 	private void registrationFailedEvent(String errorMessage)
 	{
-		Notification.show("Registrierung fehlgeschlagen\n" + errorMessage);
+		access(() -> Notification.show("Registrierung fehlgeschlagen\n" + errorMessage));
 	}
 
 	// endregion Events

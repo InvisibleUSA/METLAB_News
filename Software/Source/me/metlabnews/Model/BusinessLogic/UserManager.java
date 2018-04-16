@@ -292,6 +292,7 @@ public class UserManager
 		query.execute();
 
 		List<UserDataRepresentation> table = new ArrayList<>();
+		// TODO: outsource to separate query?
 		for(Subscriber subscriber : query.getResult())
 		{
 			if(subscriber.isVerificationPending())

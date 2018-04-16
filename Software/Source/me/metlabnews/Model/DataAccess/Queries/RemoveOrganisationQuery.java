@@ -6,6 +6,9 @@ import me.metlabnews.Model.Entities.Organisation;
 
 
 
+/**
+ * Remove organisation from database
+ */
 public class RemoveOrganisationQuery implements IQuery<Void>
 {
 	public RemoveOrganisationQuery(Organisation organisation)
@@ -13,10 +16,15 @@ public class RemoveOrganisationQuery implements IQuery<Void>
 		m_organisation = organisation;
 	}
 
+	@SuppressWarnings("unused")
 	private RemoveOrganisationQuery()
 	{}
 
 
+	/**
+	 * @return returns false if organisation cannot be found in database;
+	 *         returns true otherwise
+	 */
 	@Override
 	public boolean execute()
 	{

@@ -6,6 +6,9 @@ import me.metlabnews.Model.Entities.Subscriber;
 
 
 
+/**
+ * Remove subscriber from database
+ */
 public class RemoveSubscriberQuery implements IQuery<Void>
 {
 	public RemoveSubscriberQuery(Subscriber subscriber)
@@ -13,10 +16,15 @@ public class RemoveSubscriberQuery implements IQuery<Void>
 		m_subscriber = subscriber;
 	}
 
+	@SuppressWarnings("unused")
 	private RemoveSubscriberQuery()
 	{}
 
 
+	/**
+	 * @return returns false if organisation cannot be found in database;
+	 *         returns true otherwise
+	 */
 	@Override
 	public boolean execute()
 	{

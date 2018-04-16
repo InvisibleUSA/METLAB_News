@@ -8,17 +8,28 @@ import me.metlabnews.Model.Entities.Organisation;
 
 
 
+/**
+ * Add organisation to database.
+ */
 public class AddOrganisationQuery implements IQuery<Void>
 {
+	/**
+	 * @param organisation Organisation to add
+	 */
 	public AddOrganisationQuery(Organisation organisation)
 	{
 		m_organisation = organisation;
 	}
 
+	@SuppressWarnings("unused")
 	private AddOrganisationQuery()
 	{}
 
 
+	/**
+	 * @return returns false in case of an error
+	 *         returns true otherwise
+	 */
 	@Override
 	public boolean execute()
 	{
@@ -43,5 +54,5 @@ public class AddOrganisationQuery implements IQuery<Void>
 
 
 
-	protected Organisation m_organisation;
+	private Organisation m_organisation;
 }

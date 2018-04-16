@@ -88,10 +88,13 @@ public class Logger implements IResource
 		ClippingDaemon,
 		Crawler,
 		UI,
+		Presenter,
+		ResourceManager,
 		Mail,
 		XmlTag,
 		Logger,
-		DataBase
+		RDBMS,
+		BaseX
 	}
 
 
