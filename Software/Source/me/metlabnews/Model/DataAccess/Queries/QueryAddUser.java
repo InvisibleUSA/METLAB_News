@@ -1,6 +1,8 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
 
+import org.basex.core.Command;
+
 import java.sql.ResultSet;
 
 
@@ -16,7 +18,7 @@ public class QueryAddUser extends QueryBase
 	public boolean clientAdmin;
 
 	@Override
-	protected String createBaseXQuery()
+	protected Command createBaseXQuery()
 	{
 		return null;
 	}

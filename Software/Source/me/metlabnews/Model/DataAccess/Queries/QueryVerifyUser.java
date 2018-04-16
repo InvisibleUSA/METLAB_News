@@ -1,5 +1,7 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
+import org.basex.core.Command;
+
 import java.sql.ResultSet;
 
 
@@ -14,7 +16,7 @@ public class QueryVerifyUser extends QueryBase
 	public int status = 0;
 
 	@Override
-	protected String createBaseXQuery()
+	protected Command createBaseXQuery()
 	{
 		return null;
 	}

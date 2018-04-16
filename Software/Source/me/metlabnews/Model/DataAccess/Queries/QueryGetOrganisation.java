@@ -1,5 +1,7 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
+import org.basex.core.Command;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -12,7 +14,7 @@ public class QueryGetOrganisation extends QueryBase
 	public boolean organisationExists = false;
 
 	@Override
-	protected String createBaseXQuery()
+	protected Command createBaseXQuery()
 	{
 		return null;
 	}

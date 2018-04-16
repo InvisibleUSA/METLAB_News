@@ -1,5 +1,9 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
+import org.basex.core.Command;
+import org.basex.core.cmd.Add;
+import sun.java2d.cmm.Profile;
+
 import java.sql.ResultSet;
 
 
@@ -7,13 +11,13 @@ import java.sql.ResultSet;
 public class QueryAddProfile extends QueryBase
 {
 
-	public String username;
-	public String password;
+	public Profile profile;
+	public String  name;
 
 	@Override
-	protected String createBaseXQuery()
+	protected Command createBaseXQuery()
 	{
-		return null;
+		return new Add("/Profiles/" + name, profile.toString());
 	}
 
 	@Override
