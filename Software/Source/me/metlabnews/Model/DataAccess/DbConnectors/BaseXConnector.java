@@ -26,6 +26,10 @@ public class BaseXConnector
 	private ClientSession[] m_sessions;
 	private int m_currSessionNum = 0;
 
+	/**
+	 * Starts the BaseX Server in a separate process and initializes ClientSessions as well as settings
+	 * Errors are logged to DataBase channel
+	 */
 	public BaseXConnector()
 	{
 		loadConfig();
@@ -73,6 +77,14 @@ public class BaseXConnector
 		return m_sessions[m_currSessionNum];
 	}
 
+	/**
+	 * executes a query using an unused ClientSession
+	 *
+	 * @param q query to execute
+	 * @return XML-Data the query returned
+	 * @throws IOException happens e.g. when DB is down
+	 */
+	@Deprecated
 	String query(String q) throws IOException
 	{
 		ClientSession session = getSession();
@@ -81,6 +93,13 @@ public class BaseXConnector
 		return result;
 	}
 
+	/**
+	 * executes a command using an unused ClientSession
+	 *
+	 * @param cmd command to execute
+	 * @return XML-Data the query returned
+	 * @throws IOException happens e.g. when DB is down
+	 */
 	String query(Command cmd) throws IOException
 	{
 		ClientSession session = getSession();
@@ -107,6 +126,10 @@ public class BaseXConnector
 		}
 	}
 
+	/**
+	 * stops the server that runs in a separate process and closes all sessions connected to it
+	 * Errors are logged to DataBase channel
+	 */
 	public void stop()
 	{
 		try
