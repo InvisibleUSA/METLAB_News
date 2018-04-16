@@ -24,12 +24,21 @@ public class SubscriberLoginView extends VerticalLayout implements IView
 		              buttonRegister, buttonToSysAdminLogin);
 	}
 
+
 	@Override
 	public void show()
 	{
 		m_parent.setContent(this);
 		Page.getCurrent().setTitle("Anmelden");
 	}
+
+
+	public void clearFields()
+	{
+		textFieldEmail.clear();
+		textFieldPassword.clear();
+	}
+
 
 	private void login()
 	{

@@ -280,10 +280,12 @@ public class MainUI extends UI implements IUserInterface
 		}
 		else if(myself.isOrganisationAdministrator())
 		{
+			access(m_subscriberLoginView::clearFields);
 			openClientAdminDashboardView();
 		}
 		else
 		{
+			access(m_subscriberLoginView::clearFields);
 			openSubscriberDashboardView();
 		}
 	}
@@ -302,8 +304,12 @@ public class MainUI extends UI implements IUserInterface
 
 	private void subscriberVerificationPendingEvent()
 	{
-		access(() -> Notification.show("Verifizierung ausstehend\nWarten Sie auf die " +
-				                    "Verifikation durch einen Administrator"));
+		access(() ->
+		       {
+		       	    Notification.show("Verifizierung ausstehend\nWarten Sie auf die " +
+				                              "Verifikation durch einen Administrator");
+					m_subscriberLoginView.clearFields();
+		       });
 	}
 
 
