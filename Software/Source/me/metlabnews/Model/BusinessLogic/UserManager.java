@@ -38,6 +38,27 @@ public class UserManager
 
 
     // region Subscriber Interaction
+
+	/**
+	 * Register a new subscriber, who is an employee of an already registered organisation.
+	 * In case of success the subscriber is added to a database and is pending for verification.
+	 *
+	 * @param session            session associated with the caller
+	 * @param onSuccess          function to execute in case of success
+	 *                              (the subscriber is now registered)
+	 * @param onFailure          function to execute in case of failure:
+	 *                           - email is already used by another user
+	 *                           - email is invalid
+	 *                           - organisationName is not registered
+	 *                           - password does not meet security requirements
+	 * @param email              email address (cannot be used by multiple subscribers)
+	 * @param password           password (has to meet the security requirements set in [Settings.xml])
+	 * @param firstName          first and possibly middle name
+	 * @param lastName           last name
+	 * @param organisationName   name of a registered organisation
+	 * @param requestAdminStatus indicates if the subscriber requests to be administrator of
+	 *                           the organisation
+	 */
 	public void registerNewSubscriber(Session session, IGenericEvent onSuccess,
 	                                  IGenericFailureEvent onFailure,
 	                                  String email, String password,
@@ -85,6 +106,21 @@ public class UserManager
 	}
 
 
+	/**
+	 * Log in an already registered subscriber.
+	 *
+	 * @param session               session associated with the caller
+	 * @param onSuccess             function to execute in case of success
+	 *                              (subscriber is now logged in)
+	 * @param onVerificationPending function to execute in case
+	 *                              the subscribers verification is pending
+	 *                              (the subscriber is now still not logged in)
+	 * @param onFailure             function to execute in case of failure:
+	 *                              - email is not associated with a registered subscriber
+	 *                              - password is incorrect
+	 * @param email                 email address of a registered subscriber
+	 * @param password              password
+	 */
 	public void subscriberLogin(Session session,
 	                            IGenericEvent onSuccess,
 	                            IGenericEvent onVerificationPending,
@@ -121,6 +157,33 @@ public class UserManager
 	}
 
 
+	/**
+	 * Remove a registered subscriber.
+	 * Can be called from any subscriber to quit his own account or from an organisation
+	 * administrator to quit am employee's account.
+	 * In case of success the subscriber is deleted from a database and will not be able
+	 * to login (again).
+	 *
+	 * @param session            session associated with the caller
+	 * @param onSuccess          function to execute in case of success
+	 *                           - if the caller removed himself:
+	 *                              the caller is now logged out
+	 *                           - if the caller removed somebody else:
+	 *                              the removed subscriber is now potentially
+	 *                              still logged in but will not be able
+	 *                              to login again once he logged out.
+	 * @param onFailure          function to execute in case of failure:
+	 *                           - caller is not logged in
+	 *                           - caller tries to remove somebody else but has not the
+	 *                             privileges to do so
+	 *                           - email is not associated with a registered subscriber
+	 *                           - caller tries to remove a subscriber of another organisation
+	 * @param subscriberEmail    email address of the subscriber to remove
+	 *                           the specified subscriber has to be in the same organisation as
+	 *                           the caller
+	 *                           (if it matches the caller's email address, the caller removes
+	 *                           himself)
+	 */
 	public void removeSubscriber(Session session, IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
 	                             String subscriberEmail)
@@ -189,8 +252,21 @@ public class UserManager
 	// endregion Subscriber Interaction
 
 
+
 	// region Client Admin Interaction
 
+	/**
+	 * Fetch all registered subscribers (within the same organisation as the caller)
+	 * who have not yet been verified or denied.
+	 * Caller has to be administrator of an organisation.
+	 *
+	 * @param session            session associated with the caller
+	 * @param onSuccess          function to execute in case of success
+	 *                           (the result is passed as UserDataRepresentation[])
+	 * @param onFailure          function to execute in case of failure:
+	 *                           - caller is not logged in
+	 *                           - caller does not have the required privileges
+	 */
 	public void getPendingVerificationRequests(Session session,
 	                                           IFetchPendingVerificationRequestsEvent onSuccess,
 	                                           IGenericFailureEvent onFailure)
@@ -226,6 +302,24 @@ public class UserManager
 		onSuccess.execute(table.toArray(new UserDataRepresentation[table.size()]));
 	}
 
+
+	/**
+	 * Grant a pending verification request.
+	 * Caller has to be administrator of an organisation.
+	 *
+	 * @param session            session associated with the caller
+	 * @param onSuccess          function to execute in case of success
+	 *                           (verified subscriber can now log in)
+	 * @param onFailure          function to execute in case of failure:
+	 *                           - caller is not logged in
+	 *                           - caller does not have the required privileges
+	 *                           - email is not associated with a registered subscriber
+	 *                           - caller tries to verify a subscriber of another organisation
+	 *                           - the subscriber has already been verified
+	 * @param subscriberEmail    email address of a registered subscriber
+	 * @param grantAdminStatus   allow the subscriber to be an organisation administrator
+	 *                           in case subscriber has requested that
+	 */
 	public void verifySubscriber(Session session,
 	                             IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
@@ -284,6 +378,21 @@ public class UserManager
 	}
 
 
+	/**
+	 * Deny a pending verification request.
+	 * Caller has to be administrator of an organisation.
+	 *
+	 * @param session            session associated with the caller
+	 * @param onSuccess          function to execute in case of success
+	 *                           (rejected subscriber is now removed)
+	 * @param onFailure          function to execute in case of failure:
+	 *                           - caller is not logged in
+	 *                           - caller does not have the required privileges
+	 *                           - email is not associated with a registered subscriber
+	 *                           - caller tries to reject a subscriber of another organisation
+	 *                           - the subscriber has already been verified
+	 * @param subscriberEmail    email address of a registered subscriber
+	 */
 	public void denySubscriberVerification(Session session,
 	                                       IGenericEvent onSuccess,
 	                                       IGenericFailureEvent onFailure,
@@ -338,8 +447,21 @@ public class UserManager
 	// endregion Client Admin Interaction
 
 
+
 	// region System Admin Interaction
 
+	/**
+	 * Log in a registered system administrator.
+	 *
+	 * @param session               session associated with the caller
+	 * @param onSuccess             function to execute in case of success
+	 *                              (caller is now logged in)
+	 * @param onFailure             function to execute in case of failure:
+	 *                              - email is not associated with a system administrator
+	 *                              - password is incorrect
+	 * @param email                 email address of a system administrator
+	 * @param password              password
+	 */
 	public void systemAdministratorLogin(Session session,
 	                                     IGenericEvent onSuccess,
 	                                     IGenericFailureEvent onFailure,
@@ -366,6 +488,28 @@ public class UserManager
 		}
 	}
 
+
+
+	/**
+	 * Add a new organisation and register an initial organisation administrator.
+	 * Caller has to be system administrator.
+	 *
+	 * @param session               session associated with the caller
+	 * @param onSuccess             function to execute in case of success
+	 *                              (organisation was added and organisation administrator was registered)
+	 * @param onFailure             function to execute in case of failure:
+	 *                              - caller is not logged in
+	 *                              - caller does not have the required privileges
+	 *                              - organisationName is already used by another organisation
+	 *                              - adminEmail is already used by another user
+	 *                              - adminPassword does not meet security requirements
+	 * @param organisationName      name of the organisation, has to be unique
+	 * @param adminFirstName        first (and potentially second) name of initial organisation administrator
+	 * @param adminLastName         last name of initial organisation administrator
+	 * @param adminEmail            email of initial organisation administrator
+	 *                                 (must not be used by another user)
+	 * @param adminPassword         password of initial organisation administrator
+	 */
 	public void addOrganisation(Session session,
 	                            IGenericEvent onSuccess,
 	                            IGenericFailureEvent onFailure,
@@ -400,6 +544,17 @@ public class UserManager
 			return;
 		}
 
+		if(!Validator.validateEmailAddress(adminEmail))
+		{
+			onFailure.execute(Messages.InvalidEmailAddress);
+			return;
+		}
+		if(!Validator.validatePassword(adminPassword))
+		{
+			onFailure.execute(Messages.PasswordDoesNotMatchRequirements);
+			return;
+		}
+
 		Organisation organisation = new Organisation(organisationName);
 		AddOrganisationQuery addOrganisationQuery = new AddOrganisationQuery(organisation);
 		if(!addOrganisationQuery.execute())
@@ -422,6 +577,20 @@ public class UserManager
 		}
 	}
 
+
+	/**
+	 * Remove a registered organisation and all its associated subscribers.
+	 * Caller has to be system administrator.
+	 *
+	 * @param session               session associated with the caller
+	 * @param onSuccess             function to execute in case of success
+	 *                              (organisation and all associated subscribers were removed)
+	 * @param onFailure             function to execute in case of failure:
+	 *                              - caller is not logged in
+	 *                              - caller does not have the required privileges
+	 *                              - organisationName is not associated with a registered organisation
+	 * @param organisationName      name of the organisation to remove
+	 */
 	public void removeOrganisation(Session session,
 	                               IGenericEvent onSuccess,
 	                               IGenericFailureEvent onFailure,
@@ -446,6 +615,7 @@ public class UserManager
 		}
 
 		Organisation organisation = fetchQuery.getResult();
+		// TODO: make sure that all associated subscribers get deleted
 		RemoveOrganisationQuery removeQuery = new RemoveOrganisationQuery(organisation);
 		if(removeQuery.execute())
 		{
@@ -457,6 +627,19 @@ public class UserManager
 		}
 	}
 
+
+	/**
+	 * Get all registered organisations.
+	 * Caller has to be system administrator.
+	 *
+	 * @param session               session associated with the caller
+	 * @param onSuccess             function to execute in case of success
+	 *                              (the result is passed as String[],
+	 *                              containing the name of each organisation)
+	 * @param onFailure             function to execute in case of failure:
+	 *                              - caller is not logged in
+	 *                              - caller does not have the required privileges
+	 */
 	public void getAllOrganisations(Session session, IGetStringArrayEvent onSuccess,
 	                                IGenericFailureEvent onFailure)
 	{
@@ -519,6 +702,7 @@ public class UserManager
 		}
 
 
+		@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 		private static boolean validatePassword(String password)
 		{
 			boolean valid;
@@ -539,6 +723,7 @@ public class UserManager
 			return valid;
 		}
 
+		@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 		private static boolean validateEmailAddress(String address)
 		{
 			return EmailValidator.getInstance().isValid(address);
@@ -560,5 +745,5 @@ public class UserManager
 
 
 
-	private static UserManager m_instance              = null;
+	private static UserManager m_instance = null;
 }

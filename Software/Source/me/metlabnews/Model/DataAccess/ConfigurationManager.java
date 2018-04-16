@@ -177,6 +177,16 @@ public class ConfigurationManager implements IResource
 		return returnProperty("BaseX.Path");
 	}
 
+	public String getBaseXDbName()
+	{
+		return returnProperty("BaseX.DbName");
+	}
+
+	public int getBaseXPort()
+	{
+		return Integer.parseInt(returnProperty("BaseX.Port"));
+	}
+
 	public String getBaseXUsername()
 	{
 		return returnProperty("BaseX.Username");

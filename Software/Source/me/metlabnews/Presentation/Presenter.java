@@ -1,6 +1,7 @@
 package me.metlabnews.Presentation;
 
 import me.metlabnews.Model.BusinessLogic.*;
+import me.metlabnews.Model.Entities.User;
 import me.metlabnews.Model.ResourceManagement.IResource;
 
 import javax.validation.constraints.NotNull;
@@ -40,6 +41,14 @@ public class Presenter implements IResource
 	}
 
 
+	/**
+	 * Connect an instance of IUserInterface to the application
+	 * and associate it with a session.
+	 * Register all callback functions.
+	 * @see IUserInterface
+	 *
+	 * @param ui user interface instance
+	 */
 	public void connect(@NotNull IUserInterface ui)
 	{
 		// TODO: replace with non-blocking approach
@@ -57,7 +66,6 @@ public class Presenter implements IResource
 		registerCallbacks(ui, session);
 		m_sessions.put(ui, session);
 	}
-
 
 	private void registerCallbacks(IUserInterface ui, Session session)
 	{
@@ -111,13 +119,26 @@ public class Presenter implements IResource
 	}
 
 
-	public void disconnect(IUserInterface ui)
+	/**
+	 * Disconnect an instance of IUserInterface from the application
+	 * and close the associated session
+	 *
+	 * @param ui user interface instance
+	 */
+	public void disconnect(@NotNull IUserInterface ui)
 	{
 		m_sessions.get(ui).close();
 		m_sessions.remove(ui);
 	}
 
 
+	/**
+	 * Get information about the user associated to a IUserInterface instance.
+	 *
+	 * @param sender user interface instance
+	 * @return UserDataRepresentation
+	 * @throws IllegalArgumentException
+	 */
 	public UserDataRepresentation whoAmI(@NotNull IUserInterface sender)
 			throws IllegalArgumentException
 	{
@@ -126,7 +147,14 @@ public class Presenter implements IResource
 		{
 			throw new IllegalArgumentException("invalid sender");
 		}
-		return new UserDataRepresentation(session.getUser());
+		if(session.isLoggedIn())
+		{
+			return new UserDataRepresentation(session.getUser());
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 
@@ -134,5 +162,6 @@ public class Presenter implements IResource
 	private static Presenter m_instance = null;
 	private boolean m_hasBeenInitialized;
 	private ConcurrentHashMap<IUserInterface, Session> m_sessions;
+	@SuppressWarnings("FieldCanBeLocal")
 	private final int initialSessionCapacity = 50;
 }
