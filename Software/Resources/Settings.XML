@@ -22,6 +22,8 @@
 
 	<!-- BaseX -->
 	<entry key="BaseX.Path">C:\\USERS\\PORN</entry> <!-- TODO: relative path, don't store PORN in it! -->
+	<entry key="BaseX.DbName"> </entry>
+	<entry key="BaseX.Port">0</entry>
 	<entry key="BaseX.Username">ADMIN</entry>
 	<entry key="BaseX.Password">ADMIN</entry>
 
@@ -29,8 +31,8 @@
 	<!-- RDBMS -->
 	<entry key="RDBMS.Driver">org.mariadb.jdbc.Driver</entry>
 	<entry key="RDBMS.RemoteURL">jdbc:mariadb://metlabnews.me:3306/METLAB_DB_MARCO</entry>
-	<entry key="RDBMS.LocalURL">jdbc:mariadb://localhost:3306/METLAB_DB</entry>
-	<entry key="RDBMS.UseLocalDB">false</entry> <!-- {false, true} -->
+	<entry key="RDBMS.LocalURL">jdbc:mariadb://localhost:3306/METLAB_DB_MARCO</entry>
+	<entry key="RDBMS.UseLocalDB">true</entry> <!-- {false, true} -->
 	<entry key="RDBMS.Username">test</entry>
 	<entry key="RDBMS.Password">test</entry>
 	<entry key="RDBMS.SQLDialect">org.hibernate.dialect.MySQLDialect</entry>
