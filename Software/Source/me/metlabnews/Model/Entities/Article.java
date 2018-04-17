@@ -54,6 +54,11 @@ public class Article
 		return erg;
 	}
 
+	public Source getSource()
+	{
+		return m_source;
+	}
+
 	public Calendar getPubDate()
 	{
 		return m_pubDate;

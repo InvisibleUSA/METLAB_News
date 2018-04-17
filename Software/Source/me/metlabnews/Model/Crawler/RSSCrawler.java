@@ -5,6 +5,8 @@ package me.metlabnews.Model.Crawler;
 import me.metlabnews.Model.Common.Helper;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
+import me.metlabnews.Model.DataAccess.Queries.AddArticle;
+import me.metlabnews.Model.DataAccess.Queries.QueryTitleExists;
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.RSSFeed;
 import me.metlabnews.Model.Entities.Source;
@@ -13,9 +15,9 @@ import java.util.ArrayList;
 
 
 
-public class RSSCrawler //implements Runnable
+public class RSSCrawler implements Runnable
 {
-	/*
+
 	private boolean m_running = false;
 	private Source  m_source;
 
@@ -39,10 +41,13 @@ public class RSSCrawler //implements Runnable
 	@Override
 	public void run()
 	{
-		Logger.getInstance().log(Logger.Channel.Crawler, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,"started crawler for \"" + m_source.getName() + "\"");
+		Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.DEBUG, Logger.enum_logType.ToFile,
+		                         "started crawler for \"" + m_source.getName() + "\"");
 		while(m_running)
 		{
-			Logger.getInstance().log(Logger.Channel.Crawler, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,"crawling " + m_source.getName() + " --> " + m_source.getRss_link());
+			Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.DEBUG,
+			                         Logger.enum_logType.ToFile,
+			                         "crawling " + m_source.getName() + " --> " + m_source.getRss_link());
 			String doc = Helper.getHTTPResponse(m_source.getRss_link());
 			ArrayList<Article> articles = RSSFeed.parseFeed(doc, this.m_source).getArticles();
 			for(Article a : articles)
@@ -50,7 +55,7 @@ public class RSSCrawler //implements Runnable
 				boolean exists = articleExists(a);
 				if(!exists)
 				{
-					writeToBaseX(a, m_source);
+					writeToBaseX(a);
 				}
 			}
 			try
@@ -62,28 +67,26 @@ public class RSSCrawler //implements Runnable
 				e.printStackTrace();
 			}
 		}
-		Logger.getInstance().log(Logger.Channel.Crawler, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,"stopped crawler on \"" + m_source.getName() + "\"");
+		Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.DEBUG, Logger.enum_logType.ToFile,
+		                         "stopped crawler on \"" + m_source.getName() + "\"");
 	}
 
-	private void writeToBaseX(Article a, Source source)
+	private void writeToBaseX(Article a)
 	{
-		BaseXController bsx  = BaseXController.getInstance();
-		String          date = a.getDateFormatted();
-		Add add = new Add("Artikel/" + source.getName() + "/" + date + "/" + a.getFileName(),
-		                  a.toString());
-		String res1 = add.toString();
-		String res2 = bsx.execute(add);
-		Logger.getInstance().log(Logger.Channel.Crawler, Logger.LogPriority.DEBUG, Logger.LogType.ToFile, res1);
-		Logger.getInstance().log(Logger.Channel.Crawler, Logger.LogPriority.DEBUG, Logger.LogType.ToFile, res2);
+		AddArticle addArticle = new AddArticle(a);
+		addArticle.execute();
+		Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.DEBUG, Logger.enum_logType.ToFile,
+		                         addArticle.getResult());
 	}
 
 	private boolean articleExists(Article a)
 	{
-		BaseXController bsx    = BaseXController.getInstance();
-		String          xquery = "/article/title = \"" + a.getM_title() + "\"";
-		String          result = bsx.query(xquery);
-		Logger.getInstance().log(Logger.Channel.Crawler, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,"exists \"" + a.getTitle() + "\"? --> " + result);
-		if(result.equals("true"))
+		QueryTitleExists qte = new QueryTitleExists(a.getTitle());
+		qte.execute();
+		boolean result = qte.getResult();
+		Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.DEBUG, Logger.enum_logType.ToFile,
+		                         "exists \"" + a.getTitle() + "\"? --> " + result);
+		if(result)
 		{
 			return true;
 		}
@@ -92,7 +95,8 @@ public class RSSCrawler //implements Runnable
 
 	public void stop()
 	{
-		Logger.getInstance().log(Logger.Channel.Crawler, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,"stopping crawler on \"" + m_source.getName() + "\"");
+		Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.DEBUG, Logger.enum_logType.ToFile,
+		                         "stopping crawler on \"" + m_source.getName() + "\"");
 		m_running = false;
 	}
 
@@ -100,5 +104,4 @@ public class RSSCrawler //implements Runnable
 	{
 		return m_source;
 	}
-	*/
 }

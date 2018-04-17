@@ -50,7 +50,8 @@ public class WebCrawler
 					"crawlingIfOlderNumber=1&" +
 					"crawlingDepth=4" +
 					"&crawlingURL=" + m_source.getLink();
-			Logger.getInstance().log(Logger.Channel.Crawler, Logger.LogPriority.DEBUG, Logger.LogType.ToConsole,
+			Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.DEBUG,
+			                         Logger.enum_logType.ToConsole,
 			                         Helper.getHTTPResponse(startURL));
 		}
 	}
@@ -76,5 +77,10 @@ public class WebCrawler
 			}
 		}
 		return false;
+	}
+
+	public Source getSource()
+	{
+		return m_source;
 	}
 }

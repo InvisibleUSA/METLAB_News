@@ -76,7 +76,8 @@ public class RSSFeed
 		}
 		else
 		{
-			Logger.getInstance().log(Logger.Channel.Crawler, Logger.LogPriority.ERROR, Logger.LogType.ToFile,
+			Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.ERROR,
+			                         Logger.enum_logType.ToFile,
 			                         "NullPointerException on source:" + source.getName());
 			return null;
 		}

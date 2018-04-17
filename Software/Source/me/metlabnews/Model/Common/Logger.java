@@ -55,7 +55,8 @@ public class Logger
 		Mail,
 		XmlTag,
 		Logger,
-		DataBase
+		DataBase,
+		ConfigurationManager
 	}
 
 
