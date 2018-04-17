@@ -1,10 +1,16 @@
 package me.metlabnews.Model.BusinessLogic;
 
+import com.vaadin.data.validator.EmailValidator;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.*;
 import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Presentation.IUserInterface;
+import me.metlabnews.Presentation.Messages;
 import me.metlabnews.Presentation.Session;
+import me.metlabnews.Presentation.IUserInterface.IGenericEvent;
+import me.metlabnews.Presentation.IUserInterface.IGenericFailureEvent;
+import me.metlabnews.Presentation.IUserInterface.IGetStringArrayEvent;
+
 
 
 
@@ -18,22 +24,25 @@ public class UserManager
 
 
 	// region Subscriber Interaction
-	public void registerNewSubscriber(Session session, String email, String password,
+	public void registerNewSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String password,
 	                                  String firstName, String lastName,
 	                                  String organisationName, boolean clientAdmin)
 	{
 		if(userExists(email))
 		{
+			onFailure.execute(Messages.EmailAddressAlreadyInUse);
 			return; //TODO: Implement Error User exists
 		}
 		if(!organisationExists(organisationName))
 		{
+			onFailure.execute(Messages.UnknownOrganisation);
 			return; //TODO: Implement Error Organization does not exist
 		}
 		if(checkPasswordRequirements(password) != Passwordrequirements.NONE)
 		{
 			return; //TODO: Implement Passwordrequirements not met
 		}
+
 
 		QueryAddUser qau = new QueryAddUser();
 		qau.email = email;
