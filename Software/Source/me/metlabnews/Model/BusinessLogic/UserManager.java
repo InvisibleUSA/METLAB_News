@@ -1,8 +1,8 @@
 package me.metlabnews.Model.BusinessLogic;
 
-import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.*;
+import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Model.ResourceManagement.IResource;
 import me.metlabnews.Presentation.IUserInterface;
@@ -10,7 +10,7 @@ import me.metlabnews.Presentation.Messages;
 import me.metlabnews.Presentation.Session;
 import me.metlabnews.Presentation.IUserInterface.IGenericEvent;
 import me.metlabnews.Presentation.IUserInterface.IGenericFailureEvent;
-import me.metlabnews.Presentation.IUserInterface.IGetStringArrayEvent;
+import me.metlabnews.Presentation.UserDataRepresentation;
 import org.apache.commons.validator.routines.EmailValidator;
 
 
@@ -40,11 +40,16 @@ public class UserManager
 			onFailure.execute(Messages.UnknownOrganisation);
 			return; //TODO: Implement Error Organization does not exist
 		}
-		if(checkPasswordRequirements(password) != Passwordrequirements.NONE)
+		if(!Validator.validateEmailAddress(email))
 		{
-			return; //TODO: Implement Passwordrequirements not met
+			onFailure.execute(Messages.InvalidEmailAddress);
+			return;
 		}
-
+		if(!Validator.validatePassword(password))
+		{
+			onFailure.execute(Messages.PasswordDoesNotMatchRequirements);
+			return;
+		}
 
 		QueryAddUser qau = new QueryAddUser();
 		qau.email = email;
@@ -55,17 +60,13 @@ public class UserManager
 		qau.clientAdmin = clientAdmin;
 		if(!qau.execute())
 		{
+			onFailure.execute(Messages.UnknownError);
 			return; //TODO: Error
 		}
-	}
-
-	private Passwordrequirements checkPasswordRequirements(String password)
-	{
-		if(password.length() < 5)
-		{
-			return Passwordrequirements.LENGTH;
-		}
-		return Passwordrequirements.NONE;
+		Subscriber subscriber = new Subscriber(email, password, firstName, lastName, new Organisation(organisationName),
+		                                       clientAdmin); //TODO: Change Organisation to String
+		session.login(subscriber);
+		onSuccess.execute();
 	}
 
 	private boolean organisationExists(String organisationName)
@@ -90,7 +91,7 @@ public class UserManager
 		return qgu.userExists;
 	}
 
-	public void subscriberLogin(Session session, IUserInterface.IGenericEvent onSuccess, String email, String password)
+	public void subscriberLogin(Session session, IUserInterface.IGenericEvent onSuccess, IGenericEvent onVerificationPending, IGenericFailureEvent onFailure, String email, String password)
 	{
 		QueryLoginUser qlu = new QueryLoginUser();
 		qlu.password = password;
@@ -103,15 +104,14 @@ public class UserManager
 		{
 			if(!qlu.userExists)
 			{
-				System.out.println("User nonexistent");
+				onFailure.execute(Messages.InvalidEmailAddress);
 				return; //TODO: Error handling User doesn't exist
 			}
-			System.out.println("Wrong password");
+			onFailure.execute(Messages.WrongPassword);
 			return; //TODO: Error handling invalid password
 		}
-		System.out.println("Login successful");
-		Subscriber subscriber = new Subscriber();
-		session.login(subscriber);
+
+		session.login(qlu.subscriber);
 		onSuccess.execute();
 		//TODO: User Login
 	}
@@ -121,14 +121,31 @@ public class UserManager
 
 	// region Client Admin Interaction
 
-	public void getPendingVerificationRequests(Session session)
+	public void getPendingVerificationRequests(Session session, IUserInterface.IFetchPendingVerificationRequestsEvent onSuccess, IGenericFailureEvent onFailure)
 	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.NotClientAdmin);
+			return;
+		}
+		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
+		{
+			onFailure.execute(Messages.NotClientAdmin);
+			return;
+		}
 		QueryGetVerificationpending qgvp = new QueryGetVerificationpending();
 		if(!qgvp.execute())
 		{
+			onFailure.execute(Messages.UnknownError);
 			return; //TODO: Error handling
 		}
-		String[] mails = qgvp.mails;
+		UserDataRepresentation[] users = qgvp.users; //TODO: Change users to needed type
+		onSuccess.execute(users);
 		//TODO: Mails treatment
 	}
 

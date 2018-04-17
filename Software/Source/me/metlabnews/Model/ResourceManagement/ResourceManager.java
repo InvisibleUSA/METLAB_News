@@ -3,6 +3,7 @@ package me.metlabnews.Model.ResourceManagement;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.DbConnectors.BaseXConnector;
+import me.metlabnews.Model.DataAccess.DbConnectors.MariaConnector;
 import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -41,7 +42,7 @@ public class ResourceManager implements ServletContextListener
 		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
 		           "Logger initialized");
 
-		RelationalDbConnector.getInstance().initialize();
+		MariaConnector.getInstance().initialize();
 		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
 		           "RelationalDbConnector initialized");
 

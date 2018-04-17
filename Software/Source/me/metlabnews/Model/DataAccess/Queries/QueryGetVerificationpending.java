@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
+import me.metlabnews.Presentation.UserDataRepresentation;
 import org.basex.core.Command;
 
 import java.sql.ResultSet;
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 public class QueryGetVerificationpending extends QueryBase
 {
 
-	public String[] mails;
+	public UserDataRepresentation[] users;
 
 	@Override
 	protected Command createBaseXQuery()
@@ -24,7 +25,7 @@ public class QueryGetVerificationpending extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return "SELECT EMail FROM Abonnent WHERE isVeryfied = 0";
+		return "SELECT * FROM Abonnent WHERE isVeryfied = 0";
 	}
 
 	@Override
@@ -32,11 +33,15 @@ public class QueryGetVerificationpending extends QueryBase
 	{
 		try
 		{
-			mails = new String[rs.getFetchSize()];
+			users = new UserDataRepresentation[rs.getFetchSize()];
+			UserDataRepresentation data;
 			int i = 0;
 			while(rs.next())
 			{
-				mails[i] = rs.getString("EMail");
+				data = new UserDataRepresentation(rs.getString("EMail"), rs.getString("VName"), rs.getString("Name"),
+				                                  rs.getString("isAdmin") == "1", false,
+				                                  rs.getString("isVerified") == "1");
+				users[i] = data;
 				i++;
 			}
 		}
