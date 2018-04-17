@@ -1,25 +1,15 @@
 package me.metlabnews.Model.BusinessLogic;
 
+import me.metlabnews.Model.Common.Logger;
+import me.metlabnews.Model.DataAccess.MariaConnector;
 import me.metlabnews.Model.DataAccess.Queries.*;
-import me.metlabnews.Model.Entities.Organisation;
-import me.metlabnews.Model.Entities.Subscriber;
-import me.metlabnews.Model.Entities.SystemAdministrator;
-import me.metlabnews.Presentation.IUserInterface.IGenericEvent;
-import me.metlabnews.Presentation.IUserInterface.IGenericFailureEvent;
-import me.metlabnews.Presentation.Messages;
 import me.metlabnews.Presentation.Session;
-import me.metlabnews.Presentation.UserDataRepresentation;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static me.metlabnews.Presentation.IUserInterface.*;
 
 
 
 public class UserManager
 {
-	public static UserManager getInstance()
+	public static UserManager create()
 	{
 		if(m_instance == null)
 		{
@@ -31,294 +21,126 @@ public class UserManager
 
 	private UserManager()
 	{
+		//m_dbConnector = MariaConnector.getInstance();
 	}
 
 
-    // region Subscriber Interaction
-	public void registerNewSubscriber(Session session, IGenericEvent onSuccess,
-	                                  IGenericFailureEvent onFailure,
-	                                  String email, String password,
+	// region Subscriber Interaction
+	public void registerNewSubscriber(Session session, String email, String password,
 	                                  String firstName, String lastName,
-	                                  String organisationName, boolean requestAdminStatus)
+	                                  String organisationName, boolean clientAdmin)
 	{
-		GetSubscriberQuery subscriberQuery = new GetSubscriberQuery(email);
-		boolean emailIsAlreadyTaken = subscriberQuery.execute();
-		if(emailIsAlreadyTaken)
+		if(userExists(email))
 		{
-			onFailure.execute(Messages.EmailAddressAlreadyInUse);
-			return;
+			return; //TODO: Implement Error User exists
+		}
+		if(!organisationExists(organisationName))
+		{
+			return; //TODO: Implement Error Organization does not exist
+		}
+		if(checkPasswordRequirements(password) != Passwordrequirements.NONE)
+		{
+			return; //TODO: Implement Passwordrequirements not met
 		}
 
-		GetOrganisationQuery organisationQuery =
-				new GetOrganisationQuery(organisationName);
-		boolean organisationExists = organisationQuery.execute();
-		if(!organisationExists)
+		QueryAddUser qau = new QueryAddUser();
+		qau.email = email;
+		qau.password = password;
+		qau.firstName = firstName;
+		qau.lastName = lastName;
+		qau.organisationName = organisationName;
+		qau.clientAdmin = clientAdmin;
+		if(!qau.execute())
 		{
-			onFailure.execute(Messages.UnknownOrganisation);
-			return;
-		}
-
-		Subscriber subscriber = new Subscriber(email, password, firstName, lastName,
-		                                       organisationQuery.getResult(), requestAdminStatus);
-		AddSubscriberQuery query = new AddSubscriberQuery(subscriber);
-		if(!query.execute())
-		{
-			onFailure.execute(Messages.UnknownError);
-			return;
-		}
-		session.login(subscriber);
-		onSuccess.execute();
-	}
-
-
-	public void subscriberLogin(Session session,
-	                            IGenericEvent onSuccess,
-	                            IGenericEvent onVerificationPending,
-	                            IGenericFailureEvent onFailure,
-	                            String email, String password)
-	{
-		GetSubscriberQuery query = new GetSubscriberQuery(email);
-		if(!query.execute())
-		{
-			onFailure.execute(Messages.UnknownEmail);
-			return;
-		}
-
-		Subscriber subscriber = query.getResult();
-		String correctPassword = subscriber.getPassword();
-
-
-		if(password.equals(correctPassword))
-		{
-			session.login(subscriber);
-			if(subscriber.isVerificationPending())
-			{
-				onVerificationPending.execute();
-			}
-			else
-			{
-				onSuccess.execute();
-			}
-		}
-		else
-		{
-			onFailure.execute(Messages.WrongPassword);
+			return; //TODO: Error
 		}
 	}
 
-
-	public void removeSubscriber(Session session, IGenericEvent onSuccess,
-	                             IGenericFailureEvent onFailure,
-	                             String subscriberEmail)
+	private Passwordrequirements checkPasswordRequirements(String password)
 	{
-		if(!session.isLoggedIn())
+		if(password.length() < 5)
 		{
-			onFailure.execute(Messages.NotLoggedIn);
-			return;
+			return Passwordrequirements.LENGTH;
 		}
-		if(session.getUser().getClass() != Subscriber.class)
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}
-
-		Subscriber subscriber;
-		boolean removesHimself = session.getUser().getEmail().equals(subscriberEmail);
-		if(removesHimself)
-		{
-			subscriber = (Subscriber)session.getUser();
-		}
-		else
-		{
-			boolean isAdmin = ((Subscriber)session.getUser()).isOrganisationAdministrator();
-			if(!isAdmin)
-			{
-				onFailure.execute(Messages.NotClientAdmin);
-				return;
-			}
-			GetSubscriberQuery fetchQuery = new GetSubscriberQuery(subscriberEmail);
-			if(!fetchQuery.execute())
-			{
-				onFailure.execute(Messages.UnknownEmail);
-				return;
-			}
-			subscriber = fetchQuery.getResult();
-
-			boolean sameOrganisation = ((Subscriber)session.getUser()).
-					getOrganisationId().getName().equals(subscriber.getOrganisationId().getName());
-			if(!sameOrganisation)
-			{
-				onFailure.execute(Messages.IllegalOperation);
-				return;
-			}
-		}
-
-		RemoveSubscriberQuery removeQuery = new RemoveSubscriberQuery(subscriber);
-		if(removeQuery.execute())
-		{
-			if(removesHimself)
-			{
-				session.logout(onSuccess);
-			}
-			else
-			{
-				onSuccess.execute();
-			}
-		}
-		else
-		{
-			onFailure.execute(Messages.UnknownError);
-		}
+		return Passwordrequirements.NONE;
 	}
 
+	private boolean organisationExists(String organisationName)
+	{
+		QueryGetOrganisation qgo = new QueryGetOrganisation();
+		qgo.organisationName = organisationName;
+		if(!qgo.execute())
+		{
+			return false; //TODO: Error handling
+		}
+		return qgo.organisationExists;
+	}
+
+	private boolean userExists(String email)
+	{
+		QueryGetUser qgu = new QueryGetUser();
+		qgu.email = email;
+		if(!qgu.execute())
+		{
+			return false; //TODO: Error handling
+		}
+		return qgu.userExists;
+	}
+
+	public void subscriberLogin(Session session, String email, String password)
+	{
+		QueryLoginUser qlu = new QueryLoginUser();
+		qlu.password = password;
+		qlu.email = email;
+		if(!qlu.execute())
+		{
+			Logger.getInstance().log(Logger.enum_channel.DataBase, Logger.enum_logPriority.ERROR,
+			                         Logger.enum_logType.ToFile, "SQL Failed at Subscriber Login");
+			return; //TODO: Error handling
+		}
+		if(!qlu.userLoginSuccessful)
+		{
+			if(!qlu.userExists)
+			{
+				return; //TODO: Error handling User doesn't exist
+			}
+			return; //TODO: Error handling invalid password
+		}
+		//TODO: User Login
+	}
 
 	// endregion Subscriber Interaction
 
 
 	// region Client Admin Interaction
 
-	public void getPendingVerificationRequests(Session session,
-	                                           IFetchPendingVerificationRequestsEvent onSuccess,
-	                                           IGenericFailureEvent onFailure)
+	public void getPendingVerificationRequests(Session session)
 	{
-		if(!session.isLoggedIn())
+		QueryGetVerificationpending qgvp = new QueryGetVerificationpending();
+		if(!qgvp.execute())
 		{
-			onFailure.execute(Messages.NotLoggedIn);
-			return;
+			return; //TODO: Error handling
 		}
-		if(session.getUser().getClass() != Subscriber.class)
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}
-		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}
-		Organisation organisation = ((Subscriber)session.getUser()).getOrganisationId();
-		GetSubscribersOfOrganisationQuery query =
-				new GetSubscribersOfOrganisationQuery(organisation);
-		query.execute();
-
-		List<UserDataRepresentation> table = new ArrayList<>();
-		for(Subscriber subscriber : query.getResult())
-		{
-			if(subscriber.isVerificationPending())
-			{
-				table.add(new UserDataRepresentation(subscriber));
-			}
-		}
-		onSuccess.execute(table.toArray(new UserDataRepresentation[table.size()]));
+		String[] mails = qgvp.mails;
+		//TODO: Mails treatment
 	}
 
-	public void verifySubscriber(Session session,
-	                             IGenericEvent onSuccess,
-	                             IGenericFailureEvent onFailure,
-	                             String subscriberEmail,
-	                             boolean grantAdminStatus)
+	public void verifySubscriber(Session session, String subscriberEmail)
 	{
-		if(!session.isLoggedIn())
+		QueryVerifyUser qvu = new QueryVerifyUser();
+		qvu.email = subscriberEmail;
+		qvu.status = 1;
+		if(!qvu.execute())
 		{
-			onFailure.execute(Messages.NotLoggedIn);
-			return;
-		}
-		if(session.getUser().getClass() != Subscriber.class)
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}
-		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}
-
-		GetSubscriberQuery query = new GetSubscriberQuery(subscriberEmail);
-		if(!query.execute())
-		{
-			onFailure.execute(Messages.UnknownEmail);
-			return;
-		}
-		Subscriber subscriber = query.getResult();
-
-		String subscriberOrganisationName = subscriber.getOrganisationId().getName();
-		String adminOrganisationName = subscriber.getOrganisationId().getName();
-		if(!subscriberOrganisationName.equals(adminOrganisationName))
-		{
-			onFailure.execute(Messages.IllegalOperation);
-			return;
-		}
-		if(subscriber.isVerificationPending())
-		{
-			subscriber.setVerificationPending(false);
-			if(subscriber.isOrganisationAdministrator())
-			{
-				subscriber.setOrganisationAdministrator(grantAdminStatus);
-			}
-			UpdateSubscriberQuery updateQuery = new UpdateSubscriberQuery(subscriber);
-			if(!updateQuery.execute())
-			{
-				onFailure.execute(Messages.UnknownError);
-			}
-			onSuccess.execute();
-		}
-		else
-		{
-			onFailure.execute(Messages.UserIsAlreadyVerified);
+			return; //TODO: Error handling
 		}
 	}
 
 
-	public void denySubscriberVerification(Session session,
-	                                       IGenericEvent onSuccess,
-	                                       IGenericFailureEvent onFailure,
-	                                       String subscriberEmail)
+	// TODO: merge with verifySubscriber()
+	public void denySubscriberVerification(Session session, String subscriberEmail)
 	{
-		if(!session.isLoggedIn())
-		{
-			onFailure.execute(Messages.NotLoggedIn);
-			return;
-		}
-		if(session.getUser().getClass() != Subscriber.class)
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}
-		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}
-
-		GetSubscriberQuery fetchQuery = new GetSubscriberQuery(subscriberEmail);
-		if(!fetchQuery.execute())
-		{
-			onFailure.execute(Messages.UnknownEmail);
-			return;
-		}
-		Subscriber subscriber = new Subscriber();
-
-		String subscriberOrganisationName = subscriber.getOrganisationId().getName();
-		String adminOrganisationName = subscriber.getOrganisationId().getName();
-		if(!subscriberOrganisationName.equals(adminOrganisationName))
-		{
-			onFailure.execute(Messages.IllegalOperation);
-			return;
-		}
-		if(subscriber.isVerificationPending())
-		{
-			RemoveSubscriberQuery removalQuery = new RemoveSubscriberQuery(subscriber);
-			if(!removalQuery.execute())
-			{
-				onFailure.execute(Messages.UnknownError);
-			}
-			onSuccess.execute();
-		}
-		else
-		{
-			onFailure.execute(Messages.UserIsAlreadyVerified);
-		}
+		//TODO: Figure out what to do here
 	}
 
 	// endregion Client Admin Interaction
@@ -326,154 +148,50 @@ public class UserManager
 
 	// region System Admin Interaction
 
-	public void systemAdministratorLogin(Session session,
-	                                     IGenericEvent onSuccess,
-	                                     IGenericFailureEvent onFailure,
-	                                     String email, String password)
+	public void systemAdministratorLogin(Session session, String email, String password)
 	{
-		GetSystemAdministratorQuery query = new GetSystemAdministratorQuery(email);
-		if(!query.execute())
+		QueryLoginSysadmin qls = new QueryLoginSysadmin();
+		qls.email = email;
+		qls.password = password;
+		if(!qls.execute())
 		{
-			onFailure.execute(Messages.UnknownEmail);
-			return;
+			return; //TODO: Error handling
 		}
-
-		SystemAdministrator admin = query.getResult();
-		String correctPassword = admin.getPassword();
-
-		if(password.equals(correctPassword))
+		if(!qls.adminLoginSuccessful)
 		{
-			session.login(admin);
-			onSuccess.execute();
+			if(!qls.userExists)
+			{
+				return; //TODO: Error handling User doesn't exist
+			}
+			return; //TODO: Error handling invalid password
 		}
-		else
+		//TODO: Admin Login
+	}
+
+	public void addOrganisation(Session session, String organisationName)
+	{
+		QueryAddOrganisation qao = new QueryAddOrganisation();
+		qao.orgName = organisationName;
+		if(!qao.execute())
 		{
-			onFailure.execute(Messages.WrongPassword);
+			return; //TODO: Error handling
 		}
 	}
 
-	public void addOrganisation(Session session,
-	                            IGenericEvent onSuccess,
-	                            IGenericFailureEvent onFailure,
-	                            String organisationName,
-	                            String adminFirstName, String adminLastName,
-	                            String adminEmail, String adminPassword)
+	public void deleteOrganisation(Session session, String organisationName)
 	{
-		if(!session.isLoggedIn())
+		QueryDeleteOrganization qdo = new QueryDeleteOrganization();
+		qdo.orgName = organisationName;
+		if(!qdo.execute())
 		{
-			onFailure.execute(Messages.NotLoggedIn);
-			return;
+			return; //TODO: Error handling
 		}
-		if(session.getUser().getClass() != SystemAdministrator.class)
-		{
-			onFailure.execute(Messages.NotSystemAdmin);
-			return;
-		}
-
-		GetOrganisationQuery organisationQuery = new GetOrganisationQuery(organisationName);
-		boolean nameIsAlreadyTaken = organisationQuery.execute();
-		if(nameIsAlreadyTaken)
-		{
-			onFailure.execute(Messages.OrganisationNameAlreadyTaken);
-			return;
-		}
-
-		GetSubscriberQuery subscriberQuery = new GetSubscriberQuery(adminEmail);
-		boolean emailIsAlreadyTaken = subscriberQuery.execute();
-		if(emailIsAlreadyTaken)
-		{
-			onFailure.execute(Messages.EmailAddressAlreadyInUse);
-			return;
-		}
-
-		Organisation organisation = new Organisation(organisationName);
-		AddOrganisationQuery addOrganisationQuery = new AddOrganisationQuery(organisation);
-		if(!addOrganisationQuery.execute())
-		{
-			onFailure.execute(Messages.UnknownError);
-		}
-
-		Subscriber admin = new Subscriber(adminEmail, adminPassword, adminFirstName, adminLastName,
-		                                       organisation, true);
-		admin.setVerificationPending(false);
-
-		AddSubscriberQuery addSubscriberQuery = new AddSubscriberQuery(admin);
-		if(addSubscriberQuery.execute())
-		{
-			onSuccess.execute();
-		}
-		else
-		{
-			onFailure.execute(Messages.UnknownError);
-		}
-	}
-
-	public void removeOrganisation(Session session,
-	                               IGenericEvent onSuccess,
-	                               IGenericFailureEvent onFailure,
-	                               String organisationName)
-	{
-		if(!session.isLoggedIn())
-		{
-			onFailure.execute(Messages.NotLoggedIn);
-			return;
-		}
-		if(session.getUser().getClass() != SystemAdministrator.class)
-		{
-			onFailure.execute(Messages.NotSystemAdmin);
-			return;
-		}
-
-		GetOrganisationQuery fetchQuery = new GetOrganisationQuery(organisationName);
-		if(!fetchQuery.execute())
-		{
-			onFailure.execute(Messages.UnknownOrganisation);
-			return;
-		}
-
-		Organisation organisation = fetchQuery.getResult();
-		RemoveOrganisationQuery removeQuery = new RemoveOrganisationQuery(organisation);
-		if(removeQuery.execute())
-		{
-			onSuccess.execute();
-		}
-		else
-		{
-			onFailure.execute(Messages.UnknownError);
-		}
-	}
-
-	public void getAllOrganisations(Session session, IGetStringArrayEvent onSuccess,
-	                                IGenericFailureEvent onFailure)
-	{
-		if(!session.isLoggedIn())
-		{
-			onFailure.execute(Messages.NotLoggedIn);
-			return;
-		}
-		if(session.getUser().getClass() != SystemAdministrator.class)
-		{
-			onFailure.execute(Messages.NotSystemAdmin);
-			return;
-		}
-		GetAllOrganisationsQuery query = new GetAllOrganisationsQuery();
-		if(query.execute())
-		{
-			onFailure.execute(Messages.UnknownError);
-			return;
-		}
-		List<Organisation> resultSet = query.getResult();
-		List<String> list = new ArrayList<>();
-		for(Organisation organisation : resultSet)
-		{
-			list.add(organisation.getName());
-		}
-		onSuccess.execute(list.toArray(new String[list.size()]));
 	}
 
 	// endregion Client Admin Interaction
 
 
 
-	private static UserManager m_instance = null;
+	private static UserManager    m_instance = null;
+	private        MariaConnector m_dbConnector;
 }
