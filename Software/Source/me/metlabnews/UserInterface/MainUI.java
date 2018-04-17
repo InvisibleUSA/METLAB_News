@@ -137,9 +137,9 @@ public class MainUI extends UI implements IUserInterface
 
 	public void verifySubscriber(IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
-	                             String email, boolean grantAdminStatus)
+	                             String subscriberEmail, boolean grantAdminStatus)
 	{
-		m_verifySubscriberCallback.execute(onSuccess, onFailure, email, grantAdminStatus);
+		m_verifySubscriberCallback.execute(onSuccess, onFailure, subscriberEmail, grantAdminStatus);
 	}
 
 	public void denySubscriber(IGenericEvent onSuccess,
