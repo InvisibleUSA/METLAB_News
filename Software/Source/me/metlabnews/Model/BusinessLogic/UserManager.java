@@ -4,12 +4,14 @@ import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.*;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
+import me.metlabnews.Model.Entities.SystemAdministrator;
 import me.metlabnews.Model.ResourceManagement.IResource;
 import me.metlabnews.Presentation.IUserInterface;
 import me.metlabnews.Presentation.Messages;
 import me.metlabnews.Presentation.Session;
 import me.metlabnews.Presentation.IUserInterface.IGenericEvent;
 import me.metlabnews.Presentation.IUserInterface.IGenericFailureEvent;
+import me.metlabnews.Presentation.IUserInterface.IGetStringArrayEvent;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -116,28 +118,39 @@ public class UserManager
 		//TODO: User Login
 	}
 
+	//TODO: Remove Subscriber
+
 	// endregion Subscriber Interaction
 
+	private boolean adminCheck(Session session, IGenericFailureEvent onFailure)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return false;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.NotClientAdmin);
+			return false;
+		}
+		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
+		{
+			onFailure.execute(Messages.NotClientAdmin);
+			return false;
+		}
+		return true;
+	}
 
 	// region Client Admin Interaction
 
 	public void getPendingVerificationRequests(Session session, IUserInterface.IFetchPendingVerificationRequestsEvent onSuccess, IGenericFailureEvent onFailure)
 	{
-		if(!session.isLoggedIn())
+		if(!adminCheck(session, onFailure))
 		{
-			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
-		if(session.getUser().getClass() != Subscriber.class)
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}
-		if(!((Subscriber)session.getUser()).isOrganisationAdministrator())
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}
+
 		QueryGetVerificationpending qgvp = new QueryGetVerificationpending();
 		if(!qgvp.execute())
 		{
@@ -149,22 +162,55 @@ public class UserManager
 		//TODO: Mails treatment
 	}
 
-	public void verifySubscriber(Session session, String subscriberEmail, Boolean grantAdmin)
+	public void verifySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String subscriberEmail, Boolean grantAdmin)
 	{
-		QueryVerifyUser qvu = new QueryVerifyUser();
-		qvu.email = subscriberEmail;
-		qvu.status = 1;
-		if(!qvu.execute())
+		if(!adminCheck(session, onFailure))
 		{
-			return; //TODO: Error handling
+			return;
 		}
-	}
 
+		QueryGetUser qgu = new QueryGetUser();
+		qgu.email = subscriberEmail;
+		if(!qgu.execute())
+		{
+			onFailure.execute(Messages.UnknownEmail);
+			return;
+		}
+		if(!qgu.userExists)
+		{
+			return;
+		}
 
-	// TODO: merge with verifySubscriber()
-	public void denySubscriberVerification(Session session, String subscriberEmail)
-	{
-		//TODO: Figure out what to do here
+		Subscriber subscriber = qgu.subscriber;
+
+		String subscriberOrgName = subscriber.getOrganisationId().getName();
+
+		if(!subscriberOrgName.equals(((Subscriber)session.getUser()).getOrganisationId()))
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+		if(subscriber.isVerificationPending())
+		{
+			QueryVerifyUser qvu = new QueryVerifyUser();
+			qvu.email = subscriberEmail;
+			qvu.status = 1;
+			if(!qvu.execute())
+			{
+				return; //TODO: Error handling
+			}
+			if(!qvu.userExists)
+			{
+				onFailure.execute(Messages.UnknownEmail);
+				return;
+			}
+
+			subscriber.setVerificationPending(false);
+			subscriber.setOrganisationAdministrator(grantAdmin);
+			onSuccess.execute();
+		}
+		onFailure.execute(Messages.UserIsAlreadyVerified);
+
 	}
 
 	// endregion Client Admin Interaction
@@ -172,7 +218,7 @@ public class UserManager
 
 	// region System Admin Interaction
 
-	public void systemAdministratorLogin(Session session, String email, String password)
+	public void systemAdministratorLogin(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String password)
 	{
 		QueryLoginSysadmin qls = new QueryLoginSysadmin();
 		qls.email = email;
@@ -185,31 +231,94 @@ public class UserManager
 		{
 			if(!qls.userExists)
 			{
+				onFailure.execute(Messages.UnknownEmail);
 				return; //TODO: Error handling User doesn't exist
 			}
+			onFailure.execute(Messages.WrongPassword);
 			return; //TODO: Error handling invalid password
 		}
+
+		SystemAdministrator admin = qls.sysadmin;
+
+		session.login(admin);
+		onSuccess.execute();
 		//TODO: Admin Login
 	}
 
-	public void addOrganisation(Session session, String organisationName, String adminFirstName, String adminLastName, String adminEmail, String adminPassword)
+	public void addOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName, String adminFirstName, String adminLastName, String adminEmail, String adminPassword)
 	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != SystemAdministrator.class)
+		{
+			onFailure.execute(Messages.NotSystemAdmin);
+			return;
+		}
+		if(!Validator.validateEmailAddress(adminEmail))
+		{
+			onFailure.execute(Messages.InvalidEmailAddress);
+		}
+		if(!Validator.validatePassword(adminPassword))
+		{
+			onFailure.execute(Messages.PasswordDoesNotMatchRequirements);
+			return;
+		}
+		Organisation         organisation = new Organisation(organisationName);
 		QueryAddOrganisation qao = new QueryAddOrganisation();
 		qao.orgName = organisationName;
 		if(!qao.execute())
 		{
 			return; //TODO: Error handling
 		}
+
+		QueryAddUser qau = new QueryAddUser();
+		qau.organisationName = organisationName;
+		qau.password = adminPassword;
+		qau.firstName = adminFirstName;
+		qau.lastName = adminLastName;
+		qau.clientAdmin = true;
+		qau.email = adminEmail;
+		if(!qau.execute())
+		{
+			return;
+		}
+
+		onSuccess.execute();
 	}
 
-	public void deleteOrganisation(Session session, String organisationName)
+	public void removeSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
 	{
+
+	}
+
+	public void getAllOrganisations(Session session, IGetStringArrayEvent onSuccess, IGenericFailureEvent onFailure)
+	{
+
+	}
+
+	public void removeOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != SystemAdministrator.class)
+		{
+			onFailure.execute(Messages.NotSystemAdmin);
+			return;
+		}
+
 		QueryDeleteOrganization qdo = new QueryDeleteOrganization();
 		qdo.orgName = organisationName;
 		if(!qdo.execute())
 		{
 			return; //TODO: Error handling
 		}
+		onSuccess.execute();
 	}
 
 	// endregion Client Admin Interaction

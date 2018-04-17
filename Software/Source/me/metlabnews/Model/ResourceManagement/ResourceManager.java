@@ -1,10 +1,13 @@
 package me.metlabnews.Model.ResourceManagement;
 
+import me.metlabnews.Model.BusinessLogic.UserManager;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.DbConnectors.BaseXConnector;
 import me.metlabnews.Model.DataAccess.DbConnectors.MariaConnector;
-import me.metlabnews.Model.DataAccess.DbConnectors.RelationalDbConnector;
+import me.metlabnews.Model.DataAccess.DbConnectors.MariaConnector;
+import me.metlabnews.Presentation.Presenter;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -42,13 +45,11 @@ public class ResourceManager implements ServletContextListener
 		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
 		           "Logger initialized");
 
-		MariaConnector.getInstance().initialize();
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
-		           "RelationalDbConnector initialized");
+		//MariaConnector.getInstance().initialize();
+		//logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG, "MariaConnector initialized");
 
-		BaseXConnector.getInstance().initialize();
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
-		           "BaseXConnector initialized");
+		//BaseXConnector.getInstance().initialize();
+		//logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,"BaseXConnector initialized");
 
 		// Crawler.getInstance().initialize();
 		//		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
@@ -58,13 +59,12 @@ public class ResourceManager implements ServletContextListener
 		//		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
 		//		           "ClippingDaemon initialized");
 
-		UserManager.Validator.getInstance().initialize();
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
-		           "UserManager initialized");
+		//UserManager.Validator.getInstance().initialize();
+		UserManager userManager = new UserManager();
+		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG, "UserManager initialized");
 
 		Presenter.getInstance().initialize();
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
-		           "Presenter initialized");
+		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG, "Presenter initialized");
 	}
 
 

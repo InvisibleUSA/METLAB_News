@@ -39,14 +39,14 @@ public abstract class QueryBase
 		}
 		catch(SQLException e)
 		{
-			Logger.getInstance().log(Logger.Channel.DataBase, Logger.LogPriority.ERROR, Logger.LogType.ToFile,
-			                         "SQL DB Error: " + e.toString());
+			//Logger.getInstance().log(Logger.Channel.RDBMS, Logger.LogPriority.ERROR, Logger.LogType.ToFile,"SQL DB Error: " + e.toString());
+			//FIXME: Fix Logger
 			return false;
 		}
 		catch(IOException e)
 		{
-			Logger.getInstance().log(Logger.Channel.DataBase, Logger.LogPriority.ERROR, Logger.LogType.ToFile,
-			                         "BaseX DB Error: " + e.toString());
+			//Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.ERROR, Logger.LogType.ToFile, "BaseX DB Error: " + e.toString());
+			//FIXME: Fix logger
 			return false;
 		}
 	}

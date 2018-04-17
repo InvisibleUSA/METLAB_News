@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
+import me.metlabnews.Model.Entities.Subscriber;
 import org.basex.core.Command;
 
 import java.sql.ResultSet;
@@ -12,8 +13,10 @@ import java.sql.ResultSet;
 public class QueryVerifyUser extends QueryBase
 {
 
-	public String email;
-	public int status = 0;
+	public String     email;
+	public int        status = 0;
+	public Subscriber subscriber;
+	public boolean    userExists;
 
 	@Override
 	protected Command createBaseXQuery()
@@ -30,6 +33,14 @@ public class QueryVerifyUser extends QueryBase
 	@Override
 	protected void processResults(ResultSet rs, String str)
 	{
+		QueryGetUser qgu = new QueryGetUser();
+		qgu.email = email;
+		if(!qgu.execute())
+		{
+			return;
+		}
+		userExists = qgu.userExists;
+		subscriber = qgu.subscriber;
 
 	}
 }

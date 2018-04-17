@@ -38,13 +38,13 @@ public class BaseXConnector
 			startServer();
 
 			connectClients();
-			Logger.getInstance().log(Logger.Channel.DataBase, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,
-			                         query(new Check(m_dbName)));
+			//Logger.getInstance().log(Logger.Channel.DataBase, Logger.LogPriority.DEBUG, Logger.LogType.ToFile,query(new Check(m_dbName)));
+			//FIXME: Fix logger
 		}
 		catch(IOException e)
 		{
-			Logger.getInstance().log(Logger.Channel.DataBase, Logger.LogPriority.ERROR, Logger.LogType.ToFile,
-			                         "BaseX Error: " + e.toString());
+			//Logger.getInstance().log(Logger.Channel.DataBase, Logger.LogPriority.ERROR, Logger.LogType.ToFile, "BaseX Error: " + e.toString());
+			//FIXME: Fix logger
 		}
 	}
 
@@ -143,8 +143,8 @@ public class BaseXConnector
 		}
 		catch(IOException e)
 		{
-			Logger.getInstance().log(Logger.Channel.DataBase, Logger.LogPriority.ERROR, Logger.LogType.ToFile,
-			                         "BaseX Error: " + e.toString());
+			//Logger.getInstance().log(Logger.Channel.DataBase, Logger.LogPriority.ERROR, Logger.LogType.ToFile, "BaseX Error: " + e.toString());
+			//FIXME: Fix logger
 		}
 	}
 }

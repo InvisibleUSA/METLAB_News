@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
+import me.metlabnews.Model.Entities.SystemAdministrator;
 import org.basex.core.Command;
 
 import java.sql.ResultSet;
@@ -13,10 +14,11 @@ import java.sql.SQLException;
 public class QueryLoginSysadmin extends QueryBase
 {
 
-	public String email;
-	public String password;
-	public boolean adminLoginSuccessful = false;
-	public boolean userExists           = false;
+	public String              email;
+	public String              password;
+	public boolean             adminLoginSuccessful = false;
+	public boolean             userExists           = false;
+	public SystemAdministrator sysadmin;
 
 	@Override
 	protected Command createBaseXQuery()
@@ -27,7 +29,7 @@ public class QueryLoginSysadmin extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return null;
+		return "SELECT * FROM SystemAdmin WHERE EMail = '" + email + "'";
 	}
 
 	@Override
@@ -59,5 +61,6 @@ public class QueryLoginSysadmin extends QueryBase
 		}
 		userExists = true;
 		adminLoginSuccessful = true;
+		sysadmin = new SystemAdministrator(email, password, null, null);
 	}
 }

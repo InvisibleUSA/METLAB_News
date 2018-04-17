@@ -62,7 +62,7 @@ public class Presenter implements IResource
 
 	private void registerCallbacks(IUserInterface ui, Session session)
 	{
-		UserManager userManager = UserManager.getInstance();
+		UserManager userManager = new UserManager();
 
 		ui.registerCallbackSubscriberLogin(
 				(onSuccess, onVerificationPending, onFailure, email, password) ->
@@ -89,13 +89,16 @@ public class Presenter implements IResource
 			m_threadPool.execute(() ->
 				userManager.getPendingVerificationRequests(session, onSuccess, onFailure)));
 
-		ui.registerCallbackVerifySubscriber((onSuccess, onFailure, email, grantAdminStatus) ->
+		ui.registerCallbackVerifySubscriber((onSuccess, onFailure, subscriberEmail, grantAdminStatus) ->
 			m_threadPool.execute(() ->
-				userManager.verifySubscriber(session, onSuccess, onFailure, email, grantAdminStatus)));
+					                     userManager.verifySubscriber(session, onSuccess, onFailure, subscriberEmail,
+					                                                  grantAdminStatus)));
 
+		/*
 		ui.registerCallbackDenySubscriber((onSuccess, onFailure, email) ->
 			m_threadPool.execute(() ->
 				userManager.denySubscriberVerification(session, onSuccess, onFailure, email)));
+				*/
 
 		ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email) ->
 			m_threadPool.execute(() ->

@@ -77,7 +77,8 @@ public interface IUserInterface
 	interface IVerifySubscriberCallback
 	{ void execute(IGenericEvent onSuccess,
 	               IGenericFailureEvent onFailure,
-	               String email, boolean grantAdminStatus); }
+	               String subscriberEmail, boolean grantAdminStatus);
+	}
 	void registerCallbackVerifySubscriber(IVerifySubscriberCallback callback);
 
 	interface IDenySubscriberCallback
