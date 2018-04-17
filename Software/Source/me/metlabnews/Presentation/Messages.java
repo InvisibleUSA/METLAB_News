@@ -1,6 +1,7 @@
 package me.metlabnews.Presentation;
 
 
+// TODO: group and order messages
 public final class Messages
 {
 	public static final String IllegalOperation         = "Operation kann nicht ausgeführt werden!";
@@ -20,6 +21,9 @@ public final class Messages
 			" anderen Organisation verwendet!";
 	public static final String NotSystemAdmin = "Sie müssen als Systemadministrator angemeldet sein" +
 			", um diese Operation ausführen zu können!";
+	public static final String PasswordDoesNotMatchRequirements            = "Das eingegebene Passwort" +
+			"erfüllt die Sicherheitsanforderungen nicht!";
+	public static final String InvalidEmailAddress = "Die angegebene E-Mail-Adresse ist ungültig!";
 
 
 

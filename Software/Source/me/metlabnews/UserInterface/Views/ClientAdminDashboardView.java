@@ -7,12 +7,11 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class ClientAdminDashboardView extends VerticalLayout
+public class ClientAdminDashboardView extends VerticalLayout implements IView
 {
 	public ClientAdminDashboardView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Dashboard");
 
 		buttonLogout.addClickListener((Button.ClickEvent event)
 				                             -> m_parent.logout());
@@ -31,6 +30,14 @@ public class ClientAdminDashboardView extends VerticalLayout
 
 		this.addComponents(title, buttonShowPendingVerificationRequests,
 		                   panelSubscriberVerification,buttonLogout);
+	}
+
+
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+		Page.getCurrent().setTitle("Dashboard");
 	}
 
 

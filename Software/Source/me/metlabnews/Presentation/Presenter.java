@@ -1,13 +1,14 @@
 package me.metlabnews.Presentation;
 
 import me.metlabnews.Model.BusinessLogic.*;
-
-import javax.validation.constraints.NotNull;
+import me.metlabnews.Model.ResourceManagement.IResource;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 
-public class Presenter
+public class Presenter implements IResource
 {
 	public static Presenter getInstance()
 	{
@@ -25,65 +26,107 @@ public class Presenter
 	}
 
 
-	public void connect(@NotNull IUserInterface ui)
+	@Override
+	public void initialize()
 	{
+		m_hasBeenInitialized = true;
+	}
+
+	@Override
+	public void close()
+	{
+		m_sessions.forEach((ui, session) -> session.close() );
+		m_sessions.clear();
+		m_threadPool.shutdown();
+	}
+
+
+	/**
+	 * Connect an instance of IUserInterface to the application
+	 * and associate it with a session.
+	 * Register all callback functions.
+	 * @see IUserInterface
+	 *
+	 * @param ui user interface instance
+	 */
+	public void connect(IUserInterface ui)
+	{
+		if(!m_hasBeenInitialized)
+		{
+			throw new IllegalStateException("Presenter has not been initialized");
+		}
 		Session session = new Session();
-
 		registerCallbacks(ui, session);
-
 		m_sessions.put(ui, session);
 	}
 
 	private void registerCallbacks(IUserInterface ui, Session session)
 	{
-		UserManager userManager = new UserManager();
-		ui.registerCallbackSubscriberLogin((onSuccess, onVerificationPending,
-		                                    onFailure, email, password) ->
-				                                   userManager.subscriberLogin(session, onSuccess, email, password));
+		UserManager userManager = UserManager.getInstance();
 
-		ui.registerCallbackSubscriberRegistration((onSuccess, onFailure,
-		                                           fName, lName, org, email, pw, admin) ->
-				                                          userManager.registerNewSubscriber(session, email, pw,
-				                                                                            fName, lName, org,
-				                                                                            admin));
+		ui.registerCallbackSubscriberLogin(
+				(onSuccess, onVerificationPending, onFailure, email, password) ->
+						m_threadPool.execute(() ->
+							userManager.subscriberLogin(session, onSuccess,
+							                            onVerificationPending,
+							                            onFailure, email, password)));
+
+		ui.registerCallbackSubscriberRegistration((onSuccess, onFailure, fName, lName, org,
+		                                           email, pw, admin) ->
+			m_threadPool.execute(() -> userManager.registerNewSubscriber(session, onSuccess,
+			                                                             onFailure, email, pw,
+			                                                             fName, lName, org, admin)));
 
 		ui.registerCallbackSysAdminLogin((onSuccess, onFailure, email, pw) ->
-				                                 userManager.systemAdministratorLogin(session, email, pw));
+			m_threadPool.execute(() ->
+				userManager.systemAdministratorLogin(session, onSuccess, onFailure, email, pw)));
+
 
 		ui.registerCallbackLogout(session::logout);
 
 
 		ui.registerCallbackFetchPendingVerificationRequests((onSuccess, onFailure) ->
-				                                                    userManager.getPendingVerificationRequests(
-						                                                    session));
+			m_threadPool.execute(() ->
+				userManager.getPendingVerificationRequests(session, onSuccess, onFailure)));
 
 		ui.registerCallbackVerifySubscriber((onSuccess, onFailure, email, grantAdminStatus) ->
-				                                    userManager.verifySubscriber(session, email, grantAdminStatus));
+			m_threadPool.execute(() ->
+				userManager.verifySubscriber(session, onSuccess, onFailure, email, grantAdminStatus)));
 
 		ui.registerCallbackDenySubscriber((onSuccess, onFailure, email) ->
-				                                  userManager.denySubscriberVerification(session, email));
+			m_threadPool.execute(() ->
+				userManager.denySubscriberVerification(session, onSuccess, onFailure, email)));
 
-		//ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email) ->
-		//userManager.removeSubscriber(session, onSuccess, onFailure, email));
+		ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email) ->
+			m_threadPool.execute(() ->
+				userManager.removeSubscriber(session, onSuccess, onFailure, email)));
 
 
 		ui.registerCallbackAddOrganisation((onSuccess, onFailure, organisationName,
 		                                    adminFirstName, adminLastName, adminEmail,
 		                                    adminPassword) ->
-				                                   userManager.addOrganisation(session,
-				                                                               organisationName, adminFirstName,
-				                                                               adminLastName,
-				                                                               adminEmail, adminPassword));
+			m_threadPool.execute(() ->
+				userManager.addOrganisation(session, onSuccess, onFailure,
+			                                organisationName, adminFirstName, adminLastName,
+			                                adminEmail, adminPassword)));
 
-		//ui.registerCallbackRemoveOrganisation((onSuccess, onFailure, organisationName) ->
-		//userManager.removeOrganisation(session, onSuccess, onFailure, organisationName));
+		ui.registerCallbackRemoveOrganisation((onSuccess, onFailure, organisationName) ->
+			m_threadPool.execute(() ->
+			    userManager.removeOrganisation(session, onSuccess, onFailure, organisationName)));
 
-		//ui.registerCallbackFetchOrganisations((onSuccess, onFailure) ->
-		//userManager.getAllOrganisations(session, onSuccess, onFailure));
+		ui.registerCallbackFetchOrganisations((onSuccess, onFailure) ->
+			m_threadPool.execute(() ->
+				userManager.getAllOrganisations(session, onSuccess, onFailure)));
 
 	}
 
 
+	/**
+	 * Disconnect an instance of IUserInterface from the application
+	 * and close the associated session
+	 *
+	 * @param ui user interface instance
+	 */
 	public void disconnect(IUserInterface ui)
 	{
 		m_sessions.get(ui).close();
@@ -91,20 +134,37 @@ public class Presenter
 	}
 
 
-	public UserDataRepresentation whoAmI(@NotNull IUserInterface sender)
+	/**
+	 * Get information about the user associated to a IUserInterface instance.
+	 *
+	 * @param sender user interface instance
+	 * @return UserDataRepresentation (null if session is not associated with a user)
+	 * @throws IllegalArgumentException if sender is not associated with a session
+	 */
+	public UserDataRepresentation whoAmI(IUserInterface sender)
 			throws IllegalArgumentException
 	{
 		Session session = m_sessions.get(sender);
 		if(session == null)
 		{
-			throw new IllegalArgumentException("invalid sender");
+			throw new IllegalArgumentException("sender is not associated with a session");
 		}
-		return new UserDataRepresentation(session.getUser());
+		if(session.isLoggedIn())
+		{
+			return new UserDataRepresentation(session.getUser());
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 
 
 	private static Presenter m_instance = null;
+	private boolean m_hasBeenInitialized;
 	private ConcurrentHashMap<IUserInterface, Session> m_sessions;
-	private final int initialSessionCapacity = 50;
+	@SuppressWarnings("FieldCanBeLocal")
+	private final int initialSessionCapacity = 20;
+	private final ExecutorService m_threadPool = Executors.newCachedThreadPool();
 }

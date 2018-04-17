@@ -6,14 +6,13 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SubscriberLoginView extends VerticalLayout
+public class SubscriberLoginView extends VerticalLayout implements IView
 {
 	public SubscriberLoginView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Anmelden");
 
-		buttonLogin.addClickListener((Button.ClickEvent event) -> loginAction());
+		buttonLogin.addClickListener((Button.ClickEvent event) -> login());
 
 		buttonRegister.addClickListener((Button.ClickEvent event)
 				                                -> m_parent.openSubscriberRegisterView());
@@ -21,11 +20,27 @@ public class SubscriberLoginView extends VerticalLayout
 		buttonToSysAdminLogin.addClickListener((Button.ClickEvent event)
 												-> m_parent.openSystemAdminLoginView());
 
-		this.addComponents(title, textFieldEmail, textFieldPassword, buttonLogin,
-		                   buttonRegister, buttonToSysAdminLogin);
+		addComponents(title, textFieldEmail, textFieldPassword, buttonLogin,
+		              buttonRegister, buttonToSysAdminLogin);
 	}
 
-	private void loginAction()
+
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+		Page.getCurrent().setTitle("Anmelden");
+	}
+
+
+	public void clearFields()
+	{
+		textFieldEmail.clear();
+		textFieldPassword.clear();
+	}
+
+
+	private void login()
 	{
 		String email    = textFieldEmail.getValue();
 		String password = textFieldPassword.getValue();

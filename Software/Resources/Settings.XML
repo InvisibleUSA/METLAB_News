@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
+	<!-- Security -->
+	<entry key="Security.Password.MinimumLength">1</entry>
+	<entry key="Security.Password.LowerCaseLetterRequired">false</entry> <!-- {false, true} -->
+	<entry key="Security.Password.UpperCaseLetterRequired">false</entry> <!-- {false, true} -->
+	<entry key="Security.Password.DigitRequired">false</entry> <!-- {false, true} -->
+	<entry key="Security.Password.SpecialCharacterRequired">false</entry> <!-- {false, true} -->
+	<entry key="Security.Password.WhitespaceForbidden">false</entry> <!-- {false, true} -->
+
+
 	<!-- Crawler -->
 	<entry key="Crawler.Timeout">12345</entry>
 	<entry key="Crawler.MaxDocsPerDomain">12345</entry>
@@ -13,19 +22,20 @@
 
 	<!-- BaseX -->
 	<entry key="BaseX.Path">C:\\USERS\\PORN</entry> <!-- TODO: relative path, don't store PORN in it! -->
+	<entry key="BaseX.DbName">ClippingDB</entry>
+	<entry key="BaseX.Port">1984</entry>
 	<entry key="BaseX.Username">ADMIN</entry>
 	<entry key="BaseX.Password">ADMIN</entry>
 
 
 	<!-- RDBMS -->
 	<entry key="RDBMS.Driver">org.mariadb.jdbc.Driver</entry>
-	<entry key="RDBMS.RemoteURL">jdbc:mariadb://metlabnews.me:3306/METLAB_DB</entry>
-	<entry key="RDBMS.LocalURL">jdbc:mariadb://localhost:3306/METLAB_DB</entry>
-	<entry key="RDBMS.UseLocalDB">false</entry> <!-- {false, true} -->
+	<entry key="RDBMS.RemoteURL">jdbc:mariadb://metlabnews.me:3306/METLAB_DB_MARCO</entry>
+	<entry key="RDBMS.LocalURL">jdbc:mariadb://localhost:3306/METLAB_DB_MARCO</entry>
+	<entry key="RDBMS.UseLocalDB">true</entry> <!-- {false, true} -->
 	<entry key="RDBMS.Username">test</entry>
 	<entry key="RDBMS.Password">test</entry>
 	<entry key="RDBMS.SQLDialect">org.hibernate.dialect.MySQLDialect</entry>
-
 
 
 	<!-- Mail -->
@@ -35,7 +45,8 @@
 
 
 	<!-- Logger -->
-	<entry key="Logger.LogFilePath">\Logs\</entry>
+	<entry key="Logger.LogType">ToFile</entry> <!-- {ToFile, ToConsole, ToDatabase} -->
+	<entry key="Logger.LogFilePath">\Logs\</entry> <!-- The subfolder of the logfiles -->
 	<entry key="Logger.FilterERROR">false</entry> <!-- {false, true} -->
 	<entry key="Logger.FilterWARNING">false</entry> <!-- {false, true} -->
 	<entry key="Logger.FilterDEBUG">false</entry> <!-- {false, true} -->

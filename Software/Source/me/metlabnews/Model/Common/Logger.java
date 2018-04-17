@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,17 +16,34 @@ import java.util.Calendar;
 
 /**
  * This Class is for logging the whole error's and debug outputs of the application.
- * It will be written to a local .txt file.
- * The File and the Subfolders are created automatically.
+ * <p>
+ * You can also log user controls and registers to database. The log-files are stored
+ * in the application folder in ...\Logs\
+ * The File and the subfolder are created automatically.
+ * </p>
+ * Example:
+ * <p>
+ * {@code
+ * Logger.getInstance.log(Logger.Channel.WebCrawler,
+ * Logger.Priority.DEBUG,
+ * "Enter your log-message here...");
+ * }
+ *
+ * @author Tobias Reis
+ * @version 1.4
  */
 public class Logger implements IResource
 {
 	/**
-	 * Singleton call
+	 * Singleton call of this instance.
+	 * <p>
+	 * Example:
+	 * </p>
+	 * Logger.getInstance().log(Channel channel, Priority priority, String message);
 	 *
-	 * @return instance of this Class
+	 * @return instance of this Class with all its methods
 	 */
-	public static synchronized Logger getInstance()
+	public static Logger getInstance()
 	{
 		if(m_instance == null)
 		{
@@ -61,7 +76,11 @@ public class Logger implements IResource
 
 
 	/**
+	 * <p>
 	 * This Enum is for the channels to log the output message to the specific channel.
+	 * Every class or module will have it's own Channel where you can log from.
+	 * The channels will help to separate the log files into different folders.
+	 * </p>
 	 */
 	public enum Channel
 	{
@@ -69,33 +88,23 @@ public class Logger implements IResource
 		ClippingDaemon,
 		Crawler,
 		UI,
+		Presenter,
+		ResourceManager,
 		Mail,
 		XmlTag,
 		Logger,
-		DataBase
+		RDBMS,
+		BaseX
 	}
 
 
 	/**
-	 * This Enum is for the source you want to log the Message in.
-	 * You can decide between:
-	 * - To File (saved under: (System.getProperty("user.dir"))//Logs//...)
-	 * - To Console
-	 * - To Database
-	 */
-	public enum LogType
-	{
-		ToFile,
-		ToConsole,
-		ToDatabase
-	}
-
-
-	/**
-	 * This Enum represents the Priority of the logged message. It will be possible to set the
+	 * <p>
+	 * This Enum represents the priority of the logged message. It will be possible to set the
 	 * internal Priority higher than the called Priority. This allows the user to filter some logs.
 	 * If e.g. the Priority of the internal logger is higher than the called Priority, than the message
 	 * will NOT be logged.
+	 * </p>
 	 */
 	public enum LogPriority
 	{
@@ -106,9 +115,9 @@ public class Logger implements IResource
 
 
 	/**
-	 * This Method returns a simple TimeStamp for the logger.
+	 * This method returns a simple TimeStamp for the logger.
 	 *
-	 * @return Timestamp in Format: "dd.MM.yyyy [HH:mm:ss]"
+	 * @return Timestamp in format: "dd.MM.yyyy [HH:mm:ss]"
 	 */
 	private String getTimeStamp()
 	{
@@ -117,7 +126,9 @@ public class Logger implements IResource
 
 
 	/**
-	 * This Method returns a Date to check if a file already exists
+	 * This method returns a Date to check if a file already exists
+	 *
+	 * @return A String of Date with the format: "dd-MM-yyyy"
 	 */
 	private String getDateString()
 	{
@@ -126,16 +137,13 @@ public class Logger implements IResource
 
 
 	/**
-	 * this Method returns the number of the total logged elements as Number
-	 */
-	private int getLogCounterTotal()
-	{
-		return m_logCounterTotal;
-	}
-
-
-	/**
-	 * This Method will return the final string which is logged to the target
+	 * This method will return the final string which is logged to the target.
+	 * <p>
+	 * Example:
+	 * </p>
+	 * {@code
+	 * #1 | ERROR | [17:02:02] : java.lang.NumberFormatException: null
+	 * }
 	 *
 	 * @param cntr     The Counter of the logs
 	 * @param priority The priority of the logs
@@ -172,7 +180,7 @@ public class Logger implements IResource
 
 
 	/**
-	 * This Message will write an Error-Message to a File.
+	 * This Message will write an error message to a file.
 	 *
 	 * @param channel  The specified Channel
 	 * @param cntr     The internal counter
@@ -183,8 +191,17 @@ public class Logger implements IResource
 	{
 		if(msg != null)
 		{
-			String fileName     = this.getDateString() + "-" + channel.name() + "-" + "log.txt";
-			String fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + "\\" + fileName;
+			String fullFilePath;
+			String fileName = getDateString() + "-" + channel.name() + "-" + "log.txt"; // e.g.: 04-05-2018-WebCrawler-log.txt
+
+			if(!m_hasBeenInitialized)
+			{
+				fullFilePath = File.separator + "Logs" + File.separator; // by default: ..\Logs\..
+			}
+			else
+			{
+				fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + File.separator + fileName;
+			}
 
 			File file = new File(fullFilePath);
 			file.getParentFile().mkdirs();
@@ -195,43 +212,35 @@ public class Logger implements IResource
 			}
 			catch(IOException e)
 			{
-				System.err.println("Error in Logger: " + e.getMessage());
+				System.err.println("IO Exception! Error in Logger: " + e.getMessage());
 			}
 		}
 	}
 
 
 	/**
-	 * This Message will write ein Error-Message to the Console.
+	 * This Message will write an error message to the Console.
 	 *
 	 * @param channel  The specified Channel
-	 * @param cntr     The internal counter
 	 * @param priority The log-priority
 	 * @param msg      The log-Message
 	 */
-	private void writeToConsole(Channel channel, int cntr, LogPriority priority, String msg)
+	private void writeToConsole(Channel channel, LogPriority priority, String msg)
 	{
-		if(msg != null)
-		{
-			System.err.println(this.createLogString(channel, ++this.m_logCounterTotal, priority, msg));
-		}
+		System.err.println(createLogString(channel, ++m_logCounterTotal, priority, msg));
 	}
 
 
 	/**
-	 * This Message will write ein Error-Message to the Database.
+	 * This Message will write ein error message to the database.
 	 *
 	 * @param channel  The specified Channel
-	 * @param cntr     The internal counter
 	 * @param priority The log-priority
 	 * @param msg      The log-Message
 	 */
-	// TODO: WHAT THE FUCKING FUCK?!
-	private void writeToDatabase(Channel channel, int cntr, LogPriority priority, String msg)
+	private void writeToDatabase(Channel channel, LogPriority priority, String msg)
 	{
-		java.sql.Connection con      = null;
-		PreparedStatement   pst      = null;
-		ResultSet           rs       = null;
+		java.sql.Connection con;
 		String              url      = "jdbc:mariadb://46.101.223.95/METLAB_LOGS";
 		String              user     = "test";
 		String              password = "test";
@@ -239,69 +248,82 @@ public class Logger implements IResource
 		try
 		{
 			con = DriverManager.getConnection(url, user, password);
-			Statement st = (Statement)con.createStatement();
+			Statement st = con.createStatement();
 
 			st.executeUpdate("INSERT INTO LOG VALUES " +
 					                 "(NULL, " +
-					                 "'" + String.format(this.getTimeStamp().toString()) + "', " +
-					                 "'" + String.format(channel.toString()) + "', " +
-					                 "'" + String.format(priority.toString()) + "', " +
-					                 "'" + String.format(msg) + "'" +
+					                 "'" + channel.toString() + "', " +
+					                 "'" + priority.toString() + "', " +
+					                 "'" + msg + "'" +
 					                 ")");
 			con.close();
 		}
-
 		catch(Exception e)
 		{
-			System.err.println(e);
+			System.err.println("Error in Logger @ writeToDatabase() : " + e.toString());
 		}
 	}
 
 
-	/***
+	/**
 	 * This Method logs the specific message to a log-file.
 	 * The file is found in the specific channel-folder with the name of the
 	 * current date (e.g. 05-04-2018-Crawler-log.txt)
 	 * Newline is automatically appended when logging toFile and toConsole
-	 * @param channel       the Channel from where you call the log-method
-	 * @param msg           the log-message
-	 * @param priority   the priority you want to log with (DEBUG, WARNING, ERROR)
+	 * </p>
+	 * Example:
+	 * <p>
+	 * {@code
+	 * Logger.getInstance.log(Logger.Channel.WebCrawler,
+	 * Logger.Priority.DEBUG,
+	 * "Enter your log-message here...");
+	 * }
+	 *
+	 * @param channel  the Channel from where you call the log-method
+	 * @param priority the priority you want to log with (DEBUG, WARNING, ERROR)
+	 * @param msg      the log-message
 	 */
-	public void log(Channel channel, LogPriority priority, LogType type, String msg)
+	public void log(Channel channel, LogPriority priority, String msg)
 	{
+		boolean isPriorityAllowed;
+		String  typeDefault;
+
 		if(!m_hasBeenInitialized)
 		{
-			type = LogType.ToConsole;
+			isPriorityAllowed = true; // log everything by default
+			typeDefault = "ToConsole"; // log ToConsole by default
+		}
+		else
+		{
+			isPriorityAllowed = isPriorityAllowed(priority);
+			typeDefault = ConfigurationManager.getInstance().getLogType();
 		}
 
-		if(msg != null)
+		if(isPriorityAllowed)
 		{
-			if(isPriorityAllowed(priority))
+			switch(typeDefault)
 			{
-				switch(type)
-				{
-					case ToFile:
-						this.writeToFile(channel, ++m_logCounterTotal, priority, msg);
-						break;
-					case ToConsole:
-						this.writeToConsole(channel, ++m_logCounterTotal, priority, msg);
-						break;
-					case ToDatabase:
-						this.writeToDatabase(channel, ++m_logCounterTotal, priority, msg);
-						break;
-						default:
-							break;
-				}
+				case "ToFile":
+					writeToFile(channel, ++m_logCounterTotal, priority, msg);
+					break;
+				case "ToConsole":
+					writeToConsole(channel, priority, msg);
+					break;
+				case "ToDatabase":
+					writeToDatabase(channel, priority, msg);
+					break;
+				default:
+					break;
 			}
 		}
 	}
 
 
 
-	private int m_logCounterTotal = 0;
-	private static Logger m_instance;
-	private boolean m_hasBeenInitialized;
-	private boolean m_debugIsAllowed = true;
-	private boolean m_warningIsAllowed = true;
-	private boolean m_errorIsAllowed = true;
+	private        int     m_logCounterTotal  = 0;
+	private static Logger  m_instance;
+	private        boolean m_hasBeenInitialized;
+	private        boolean m_debugIsAllowed   = true;
+	private        boolean m_warningIsAllowed = true;
+	private        boolean m_errorIsAllowed   = true;
 }

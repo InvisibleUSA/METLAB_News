@@ -9,12 +9,11 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SubscriberDashboardView extends VerticalLayout
+public class SubscriberDashboardView extends VerticalLayout implements IView
 {
 	public SubscriberDashboardView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Dashboard");
 
 		buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
 
@@ -24,6 +23,14 @@ public class SubscriberDashboardView extends VerticalLayout
 			                          m_parent.whoAmI().getEmail()));
 
 		this.addComponents(title, buttonQuitAccount, buttonLogout);
+	}
+
+
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+		Page.getCurrent().setTitle("Dashboard");
 	}
 
 
