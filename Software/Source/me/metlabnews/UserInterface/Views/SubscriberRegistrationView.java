@@ -44,11 +44,11 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 
 		if(email.isEmpty())
 		{
-			Notification.show("Bitte geben Sie eine Email Adresse ein!");
+			Notification.show("Bitte geben Sie eine Email Adresse ein!", Notification.Type.ERROR_MESSAGE);
 		}
 		else if(password.isEmpty())
 		{
-			Notification.show("Bitte geben Sie ein Passwort ein!");
+			Notification.show("Bitte geben Sie ein Passwort ein!", Notification.Type.ERROR_MESSAGE);
 		}
 		else
 		{

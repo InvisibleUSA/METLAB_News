@@ -19,14 +19,14 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 		buttonQuitAccount.addClickListener(
 				event -> m_parent.removeSubscriber(m_parent::openLogoutView,
 				                                   errorMessage ->
-						                                   Notification.show(errorMessage),
+						                                   Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE),
 				                                   m_parent.whoAmI().getEmail()));
 
 		buttonShowPendingVerificationRequests.addClickListener(
 				event ->
 						m_parent.fetchPendingSubscriberVerifications(
 								data -> showPendingVerificationRequests(data),
-				errorMessage -> Notification.show(errorMessage)));
+				errorMessage -> Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE)));
 
 		this.addComponents(title, buttonShowPendingVerificationRequests,
 		                   panelSubscriberVerification,buttonLogout);
@@ -63,7 +63,7 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 					                                   { verify.setEnabled(false);
 					                                   deny.setEnabled(false); },
 					                                   errorMessage ->
-							                                   Notification.show(errorMessage),
+							                                   Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE),
 					                                   subscriber.getEmail(),
 					                                   grantAdminStatus.getValue()));
 			deny.addClickListener(
@@ -71,7 +71,7 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 					                                 { verify.setEnabled(false);
 					                                 deny.setEnabled(false); },
 					                                 errorMessage ->
-							                                 Notification.show(errorMessage),
+							                                 Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE),
 					                                 subscriber.getEmail()));
 			table.addComponent(row);
 		}

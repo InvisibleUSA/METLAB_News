@@ -292,7 +292,7 @@ public class MainUI extends UI implements IUserInterface
 
 	private void loginFailedEvent(String errorMessage)
 	{
-		access(() -> Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage));
+		access(() -> Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage, Notification.Type.ERROR_MESSAGE));
 	}
 
 
@@ -307,7 +307,7 @@ public class MainUI extends UI implements IUserInterface
 		access(() ->
 		       {
 		       	    Notification.show("Verifizierung ausstehend\nWarten Sie auf die " +
-				                              "Verifikation durch einen Administrator");
+				                              "Verifikation durch einen Administrator", Notification.Type.ERROR_MESSAGE);
 					m_subscriberLoginView.clearFields();
 		       });
 	}
@@ -315,7 +315,7 @@ public class MainUI extends UI implements IUserInterface
 
 	private void registrationFailedEvent(String errorMessage)
 	{
-		access(() -> Notification.show("Registrierung fehlgeschlagen\n" + errorMessage));
+		access(() -> Notification.show("Registrierung fehlgeschlagen\n" + errorMessage, Notification.Type.ERROR_MESSAGE));
 	}
 
 	// endregion Events

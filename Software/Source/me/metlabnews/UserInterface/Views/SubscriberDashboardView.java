@@ -19,7 +19,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 
 		buttonQuitAccount.addClickListener((Button.ClickEvent event) ->
 			m_parent.removeSubscriber(m_parent::openLogoutView,
-			                          errorMessage -> Notification.show(errorMessage),
+			                          errorMessage -> Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE),
 			                          m_parent.whoAmI().getEmail()));
 
 		this.addComponents(title, buttonQuitAccount, buttonLogout);

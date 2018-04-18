@@ -39,11 +39,11 @@ public class SystemAdminLoginView
 
 		if(email.isEmpty())
 		{
-			Notification.show("Bitte geben Sie Ihre Email-Adresse ein!");
+			Notification.show("Bitte geben Sie Ihre Email-Adresse ein!", Notification.Type.ERROR_MESSAGE);
 		}
 		else if(password.isEmpty())
 		{
-			Notification.show("Bitte geben Sie Ihr Passwort ein!");
+			Notification.show("Bitte geben Sie Ihr Passwort ein!", Notification.Type.ERROR_MESSAGE);
 		}
 		else
 		{

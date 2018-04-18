@@ -34,7 +34,7 @@ public class SystemAdminDashboardView
 		buttonAddOrganisation.addClickListener(
 				event -> m_parent.addOrganisation(() -> m_parent.access(() ->
 						{
-								Notification.show("Organisation hinzugefügt");
+								Notification.show("Organisation hinzugefügt", Notification.Type.ERROR_MESSAGE);
 								textFieldOrganisationName.clear();
 								textFieldAdminFirstName.clear();
 								textFieldAdminLastName.clear();
@@ -43,7 +43,7 @@ public class SystemAdminDashboardView
 						}),
 				            errorMessage -> m_parent.access(() -> Notification.show(
 				            		"Organisation konnte nicht hinzugefügt werden\n"
-								            + errorMessage)),
+								            + errorMessage, Notification.Type.ERROR_MESSAGE)),
 				                                  textFieldOrganisationName.getValue(),
 				                                  textFieldAdminFirstName.getValue(),
 				                                  textFieldAdminLastName.getValue(),
