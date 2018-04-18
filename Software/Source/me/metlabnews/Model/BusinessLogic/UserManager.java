@@ -109,6 +109,11 @@ public class UserManager
 				onFailure.execute(Messages.InvalidEmailAddress);
 				return; //TODO: Error handling User doesn't exist
 			}
+			if(!qlu.userVerified)
+			{
+				onFailure.execute(Messages.UnknownError); //TODO: Add user not verified error
+				return;
+			}
 			onFailure.execute(Messages.WrongPassword);
 			return; //TODO: Error handling invalid password
 		}
@@ -117,8 +122,6 @@ public class UserManager
 		onSuccess.execute();
 		//TODO: User Login
 	}
-
-	//TODO: Remove Subscriber
 
 	// endregion Subscriber Interaction
 
@@ -291,12 +294,12 @@ public class UserManager
 
 	public void removeSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
 	{
-
+		//TODO: Implement
 	}
 
 	public void getAllOrganisations(Session session, IGetStringArrayEvent onSuccess, IGenericFailureEvent onFailure)
 	{
-
+		//TODO: Implement
 	}
 
 	public void removeOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName)

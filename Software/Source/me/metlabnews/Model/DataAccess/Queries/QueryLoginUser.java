@@ -48,7 +48,7 @@ public class QueryLoginUser extends QueryBase
 				m_vName = rs.getString("VName");
 				m_organisation = rs.getString("Firma");
 				isAdmin = rs.getString("isAdmin");
-				userVerified = rs.getString("isVerified") == "1";
+				userVerified = rs.getString("isVerified").equals("1");
 			}
 		}
 		catch(SQLException e)
@@ -62,6 +62,12 @@ public class QueryLoginUser extends QueryBase
 			return;
 		}
 		if(!readPassword.equals(password))
+		{
+			userExists = true;
+			userLoginSuccessful = false;
+			return;
+		}
+		if(!userVerified)
 		{
 			userExists = true;
 			userLoginSuccessful = false;
