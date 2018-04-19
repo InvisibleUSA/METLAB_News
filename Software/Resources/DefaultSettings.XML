@@ -42,6 +42,7 @@
 	<entry key="Mail.SMTPServer">smtp.gmail.com</entry>
 	<entry key="Mail.Password">metlabnews54321</entry>
 	<entry key="Mail.FromAddress">metlabnews@gmail.com</entry>
+	<entry key="Mail.SMTPPort">465</entry>
 
 
 	<!-- Logger -->

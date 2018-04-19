@@ -257,6 +257,11 @@ public class ConfigurationManager implements IResource
 		return returnProperty("Mail.SMTPServer");
 	}
 
+	public int getMailSMTPPort()
+	{
+		return Integer.parseInt(returnProperty("Mail.SMTPPort"));
+	}
+
 	// endregion Mail
 
 
@@ -316,10 +321,10 @@ public class ConfigurationManager implements IResource
 
 	/**
 	 * This is the main-method of the XML Properties. It returns the values of the given
-	 * String-key.
+	 * String-key. If the key is not found, null is returned
 	 *
 	 * @param key The String-key of the value
-	 * @return the value of the property
+	 * @return the value of the property, null if not found
 	 */
 	private String returnProperty(String key)
 	{
