@@ -8,22 +8,22 @@ public final class Messages
 	public static final String UnknownError             = "Unbekannter Fehler!";
 	public static final String UnknownEmail             = "Kein Benutzer mit dieser E-Mail vorhanden!";
 	public static final String WrongPassword            = "Falsches Passwort!";
-	public static final String EmailAddressAlreadyInUse = "Die angegebene E-Mail-Adresse " +
+	public static final String EmailAddressAlreadyInUse         = "Die angegebene E-Mail-Adresse " +
 			"wird bereits von einem anderen Nutzer verwendet!";
-	public static final String UnknownOrganisation      = "Die angegebene Organisation "
+	public static final String UnknownOrganisation              = "Die angegebene Organisation "
 			+ "existiert nicht!";
-	public static final String NotClientAdmin = "Sie benötigen Administratorrechte einer " +
+	public static final String NotClientAdmin                   = "Sie benötigen Administratorrechte einer " +
 			"Organisation um diese Operation ausführen zu können!";
-	public static final String NotLoggedIn = "Sie müssen angemeldet sein, um diese" +
+	public static final String NotLoggedIn                      = "Sie müssen angemeldet sein, um diese" +
 			"Operation ausführen zu können!";
-	public static final String UserIsAlreadyVerified = "Der Benutzer wurde bereits verfifiziert!";
-	public static final String OrganisationNameAlreadyTaken = "Dieser Name wird bereits von einer" +
+	public static final String UserIsAlreadyVerified            = "Der Benutzer wurde bereits verfifiziert!";
+	public static final String OrganisationNameAlreadyTaken     = "Dieser Name wird bereits von einer" +
 			" anderen Organisation verwendet!";
-	public static final String NotSystemAdmin = "Sie müssen als Systemadministrator angemeldet sein" +
+	public static final String NotSystemAdmin                   = "Sie müssen als Systemadministrator angemeldet sein" +
 			", um diese Operation ausführen zu können!";
-	public static final String PasswordDoesNotMatchRequirements            = "Das eingegebene Passwort" +
+	public static final String PasswordDoesNotMatchRequirements = "Das eingegebene Passwort" +
 			"erfüllt die Sicherheitsanforderungen nicht!";
-	public static final String InvalidEmailAddress = "Die angegebene E-Mail-Adresse ist ungültig!";
+	public static final String InvalidEmailAddress              = "Die angegebene E-Mail-Adresse ist ungültig!";
 
 
 

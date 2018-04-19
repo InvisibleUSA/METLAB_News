@@ -111,7 +111,7 @@ public class UserManager
 			}
 			if(!qlu.userVerified)
 			{
-				onFailure.execute(Messages.UnknownError); //TODO: Add user not verified error
+				onVerificationPending.execute();
 				return;
 			}
 			onFailure.execute(Messages.WrongPassword);
