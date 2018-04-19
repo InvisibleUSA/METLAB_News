@@ -37,7 +37,6 @@ public class QueryLoginUser extends QueryBase
 	{
 		String email        = "";
 		String readPassword = "";
-		String veryfied     = "";
 		try
 		{
 			while(rs.next())
@@ -55,7 +54,7 @@ public class QueryLoginUser extends QueryBase
 		{
 			return;
 		}
-		if(email == "")
+		if(email.isEmpty())
 		{
 			userExists = false;
 			userLoginSuccessful = false;

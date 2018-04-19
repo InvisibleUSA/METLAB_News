@@ -29,35 +29,37 @@ public class QueryLoginSysadmin extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return "SELECT * FROM SystemAdmin WHERE EMail = '" + email + "'";
+		return "SELECT * FROM SystemAdmins WHERE EMail = '" + email + "'";
 	}
 
 	@Override
 	protected void processResults(ResultSet rs, String str)
 	{
-		String email        = "";
+		String readEmail    = "";
 		String readPassword = "";
 		try
 		{
 			while(rs.next())
 			{
-				email = rs.getString("EMail");
-				password = rs.getString("PW");
+				readEmail = rs.getString("EMail");
+				readPassword = rs.getString("Password");
 			}
 		}
 		catch(SQLException e)
 		{
 			return;
 		}
-		if(!email.isEmpty())
+		if(readEmail.isEmpty())
 		{
 			userExists = false;
 			adminLoginSuccessful = false;
+			return;
 		}
 		if(!readPassword.equals(password))
 		{
 			userExists = true;
 			adminLoginSuccessful = false;
+			return;
 		}
 		userExists = true;
 		adminLoginSuccessful = true;
