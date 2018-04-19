@@ -3,9 +3,6 @@ package me.metlabnews.Model.ResourceManagement;
 import me.metlabnews.Model.BusinessLogic.UserManager;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
-import me.metlabnews.Model.DataAccess.DbConnectors.BaseXConnector;
-import me.metlabnews.Model.DataAccess.DbConnectors.MariaConnector;
-import me.metlabnews.Model.DataAccess.DbConnectors.MariaConnector;
 import me.metlabnews.Presentation.Presenter;
 
 import javax.servlet.ServletContextEvent;

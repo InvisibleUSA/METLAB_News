@@ -25,6 +25,9 @@
 .idea/
 *.iml
 
+# program settings
+Software/Resources/Settings.xml
+
 # executables
 target/
 Software/Resources/webapp/VAADIN/themes/maintheme/styles.scss.cache
