@@ -17,7 +17,7 @@ public class SystemAdminLoginView
 		buttonLogin.addClickListener((Button.ClickEvent event) -> loginAction());
 
 		buttonToSubscriberLogin.addClickListener((Button.ClickEvent event)
-				                                -> m_parent.openSubscriberLoginView());
+				                                         -> m_parent.openSubscriberLoginView());
 
 		this.addComponents(title, textFieldEmail, textFieldPassword, buttonLogin,
 		                   buttonToSubscriberLogin);
@@ -39,13 +39,15 @@ public class SystemAdminLoginView
 
 		if(email.isEmpty())
 		{
-			Notification popup = new Notification("Bitte geben Sie Ihre Email-Adresse ein!", Notification.Type.WARNING_MESSAGE);
+			Notification popup = new Notification("Bitte geben Sie Ihre Email-Adresse ein!",
+			                                      Notification.Type.WARNING_MESSAGE);
 			popup.setDelayMsec(3000);
 			popup.show(Page.getCurrent());
 		}
 		else if(password.isEmpty())
 		{
-			Notification popup = new Notification("Bitte geben Sie Ihr Passwort ein!", Notification.Type.WARNING_MESSAGE);
+			Notification popup = new Notification("Bitte geben Sie Ihr Passwort ein!",
+			                                      Notification.Type.WARNING_MESSAGE);
 			popup.setDelayMsec(3000);
 			popup.show(Page.getCurrent());
 		}
