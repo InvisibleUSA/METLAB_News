@@ -25,7 +25,8 @@ import me.metlabnews.UserInterface.Views.*;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("maintheme")
-@PreserveOnRefresh @Push(PushMode.AUTOMATIC)
+@PreserveOnRefresh
+@Push(PushMode.AUTOMATIC)
 public class MainUI extends UI implements IUserInterface
 {
 	public MainUI()
@@ -164,14 +165,14 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	public void removeOrganisation(IGenericEvent onSuccess,
-	                            IGenericFailureEvent onFailure,
-	                            String organisationName)
+	                               IGenericFailureEvent onFailure,
+	                               String organisationName)
 	{
 		m_removeOrganisationCallback.execute(onSuccess, onFailure, organisationName);
 	}
 
 	public void getAllOrganisations(IGetStringArrayEvent onSuccess,
-	                               IGenericFailureEvent onFailure)
+	                                IGenericFailureEvent onFailure)
 	{
 		m_FetchOrganisationsCallback.execute(onSuccess, onFailure);
 	}
@@ -292,7 +293,10 @@ public class MainUI extends UI implements IUserInterface
 
 	private void loginFailedEvent(String errorMessage)
 	{
-		access(() -> Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage, Notification.Type.ERROR_MESSAGE));
+		Notification popup = new Notification("Anmeldung fehlgeschlagen\n" + errorMessage,
+		                                      Notification.Type.WARNING_MESSAGE);
+		popup.setDelayMsec(3000);
+		access(() -> popup.show(Page.getCurrent()));
 	}
 
 
@@ -306,16 +310,22 @@ public class MainUI extends UI implements IUserInterface
 	{
 		access(() ->
 		       {
-		       	    Notification.show("Verifizierung ausstehend\nWarten Sie auf die " +
-				                              "Verifikation durch einen Administrator", Notification.Type.ERROR_MESSAGE);
-					m_subscriberLoginView.clearFields();
+			       Notification popup = new Notification("Verifizierung ausstehend\nWarten Sie auf die " +
+					                                             "Verifikation durch einen Administrator",
+			                                             Notification.Type.WARNING_MESSAGE);
+			       popup.setDelayMsec(3000);
+			       access(() -> popup.show(Page.getCurrent()));
+			       m_subscriberLoginView.clearFields();
 		       });
 	}
 
 
 	private void registrationFailedEvent(String errorMessage)
 	{
-		access(() -> Notification.show("Registrierung fehlgeschlagen\n" + errorMessage, Notification.Type.ERROR_MESSAGE));
+		Notification popup = new Notification("Registrierung fehlgeschlagen\n" + errorMessage,
+		                                      Notification.Type.WARNING_MESSAGE);
+		popup.setDelayMsec(3000);
+		access(() -> popup.show(Page.getCurrent()));
 	}
 
 	// endregion Events
@@ -329,7 +339,6 @@ public class MainUI extends UI implements IUserInterface
 	private ClientAdminDashboardView   m_clientAdminDashboardView;
 	private SystemAdminDashboardView   m_systemAdminDashboardView;
 	private LogoutView                 m_logoutView;
-
 
 
 

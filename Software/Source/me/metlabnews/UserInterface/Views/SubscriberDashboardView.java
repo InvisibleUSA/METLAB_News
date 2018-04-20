@@ -18,9 +18,15 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
 
 		buttonQuitAccount.addClickListener((Button.ClickEvent event) ->
-			m_parent.removeSubscriber(m_parent::openLogoutView,
-			                          errorMessage -> Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE),
-			                          m_parent.whoAmI().getEmail()));
+				                                   m_parent.removeSubscriber(m_parent::openLogoutView,
+				                                                             errorMessage -> {
+					                                                             Notification popup = new Notification(
+							                                                             errorMessage,
+							                                                             Notification.Type.WARNING_MESSAGE);
+					                                                             popup.setDelayMsec(3000);
+					                                                             popup.show(Page.getCurrent());
+				                                                             },
+				                                                             m_parent.whoAmI().getEmail()));
 
 		this.addComponents(title, buttonQuitAccount, buttonLogout);
 	}
@@ -37,7 +43,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 
 	private MainUI m_parent;
 
-	private final Label title = new Label("Willkommen bei METLAB-News - Dashboard");
+	private final Label  title             = new Label("Willkommen bei METLAB-News - Dashboard");
 	private final Button buttonQuitAccount = new Button("Konto löschen");
-	private final Button buttonLogout = new Button("Abmelden");
+	private final Button buttonLogout      = new Button("Abmelden");
 }

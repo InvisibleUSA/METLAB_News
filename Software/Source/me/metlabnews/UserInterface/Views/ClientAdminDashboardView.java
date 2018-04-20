@@ -14,22 +14,31 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 		m_parent = parent;
 
 		buttonLogout.addClickListener((Button.ClickEvent event)
-				                             -> m_parent.logout());
+				                              -> m_parent.logout());
 
 		buttonQuitAccount.addClickListener(
 				event -> m_parent.removeSubscriber(m_parent::openLogoutView,
-				                                   errorMessage ->
-						                                   Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE),
+				                                   errorMessage -> {
+					                                   Notification popup = new Notification(errorMessage,
+					                                                                         Notification.Type.WARNING_MESSAGE);
+					                                   popup.setDelayMsec(3000);
+					                                   popup.show(Page.getCurrent());
+				                                   },
 				                                   m_parent.whoAmI().getEmail()));
 
 		buttonShowPendingVerificationRequests.addClickListener(
 				event ->
 						m_parent.fetchPendingSubscriberVerifications(
 								data -> showPendingVerificationRequests(data),
-				errorMessage -> Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE)));
+								errorMessage -> {
+									Notification popup = new Notification(errorMessage,
+									                                      Notification.Type.WARNING_MESSAGE);
+									popup.setDelayMsec(3000);
+									popup.show(Page.getCurrent());
+								}));
 
 		this.addComponents(title, buttonShowPendingVerificationRequests,
-		                   panelSubscriberVerification,buttonLogout);
+		                   panelSubscriberVerification, buttonLogout);
 	}
 
 
@@ -60,18 +69,32 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 			row.addComponent(deny);
 			verify.addClickListener(
 					event -> m_parent.verifySubscriber(() ->
-					                                   { verify.setEnabled(false);
-					                                   deny.setEnabled(false); },
+					                                   {
+						                                   verify.setEnabled(false);
+						                                   deny.setEnabled(false);
+					                                   },
 					                                   errorMessage ->
-							                                   Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE),
+					                                   {
+						                                   Notification popup = new Notification(errorMessage,
+						                                                                         Notification.Type.WARNING_MESSAGE);
+						                                   popup.setDelayMsec(3000);
+						                                   popup.show(Page.getCurrent());
+					                                   },
 					                                   subscriber.getEmail(),
 					                                   grantAdminStatus.getValue()));
 			deny.addClickListener(
 					event -> m_parent.denySubscriber(() ->
-					                                 { verify.setEnabled(false);
-					                                 deny.setEnabled(false); },
-					                                 errorMessage ->
-							                                 Notification.show(errorMessage, Notification.Type.ERROR_MESSAGE),
+					                                 {
+						                                 verify.setEnabled(false);
+						                                 deny.setEnabled(false);
+					                                 },
+					                                 errorMessage -> {
+
+						                                 Notification popup = new Notification(errorMessage,
+						                                                                       Notification.Type.WARNING_MESSAGE);
+						                                 popup.setDelayMsec(3000);
+						                                 popup.show(Page.getCurrent());
+					                                 },
 					                                 subscriber.getEmail()));
 			table.addComponent(row);
 		}
@@ -81,9 +104,9 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 
 	private MainUI m_parent;
 
-	private final Label  title       = new Label("Willkommen bei METLAB-News - Dashboard!");
+	private final Label  title                                 = new Label("Willkommen bei METLAB-News - Dashboard!");
 	private final Button buttonShowPendingVerificationRequests = new Button("Offene Anfragen");
-	private final Button buttonQuitAccount = new Button("Konto löschen");
-	private final Button buttonLogout = new Button("Abmelden");
-	private final Panel  panelSubscriberVerification = new Panel("Ausstehende Verifikationen");
+	private final Button buttonQuitAccount                     = new Button("Konto löschen");
+	private final Button buttonLogout                          = new Button("Abmelden");
+	private final Panel  panelSubscriberVerification           = new Panel("Ausstehende Verifikationen");
 }
