@@ -21,11 +21,11 @@
 
 
 	<!-- BaseX -->
-	<entry key="BaseX.Path">C:\\Users\\Erik\\basexDB</entry>
+	<entry key="BaseX.Path">BaseXData</entry>
 	<entry key="BaseX.DbName">ClippingDB</entry>
 	<entry key="BaseX.Port">1984</entry>
-	<entry key="BaseX.Username">ADMIN</entry>
-	<entry key="BaseX.Password">ADMIN</entry>
+	<entry key="BaseX.Username">admin</entry>
+	<entry key="BaseX.Password">admin</entry>
 
 
 	<!-- RDBMS -->
