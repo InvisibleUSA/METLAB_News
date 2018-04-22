@@ -40,6 +40,7 @@ class BaseXConnector
 	 */
 	BaseXConnector()
 	{
+		Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.DEBUG, "Starting BaseX");
 		loadConfig();
 		try
 		{
