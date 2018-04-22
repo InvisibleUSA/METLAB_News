@@ -1,16 +1,31 @@
 package me.metlabnews.UserInterface.Views;
 
 import com.vaadin.server.Page;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.MainUI;
 
 
 
+/**
+ * The dashboard for subscribers
+ * Contains clippings and profiles options
+ */
 public class SubscriberDashboardView extends VerticalLayout implements IView
 {
+	private MainUI m_parent;
+
+	private final Label  title               = new Label("Willkommen bei METLAB-News - Dashboard");
+	private final Button buttonShowClippings = new Button("Zeige Pressespiegel");
+	private final Button buttonQuitAccount   = new Button("Konto löschen");
+	private final Button buttonLogout        = new Button("Abmelden");
+	private final Panel  panelClippings      = new Panel("Bisherige Pressespiegel");
+
+	/**
+	 * Initializes the view and sets all of its components to their default values
+	 *
+	 * @param parent the parent object of this view
+	 */
 	public SubscriberDashboardView(MainUI parent)
 	{
 		m_parent = parent;
@@ -28,7 +43,15 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 				                                                             },
 				                                                             m_parent.whoAmI().getEmail()));
 
-		this.addComponents(title, buttonQuitAccount, buttonLogout);
+		buttonShowClippings.addClickListener((Button.ClickEvent event) ->
+		                                     {
+			                                     Notification popup = new Notification(/*TODO*/"Not implemented jet",
+			                                                                                   Notification.Type.WARNING_MESSAGE);
+			                                     popup.setDelayMsec(3000);
+			                                     popup.show(Page.getCurrent());
+		                                     });
+
+		this.addComponents(title, buttonQuitAccount, buttonShowClippings, panelClippings, buttonLogout);
 	}
 
 
@@ -38,12 +61,4 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_parent.setContent(this);
 		Page.getCurrent().setTitle("Dashboard");
 	}
-
-
-
-	private MainUI m_parent;
-
-	private final Label  title             = new Label("Willkommen bei METLAB-News - Dashboard");
-	private final Button buttonQuitAccount = new Button("Konto löschen");
-	private final Button buttonLogout      = new Button("Abmelden");
 }

@@ -8,8 +8,30 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
+/**
+ * The registration form for new subscribers
+ * Contains text fields for information about the new subscriber
+ */
 public class SubscriberRegistrationView extends VerticalLayout implements IView
 {
+	private MainUI m_parent;
+
+	private final Label            title               = new Label("Willkommen bei METLAB-News - Registrierung");
+	private final TextField        textFieldFirstName  = new TextField("Vorname:");
+	private final TextField        textFieldLastName   = new TextField("Nachname:");
+	private final TextField        textFieldCompany    = new TextField("Organisation:");
+	private final TextField        textFieldEmail      = new TextField("E-Mail:");
+	private final PasswordField    textFieldPassword   = new PasswordField("Passwort:");
+	private final CheckBox         checkBoxClientAdmin = new CheckBox("Administrator Status beantragen");
+	private final Button           buttonRegister      = new Button("Registrieren");
+	private final Button           buttonLogin         = new Button("Zurück zur Anmeldung");
+	private final HorizontalLayout buttonBar           = new HorizontalLayout();
+
+	/**
+	 * Initializes the view and sets all of its components to their default values
+	 *
+	 * @param parent the parent object of this view
+	 */
 	public SubscriberRegistrationView(MainUI parent)
 	{
 		m_parent = parent;
@@ -62,18 +84,4 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 		}
 	}
 
-
-
-	private MainUI m_parent;
-
-	private final Label            title               = new Label("Willkommen bei METLAB-News - Registrierung");
-	private final TextField        textFieldFirstName  = new TextField("Vorname:");
-	private final TextField        textFieldLastName   = new TextField("Nachname:");
-	private final TextField        textFieldCompany    = new TextField("Organisation:");
-	private final TextField        textFieldEmail      = new TextField("E-Mail:");
-	private final PasswordField    textFieldPassword   = new PasswordField("Passwort:");
-	private final CheckBox         checkBoxClientAdmin = new CheckBox("Administrator Status beantragen");
-	private final Button           buttonRegister      = new Button("Registrieren");
-	private final Button           buttonLogin         = new Button("Zurück zur Anmeldung");
-	private final HorizontalLayout buttonBar           = new HorizontalLayout();
 }

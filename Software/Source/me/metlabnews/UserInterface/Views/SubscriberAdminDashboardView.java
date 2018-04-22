@@ -7,9 +7,26 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class ClientAdminDashboardView extends VerticalLayout implements IView
+/**
+ * The dashboard for company admins
+ * Contains a list of pending verifications for new users of the admin's company
+ */
+public class SubscriberAdminDashboardView extends VerticalLayout implements IView
 {
-	public ClientAdminDashboardView(MainUI parent)
+	private MainUI m_parent;
+
+	private final Label  title                                 = new Label("Willkommen bei METLAB-News - Dashboard!");
+	private final Button buttonShowPendingVerificationRequests = new Button("Offene Anfragen");
+	private final Button buttonQuitAccount                     = new Button("Konto löschen");
+	private final Button buttonLogout                          = new Button("Abmelden");
+	private final Panel  panelSubscriberVerification           = new Panel("Ausstehende Verifikationen");
+
+	/**
+	 * Initializes the view and sets all of its components to their default values
+	 *
+	 * @param parent the parent object of this view
+	 */
+	public SubscriberAdminDashboardView(MainUI parent)
 	{
 		m_parent = parent;
 
@@ -18,30 +35,24 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 
 		buttonQuitAccount.addClickListener(
 				event -> m_parent.removeSubscriber(m_parent::openLogoutView,
-				                                   errorMessage -> {
+				                                   errorMessage -> m_parent.access(() -> {
 					                                   Notification popup = new Notification(errorMessage,
 					                                                                         Notification.Type.WARNING_MESSAGE);
 					                                   popup.setDelayMsec(3000);
 					                                   popup.show(Page.getCurrent());
-				                                   },
+				                                   }),
 				                                   m_parent.whoAmI().getEmail()));
 
 		buttonShowPendingVerificationRequests.addClickListener(
 				event ->
 						m_parent.fetchPendingSubscriberVerifications(
 								data -> showPendingVerificationRequests(data),
-								errorMessage ->
-
-										m_parent.access(() ->
-										                {
-											                Notification popup = new Notification(errorMessage,
-											                                                      Notification.Type.WARNING_MESSAGE);
-											                popup.setDelayMsec(3000);
-											                popup.show(Page.getCurrent());
-										                }
-
-
-										               )));
+								errorMessage -> m_parent.access(() -> {
+									Notification popup = new Notification(errorMessage,
+									                                      Notification.Type.WARNING_MESSAGE);
+									popup.setDelayMsec(3000);
+									popup.show(Page.getCurrent());
+								})));
 
 		this.addComponents(title, buttonShowPendingVerificationRequests,
 		                   panelSubscriberVerification, buttonLogout);
@@ -79,15 +90,13 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 						                                   verify.setEnabled(false);
 						                                   deny.setEnabled(false);
 					                                   },
-					                                   errorMessage -> m_parent.access(() ->
-					                                                                   {
-						                                                                   Notification popup = new Notification(
-								                                                                   errorMessage,
-								                                                                   Notification.Type.WARNING_MESSAGE);
-						                                                                   popup.setDelayMsec(3000);
-						                                                                   popup.show(
-								                                                                   Page.getCurrent());
-					                                                                   }),
+					                                   errorMessage ->
+							                                   m_parent.access(() -> {
+								                                   Notification popup = new Notification(errorMessage,
+								                                                                         Notification.Type.WARNING_MESSAGE);
+								                                   popup.setDelayMsec(3000);
+								                                   popup.show(Page.getCurrent());
+							                                   }),
 					                                   subscriber.getEmail(),
 					                                   grantAdminStatus.getValue()));
 			deny.addClickListener(
@@ -96,26 +105,16 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 						                                 verify.setEnabled(false);
 						                                 deny.setEnabled(false);
 					                                 },
-					                                 errorMessage -> m_parent.access(() ->
-					                                                                 {
-						                                                                 Notification popup = new Notification(
-								                                                                 errorMessage,
-								                                                                 Notification.Type.WARNING_MESSAGE);
-						                                                                 popup.setDelayMsec(3000);
-						                                                                 popup.show(Page.getCurrent());
-					                                                                 }),
+					                                 errorMessage ->
+							                                 m_parent.access(() -> {
+								                                 Notification popup = new Notification(errorMessage,
+								                                                                       Notification.Type.WARNING_MESSAGE);
+								                                 popup.setDelayMsec(3000);
+								                                 popup.show(Page.getCurrent());
+							                                 }),
 					                                 subscriber.getEmail()));
 			table.addComponent(row);
 		}
 		panelSubscriberVerification.setContent(table);
 	}
-
-
-	private MainUI m_parent;
-
-	private final Label  title                                 = new Label("Willkommen bei METLAB-News - Dashboard!");
-	private final Button buttonShowPendingVerificationRequests = new Button("Offene Anfragen");
-	private final Button buttonQuitAccount                     = new Button("Konto löschen");
-	private final Button buttonLogout                          = new Button("Abmelden");
-	private final Panel  panelSubscriberVerification           = new Panel("Ausstehende Verifikationen");
 }

@@ -29,6 +29,15 @@ import me.metlabnews.UserInterface.Views.*;
 @Push(PushMode.AUTOMATIC)
 public class MainUI extends UI implements IUserInterface
 {
+	private SubscriberLoginView          m_subscriberLoginView;
+	private SubscriberRegistrationView   m_subscriberRegistrationView;
+	private SubscriberDashboardView      m_subscriberDashboardView;
+	private SystemAdminLoginView         m_systemAdminLoginView;
+	private SubscriberAdminDashboardView m_subscriberAdminDashboardView;
+	private SystemAdminDashboardView     m_systemAdminDashboardView;
+	private LogoutView                   m_logoutView;
+
+
 	public MainUI()
 	{
 	}
@@ -42,7 +51,7 @@ public class MainUI extends UI implements IUserInterface
 		m_systemAdminLoginView = new SystemAdminLoginView(this);
 		m_subscriberRegistrationView = new SubscriberRegistrationView(this);
 		m_subscriberDashboardView = new SubscriberDashboardView(this);
-		m_clientAdminDashboardView = new ClientAdminDashboardView(this);
+		m_subscriberAdminDashboardView = new SubscriberAdminDashboardView(this);
 		m_systemAdminDashboardView = new SystemAdminDashboardView(this);
 		m_logoutView = new LogoutView(this);
 
@@ -77,7 +86,7 @@ public class MainUI extends UI implements IUserInterface
 
 	private void openClientAdminDashboardView()
 	{
-		access(() -> setContent(m_clientAdminDashboardView));
+		access(() -> setContent(m_subscriberAdminDashboardView));
 	}
 
 	private void openSystemAdminDashboardView()
@@ -262,9 +271,9 @@ public class MainUI extends UI implements IUserInterface
 	private IFetchPendingVerificationRequestsCallback m_fetchPendingVerificationRequestsCallback;
 	private IVerifySubscriberCallback                 m_verifySubscriberCallback;
 	private IDenySubscriberCallback                   m_denySubscriberCallback;
+	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
 	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
-	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
 
 	// endregion Callbacks
 
@@ -329,17 +338,6 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	// endregion Events
-
-
-
-	private SubscriberLoginView        m_subscriberLoginView;
-	private SystemAdminLoginView       m_systemAdminLoginView;
-	private SubscriberRegistrationView m_subscriberRegistrationView;
-	private SubscriberDashboardView    m_subscriberDashboardView;
-	private ClientAdminDashboardView   m_clientAdminDashboardView;
-	private SystemAdminDashboardView   m_systemAdminDashboardView;
-	private LogoutView                 m_logoutView;
-
 
 
 	@WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)

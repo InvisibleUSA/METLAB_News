@@ -6,9 +6,30 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SystemAdminDashboardView
-		extends VerticalLayout implements IView
+/**
+ * The dashboard for system admins
+ * Contains a means for creating a new company
+ */
+public class SystemAdminDashboardView extends VerticalLayout implements IView
 {
+	private MainUI m_parent;
+
+	private final Label         title                     = new Label("Willkommen bei METLAB-News - Dashboard!");
+	private final Button        buttonLogout              = new Button("Abmelden");
+	private final Panel         panelNewOrganisation      = new Panel("Neue Organisation hinzufügen");
+	private final TextField     textFieldOrganisationName = new TextField("Name der Organisation:");
+	private final Button        buttonAddOrganisation     = new Button("Organisation hinzufügen");
+	private final Panel         panelInitialUser          = new Panel("Administrator hinzufügen");
+	private final TextField     textFieldAdminFirstName   = new TextField("Vorname:");
+	private final TextField     textFieldAdminLastName    = new TextField("Nachname:");
+	private final TextField     textFieldAdminEmail       = new TextField("E-Mail:");
+	private final PasswordField textFieldAdminPassword    = new PasswordField("Passwort:");
+
+	/**
+	 * Initializes the view and sets all of its components to their default values
+	 *
+	 * @param parent the parent object of this view
+	 */
 	public SystemAdminDashboardView(MainUI parent)
 	{
 		m_parent = parent;
@@ -73,19 +94,4 @@ public class SystemAdminDashboardView
 		m_parent.setContent(this);
 		Page.getCurrent().setTitle("Dashboard");
 	}
-
-
-
-	private MainUI m_parent;
-
-	private final Label         title                     = new Label("Willkommen bei METLAB-News - Dashboard!");
-	private final Button        buttonLogout              = new Button("Abmelden");
-	private final Panel         panelNewOrganisation      = new Panel("Neue Organisation hinzufügen");
-	private final TextField     textFieldOrganisationName = new TextField("Name der Organisation:");
-	private final Button        buttonAddOrganisation     = new Button("Organisation hinzufügen");
-	private final Panel         panelInitialUser          = new Panel("Administrator hinzufügen");
-	private final TextField     textFieldAdminFirstName   = new TextField("Vorname:");
-	private final TextField     textFieldAdminLastName    = new TextField("Nachname:");
-	private final TextField     textFieldAdminEmail       = new TextField("E-Mail:");
-	private final PasswordField textFieldAdminPassword    = new PasswordField("Passwort:");
 }

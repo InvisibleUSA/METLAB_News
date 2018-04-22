@@ -6,8 +6,26 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
+/**
+ * The login form for subscribers
+ * Contains text fields for identifying an existing user
+ */
 public class SubscriberLoginView extends VerticalLayout implements IView
 {
+	private MainUI m_parent;
+
+	private final Label         title                 = new Label("Willkommen bei METLAB-News - Anmeldung");
+	private final TextField     textFieldEmail        = new TextField("E-Mail:");
+	private final PasswordField textFieldPassword     = new PasswordField("Passwort:");
+	private final Button        buttonLogin           = new Button("Anmelden");
+	private final Button        buttonToSysAdminLogin = new Button("Zur Anmeldeseite für Systemadministratoren");
+	private final Button        buttonRegister        = new Button("Zur Registrierung");
+
+	/**
+	 * Initializes the view and sets all of its components to their default values
+	 *
+	 * @param parent the parent object of this view
+	 */
 	public SubscriberLoginView(MainUI parent)
 	{
 		m_parent = parent;
@@ -64,15 +82,4 @@ public class SubscriberLoginView extends VerticalLayout implements IView
 			m_parent.loginSubscriber(email, password);
 		}
 	}
-
-
-
-	private MainUI m_parent;
-
-	private final Label         title                 = new Label("Willkommen bei METLAB-News - Anmeldung");
-	private final TextField     textFieldEmail        = new TextField("E-Mail:");
-	private final PasswordField textFieldPassword     = new PasswordField("Passwort:");
-	private final Button        buttonLogin           = new Button("Anmelden");
-	private final Button        buttonToSysAdminLogin = new Button("Zur Anmeldeseite für Systemadministratoren");
-	private final Button        buttonRegister        = new Button("Zur Registrierung");
 }
