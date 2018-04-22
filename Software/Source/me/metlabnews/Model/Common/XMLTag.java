@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
-
 /**
  * This class provides an easy to use interface to access XML-Data.
  * In the constructor you can can specify XML-Data as string. After
@@ -57,7 +55,6 @@ public class XMLTag
 	 *
 	 * @param xmlData XML-data as string
 	 */
-
 	public XMLTag(String xmlData)
 	{
 		Logger                 l         = Logger.getInstance();
@@ -98,13 +95,12 @@ public class XMLTag
 	 */
 	public XMLTag child(String tagName)
 	{
-
 		return child(tagName, 0);
 	}
 
 	/**
 	 * alternative method to access any child of the current {@link XMLTag}
-	 * As a second parameter the positon of the tag element is entered counting only
+	 * As a second parameter the position of the tag element is entered counting only
 	 * tag elements with the name tagName. position starts at 0.
 	 * <p>
 	 * If you need all children with name x call {@link #children(String)}. This can be used
@@ -113,15 +109,14 @@ public class XMLTag
 	 *
 	 * @param tagName  the name of the tag
 	 * @param position the position of the tag in the xml string
-	 * @return the position-th subtag that matches the tagName
+	 * @return the position-th subtag that matches the tagName, null if not found
 	 * @throws NullPointerException Child is not found.
 	 * @see #child(String) #children(String)
 	 */
-	@SuppressWarnings("WeakerAccess")
 	public XMLTag child(String tagName, int position)
 	{
 		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG,
-		                         "child " + tagName + "at position " + position + "requested. (Parent:" + m_name + ")");
+		                         "child " + tagName + " at position " + position + " requested. (Parent:" + m_name + ")");
 		Key k = new Key(tagName, position);
 		return m_children.get(k);
 	}
@@ -144,7 +139,7 @@ public class XMLTag
 		ArrayList<XMLTag> alt = new ArrayList<>();
 		XMLTag            t;
 		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG,
-		                         "all children " + tagName + "requested. (Parent:" + m_name + ")");
+		                         "all children " + tagName + " requested. (Parent:" + m_name + ")");
 		while((t = m_children.get(k)) != null)
 		{
 			alt.add(t);
@@ -162,7 +157,7 @@ public class XMLTag
 	public String attribute(String name)
 	{
 		Logger.getInstance().log(LOGMODULE, Logger.LogPriority.DEBUG,
-		                         "attribute " + name + "requested. (Parent:" + m_name + ")");
+		                         "attribute " + name + " requested. (Parent:" + m_name + ")");
 		return m_attributes.get(name);
 	}
 

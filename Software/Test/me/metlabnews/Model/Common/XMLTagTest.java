@@ -1,6 +1,6 @@
 package me.metlabnews.Model.Common;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class XMLTagTest
 {
-	private String m_xml;
+	private static String m_xml;
 
-	@BeforeEach
-	void setUp()
+	@BeforeAll
+	static void setUp()
 	{
 		m_xml = "<CATALOG media-type=\"CDs\" >" +
 				"<CD>" +
