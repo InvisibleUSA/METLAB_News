@@ -72,7 +72,8 @@ public class QueryLoginUser extends QueryBase
 			userLoginSuccessful = false;
 			return;
 		}
-		subscriber = new Subscriber(email, password, m_vName, m_name, new Organisation(m_organisation), isAdmin == "1");
+		subscriber = new Subscriber(email, password, m_vName, m_name, new Organisation(m_organisation),
+		                            isAdmin.equals("1"));
 		userExists = true;
 		userLoginSuccessful = true;
 	}

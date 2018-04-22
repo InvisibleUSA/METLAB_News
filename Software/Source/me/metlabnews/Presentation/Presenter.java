@@ -94,11 +94,11 @@ public class Presenter implements IResource
 					                     userManager.verifySubscriber(session, onSuccess, onFailure, subscriberEmail,
 					                                                  grantAdminStatus)));
 
-		/*
+
 		ui.registerCallbackDenySubscriber((onSuccess, onFailure, email) ->
 			m_threadPool.execute(() ->
-				userManager.denySubscriberVerification(session, onSuccess, onFailure, email)));
-				*/
+					                     userManager.denySubscriber(session, onSuccess, onFailure, email)));
+
 
 		ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email) ->
 			m_threadPool.execute(() ->

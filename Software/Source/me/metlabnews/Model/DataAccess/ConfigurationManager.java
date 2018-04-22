@@ -440,6 +440,6 @@ public class ConfigurationManager implements IResource
 	private boolean m_hasBeenInitialized = false;
 	private static ConfigurationManager m_instance;
 	private final String m_XMLFilePath = (System.getProperty(
-			"user.dir") + "" + File.separator + "Software" + File.separator + "Resources" + File.separator + "Settings.XML");
+			"user.dir") + "" + File.separator + "Resources" + File.separator + "Settings.XML");
 	private Properties m_properties;
 }

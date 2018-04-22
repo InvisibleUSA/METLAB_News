@@ -147,7 +147,7 @@ public class MainUI extends UI implements IUserInterface
 	                           IGenericFailureEvent onFailure,
 	                           String email)
 	{
-		m_denySubscriberCallback.execute(onSuccess, onFailure, email);
+		access(() -> m_denySubscriberCallback.execute(onSuccess, onFailure, email));
 	}
 
 

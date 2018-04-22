@@ -30,12 +30,18 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 				event ->
 						m_parent.fetchPendingSubscriberVerifications(
 								data -> showPendingVerificationRequests(data),
-								errorMessage -> {
-									Notification popup = new Notification(errorMessage,
-									                                      Notification.Type.WARNING_MESSAGE);
-									popup.setDelayMsec(3000);
-									popup.show(Page.getCurrent());
-								}));
+								errorMessage ->
+
+										m_parent.access(() ->
+										                {
+											                Notification popup = new Notification(errorMessage,
+											                                                      Notification.Type.WARNING_MESSAGE);
+											                popup.setDelayMsec(3000);
+											                popup.show(Page.getCurrent());
+										                }
+
+
+										               )));
 
 		this.addComponents(title, buttonShowPendingVerificationRequests,
 		                   panelSubscriberVerification, buttonLogout);
@@ -73,13 +79,15 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 						                                   verify.setEnabled(false);
 						                                   deny.setEnabled(false);
 					                                   },
-					                                   errorMessage ->
-					                                   {
-						                                   Notification popup = new Notification(errorMessage,
-						                                                                         Notification.Type.WARNING_MESSAGE);
-						                                   popup.setDelayMsec(3000);
-						                                   popup.show(Page.getCurrent());
-					                                   },
+					                                   errorMessage -> m_parent.access(() ->
+					                                                                   {
+						                                                                   Notification popup = new Notification(
+								                                                                   errorMessage,
+								                                                                   Notification.Type.WARNING_MESSAGE);
+						                                                                   popup.setDelayMsec(3000);
+						                                                                   popup.show(
+								                                                                   Page.getCurrent());
+					                                                                   }),
 					                                   subscriber.getEmail(),
 					                                   grantAdminStatus.getValue()));
 			deny.addClickListener(
@@ -88,13 +96,14 @@ public class ClientAdminDashboardView extends VerticalLayout implements IView
 						                                 verify.setEnabled(false);
 						                                 deny.setEnabled(false);
 					                                 },
-					                                 errorMessage -> {
-
-						                                 Notification popup = new Notification(errorMessage,
-						                                                                       Notification.Type.WARNING_MESSAGE);
-						                                 popup.setDelayMsec(3000);
-						                                 popup.show(Page.getCurrent());
-					                                 },
+					                                 errorMessage -> m_parent.access(() ->
+					                                                                 {
+						                                                                 Notification popup = new Notification(
+								                                                                 errorMessage,
+								                                                                 Notification.Type.WARNING_MESSAGE);
+						                                                                 popup.setDelayMsec(3000);
+						                                                                 popup.show(Page.getCurrent());
+					                                                                 }),
 					                                 subscriber.getEmail()));
 			table.addComponent(row);
 		}

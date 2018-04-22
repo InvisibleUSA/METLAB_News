@@ -181,6 +181,7 @@ public class UserManager
 		}
 		if(!qgu.userExists)
 		{
+			onFailure.execute(Messages.UnknownError);
 			return;
 		}
 
@@ -188,7 +189,7 @@ public class UserManager
 
 		String subscriberOrgName = subscriber.getOrganisationId().getName();
 
-		if(!subscriberOrgName.equals(((Subscriber)session.getUser()).getOrganisationId()))
+		if(!subscriberOrgName.equals(((Subscriber)session.getUser()).getOrganisationId().getName()))
 		{
 			onFailure.execute(Messages.IllegalOperation);
 			return;
@@ -200,6 +201,7 @@ public class UserManager
 			qvu.status = 1;
 			if(!qvu.execute())
 			{
+				onFailure.execute(Messages.UnknownError);
 				return; //TODO: Error handling
 			}
 			if(!qvu.userExists)
@@ -290,6 +292,11 @@ public class UserManager
 		}
 
 		onSuccess.execute();
+	}
+
+	public void denySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
+	{
+		removeSubscriber(session, onSuccess, onFailure, email);
 	}
 
 	public void removeSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
