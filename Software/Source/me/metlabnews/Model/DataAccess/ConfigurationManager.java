@@ -50,6 +50,29 @@ public class ConfigurationManager implements IResource
 		}
 	}
 
+	// TODO: ONLY FOR DEBUGGING
+	public void startOnlyForDebugPurposesThisMethodWillBeRemoved()
+	{
+		try(InputStream inputStream = new FileInputStream(new File(m_XMLFilePath)))
+		{
+			m_properties.loadFromXML(inputStream);
+			m_hasBeenInitialized = true;
+		}
+		catch(FileNotFoundException e)
+		{
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         m_XMLFilePath + " not found:\n"
+					                         + e.toString());
+		}
+		catch(Exception e)
+		{
+			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+			                         Logger.LogPriority.ERROR,
+			                         e.toString());
+		}
+	}
+
 	@Override
 	public void close()
 	{
@@ -57,36 +80,65 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	private void setNumberFormatException(NumberFormatException e, String key)
+	{
+		String errorMsg = "IOException in Configuration Manager." +
+				" Please check Settings.XML and depending getter-method for Key: '" + key +"'. Error Message: ";
+		Logger.getInstance().log(Logger.Channel.ConfigurationManager,
+		                         Logger.LogPriority.ERROR,
+		                         errorMsg + e.toString());
+	}
+
+
 	// region Security
 
 	public int getSecurityPasswordMinimumLength()
 	{
-		return Integer.parseInt(returnProperty("Security.Password.MinimumLength"));
+		String key = "Security.Password.MinimumLength";
+		try
+		{
+			return Integer.parseInt(returnProperty(key));
+		}
+		catch(NumberFormatException e)
+		{
+			setNumberFormatException(e, key);
+			return 0;
+		}
 	}
+
 
 	public boolean getSecurityPasswordLowerCaseLetterRequired()
 	{
-		return Boolean.parseBoolean(returnProperty("Security.Password.LowerCaseLetterRequired"));
+		String key = "Security.Password.LowerCaseLetterRequired";
+		return Boolean.parseBoolean(returnProperty(key));
 	}
+
 
 	public boolean getSecurityPasswordUpperCaseLetterRequired()
 	{
-		return Boolean.parseBoolean(returnProperty("Security.Password.UpperCaseLetterRequired"));
+		String key = "Security.Password.UpperCaseLetterRequired";
+		return Boolean.parseBoolean(returnProperty(key));
 	}
+
 
 	public boolean getSecurityPasswordSpecialCharacterRequired()
 	{
-		return Boolean.parseBoolean(returnProperty("Security.Password.SpecialCharacterRequired"));
+		String key = "Security.Password.SpecialCharacterRequired";
+		return Boolean.parseBoolean(returnProperty(key));
 	}
+
 
 	public boolean getSecurityPasswordDigitRequired()
 	{
-		return Boolean.parseBoolean(returnProperty("Security.Password.DigitRequired"));
+		String key = "Security.Password.DigitRequired";
+		return Boolean.parseBoolean(returnProperty(key));
 	}
+
 
 	public boolean getSecurityPasswordWhitespaceForbidden()
 	{
-		return Boolean.parseBoolean(returnProperty("Security.Password.WhitespaceForbidden"));
+		String key = "Security.Password.WhitespaceForbidden";
+		return Boolean.parseBoolean(returnProperty(key));
 	}
 
 	// endregion Security
@@ -96,39 +148,38 @@ public class ConfigurationManager implements IResource
 
 	public long getCrawlerTimeout()
 	{
+		String key = "Crawler.Timeout";
 		try
 		{
-			return Long.parseLong(returnProperty("Crawler.Timeout"));
+			return Long.parseLong(returnProperty(key));
 		}
 		catch(NumberFormatException e)
 		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         e.toString());
+			setNumberFormatException(e, key);
 			return 0L;
 		}
 	}
 
 	public int getCrawlerMaxDocsPerDomain()
 	{
+		String key = "Crawler.MaxDocsPerDomain";
 		try
 		{
-			return Integer.parseInt(returnProperty("Crawler.MaxDocsPerDomain"));
+			return Integer.parseInt(returnProperty(key));
 		}
 		catch(NumberFormatException e)
 		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         e.toString());
+			setNumberFormatException(e, key);
 			return 0;
 		}
 	}
 
 	public TypePreferred getCrawlerTypePreferred()
 	{
+		String key = "Crawler.TypePreferred";
 		try
 		{
-			switch(String.format(returnProperty("Crawler.TypePreferred")))
+			switch(String.format(returnProperty(key)))
 			{
 				case "RSSFeed":
 					return TypePreferred.RSSFeed;
@@ -140,9 +191,7 @@ public class ConfigurationManager implements IResource
 		}
 		catch(NumberFormatException e)
 		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         e.toString());
+			setNumberFormatException(e, key);
 			return null;
 		}
 	}
@@ -154,15 +203,14 @@ public class ConfigurationManager implements IResource
 
 	public long getClippingDaemonEnqueuingTimeOut()
 	{
+		String key = "ClippingDaemon.EnqueuingTimeOut";
 		try
 		{
-			return Long.parseLong(returnProperty("ClippingDaemon.EnqueuingTimeOut"));
+			return Long.parseLong(returnProperty(key));
 		}
 		catch(NumberFormatException e)
 		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         e.toString());
+			setNumberFormatException(e, key);
 			return 0L;
 		}
 	}
@@ -174,27 +222,40 @@ public class ConfigurationManager implements IResource
 
 	public String getBaseXPath()
 	{
-		return returnProperty("BaseX.Path");
+		String key = "BaseX.Path";
+		return returnProperty(key);
 	}
 
 	public String getBaseXDbName()
 	{
-		return returnProperty("BaseX.DbName");
+		String key = "BaseX.DbName";
+		return returnProperty(key);
 	}
 
 	public int getBaseXPort()
 	{
-		return Integer.parseInt(returnProperty("BaseX.Port"));
+		String key = "BaseX.Port";
+		try
+		{
+			return Integer.parseInt(returnProperty(key));
+		}
+		catch(NumberFormatException e)
+		{
+			setNumberFormatException(e, key);
+			return 0;
+		}
 	}
 
 	public String getBaseXUsername()
 	{
-		return returnProperty("BaseX.Username");
+		String key = "BaseX.Username";
+		return returnProperty(key);
 	}
 
 	public String getBaseXPassword()
 	{
-		return returnProperty("BaseX.Password");
+		String key = "BaseX.Password";
+		return returnProperty(key);
 	}
 
 	// endregion BaseX
@@ -204,37 +265,44 @@ public class ConfigurationManager implements IResource
 
 	public String getRdbmsDriver()
 	{
-		return returnProperty("RDBMS.Driver");
+		String key = "RDBMS.Driver";
+		return returnProperty(key);
 	}
 
 	public String getRdbmsRemoteUrl()
 	{
-		return returnProperty("RDBMS.RemoteURL");
+		String key = "RDBMS.RemoteURL";
+		return returnProperty(key);
 	}
 
 	public String getRdbmsLocalUrl()
 	{
-		return returnProperty("RDBMS.LocalURL");
+		String key = "RDBMS.LocalURL";
+		return returnProperty(key);
 	}
 
 	public boolean getRdbmsUseLocalDB()
 	{
-		return Boolean.parseBoolean(returnProperty("RDBMS.UseLocalDB"));
+		String key = "RDBMS.UseLocalDB";
+		return Boolean.parseBoolean(returnProperty(key));
 	}
 
 	public String getRdbmsUsername()
 	{
-		return returnProperty("RDBMS.Username");
+		String key = "RDBMS.Username";
+		return returnProperty(key);
 	}
 
 	public String getRdbmsPassword()
 	{
-		return returnProperty("RDBMS.Password");
+		String key = "RDBMS.Password";
+		return returnProperty(key);
 	}
 
 	public String getRdbmsSqlDialect()
 	{
-		return returnProperty("RDBMS.SQLDialect");
+		String key = "RDBMS.SQLDialect";
+		return returnProperty(key);
 	}
 
 	// endregion RDBMS
@@ -244,22 +312,37 @@ public class ConfigurationManager implements IResource
 
 	public String getMailFromAddress()
 	{
-		return returnProperty("Mail.FromAddress");
+		String key = "Mail.FromAddress";
+		return returnProperty(key);
 	}
+
 
 	public String getMailPassword()
 	{
-		return returnProperty("Mail.Password");
+		String key = "Mail.Password";
+		return returnProperty(key);
 	}
+
 
 	public String getMailSMTPServer()
 	{
-		return returnProperty("Mail.SMTPServer");
+		String key = "Mail.SMTPServer";
+		return returnProperty(key);
 	}
+
 
 	public int getMailSMTPPort()
 	{
-		return Integer.parseInt(returnProperty("Mail.SMTPPort"));
+		String key = "Mail.SMTPPort";
+		try
+		{
+			return Integer.parseInt(returnProperty(key));
+		}
+		catch(NumberFormatException e)
+		{
+			setNumberFormatException(e, key);
+			return 0;
+		}
 	}
 
 	// endregion Mail
@@ -274,13 +357,15 @@ public class ConfigurationManager implements IResource
 	 */
 	public String getLoggerLogFilePath()
 	{
-		return (System.getProperty("user.dir")) + returnProperty("Logger.LogFilePath");
+		String key = "Logger.LogFilePath";
+		return (System.getProperty("user.dir")) + returnProperty(key);
 	}
 
 
 	public String getLogType()
 	{
-		return (System.getProperty("user.dir")) + returnProperty("Logger.LogType");
+		String key = "Logger.LogType";
+		return (System.getProperty("user.dir")) + returnProperty(key);
 	}
 
 
@@ -293,7 +378,8 @@ public class ConfigurationManager implements IResource
 	 */
 	public boolean getFilteredPriorities(String priority)
 	{
-		return Boolean.parseBoolean(returnProperty("Logger.Filter" + priority + ""));
+		String key = "Logger.Filter" + priority;
+		return Boolean.parseBoolean(returnProperty(key));
 	}
 
 	// endregion Logger
@@ -354,6 +440,6 @@ public class ConfigurationManager implements IResource
 	private boolean m_hasBeenInitialized = false;
 	private static ConfigurationManager m_instance;
 	private final String m_XMLFilePath = (System.getProperty(
-			"user.dir") + "" + File.separator + "Resources" + File.separator + "Settings.XML");
+			"user.dir") + "" + File.separator + "Software" + File.separator + "Resources" + File.separator + "Settings.XML");
 	private Properties m_properties;
 }
