@@ -1,7 +1,5 @@
 package me.metlabnews.Model.DataAccess;
 
-
-
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.ResourceManagement.IResource;
 
@@ -358,7 +356,7 @@ public class ConfigurationManager implements IResource
 	public String getLoggerLogFilePath()
 	{
 		String key = "Logger.LogFilePath";
-		return (System.getProperty("user.dir")) + returnProperty(key);
+		return (System.getProperty("user.dir")) + File.separator + returnProperty(key) + File.separator;
 	}
 
 

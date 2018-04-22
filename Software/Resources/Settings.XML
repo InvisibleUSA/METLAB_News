@@ -47,7 +47,7 @@
 
 	<!-- Logger -->
 	<entry key="Logger.LogType">ToFile</entry> <!-- {ToFile, ToConsole, ToDatabase} -->
-	<entry key="Logger.LogFilePath">\Logs\</entry> <!-- The subfolder of the logfiles -->
+	<entry key="Logger.LogFilePath">Logs</entry> <!-- The subfolder of the logfiles -->
 	<entry key="Logger.FilterERROR">false</entry> <!-- {false, true} -->
 	<entry key="Logger.FilterWARNING">false</entry> <!-- {false, true} -->
 	<entry key="Logger.FilterDEBUG">false</entry> <!-- {false, true} -->
