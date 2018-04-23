@@ -155,6 +155,7 @@ public class UserManager
 		}
 
 		QueryGetVerificationpending qgvp = new QueryGetVerificationpending();
+		qgvp.organization = ((Subscriber)session.getUser()).getOrganisationId().getName();
 		if(!qgvp.execute())
 		{
 			onFailure.execute(Messages.UnknownError);
@@ -301,7 +302,24 @@ public class UserManager
 
 	public void removeSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
 	{
-		//TODO: Implement
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.NotSystemAdmin);
+			return;
+		}
+		QueryRemoveSubscriber qrs = new QueryRemoveSubscriber();
+		qrs.email = email;
+		if(!qrs.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+		onSuccess.execute();
 	}
 
 	public void getAllOrganisations(Session session, IGetStringArrayEvent onSuccess, IGenericFailureEvent onFailure)

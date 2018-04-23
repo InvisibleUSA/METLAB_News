@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class QueryGetVerificationpending extends QueryBase
 {
-
+	public String                   organization;
 	public UserDataRepresentation[] users;
 
 	@Override
@@ -26,7 +26,7 @@ public class QueryGetVerificationpending extends QueryBase
 	@Override
 	protected String createSQLQuery()
 	{
-		return "SELECT * FROM Abonnent WHERE isVerified = 0";
+		return "SELECT * FROM Abonnent WHERE isVerified = 0 AND Firma = '" + organization + "'";
 	}
 
 	@Override
