@@ -26,7 +26,7 @@ public class QueryGetOrganisation extends QueryBase
 	{
 		if(organisationName.isEmpty())
 		{
-			return "SELECT * FROM KLEIENTEN";
+			return "SELECT * FROM Klienten";
 		}
 		return "SELECT * FROM Klienten WHERE Name = '" + organisationName + "'";
 	}
