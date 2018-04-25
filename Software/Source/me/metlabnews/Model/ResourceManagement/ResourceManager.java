@@ -3,6 +3,7 @@ package me.metlabnews.Model.ResourceManagement;
 import me.metlabnews.Model.BusinessLogic.UserManager;
 import me.metlabnews.Model.ClippingDaemon.ClippingDaemon;
 import me.metlabnews.Model.Common.Logger;
+import me.metlabnews.Model.Crawler.CrawlerController;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryAddOrganisation;
 import me.metlabnews.Presentation.Presenter;
@@ -52,9 +53,9 @@ public class ResourceManager implements ServletContextListener
 		new QueryAddOrganisation();
 
 		// initialize ClippingDaemon
-		ClippingDaemon cd = new ClippingDaemon();
-		cd.initialize();
-		logger.logDebug(this, "ClippingDaemon initialized");
+		//ClippingDaemon cd = new ClippingDaemon();
+		//cd.initialize();
+		//logger.logDebug(this, "ClippingDaemon initialized");
 
 		//MariaConnector.getInstance().initialize();
 		//logger.logDebug(this, "MariaConnector initialized");
@@ -62,8 +63,8 @@ public class ResourceManager implements ServletContextListener
 		//BaseXConnector.getInstance().initialize();
 		//logger.logDebug(this,"BaseXConnector initialized");
 
-		// Crawler.getInstance().initialize();
-		//logger.logDebug(this,"Crawler initialized");
+		CrawlerController.getInstance().initialize();
+		logger.logDebug(this, "Crawler initialized");
 
 
 
@@ -73,6 +74,8 @@ public class ResourceManager implements ServletContextListener
 
 		Presenter.getInstance().initialize();
 		logger.logDebug(this, "Presenter initialized");
+
+		CrawlerController.getInstance().start();
 	}
 
 

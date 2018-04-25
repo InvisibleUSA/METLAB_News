@@ -71,7 +71,9 @@ public class QueryGetRelevantArticlesFromRSS extends BaseXQueryBase
 				pubDate.setTime(sdf.parse(article.child("pubDate").value()));
 
 				final String     description = article.child("description").value();
-				final NewsSource source      = new NewsSource();
+
+				//TODO NewsSource is instanciated with final fields for name, link and rss_link so that wont work
+				final NewsSource source = new NewsSource("", "", "");
 
 				Article a = new Article(title, source, link, description, guid, pubDate);
 				m_candidates.add(a);

@@ -1,11 +1,6 @@
 package me.metlabnews.Model.Entities;
-
-
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-
 
 public class Article
 {
@@ -48,13 +43,18 @@ public class Article
 				//"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n" +
 				"<article>\n"
 						+ "\t<title><![CDATA[" + m_title + "]]></title>\n"
-						+ "\t<source><![CDATA[" + m_source + "]]></source>\n"
+						+ "\t<source><![CDATA[" + m_source.getName() + "]]></source>\n"
 						+ "\t<link><![CDATA[" + m_link + "]]></link>\n"
 						+ "\t<description><![CDATA[" + m_description + "]]></description>\n"
 						+ "\t<guid><![CDATA[" + m_guid + "]]></guid>\n"
 						+ "\t<pubDate>" + sdf.format(m_pubDate.getTime()) + "</pubDate>\n"
 						+ "</article>";
 		return erg;
+	}
+
+	public NewsSource getSource()
+	{
+		return m_source;
 	}
 
 	public Calendar getPubDate()
