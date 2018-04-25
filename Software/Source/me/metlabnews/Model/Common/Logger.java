@@ -14,19 +14,30 @@ import java.util.Hashtable;
 
 
 /**
- * This Class is for logging the whole error's and debug outputs of the application.
  * <p>
- * You can also log user controls and registers to database. The log-files are stored
+ * This Class is for logging the whole error's and debug outputs of the application.
+ * </p>
+ * <p>
+ * You can also log user controls and registers to the destination. The log-files are stored
  * in the application folder in ...\Logs\
+ * <p>
  * The File and the subfolder are created automatically.
  * </p>
- * Example:
+ * <p>
+ * Careful: You need first to register the logger with the following Code:
  * <p>
  * {@code
- * Logger.getInstance.log(Logger.Channel.WebCrawler,
- * Logger.Priority.DEBUG,
- * "Enter your log-message here...");
+ * Logger.getInstance.register(CLASSNAME.class, Logger.Channel.CHANNELNAME)
  * }
+ * </p>
+ * </p>
+ * </p>
+ * Example of logging-usage:
+ * <p>
+ * {@code
+ * Logger.getInstance.logError(this, "enter your log-msg here...");
+ * }
+ * </p>
  *
  * @author Tobias Reis
  * @version 1.4
@@ -65,9 +76,9 @@ public class Logger implements IResource
 	public void initialize()
 	{
 		ConfigurationManager config = ConfigurationManager.getInstance();
-		m_debugIsAllowed = config.getFilteredPriorities("DEBUG");
-		m_warningIsAllowed = config.getFilteredPriorities("WARNING");
-		m_errorIsAllowed = config.getFilteredPriorities("ERROR");
+		m_debugIsForbidden = config.getFilteredPriorities("DEBUG");
+		m_warningIsForbidden = config.getFilteredPriorities("WARNING");
+		m_errorIsForbidden = config.getFilteredPriorities("ERROR");
 
 		m_hasBeenInitialized = true;
 	}
@@ -168,44 +179,49 @@ public class Logger implements IResource
 	 * This Method will return the value of the forbidden Priority. If e.g. the DEBUG-Priority
 	 * is forbidden, then every called DEBUG-calls will be ignored.
 	 *
-	 * @param type the Priority (e.g. DEBUG, WARNING, ERROR)
+	 * @param level the Priority (e.g. DEBUG, WARNING, ERROR)
 	 * @return true is forbidden
 	 */
-	private boolean isLevelForbidden(LogLevel type)
+	private boolean isLevelForbidden(LogLevel level)
 	{
-		if(!m_hasBeenInitialized) // return default values from code if not initialized
+		if(level != null)
 		{
-			switch(type)
+			if(!m_hasBeenInitialized) // return default values from code if not initialized
 			{
-				case DEBUG:
-					return m_debugIsAllowed;
-				case WARNING:
-					return m_warningIsAllowed;
-				case ERROR:
-					return m_errorIsAllowed;
-				default:
-					return false;
+				switch(level)
+				{
+					case DEBUG:
+						return m_debugIsForbidden;
+					case WARNING:
+						return m_warningIsForbidden;
+					case ERROR:
+						return m_errorIsForbidden;
+					default:
+						return false;
+				}
+			}
+			else
+			{
+				// TODO: evtl. gibt es hier Probleme bei nicht eingetragenen Keys (z.B.: Activity)
+				return ConfigurationManager.getInstance().getFilteredPriorities(level.name());
 			}
 		}
 		else
 		{
-			switch(type)
-			{
-				case DEBUG:
-					return ConfigurationManager.getInstance().getFilteredPriorities(type.name());
-				case WARNING:
-					return m_warningIsAllowed;
-				case ERROR:
-					return m_errorIsAllowed;
-				default:
-					return false;
-			}
+			return false;
 		}
 	}
 
 
 	/**
-	 * This Message will write an error message to a file.
+	 * <p>This Message will write an error message to a file.</p>
+	 * <p>
+	 * If the file and/or the directory is NOT found, then the method will
+	 * automatically create this for you. The default directory is in METLAB_NEWS/Logs/...
+	 * </p>
+	 * <p>
+	 * Filenames are e.g.: 04-05-2018-WebCrawler-log.txt
+	 * </p>
 	 *
 	 * @param sender   The source of the log
 	 * @param logLevel The log-priority
@@ -262,24 +278,99 @@ public class Logger implements IResource
 	}
 
 
+	/**
+	 * <p>
+	 * This method will log with the level 'Debug'.
+	 * </p>
+	 * <p>
+	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
+	 * </p>
+	 * <p>
+	 * You only need to call the following code:
+	 * {@code}
+	 * <p>
+	 * Logger.getInstance.logDebug(this, "your message here...");
+	 * </p>
+	 * </p>
+	 *
+	 * @param sender The source. ALWAYS call it with 'this'
+	 * @param msg    The log-message
+	 */
 	@SuppressWarnings({"WeakerAccess", "unused"})
 	public void logDebug(Object sender, String msg)
 	{
 		log(sender, LogLevel.DEBUG, m_classList.get(sender.getClass().getCanonicalName()), msg);
 	}
 
+
+	/**
+	 * <p>
+	 * This method will log with the level 'Error'.
+	 * </p>
+	 * <p>
+	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
+	 * </p>
+	 * <p>
+	 * You only need to call the following code:
+	 * {@code}
+	 * <p>
+	 * Logger.getInstance.logDebug(this, "your message here...");
+	 * </p>
+	 * </p>
+	 *
+	 * @param sender The source. ALWAYS call it with 'this'
+	 * @param msg    The log-message
+	 */
 	@SuppressWarnings({"WeakerAccess", "unused"})
 	public void logError(Object sender, String msg)
 	{
 		log(sender, LogLevel.ERROR, m_classList.get(sender.getClass().getCanonicalName()), msg);
 	}
 
+
+	/**
+	 * <p>
+	 * This method will log with the level 'Warning'.
+	 * </p>
+	 * <p>
+	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
+	 * </p>
+	 * <p>
+	 * You only need to call the following code:
+	 * {@code}
+	 * <p>
+	 * Logger.getInstance.logDebug(this, "your message here...");
+	 * </p>
+	 * </p>
+	 *
+	 * @param sender The source. ALWAYS call it with 'this'
+	 * @param msg    The log-message
+	 */
 	@SuppressWarnings({"WeakerAccess", "unused"})
 	public void logWarning(Object sender, String msg)
 	{
 		log(sender, LogLevel.WARNING, m_classList.get(sender.getClass().getCanonicalName()), msg);
 	}
 
+
+	/**
+	 * <p>
+	 * This method will log with the level 'Activity'.
+	 * </p>
+	 * <p>
+	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
+	 * </p>
+	 * <p>
+	 * You only need to call the following code:
+	 * {@code}
+	 * <p>
+	 * Logger.getInstance.logDebug(this, "your message here...");
+	 * </p>
+	 * </p>
+	 *
+	 * @param sender The source. ALWAYS call it with 'this'
+	 * @param msg    The log-message
+	 */
 	@SuppressWarnings({"WeakerAccess", "unused"})
 	public void logActivity(Object sender, String msg)
 	{
@@ -388,9 +479,9 @@ public class Logger implements IResource
 
 	private static Logger                     m_instance;
 	private        boolean                    m_hasBeenInitialized;
-	private        int                        m_logCounterTotal  = 0;
-	private        boolean                    m_debugIsAllowed   = true;
-	private        boolean                    m_warningIsAllowed = true;
-	private        boolean                    m_errorIsAllowed   = true;
-	private        Hashtable<Object, Channel> m_classList        = new Hashtable<>();
+	private        int                        m_logCounterTotal    = 0;
+	private        boolean                    m_debugIsForbidden   = false;
+	private        boolean                    m_warningIsForbidden = false;
+	private        boolean                    m_errorIsForbidden   = false;
+	private        Hashtable<Object, Channel> m_classList          = new Hashtable<>();
 }
