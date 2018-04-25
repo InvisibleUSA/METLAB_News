@@ -296,7 +296,7 @@ public class Logger implements IResource
 	 * {@code}
 	 * <p>Logger.getInstance().register(Logger.Channel.Crawler, this);</p>
 	 *
-	 * @param sender  ALWAYS use 'this' in calls. It is the source of the called class.
+	 * @param sender  ALWAYS use 'CLASSNAME.class' in calls. It is the source of the called class.
 	 * @param channel The Channel you want to put this class into
 	 */
 	@SuppressWarnings("WeakerAccess")
@@ -319,7 +319,7 @@ public class Logger implements IResource
 			finally
 			{
 				String msg = res + pre + sender.getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTableSize: " + m_classList.size();
-				log(sender, LogLevel.REGISTRATION, m_classList.get(sender.getCanonicalName()), msg);
+				log(this, LogLevel.REGISTRATION, m_classList.get(sender.getCanonicalName()), msg);
 			}
 		}
 	}
