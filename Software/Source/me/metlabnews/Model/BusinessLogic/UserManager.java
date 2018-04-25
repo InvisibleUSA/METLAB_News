@@ -324,7 +324,23 @@ public class UserManager
 
 	public void getAllOrganisations(Session session, IGetStringArrayEvent onSuccess, IGenericFailureEvent onFailure)
 	{
-		//TODO: Implement
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.NotSystemAdmin);
+			return;
+		}
+		QueryGetOrganisation qgo = new QueryGetOrganisation();
+		if(!qgo.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+		onSuccess.execute(qgo.organisations);
 	}
 
 	public void removeOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName)
