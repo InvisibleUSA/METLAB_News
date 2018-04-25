@@ -155,7 +155,7 @@ public class Logger implements IResource
 	 */
 	private String createLogString(Object sender, LogLevel level, Channel channel, String msg, int counter)
 	{
-		return ("#" + counter + " [" + level.name() + "] " + sender.getClass().getCanonicalName() + " at " + channel.name() + " " + getTimeStamp() + ": " + msg + "\n");
+		return ("#" + counter + " [" + level.name() + "] " + sender.getClass().getSimpleName() + " at " + channel.name() + " " + getTimeStamp() + ": " + msg + "\n");
 	}
 
 
@@ -300,7 +300,7 @@ public class Logger implements IResource
 	 * @param channel The Channel you want to put this class into
 	 */
 	@SuppressWarnings("WeakerAccess")
-	public void register(Object sender, Channel channel)
+	public void register(java.lang.Class sender, Channel channel)
 	{
 		if(sender != null)
 		{
@@ -309,7 +309,7 @@ public class Logger implements IResource
 			String pst = "' ";
 			try
 			{
-				m_classList.put(sender.getClass().getCanonicalName(), channel);
+				m_classList.put(sender.getCanonicalName(), channel);
 				res = "Registration successful:";
 			}
 			catch(Exception e)
@@ -318,8 +318,8 @@ public class Logger implements IResource
 			}
 			finally
 			{
-				String msg = res + pre + sender.getClass().getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTableSize: " + m_classList.size();
-				log(sender, LogLevel.REGISTRATION, m_classList.get(sender.getClass().getCanonicalName()), msg);
+				String msg = res + pre + sender.getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTableSize: " + m_classList.size();
+				log(sender, LogLevel.REGISTRATION, m_classList.get(sender.getCanonicalName()), msg);
 			}
 		}
 	}
