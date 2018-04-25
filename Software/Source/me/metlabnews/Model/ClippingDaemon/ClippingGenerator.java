@@ -11,6 +11,10 @@ import me.metlabnews.Model.Entities.ObservationProfile;
 
 class ClippingGenerator implements Runnable
 {
+	static
+	{
+		Logger.getInstance().register(ClippingGenerator.class, Logger.Channel.ClippingDaemon);
+	}
 	private ObservationProfile m_profile;
 	private Clipping           m_clipping;
 

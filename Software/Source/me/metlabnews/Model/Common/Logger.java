@@ -90,7 +90,7 @@ public class Logger implements IResource
 		Presenter,
 		ResourceManager,
 		Mail,
-		XmlTag,
+		XMLTag,
 		Logger,
 		RDBMS,
 		BaseX,

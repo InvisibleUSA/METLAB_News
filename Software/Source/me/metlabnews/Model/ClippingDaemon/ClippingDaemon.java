@@ -17,6 +17,10 @@ import me.metlabnews.Model.ResourceManagement.IResource;
 
 public class ClippingDaemon implements IResource
 {
+	static
+	{
+		Logger.getInstance().register(ClippingDaemon.class, Logger.Channel.ClippingDaemon);
+	}
 	private ExecutorService                m_threadPool      = Executors.newCachedThreadPool();
 	private LinkedList<ObservationProfile> m_pendingProfiles = new LinkedList<>();
 	private Timer                          m_clippingManager = new Timer();

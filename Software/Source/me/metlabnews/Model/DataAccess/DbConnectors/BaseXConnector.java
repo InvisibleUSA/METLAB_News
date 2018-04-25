@@ -24,6 +24,11 @@ import java.util.Properties;
  */
 class BaseXConnector
 {
+	static
+	{
+		Logger.getInstance().register(BaseXConnector.class, Logger.Channel.BaseX);
+	}
+
 	private       String          m_username       = "admin";
 	private       String          m_password       = "admin";
 	final private String          m_host           = "127.0.0.1";
@@ -168,7 +173,6 @@ class BaseXConnector
 		catch(IOException e)
 		{
 			Logger.getInstance().logError(this, "BaseX Error: " + e.toString());
-			
 		}
 	}
 }

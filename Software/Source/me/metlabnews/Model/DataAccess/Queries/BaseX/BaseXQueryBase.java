@@ -11,6 +11,10 @@ import java.io.IOException;
 
 abstract class BaseXQueryBase extends QueryBase
 {
+	static
+	{
+		Logger.getInstance().register(BaseXQueryBase.class, Logger.Channel.BaseX);
+	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	/**

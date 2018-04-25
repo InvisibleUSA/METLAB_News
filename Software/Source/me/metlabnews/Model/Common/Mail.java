@@ -15,6 +15,10 @@ import org.apache.commons.mail.SimpleEmail;
  */
 public class Mail
 {
+	static
+	{
+		Logger.getInstance().register(Mail.class, Logger.Channel.Mail);
+	}
 	public        String To;
 	@SuppressWarnings("WeakerAccess")
 	final public  String From       = ConfigurationManager.getInstance().getMailFromAddress();

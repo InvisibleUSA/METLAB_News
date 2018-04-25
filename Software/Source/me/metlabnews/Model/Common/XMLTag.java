@@ -40,6 +40,11 @@ import java.util.HashMap;
 @SuppressWarnings("WeakerAccess")
 public class XMLTag
 {
+	static
+	{
+		Logger.getInstance().register(XMLTag.class, Logger.Channel.XMLTag);
+		Logger.getInstance().register(Key.class, Logger.Channel.XMLTag);
+	}
 	/**
 	 * Alternate constructor. Use only if you need the Java XML-API anyway.
 	 *
@@ -270,8 +275,6 @@ public class XMLTag
 		Logger.getInstance().logDebug(this, "done printing level " + indentlevel + ".");
 		return s.toString();
 	}
-
-	private static final Logger.Channel LOGMODULE = Logger.Channel.XmlTag;
 
 	private HashMap<Key, XMLTag>    m_children   = new HashMap<>();
 	private HashMap<String, String> m_attributes = new HashMap<>();

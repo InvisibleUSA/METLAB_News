@@ -11,6 +11,11 @@ import java.sql.SQLException;
 
 abstract class MariaDBQueryBase extends QueryBase
 {
+	static
+	{
+		Logger.getInstance().register(MariaDBQueryBase.class, Logger.Channel.RDBMS);
+	}
+
 	/**
 	 * @InheritDoc
 	 */

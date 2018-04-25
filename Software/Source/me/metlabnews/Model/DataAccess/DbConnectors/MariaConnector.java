@@ -1,13 +1,16 @@
 package me.metlabnews.Model.DataAccess.DbConnectors;
 
+import me.metlabnews.Model.Common.Logger;
+
 import java.sql.*;
 
 
 
-public class MariaConnector
+class MariaConnector
 {
 	static
 	{
+		Logger.getInstance().register(MariaConnector.class, Logger.Channel.RDBMS);
 		try
 		{
 			Class.forName("org.mariadb.jdbc.Driver");
