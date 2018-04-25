@@ -20,7 +20,7 @@ public class WebCrawler
 
 	static void initialize()
 	{
-		Logger.getInstance().register(CrawlerController.class, Logger.Channel.Crawler);
+		Logger.getInstance().register(WebCrawler.class, Logger.Channel.Crawler);
 	}
 
 	void start()
