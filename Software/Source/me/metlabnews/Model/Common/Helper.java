@@ -16,25 +16,38 @@ public class Helper
 	 * @param url the url from which to get an document
 	 * @return the extracted document as a String
 	 */
-	public static String getHTTPResponse(String url)
+	public static String getHTTPResponse(String url) throws IOException
 	{
-		try
+		URL            doc_url = new URL(url);
+		InputStream    is      = doc_url.openStream();
+		BufferedReader rd      = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+		StringBuilder  sb      = new StringBuilder();
+		int            cp;
+		while((cp = rd.read()) != -1)
 		{
-			URL            doc_url = new URL(url);
-			InputStream    is      = doc_url.openStream();
-			BufferedReader rd      = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			StringBuilder  sb      = new StringBuilder();
-			int            cp;
-			while((cp = rd.read()) != -1)
-			{
-				sb.append((char)cp);
-			}
-			return sb.toString();
+			sb.append((char)cp);
 		}
-		catch(IOException e)
+		return sb.toString();
+	}
+
+	public static String formatForFileName(String title)
+	{
+		String result = title
+				.replace("/", "")
+				.replace("<", "")
+				.replace(">", "")
+				.replace(":", "")
+				.replace("\"", "")
+				.replace("\\", "")
+				.replace("|", "")
+				.replace("?", "")
+				.replace("*", "")
+				.replace(".", "")
+				.replace(" ", "");
+		if(result.length() > 200)
 		{
-			e.printStackTrace();
+			result = result.substring(0, 200);
 		}
-		return "";
+		return result;
 	}
 }

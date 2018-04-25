@@ -1,30 +1,29 @@
 package me.metlabnews.Model.Crawler;
-
-
-
 import me.metlabnews.Model.Common.Helper;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
-import me.metlabnews.Model.DataAccess.ConfigurationManager;
-import me.metlabnews.Model.Entities.Source;
+import me.metlabnews.Model.Entities.NewsSource;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 
 
 public class WebCrawler
 {
-	private Source m_source;
+	private NewsSource m_source;
 
-	public WebCrawler(Source source)
+	WebCrawler(NewsSource source)
 	{
 		this.m_source = source;
 	}
 
-	public void start()
+	static void initialize()
+	{
+		Logger.getInstance().register(CrawlerController.class, Logger.Channel.Crawler);
+	}
+
+	void start()
 	{
 		if(!isRunning())
 		{
@@ -50,36 +49,49 @@ public class WebCrawler
 					"crawlingIfOlderNumber=1&" +
 					"crawlingDepth=4" +
 					"&crawlingURL=" + m_source.getLink();
-			Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.DEBUG,
-			                         Logger.enum_logType.ToConsole,
-			                         Helper.getHTTPResponse(startURL));
+			try
+			{
+				Logger.getInstance().logDebug(this, Helper.getHTTPResponse(startURL));
+			}
+			catch(IOException e)
+			{
+				Logger.getInstance().logError(this, e.getMessage());
+			}
 		}
 	}
 
-	public void stop()
+	void stop()
 	{
 		if(isRunning())
 		{
-
+			//TODO
 		}
 	}
 
 	public boolean isRunning()
 	{
-		XMLTag profileSummary = new XMLTag(
-				Helper.getHTTPResponse("http://localhost:8090/CrawlProfileEditor_p.xml"));
-		ArrayList<XMLTag> profiles = profileSummary.children("crawlProfile");
-		for(XMLTag tag : profiles)
+		try
 		{
-			if(tag.child("name").value().equals(m_source.getLink()))
+			XMLTag profileSummary = new XMLTag(
+					Helper.getHTTPResponse("http://localhost:8090/CrawlProfileEditor_p.xml")
+			);
+			ArrayList<XMLTag> profiles = profileSummary.children("crawlProfile");
+			for(XMLTag tag : profiles)
 			{
-				return true;
+				if(tag.child("name").value().equals(m_source.getLink()))
+				{
+					return true;
+				}
 			}
+		}
+		catch(IOException e)
+		{
+			Logger.getInstance().logWarning(this, "YaCy isn't running");
 		}
 		return false;
 	}
 
-	public Source getSource()
+	public NewsSource getSource()
 	{
 		return m_source;
 	}

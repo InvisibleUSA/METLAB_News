@@ -12,7 +12,7 @@ import java.util.Collection;
 
 public class RSSFeed
 {
-	Source             source;
+	NewsSource         source;
 	ArrayList<Article> articles;
 
 	public RSSFeed()
@@ -20,7 +20,7 @@ public class RSSFeed
 		articles = new ArrayList<>();
 	}
 
-	public RSSFeed(Source s, Article... articles)
+	public RSSFeed(NewsSource s, Article... articles)
 	{
 		source = s;
 		for(Article a : articles)
@@ -29,13 +29,13 @@ public class RSSFeed
 		}
 	}
 
-	public RSSFeed(Source s, ArrayList<Article> articles)
+	public RSSFeed(NewsSource s, ArrayList<Article> articles)
 	{
 		source = s;
 		this.articles = articles;
 	}
 
-	public static RSSFeed parseFeed(String feed, Source source)
+	public static RSSFeed parseFeed(String feed, NewsSource source)
 	{
 		XMLTag RSSFeedTag = new XMLTag(feed);
 		XMLTag channel    = RSSFeedTag.child("channel");
@@ -50,20 +50,36 @@ public class RSSFeed
 				{
 					title = title.replace("\"", "'");
 				}
+				else
+				{
+					title = "";
+				}
 				String description = curr_article.child("description").value();
 				if(description != null)
 				{
 					description = description.replace("\"", "'");
+				}
+				else
+				{
+					description = "";
 				}
 				String link = curr_article.child("link").value();
 				if(link != null)
 				{
 					link = link.replace("\"", "'");
 				}
+				else
+				{
+					link = "";
+				}
 				String guid = curr_article.child("guid").value();
 				if(guid != null)
 				{
 					guid = guid.replace("\"", "'");
+				}
+				else
+				{
+					guid = "";
 				}
 				Calendar pubDate = CalendarParser.parseCalendar(curr_article.child("pubDate").value());
 				if(!guid.equals("") && !title.equals(""))
@@ -76,14 +92,12 @@ public class RSSFeed
 		}
 		else
 		{
-			Logger.getInstance().log(Logger.enum_channel.Crawler, Logger.enum_logPriority.ERROR,
-			                         Logger.enum_logType.ToFile,
-			                         "NullPointerException on source:" + source.getName());
+			Logger.getInstance().logError(RSSFeed.class, "NullPointerException on source:" + source.getName());
 			return null;
 		}
 	}
 
-	public void setSource(Source s)
+	public void setSource(NewsSource s)
 	{
 		this.source = s;
 	}
@@ -104,7 +118,7 @@ public class RSSFeed
 		return articles;
 	}
 
-	public Source getSource()
+	public NewsSource getSource()
 	{
 		return source;
 	}
