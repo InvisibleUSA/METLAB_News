@@ -35,16 +35,11 @@ public class ConfigurationManager implements IResource
 		}
 		catch(FileNotFoundException e)
 		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         m_XMLFilePath + " not found:\n"
-					                         + e.toString());
+			Logger.getInstance().logError(this, m_XMLFilePath + " not found:\n" + e.toString());
 		}
 		catch(IOException e)
 		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         e.toString());
+			Logger.getInstance().logError(this, e.toString());
 		}
 	}
 
@@ -58,16 +53,11 @@ public class ConfigurationManager implements IResource
 		}
 		catch(FileNotFoundException e)
 		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         m_XMLFilePath + " not found:\n"
-					                         + e.toString());
+			Logger.getInstance().logError(this, m_XMLFilePath + " not found:\n" + e.toString());
 		}
 		catch(Exception e)
 		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         e.toString());
+			Logger.getInstance().logError(this, e.toString());
 		}
 	}
 
@@ -82,9 +72,7 @@ public class ConfigurationManager implements IResource
 	{
 		String errorMsg = "IOException in Configuration Manager." +
 				" Please check Settings.XML and depending getter-method for Key: '" + key +"'. Error Message: ";
-		Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-		                         Logger.LogPriority.ERROR,
-		                         errorMsg + e.toString());
+		Logger.getInstance().logError(this, errorMsg + e.toString());
 	}
 
 
@@ -360,10 +348,28 @@ public class ConfigurationManager implements IResource
 	}
 
 
-	public String getLogType()
+	public String getLogDestination()
 	{
-		String key = "Logger.LogType";
-		return returnProperty(key);
+		String key = "Logger.LogDestination";
+		try
+		{
+			switch(String.format(returnProperty(key)))
+			{
+				case "ToFile":
+					return LogDestination.ToFile.name();
+				case "ToConsole":
+					return LogDestination.ToConsole.name();
+				case "ToDatabase":
+					return LogDestination.ToDatabase.name();
+				default:
+					return null;
+			}
+		}
+		catch(NumberFormatException e)
+		{
+			setNumberFormatException(e, key);
+			return null;
+		}
 	}
 
 
@@ -376,7 +382,7 @@ public class ConfigurationManager implements IResource
 	 */
 	public boolean getFilteredPriorities(String priority)
 	{
-		String key = "Logger.Filter" + priority;
+		String key = "Logger.isDisabled_" + priority;
 		return Boolean.parseBoolean(returnProperty(key));
 	}
 
@@ -403,6 +409,14 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	private enum LogDestination
+	{
+		ToFile,
+		ToConsole,
+		ToDatabase
+	}
+
+
 	/**
 	 * This is the main-method of the XML Properties. It returns the values of the given
 	 * String-key. If the key is not found, null is returned
@@ -417,18 +431,14 @@ public class ConfigurationManager implements IResource
 			String value = m_properties.getProperty(key);
 			if(value == null)
 			{
-				Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-				                         Logger.LogPriority.ERROR,
-				                         "Key '" + key + "' not found in: "
+				Logger.getInstance().logError(this, "Key '" + key + "' not found in: "
 						                         + m_XMLFilePath);
 			}
 			return value;
 		}
 		else
 		{
-			Logger.getInstance().log(Logger.Channel.ConfigurationManager,
-			                         Logger.LogPriority.ERROR,
-			                         "Initialization Error returning property for key '" + key + "'. " +
+			Logger.getInstance().logError(this, "Initialization Error returning property for key '" + key + "'. " +
 					                         "Logger has not been initialized!");
 			return null;
 		}

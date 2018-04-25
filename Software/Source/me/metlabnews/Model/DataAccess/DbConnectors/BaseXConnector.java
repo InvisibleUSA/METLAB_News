@@ -41,18 +41,17 @@ class BaseXConnector
 	 */
 	BaseXConnector()
 	{
-		Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.DEBUG, "Starting BaseX");
+		Logger.getInstance().logDebug(this, "Starting BaseX");
 		loadConfig();
 		try
 		{
 			startServer();
-			Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.DEBUG,
-			                         new Check(m_dbName).execute(m_server.context));
+			Logger.getInstance().logDebug(this, new Check(m_dbName).execute(m_server.context));
 			connectClients();
 		}
 		catch(IOException e)
 		{
-			Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.ERROR, "BaseX Error: " + e.toString());
+			Logger.getInstance().logError(this, "BaseX Error: " + e.toString());
 		}
 	}
 
@@ -168,7 +167,7 @@ class BaseXConnector
 		}
 		catch(IOException e)
 		{
-			Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.ERROR, "BaseX Error: " + e.toString());
+			Logger.getInstance().logError(this, "BaseX Error: " + e.toString());
 			
 		}
 	}

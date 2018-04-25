@@ -7,10 +7,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Hashtable;
 
 
 
@@ -94,7 +93,8 @@ public class Logger implements IResource
 		XmlTag,
 		Logger,
 		RDBMS,
-		BaseX
+		BaseX,
+		UNREGISTERED_CHANNEL
 	}
 
 
@@ -106,11 +106,13 @@ public class Logger implements IResource
 	 * will NOT be logged.
 	 * </p>
 	 */
-	public enum LogPriority
+	public enum LogLevel
 	{
 		DEBUG,
 		WARNING,
-		ERROR
+		ERROR,
+		REGISTRATION,
+		ACTIVITY
 	}
 
 
@@ -145,36 +147,54 @@ public class Logger implements IResource
 	 * #1 | ERROR | [17:02:02] : java.lang.NumberFormatException: null
 	 * }
 	 *
-	 * @param cntr     The Counter of the logs
-	 * @param priority The priority of the logs
-	 * @param msg      The Message you want to log
+	 * @param level   The priority of the logs
+	 * @param channel The specific log type
+	 * @param msg     The Message you want to log
+	 * @param counter The Counter of the logs
 	 * @return A parsed String to log
 	 */
-	private String createLogString(Channel channel, int cntr, LogPriority priority, String msg)
+	private String createLogString(Object sender, LogLevel level, Channel channel, String msg, int counter)
 	{
-		return ("#" + cntr + " | " + priority.name() + " | " + getTimeStamp() + " : " + msg + "\n");
+		return ("#" + counter + " [" + level.name() + "] " + sender.getClass().getCanonicalName() + " at " + channel.name() + " " + getTimeStamp() + ": " + msg + "\n");
 	}
 
 
 	/**
-	 * This Method will return the value of the filtered Priority. If e.g. the DEBUG-Priority
-	 * is filtered, then every called DEBUG-calls will be ignored.
+	 * This Method will return the value of the forbidden Priority. If e.g. the DEBUG-Priority
+	 * is forbidden, then every called DEBUG-calls will be ignored.
 	 *
-	 * @param priority the Priority (e.g. DEBUG, WARNING, ERROR)
-	 * @return True = Filtered
+	 * @param type the Priority (e.g. DEBUG, WARNING, ERROR)
+	 * @return true is forbidden
 	 */
-	private boolean isPriorityAllowed(LogPriority priority)
+	private boolean isLevelForbidden(LogLevel type)
 	{
-		switch(priority)
+		if(!m_hasBeenInitialized) // return default values from code if not initialized
 		{
-			case DEBUG:
-				return m_debugIsAllowed;
-			case WARNING:
-				return m_warningIsAllowed;
-			case ERROR:
-				return m_errorIsAllowed;
-			default:
-				return false;
+			switch(type)
+			{
+				case DEBUG:
+					return m_debugIsAllowed;
+				case WARNING:
+					return m_warningIsAllowed;
+				case ERROR:
+					return m_errorIsAllowed;
+				default:
+					return false;
+			}
+		}
+		else
+		{
+			switch(type)
+			{
+				case DEBUG:
+					return ConfigurationManager.getInstance().getFilteredPriorities(type.name());
+				case WARNING:
+					return m_warningIsAllowed;
+				case ERROR:
+					return m_errorIsAllowed;
+				default:
+					return false;
+			}
 		}
 	}
 
@@ -182,12 +202,12 @@ public class Logger implements IResource
 	/**
 	 * This Message will write an error message to a file.
 	 *
-	 * @param channel  The specified Channel
-	 * @param cntr     The internal counter
-	 * @param priority The log-priority
+	 * @param sender   The source of the log
+	 * @param logLevel The log-priority
+	 * @param channel
 	 * @param msg      The log-Message
 	 */
-	private synchronized void writeToFile(Channel channel, int cntr, LogPriority priority, String msg)
+	private synchronized void writeToFile(Object sender, LogLevel logLevel, Channel channel, String msg)
 	{
 		if(msg != null)
 		{
@@ -200,15 +220,20 @@ public class Logger implements IResource
 			}
 			else
 			{
-				fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + File.separator + fileName;
+				fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + Channel.Logger.name() + File.separator + fileName;
 			}
 
-			File file = new File(fullFilePath);
-			file.getParentFile().mkdirs();
-
+			File file = new File(fullFilePath)
+			{{
+				boolean res = getParentFile().mkdirs();
+				if(res)
+				{
+					logDebug(this, "Created directory: " + fullFilePath);
+				}
+			}};
 			try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true)))
 			{
-				bufferedWriter.write(createLogString(channel, cntr, priority, msg));
+				bufferedWriter.write(createLogString(sender, logLevel, channel, msg, ++m_logCounterTotal));
 			}
 			catch(IOException e)
 			{
@@ -221,46 +246,81 @@ public class Logger implements IResource
 	/**
 	 * This Message will write an error message to the Console.
 	 *
-	 * @param channel  The specified Channel
-	 * @param priority The log-priority
+	 * @param sender   The source of the log
+	 * @param logLevel The log-priority
+	 * @param channel The specific channel
 	 * @param msg      The log-Message
 	 */
-	private void writeToConsole(Channel channel, LogPriority priority, String msg)
+	private void writeToConsole(Object sender, LogLevel logLevel, Channel channel, String msg)
 	{
-		System.err.println(createLogString(channel, ++m_logCounterTotal, priority, msg));
+		System.err.println(createLogString(sender, logLevel, channel, msg, ++m_logCounterTotal));
+	}
+
+
+	@SuppressWarnings({"WeakerAccess", "unused"})
+	public void logDebug(Object sender, String msg)
+	{
+		log(sender, LogLevel.DEBUG, m_classList.get(sender.getClass().getCanonicalName()), msg);
+	}
+
+	@SuppressWarnings({"WeakerAccess", "unused"})
+	public void logError(Object sender, String msg)
+	{
+		log(sender, LogLevel.ERROR, m_classList.get(sender.getClass().getCanonicalName()), msg);
+	}
+
+	@SuppressWarnings({"WeakerAccess", "unused"})
+	public void logWarning(Object sender, String msg)
+	{
+		log(sender, LogLevel.WARNING, m_classList.get(sender.getClass().getCanonicalName()), msg);
+	}
+
+	@SuppressWarnings({"WeakerAccess", "unused"})
+	public void logActivity(Object sender, String msg)
+	{
+		log(sender, LogLevel.ACTIVITY, m_classList.get(sender.getClass().getCanonicalName()), msg);
 	}
 
 
 	/**
-	 * This Message will write ein error message to the database.
+	 * <p>
+	 * This method will register the Class from where you call it.
+	 * It uses a HashTable to put the different Classes to categories.
+	 * </p>
+	 * <p>
+	 * The categories are e.g. 'Logger', 'Crawler', 'UI', 'ConfigurationManager', etc.
+	 * </p>
+	 * For more categories check the documentation of Channel: {@link Channel}
+	 * <p>ALWAYS call the register method with the keyword 'this'.</p>
+	 * Example:
+	 * {@code}
+	 * <p>Logger.getInstance().register(Logger.Channel.Crawler, this);</p>
 	 *
-	 * @param channel  The specified Channel
-	 * @param priority The log-priority
-	 * @param msg      The log-Message
+	 * @param sender  ALWAYS use 'this' in calls. It is the source of the called class.
+	 * @param channel The Channel you want to put this class into
 	 */
-	private void writeToDatabase(Channel channel, LogPriority priority, String msg)
+	@SuppressWarnings("WeakerAccess")
+	public void register(Object sender, Channel channel)
 	{
-		java.sql.Connection con;
-		String              url      = "jdbc:mariadb://46.101.223.95/METLAB_LOGS";
-		String              user     = "test";
-		String              password = "test";
-
-		try
+		if(sender != null)
 		{
-			con = DriverManager.getConnection(url, user, password);
-			Statement st = con.createStatement();
-
-			st.executeUpdate("INSERT INTO LOG VALUES " +
-					                 "(NULL, " +
-					                 "'" + channel.toString() + "', " +
-					                 "'" + priority.toString() + "', " +
-					                 "'" + msg + "'" +
-					                 ")");
-			con.close();
-		}
-		catch(Exception e)
-		{
-			System.err.println("Error in Logger @ writeToDatabase() : " + e.toString());
+			String res = null;
+			String pre = " '";
+			String pst = "' ";
+			try
+			{
+				m_classList.put(sender.getClass().getCanonicalName(), channel);
+				res = "Registration successful:";
+			}
+			catch(Exception e)
+			{
+				res = "Registration FAILED: " + e.toString();
+			}
+			finally
+			{
+				String msg = res + pre + sender.getClass().getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTableSize: " + m_classList.size();
+				log(sender, LogLevel.REGISTRATION, m_classList.get(sender.getClass().getCanonicalName()), msg);
+			}
 		}
 	}
 
@@ -279,38 +339,41 @@ public class Logger implements IResource
 	 * "Enter your log-message here...");
 	 * }
 	 *
-	 * @param channel  the Channel from where you call the log-method
-	 * @param priority the priority you want to log with (DEBUG, WARNING, ERROR)
-	 * @param msg      the log-message
+	 * @param sender  the Channel from where you call the log-method
+	 * @param level   the priority you want to log with (DEBUG, WARNING, ERROR)
+	 * @param channel
+	 * @param msg     the log-message
 	 */
-	public void log(Channel channel, LogPriority priority, String msg)
+	private void log(Object sender, LogLevel level, Channel channel, String msg)
 	{
-		boolean isPriorityAllowed;
-		String  typeDefault;
+		boolean isLevelForbidden = false; // log everything by default
+		String  logType;
+
+		if(!m_classList.containsKey(sender.getClass().getCanonicalName()))
+		{
+			// channel not registered
+			channel = Channel.UNREGISTERED_CHANNEL;
+		}
 
 		if(!m_hasBeenInitialized)
 		{
-			isPriorityAllowed = true; // log everything by default
-			typeDefault = "ToConsole"; // log ToConsole by default
+			logType = "ToConsole"; // log ToConsole by default
 		}
 		else
 		{
-			isPriorityAllowed = isPriorityAllowed(priority);
-			typeDefault = ConfigurationManager.getInstance().getLogType();
+			isLevelForbidden = isLevelForbidden(level); // if typeForbidden = true -> NO logging
+			logType = ConfigurationManager.getInstance().getLogDestination();
 		}
 
-		if(isPriorityAllowed)
+		if(!isLevelForbidden)
 		{
-			switch(typeDefault)
+			switch(logType)
 			{
 				case "ToFile":
-					writeToFile(channel, ++m_logCounterTotal, priority, msg);
+					writeToFile(sender, level, channel, msg);
 					break;
 				case "ToConsole":
-					writeToConsole(channel, priority, msg);
-					break;
-				case "ToDatabase":
-					writeToDatabase(channel, priority, msg);
+					writeToConsole(sender, level, channel, msg);
 					break;
 				default:
 					break;
@@ -319,11 +382,11 @@ public class Logger implements IResource
 	}
 
 
-
-	private        int     m_logCounterTotal  = 0;
-	private static Logger  m_instance;
-	private        boolean m_hasBeenInitialized;
-	private        boolean m_debugIsAllowed   = true;
-	private        boolean m_warningIsAllowed = true;
-	private        boolean m_errorIsAllowed   = true;
+	private static Logger                     m_instance;
+	private        boolean                    m_hasBeenInitialized;
+	private        int                        m_logCounterTotal  = 0;
+	private        boolean                    m_debugIsAllowed   = true;
+	private        boolean                    m_warningIsAllowed = true;
+	private        boolean                    m_errorIsAllowed   = true;
+	private        Hashtable<Object, Channel> m_classList        = new Hashtable<>();
 }

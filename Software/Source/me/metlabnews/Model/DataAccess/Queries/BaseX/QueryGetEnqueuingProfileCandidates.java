@@ -26,7 +26,7 @@ public class QueryGetEnqueuingProfileCandidates extends BaseXQueryBase
 		m_endingTime = end;
 		if(m_startingTime == null || m_endingTime == null)
 		{
-			Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.ERROR, "Start or End-time missing");
+			Logger.getInstance().logError(this, "Start or End-time missing");
 		}
 	}
 
@@ -69,8 +69,7 @@ public class QueryGetEnqueuingProfileCandidates extends BaseXQueryBase
 			}
 			catch(IllegalArgumentException e)
 			{
-				Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.ERROR,
-				                         "Database contains invalid profiles.");
+				Logger.getInstance().logError(this, "Database contains invalid profiles.");
 			}
 		}
 	}

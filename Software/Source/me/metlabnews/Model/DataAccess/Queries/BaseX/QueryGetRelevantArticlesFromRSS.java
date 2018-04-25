@@ -78,8 +78,7 @@ public class QueryGetRelevantArticlesFromRSS extends BaseXQueryBase
 			}
 			catch(ParseException e)
 			{
-				Logger.getInstance().log(Logger.Channel.ClippingDaemon, Logger.LogPriority.ERROR,
-				                         "Invalid Date format");
+				Logger.getInstance().logError(this, "Invalid Date format");
 			}
 		}
 	}

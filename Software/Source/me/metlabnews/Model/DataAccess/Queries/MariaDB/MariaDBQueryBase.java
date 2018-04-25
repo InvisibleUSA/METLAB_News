@@ -27,7 +27,7 @@ abstract class MariaDBQueryBase extends QueryBase
 		}
 		catch(SQLException e)
 		{
-			Logger.getInstance().log(Logger.Channel.RDBMS, Logger.LogPriority.ERROR, "SQL DB Error: " + e.toString());
+			Logger.getInstance().logError(this, "SQL DB Error: " + e.toString());
 			return false;
 		}
 	}

@@ -29,41 +29,37 @@ public class ResourceManager implements ServletContextListener
 	{
 		Logger logger = Logger.getInstance();
 
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG, "Initializing...");
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG, "Server Info: "
+		logger.logDebug(this, "Initializing...");
+		logger.logDebug(this, "Server Info: "
 				+ sce.getServletContext().getServerInfo());
 
 		// ConfigurationManager has to be initialized first!
 		ConfigurationManager.getInstance().initialize();
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
-		           "ConfigurationManager initialized");
+		logger.logDebug(this, "ConfigurationManager initialized");
 
 		// Logger has to be initialized second!
 		Logger.getInstance().initialize();
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
-		           "Logger initialized");
+		logger.logDebug(this, "Logger initialized");
 
 		new QueryAddOrganisation();
 		//MariaConnector.getInstance().initialize();
-		//logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG, "MariaConnector initialized");
+		//logger.logDebug(this, "MariaConnector initialized");
 
 		//BaseXConnector.getInstance().initialize();
-		//logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,"BaseXConnector initialized");
+		//logger.logDebug(this,"BaseXConnector initialized");
 
 		// Crawler.getInstance().initialize();
-		//		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
-		//		           "Crawler initialized");
+		//logger.logDebug(this,"Crawler initialized");
 
 		// ClippingDaemon.getInstance().initialize();
-		//		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
-		//		           "ClippingDaemon initialized");
+		//logger.logDebug(this,"ClippingDaemon initialized");
 
 		//UserManager.Validator.getInstance().initialize();
 		UserManager userManager = new UserManager();
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG, "UserManager initialized");
+		logger.logDebug(this, "UserManager initialized");
 
 		Presenter.getInstance().initialize();
-		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG, "Presenter initialized");
+		logger.logDebug(this, "Presenter initialized");
 	}
 
 

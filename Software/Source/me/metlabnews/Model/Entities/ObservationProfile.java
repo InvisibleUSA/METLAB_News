@@ -48,7 +48,7 @@ public class ObservationProfile
 		}
 		catch(NullPointerException e)
 		{
-			Logger.getInstance().log(Logger.Channel.XmlTag, Logger.LogPriority.ERROR, "Not a valid profile.");
+			Logger.getInstance().logError(this, "Not a valid profile.");
 			throw new IllegalArgumentException("tag does not accurately represent a profile.");
 		}
 	}

@@ -33,7 +33,7 @@ abstract class BaseXQueryBase extends QueryBase
 
 		catch(IOException e)
 		{
-			Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.ERROR, "BaseX DB Error: " + e.toString());
+			Logger.getInstance().logError(this, "BaseX DB Error: " + e.toString());
 			return false;
 		}
 	}

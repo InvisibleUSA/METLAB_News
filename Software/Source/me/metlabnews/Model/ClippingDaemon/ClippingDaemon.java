@@ -60,8 +60,7 @@ public class ClippingDaemon implements IResource
 			QueryGetEnqueuingProfileCandidates queryCandidates = new QueryGetEnqueuingProfileCandidates(start, end);
 			if(!queryCandidates.execute())
 			{
-				Logger.getInstance().log(Logger.Channel.ClippingDaemon, Logger.LogPriority.ERROR,
-				                         "Unknown database error when fetching new profiles.");
+				Logger.getInstance().logError(this, "Unknown database error when fetching new profiles.");
 				return;
 			}
 

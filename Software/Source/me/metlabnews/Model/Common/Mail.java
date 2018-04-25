@@ -50,7 +50,7 @@ public class Mail
 		}
 		catch(Exception e)
 		{
-			Logger.getInstance().log(Logger.Channel.Mail, Logger.LogPriority.ERROR, e.toString());
+			Logger.getInstance().logError(this, e.toString());
 			return false;
 		}
 	}

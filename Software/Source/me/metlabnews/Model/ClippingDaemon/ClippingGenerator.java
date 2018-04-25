@@ -26,7 +26,7 @@ class ClippingGenerator implements Runnable
 		QueryGetRelevantArticlesFromRSS query = new QueryGetRelevantArticlesFromRSS(m_profile);
 		if(!query.execute())
 		{
-			Logger.getInstance().log(Logger.Channel.ClippingDaemon, Logger.LogPriority.ERROR, "Unknown Error");
+			Logger.getInstance().logError(this, "Unknown Error");
 			return;
 		}
 		for(Article a : query.getCandidates())
