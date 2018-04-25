@@ -33,6 +33,11 @@ import java.util.Hashtable;
  */
 public class Logger implements IResource
 {
+	static
+	{
+		Logger.getInstance().register(Logger.class, Channel.Logger);
+	}
+
 	/**
 	 * Singleton call of this instance.
 	 * <p>
@@ -155,7 +160,7 @@ public class Logger implements IResource
 	 */
 	private String createLogString(Object sender, LogLevel level, Channel channel, String msg, int counter)
 	{
-		return ("#" + counter + " [" + level.name() + "] " + sender.getClass().getSimpleName() + " at " + channel.name() + " " + getTimeStamp() + ": " + msg + "\n");
+		return ("#" + counter + " [" + level.name() + "] " + sender.getClass().getSimpleName() + " in " + channel.name() + " " + getTimeStamp() + ": " + msg + "\n");
 	}
 
 
@@ -204,33 +209,33 @@ public class Logger implements IResource
 	 *
 	 * @param sender   The source of the log
 	 * @param logLevel The log-priority
-	 * @param channel
+	 * @param channel  The specific channel
 	 * @param msg      The log-Message
 	 */
 	private synchronized void writeToFile(Object sender, LogLevel logLevel, Channel channel, String msg)
 	{
-		if(msg != null)
+		if(msg != null && channel != null)
 		{
 			String fullFilePath;
 			String fileName = getDateString() + "-" + channel.name() + "-" + "log.txt"; // e.g.: 04-05-2018-WebCrawler-log.txt
 
 			if(!m_hasBeenInitialized)
 			{
-				fullFilePath = File.separator + "Logs" + File.separator; // by default: ..\Logs\..
+				fullFilePath = System.getProperty(
+						"user.dir") + File.separator + "Logs" + File.separator + channel.name() + File.separator + fileName; // by default: ..\Logs\..
 			}
 			else
 			{
-				fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + Channel.Logger.name() + File.separator + fileName;
+				fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + File.separator + fileName;
 			}
 
-			File file = new File(fullFilePath)
-			{{
-				boolean res = getParentFile().mkdirs();
-				if(res)
-				{
-					logDebug(this, "Created directory: " + fullFilePath);
-				}
-			}};
+
+			File file = new File(fullFilePath);
+			if(file.getParentFile().mkdirs())
+			{
+				logActivity(this, "Created directory: " + fullFilePath);
+			}
+
 			try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true)))
 			{
 				bufferedWriter.write(createLogString(sender, logLevel, channel, msg, ++m_logCounterTotal));
@@ -248,7 +253,7 @@ public class Logger implements IResource
 	 *
 	 * @param sender   The source of the log
 	 * @param logLevel The log-priority
-	 * @param channel The specific channel
+	 * @param channel  The specific channel
 	 * @param msg      The log-Message
 	 */
 	private void writeToConsole(Object sender, LogLevel logLevel, Channel channel, String msg)
@@ -341,7 +346,7 @@ public class Logger implements IResource
 	 *
 	 * @param sender  the Channel from where you call the log-method
 	 * @param level   the priority you want to log with (DEBUG, WARNING, ERROR)
-	 * @param channel
+	 * @param channel the specific channel
 	 * @param msg     the log-message
 	 */
 	private void log(Object sender, LogLevel level, Channel channel, String msg)
@@ -349,9 +354,8 @@ public class Logger implements IResource
 		boolean isLevelForbidden = false; // log everything by default
 		String  logType;
 
-		if(!m_classList.containsKey(sender.getClass().getCanonicalName()))
+		if(channel == null)
 		{
-			// channel not registered
 			channel = Channel.UNREGISTERED_CHANNEL;
 		}
 
