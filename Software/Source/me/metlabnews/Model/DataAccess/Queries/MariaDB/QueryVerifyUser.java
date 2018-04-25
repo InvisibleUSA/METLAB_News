@@ -1,28 +1,18 @@
-package me.metlabnews.Model.DataAccess.Queries;
+package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
 import me.metlabnews.Model.Entities.Subscriber;
-import org.basex.core.Command;
 
 import java.sql.ResultSet;
 
 
 
-/**
- * Created by ln on 10.04.18.
- */
-public class QueryVerifyUser extends QueryBase
+public class QueryVerifyUser extends MariaDBQueryBase
 {
 
-	public String     email;
-	public int        status = 0;
+	public String email;
+	public int status = 0;
 	public Subscriber subscriber;
 	public boolean    userExists;
-
-	@Override
-	protected Command createBaseXQuery()
-	{
-		return null;
-	}
 
 	@Override
 	protected String createSQLQuery()
@@ -31,7 +21,7 @@ public class QueryVerifyUser extends QueryBase
 	}
 
 	@Override
-	protected void processResults(ResultSet rs, String str)
+	protected void processResults(ResultSet rs)
 	{
 		QueryGetUser qgu = new QueryGetUser();
 		qgu.email = email;
@@ -41,6 +31,5 @@ public class QueryVerifyUser extends QueryBase
 		}
 		userExists = qgu.userExists;
 		subscriber = qgu.subscriber;
-
 	}
 }

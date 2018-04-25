@@ -16,7 +16,7 @@ import java.util.Properties;
 
 
 /**
- * class used indirectly by QueryBase to access the BaseX database. Responsible for starting the BaseX server
+ * class used indirectly by BaseXQueryBase to access the BaseX database. Responsible for starting the BaseX server
  * and requesting data from it.
  *
  * @author Erik
@@ -26,13 +26,14 @@ class BaseXConnector
 {
 	private       String          m_username       = "admin";
 	private       String          m_password       = "admin";
-	final private String          m_host           = "localhost";
+	final private String          m_host           = "127.0.0.1";
 	private       String          m_path;
 	private       String          m_dbName         = "ClippingDB";
 	private       int             m_port           = 1984;
 	private       ClientSession[] m_sessions;
 	private       boolean[]       m_sessionInUse;
 	private       int             m_currSessionNum = 0;
+	private       BaseXServer     m_server;
 
 	/**
 	 * Starts the BaseX Server in a separate process and initializes ClientSessions as well as settings
@@ -40,13 +41,14 @@ class BaseXConnector
 	 */
 	BaseXConnector()
 	{
+		Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.DEBUG, "Starting BaseX");
 		loadConfig();
 		try
 		{
 			startServer();
-
+			Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.DEBUG,
+			                         new Check(m_dbName).execute(m_server.context));
 			connectClients();
-			Logger.getInstance().log(Logger.Channel.BaseX, Logger.LogPriority.DEBUG, query(new Check(m_dbName)));
 		}
 		catch(IOException e)
 		{
@@ -59,7 +61,7 @@ class BaseXConnector
 		Properties props = System.getProperties();
 		props.setProperty("org.basex.path", m_path);
 
-		BaseXServer.start(m_port, "-n" + m_host + " -p" + m_port + " -S");
+		m_server = new BaseXServer();
 	}
 
 	private void loadConfig()
@@ -162,7 +164,7 @@ class BaseXConnector
 			{
 				m_sessions[i].close();
 			}
-			BaseXServer.stop(m_port, m_port);
+			m_server.stop();
 		}
 		catch(IOException e)
 		{

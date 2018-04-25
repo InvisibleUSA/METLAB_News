@@ -363,7 +363,7 @@ public class ConfigurationManager implements IResource
 	public String getLogType()
 	{
 		String key = "Logger.LogType";
-		return (System.getProperty("user.dir")) + returnProperty(key);
+		return returnProperty(key);
 	}
 
 

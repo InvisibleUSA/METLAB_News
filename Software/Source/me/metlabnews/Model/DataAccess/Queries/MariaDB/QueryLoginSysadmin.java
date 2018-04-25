@@ -1,7 +1,6 @@
-package me.metlabnews.Model.DataAccess.Queries;
+package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
 import me.metlabnews.Model.Entities.SystemAdministrator;
-import org.basex.core.Command;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,20 +10,14 @@ import java.sql.SQLException;
 /**
  * Created by ln on 12.04.18.
  */
-public class QueryLoginSysadmin extends QueryBase
+public class QueryLoginSysadmin extends MariaDBQueryBase
 {
 
-	public String              email;
-	public String              password;
-	public boolean             adminLoginSuccessful = false;
-	public boolean             userExists           = false;
+	public String email;
+	public String password;
+	public boolean adminLoginSuccessful = false;
+	public boolean userExists           = false;
 	public SystemAdministrator sysadmin;
-
-	@Override
-	protected Command createBaseXQuery()
-	{
-		return null;
-	}
 
 	@Override
 	protected String createSQLQuery()
@@ -33,7 +26,7 @@ public class QueryLoginSysadmin extends QueryBase
 	}
 
 	@Override
-	protected void processResults(ResultSet rs, String str)
+	protected void processResults(ResultSet rs)
 	{
 		String readEmail    = "";
 		String readPassword = "";

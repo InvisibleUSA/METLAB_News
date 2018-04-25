@@ -1,4 +1,4 @@
-package me.metlabnews.Model.DataAccess.Queries;
+package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
 import org.basex.core.Command;
 
@@ -7,17 +7,11 @@ import java.sql.SQLException;
 
 
 
-public class QueryGetOrganisation extends QueryBase
+public class QueryGetOrganisation extends MariaDBQueryBase
 {
 
-	public String  organisationName;
+	public String organisationName;
 	public boolean organisationExists = false;
-
-	@Override
-	protected Command createBaseXQuery()
-	{
-		return null;
-	}
 
 	@Override
 	protected String createSQLQuery()
@@ -26,7 +20,7 @@ public class QueryGetOrganisation extends QueryBase
 	}
 
 	@Override
-	protected void processResults(ResultSet rs, String str)
+	protected void processResults(ResultSet rs)
 	{
 		String orgname = "";
 		try

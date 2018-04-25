@@ -3,6 +3,7 @@ package me.metlabnews.Model.ResourceManagement;
 import me.metlabnews.Model.BusinessLogic.UserManager;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
+import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryAddOrganisation;
 import me.metlabnews.Presentation.Presenter;
 
 import javax.servlet.ServletContextEvent;
@@ -42,6 +43,7 @@ public class ResourceManager implements ServletContextListener
 		logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG,
 		           "Logger initialized");
 
+		new QueryAddOrganisation();
 		//MariaConnector.getInstance().initialize();
 		//logger.log(Logger.Channel.ResourceManager, Logger.LogPriority.DEBUG, "MariaConnector initialized");
 

@@ -1,15 +1,14 @@
-package me.metlabnews.Model.DataAccess.Queries;
+package me.metlabnews.Model.DataAccess.Queries.BaseX;
 
 import me.metlabnews.Model.Entities.Clipping;
 import org.basex.core.Command;
 import org.basex.core.cmd.Add;
 
-import java.sql.ResultSet;
 import java.time.format.DateTimeFormatter;
 
 
 
-public class QuerryAddClipping extends QueryBase
+public class QueryAddClipping extends BaseXQueryBase
 {
 	public Clipping clipping;
 
@@ -23,13 +22,7 @@ public class QuerryAddClipping extends QueryBase
 	}
 
 	@Override
-	protected String createSQLQuery()
-	{
-		return null;
-	}
-
-	@Override
-	protected void processResults(ResultSet rs, String str)
+	protected void processResults(String str)
 	{
 
 	}
