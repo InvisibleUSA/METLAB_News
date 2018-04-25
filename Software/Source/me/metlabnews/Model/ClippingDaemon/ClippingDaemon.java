@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
-import me.metlabnews.Model.DataAccess.Queries.QueryGetEnqueuingProfileCandidates;
+import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetEnqueuingProfileCandidates;
 import me.metlabnews.Model.Entities.ObservationProfile;
 import me.metlabnews.Model.ResourceManagement.IResource;
 

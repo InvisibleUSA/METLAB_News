@@ -16,7 +16,7 @@ import java.util.Properties;
 
 
 /**
- * class used indirectly by QueryBase to access the BaseX database. Responsible for starting the BaseX server
+ * class used indirectly by BaseXQueryBase to access the BaseX database. Responsible for starting the BaseX server
  * and requesting data from it.
  *
  * @author Erik

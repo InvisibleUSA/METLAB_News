@@ -1,5 +1,6 @@
-package me.metlabnews.Model.DataAccess.Queries;
+package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
+import me.metlabnews.Model.DataAccess.Queries.QueryBase;
 import org.basex.core.Command;
 
 import java.sql.ResultSet;
@@ -9,16 +10,10 @@ import java.sql.ResultSet;
 /**
  * Created by ln on 12.04.18.
  */
-public class QueryDeleteOrganization extends QueryBase
+public class QueryDeleteOrganization extends MariaDBQueryBase
 {
 
 	public String orgName;
-
-	@Override
-	protected Command createBaseXQuery()
-	{
-		return null;
-	}
 
 	@Override
 	protected String createSQLQuery()
@@ -27,7 +22,7 @@ public class QueryDeleteOrganization extends QueryBase
 	}
 
 	@Override
-	protected void processResults(ResultSet rs, String str)
+	protected void processResults(ResultSet rs)
 	{
 
 	}

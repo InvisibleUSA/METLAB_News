@@ -1,4 +1,4 @@
-package me.metlabnews.Model.DataAccess.Queries;
+package me.metlabnews.Model.DataAccess.Queries.BaseX;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
@@ -6,7 +6,6 @@ import me.metlabnews.Model.Entities.ObservationProfile;
 import org.basex.core.Command;
 import org.basex.core.cmd.XQuery;
 
-import java.sql.ResultSet;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,10 +14,10 @@ import java.util.List;
 
 
 
-public class QueryGetEnqueuingProfileCandidates extends QueryBase
+public class QueryGetEnqueuingProfileCandidates extends BaseXQueryBase
 {
-	private LocalTime                     m_startingTime;
-	private LocalTime                     m_endingTime;
+	private LocalTime m_startingTime;
+	private LocalTime m_endingTime;
 	private ArrayList<ObservationProfile> m_results = new ArrayList<>();
 
 	public QueryGetEnqueuingProfileCandidates(LocalTime start, LocalTime end)
@@ -58,13 +57,7 @@ public class QueryGetEnqueuingProfileCandidates extends QueryBase
 	}
 
 	@Override
-	protected String createSQLQuery()
-	{
-		return null;
-	}
-
-	@Override
-	protected void processResults(ResultSet rs, String str)
+	protected void processResults(String str)
 	{
 		XMLTag profiles = new XMLTag("<profiles>" + str + "</profiles>");
 		for(XMLTag singleProfile : profiles.children("profile"))

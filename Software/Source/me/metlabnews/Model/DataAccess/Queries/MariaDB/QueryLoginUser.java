@@ -1,16 +1,15 @@
-package me.metlabnews.Model.DataAccess.Queries;
+package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
 
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
-import org.basex.core.Command;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
 
-public class QueryLoginUser extends QueryBase
+public class QueryLoginUser extends MariaDBQueryBase
 {
 
 	public String email;
@@ -21,19 +20,13 @@ public class QueryLoginUser extends QueryBase
 	public Subscriber subscriber;
 
 	@Override
-	protected Command createBaseXQuery()
-	{
-		return null;
-	}
-
-	@Override
 	protected String createSQLQuery()
 	{
 		return "SELECT * FROM Abonnent WHERE EMail = '" + email + "'";
 	}
 
 	@Override
-	protected void processResults(ResultSet rs, String str)
+	protected void processResults(ResultSet rs)
 	{
 		String email        = "";
 		String readPassword = "";

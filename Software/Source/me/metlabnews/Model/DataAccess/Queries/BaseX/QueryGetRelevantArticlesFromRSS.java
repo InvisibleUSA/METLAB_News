@@ -1,4 +1,4 @@
-package me.metlabnews.Model.DataAccess.Queries;
+package me.metlabnews.Model.DataAccess.Queries.BaseX;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
@@ -8,7 +8,6 @@ import me.metlabnews.Model.Entities.ObservationProfile;
 import org.basex.core.Command;
 import org.basex.core.cmd.XQuery;
 
-import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 
 
 
-public class QueryGetRelevantArticlesFromRSS extends QueryBase
+public class QueryGetRelevantArticlesFromRSS extends BaseXQueryBase
 {
 	private ObservationProfile m_op;
 	private ArrayList<Article> m_candidates;
@@ -56,13 +55,7 @@ public class QueryGetRelevantArticlesFromRSS extends QueryBase
 	}
 
 	@Override
-	protected String createSQLQuery()
-	{
-		return null;
-	}
-
-	@Override
-	protected void processResults(ResultSet rs, String str)
+	protected void processResults(String str)
 	{
 		XMLTag           articles = new XMLTag("<articles>" + str + "</articles>");
 		SimpleDateFormat sdf      = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");

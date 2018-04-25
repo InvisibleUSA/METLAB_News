@@ -1,7 +1,7 @@
 package me.metlabnews.Model.BusinessLogic;
 
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
-import me.metlabnews.Model.DataAccess.Queries.*;
+import me.metlabnews.Model.DataAccess.Queries.MariaDB.*;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Model.Entities.SystemAdministrator;
@@ -273,7 +273,7 @@ public class UserManager
 			return;
 		}
 		Organisation         organisation = new Organisation(organisationName);
-		QueryAddOrganisation qao = new QueryAddOrganisation();
+		QueryAddOrganisation qao          = new QueryAddOrganisation();
 		qao.orgName = organisationName;
 		if(!qao.execute())
 		{
