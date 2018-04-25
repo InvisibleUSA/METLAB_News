@@ -8,12 +8,25 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class LogoutView extends VerticalLayout
+/**
+ * The good bye view after logout
+ * Contains nothing important
+ */
+public class LogoutView extends VerticalLayout implements IView
 {
+	private MainUI m_parent;
+
+	private final Label  title       = new Label("Auf Wiedersehen!");
+	private final Button buttonLogin = new Button("Erneut anmelden");
+
+	/**
+	 * Initializes the view and sets all of its components to their default values
+	 *
+	 * @param parent the parent object of this view
+	 */
 	public LogoutView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Abgemeldet");
 
 		buttonLogin.addClickListener((Button.ClickEvent event)
 				                             -> m_parent.openSubscriberLoginView());
@@ -22,9 +35,10 @@ public class LogoutView extends VerticalLayout
 	}
 
 
-
-	private MainUI m_parent;
-
-	private final Label  title       = new Label("Auf Wiedersehen!");
-	private final Button buttonLogin = new Button("Erneut anmelden");
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+		Page.getCurrent().setTitle("Abgemeldet");
+	}
 }

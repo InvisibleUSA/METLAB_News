@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
-
 /**
  * This class provides an easy to use interface to access XML-Data.
  * In the constructor you can can specify XML-Data as string. After
@@ -37,11 +35,16 @@ import java.util.HashMap;
  * }
  *
  * @author Erik Hennig
- * @version 1.0
+ * @version 1.1
  */
 @SuppressWarnings("WeakerAccess")
 public class XMLTag
 {
+	static
+	{
+		Logger.getInstance().register(XMLTag.class, Logger.Channel.XMLTag);
+		Logger.getInstance().register(Key.class, Logger.Channel.XMLTag);
+	}
 	/**
 	 * Alternate constructor. Use only if you need the Java XML-API anyway.
 	 *
@@ -57,9 +60,9 @@ public class XMLTag
 	 *
 	 * @param xmlData XML-data as string
 	 */
-
 	public XMLTag(String xmlData)
 	{
+		Logger                 l         = Logger.getInstance();
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		try
 		{
@@ -69,20 +72,16 @@ public class XMLTag
 		}
 		catch(SAXException e)
 		{
-			e.printStackTrace();
-			System.out.println("Parsing exception.");
+			l.logError(this, "Parsing exception:\n" + e.toString());
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
-			System.out.println("IO Exception.");
+			l.logError(this, "IO exception:\n" + e.toString());
 		}
 		catch(ParserConfigurationException e)
 		{
-			e.printStackTrace();
-			System.out.println("Parser is not correctly configured. Exception.");
+			l.logError(this, "Parser is not correctly configured. Exception.");
 		}
-		//TODO implement correct logging and/or throw error in case of invalid xml
 	}
 
 	/**
@@ -103,7 +102,7 @@ public class XMLTag
 
 	/**
 	 * alternative method to access any child of the current {@link XMLTag}
-	 * As a second parameter the positon of the tag element is entered counting only
+	 * As a second parameter the position of the tag element is entered counting only
 	 * tag elements with the name tagName. position starts at 0.
 	 * <p>
 	 * If you need all children with name x call {@link #children(String)}. This can be used
@@ -112,13 +111,14 @@ public class XMLTag
 	 *
 	 * @param tagName  the name of the tag
 	 * @param position the position of the tag in the xml string
-	 * @return the position-th subtag that matches the tagName
+	 * @return the position-th subtag that matches the tagName, null if not found
 	 * @throws NullPointerException Child is not found.
 	 * @see #child(String) #children(String)
 	 */
-	@SuppressWarnings("WeakerAccess")
 	public XMLTag child(String tagName, int position)
 	{
+		Logger.getInstance().logDebug(this,
+		                              "child " + tagName + " at position " + position + " requested. (Parent:" + m_name + ")");
 		Key k = new Key(tagName, position);
 		return m_children.get(k);
 	}
@@ -140,6 +140,7 @@ public class XMLTag
 		Key               k   = new Key(tagName, 0);
 		ArrayList<XMLTag> alt = new ArrayList<>();
 		XMLTag            t;
+		Logger.getInstance().logDebug(this, "all children " + tagName + " requested. (Parent:" + m_name + ")");
 		while((t = m_children.get(k)) != null)
 		{
 			alt.add(t);
@@ -156,6 +157,7 @@ public class XMLTag
 	 */
 	public String attribute(String name)
 	{
+		Logger.getInstance().logDebug(this, "attribute " + name + " requested. (Parent:" + m_name + ")");
 		return m_attributes.get(name);
 	}
 
@@ -218,13 +220,16 @@ public class XMLTag
 	private void construct(Node n)
 	{
 		m_name = n.getNodeName();
+		Logger.getInstance().logDebug(this, "constructing node " + m_name);
 		for(int i = 0; i < n.getAttributes().getLength(); i++)
 		{
+			Logger.getInstance().logDebug(this, "adding attribute " + n.getAttributes().item(i).getNodeName());
 			m_attributes.put(n.getAttributes().item(i).getNodeName(), n.getAttributes().item(i).getNodeValue());
 		}
 		if((n.getChildNodes().getLength() == 1) && (n.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
 		{
 			m_value = n.getChildNodes().item(0).getNodeValue();
+			Logger.getInstance().logDebug(this, "added text " + m_value);
 		}
 		else
 		{
@@ -249,21 +254,25 @@ public class XMLTag
 	{
 		StringBuilder s      = new StringBuilder("<" + m_name);
 		StringBuilder indent = new StringBuilder();
+		Logger.getInstance().logDebug(this, "printing level " + indentlevel + ". making indent string");
 		for(int i = 0; i < indentlevel; i++)
 		{
 			indent.append(" ");
 		}
 		s.insert(0, indent);
+		Logger.getInstance().logDebug(this, "printing level " + indentlevel + ". adding node attributes");
 		for(HashMap.Entry<String, String> entry : m_attributes.entrySet())
 		{
 			s.append(" ").append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
 		}
 		s.append(">\n");
+		Logger.getInstance().logDebug(this, "printing level " + indentlevel + ". printing children");
 		for(HashMap.Entry<Key, XMLTag> entry : m_children.entrySet())
 		{
 			s.append(entry.getValue().print(indentlevel + 2));
 		}
 		s.append(indent).append("</").append(m_name).append(">\n");
+		Logger.getInstance().logDebug(this, "done printing level " + indentlevel + ".");
 		return s.toString();
 	}
 
@@ -272,6 +281,10 @@ public class XMLTag
 	private String                  m_name;
 	private String                  m_value;
 
+	/**
+	 * Class used for implementation of XMLTag.
+	 * Necessary to put tags in Hashmap as they don't allow multiple values.
+	 */
 	private class Key
 	{
 		String name;
@@ -279,6 +292,7 @@ public class XMLTag
 
 		Key(String n, int p)
 		{
+			Logger.getInstance().logDebug(this, "new Key " + n + " requested with position " + p);
 			name = n;
 			position = p;
 		}

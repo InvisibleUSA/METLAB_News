@@ -4,9 +4,11 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.*;
+import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.Presenter;
 import me.metlabnews.Presentation.IUserInterface;
@@ -24,8 +26,18 @@ import me.metlabnews.UserInterface.Views.*;
  */
 @Theme("maintheme")
 @PreserveOnRefresh
+@Push(PushMode.AUTOMATIC)
 public class MainUI extends UI implements IUserInterface
 {
+	private SubscriberLoginView          m_subscriberLoginView;
+	private SubscriberRegistrationView   m_subscriberRegistrationView;
+	private SubscriberDashboardView      m_subscriberDashboardView;
+	private SystemAdminLoginView         m_systemAdminLoginView;
+	private SubscriberAdminDashboardView m_subscriberAdminDashboardView;
+	private SystemAdminDashboardView     m_systemAdminDashboardView;
+	private LogoutView                   m_logoutView;
+
+
 	public MainUI()
 	{
 	}
@@ -39,11 +51,12 @@ public class MainUI extends UI implements IUserInterface
 		m_systemAdminLoginView = new SystemAdminLoginView(this);
 		m_subscriberRegistrationView = new SubscriberRegistrationView(this);
 		m_subscriberDashboardView = new SubscriberDashboardView(this);
-		m_clientAdminDashboardView = new ClientAdminDashboardView(this);
+		m_subscriberAdminDashboardView = new SubscriberAdminDashboardView(this);
 		m_systemAdminDashboardView = new SystemAdminDashboardView(this);
 		m_logoutView = new LogoutView(this);
 
 		Presenter.getInstance().connect(this);
+
 		openSubscriberLoginView();
 	}
 
@@ -68,22 +81,22 @@ public class MainUI extends UI implements IUserInterface
 
 	private void openSubscriberDashboardView()
 	{
-		setContent(m_subscriberDashboardView);
+		access(() -> setContent(m_subscriberDashboardView));
 	}
 
 	private void openClientAdminDashboardView()
 	{
-		setContent(m_clientAdminDashboardView);
+		access(() -> setContent(m_subscriberAdminDashboardView));
 	}
 
 	private void openSystemAdminDashboardView()
 	{
-		setContent(m_systemAdminDashboardView);
+		access(() -> setContent(m_systemAdminDashboardView));
 	}
 
 	public void openLogoutView()
 	{
-		setContent(m_logoutView);
+		access(() -> setContent(m_logoutView));
 	}
 
 
@@ -134,16 +147,16 @@ public class MainUI extends UI implements IUserInterface
 
 	public void verifySubscriber(IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
-	                             String email, boolean grantAdminStatus)
+	                             String subscriberEmail, boolean grantAdminStatus)
 	{
-		m_verifySubscriberCallback.execute(onSuccess, onFailure, email, grantAdminStatus);
+		m_verifySubscriberCallback.execute(onSuccess, onFailure, subscriberEmail, grantAdminStatus);
 	}
 
 	public void denySubscriber(IGenericEvent onSuccess,
 	                           IGenericFailureEvent onFailure,
 	                           String email)
 	{
-		m_denySubscriberCallback.execute(onSuccess, onFailure, email);
+		access(() -> m_denySubscriberCallback.execute(onSuccess, onFailure, email));
 	}
 
 
@@ -161,14 +174,14 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	public void removeOrganisation(IGenericEvent onSuccess,
-	                            IGenericFailureEvent onFailure,
-	                            String organisationName)
+	                               IGenericFailureEvent onFailure,
+	                               String organisationName)
 	{
 		m_removeOrganisationCallback.execute(onSuccess, onFailure, organisationName);
 	}
 
 	public void getAllOrganisations(IGetStringArrayEvent onSuccess,
-	                               IGenericFailureEvent onFailure)
+	                                IGenericFailureEvent onFailure)
 	{
 		m_FetchOrganisationsCallback.execute(onSuccess, onFailure);
 	}
@@ -258,9 +271,9 @@ public class MainUI extends UI implements IUserInterface
 	private IFetchPendingVerificationRequestsCallback m_fetchPendingVerificationRequestsCallback;
 	private IVerifySubscriberCallback                 m_verifySubscriberCallback;
 	private IDenySubscriberCallback                   m_denySubscriberCallback;
+	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
 	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
-	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
 
 	// endregion Callbacks
 
@@ -277,51 +290,54 @@ public class MainUI extends UI implements IUserInterface
 		}
 		else if(myself.isOrganisationAdministrator())
 		{
+			access(m_subscriberLoginView::clearFields);
 			openClientAdminDashboardView();
 		}
 		else
 		{
+			access(m_subscriberLoginView::clearFields);
 			openSubscriberDashboardView();
 		}
 	}
 
 	private void loginFailedEvent(String errorMessage)
 	{
-		Notification.show("Anmeldung fehlgeschlagen\n" + errorMessage);
+		Notification popup = new Notification("Anmeldung fehlgeschlagen\n" + errorMessage,
+		                                      Notification.Type.WARNING_MESSAGE);
+		popup.setDelayMsec(3000);
+		access(() -> popup.show(Page.getCurrent()));
 	}
 
 
 	private void logoutEvent()
 	{
-		openLogoutView();
+		access(this::openLogoutView);
 	}
 
 
 	private void subscriberVerificationPendingEvent()
 	{
-		Notification.show("Verifizierung ausstehend\nWarten Sie auf die " +
-				                  "Verifikation durch einen Administrator");
+		access(() ->
+		       {
+			       Notification popup = new Notification("Verifizierung ausstehend\nWarten Sie auf die " +
+					                                             "Verifikation durch einen Administrator",
+			                                             Notification.Type.WARNING_MESSAGE);
+			       popup.setDelayMsec(3000);
+			       access(() -> popup.show(Page.getCurrent()));
+			       m_subscriberLoginView.clearFields();
+		       });
 	}
 
 
 	private void registrationFailedEvent(String errorMessage)
 	{
-		Notification.show("Registrierung fehlgeschlagen\n" + errorMessage);
+		Notification popup = new Notification("Registrierung fehlgeschlagen\n" + errorMessage,
+		                                      Notification.Type.WARNING_MESSAGE);
+		popup.setDelayMsec(3000);
+		access(() -> popup.show(Page.getCurrent()));
 	}
 
 	// endregion Events
-
-
-
-	private SubscriberLoginView        m_subscriberLoginView;
-	private SystemAdminLoginView       m_systemAdminLoginView;
-	private SubscriberRegistrationView m_subscriberRegistrationView;
-	private SubscriberDashboardView    m_subscriberDashboardView;
-	private ClientAdminDashboardView   m_clientAdminDashboardView;
-	private SystemAdminDashboardView   m_systemAdminDashboardView;
-	private LogoutView                 m_logoutView;
-
-
 
 
 	@WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)
@@ -338,16 +354,16 @@ public class MainUI extends UI implements IUserInterface
 		static MainUI ui = null;
 
 		@Override
-		public void sessionInit(SessionInitEvent event)
-		{
-		}
-
-		@Override
 		protected void servletInitialized() throws ServletException
 		{
 			super.servletInitialized();
 			getService().addSessionInitListener(this);
 			getService().addSessionDestroyListener(this);
+		}
+
+		@Override
+		public void sessionInit(SessionInitEvent event)
+		{
 		}
 
 		@Override

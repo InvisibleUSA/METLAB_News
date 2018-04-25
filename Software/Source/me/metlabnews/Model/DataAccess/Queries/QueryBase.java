@@ -1,48 +1,22 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
-
-import me.metlabnews.Model.DataAccess.DatabaseConnector;
-import me.metlabnews.Model.DataAccess.MariaConnector;
-import org.basex.query.value.item.Str;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import me.metlabnews.Model.DataAccess.DbConnectors.DatabaseConnector;
 
 
 
 public abstract class QueryBase
 {
-	public static DatabaseConnector m_dbConnector = new DatabaseConnector();
 
-	public boolean execute()
-	{
-		//TODO: Implement
-		try
-		{
-			String    str   = null; //initialize result string for BaseXQuery
-			ResultSet rs    = null; //initialize resultset for SQL Query
-			String    sql   = createSQLQuery(); //
-			String    basex = createBaseXQuery();
-			if(!basex.isEmpty())
-			{
-				str = m_dbConnector.baseXQuery(/*basex*/);
-			}
-			if(!sql.isEmpty())
-			{
-				rs = m_dbConnector.mariaQuery(sql);
-			}
-			processResults(rs, str);
-			return true;
-		}
-		catch(SQLException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
+	protected static DatabaseConnector m_dbConnector = new DatabaseConnector();
 
-	protected abstract String createBaseXQuery();
-	protected abstract String createSQLQuery();
-	protected abstract void processResults(ResultSet rs, String str);
-
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	/**
+	 *  This method is called to execute the concrete subclass of QueryBase.
+	 *  The return value says nothing about the result of the query. It informs the
+	 *  caller the successful execution of the query. Not successful means the database could not be reached.
+	 *  Successful merely means the database received the query and responded.
+	 *  Information about the specific query (e.g. invalid login data) is NOT returned here.
+	 * @return Query could / could not be executed
+	 */
+	public abstract boolean execute();
 }

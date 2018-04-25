@@ -6,12 +6,33 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SystemAdminDashboardView extends VerticalLayout
+/**
+ * The dashboard for system admins
+ * Contains a means for creating a new company
+ */
+public class SystemAdminDashboardView extends VerticalLayout implements IView
 {
+	private MainUI m_parent;
+
+	private final Label         title                     = new Label("Willkommen bei METLAB-News - Dashboard!");
+	private final Button        buttonLogout              = new Button("Abmelden");
+	private final Panel         panelNewOrganisation      = new Panel("Neue Organisation hinzufügen");
+	private final TextField     textFieldOrganisationName = new TextField("Name der Organisation:");
+	private final Button        buttonAddOrganisation     = new Button("Organisation hinzufügen");
+	private final Panel         panelInitialUser          = new Panel("Administrator hinzufügen");
+	private final TextField     textFieldAdminFirstName   = new TextField("Vorname:");
+	private final TextField     textFieldAdminLastName    = new TextField("Nachname:");
+	private final TextField     textFieldAdminEmail       = new TextField("E-Mail:");
+	private final PasswordField textFieldAdminPassword    = new PasswordField("Passwort:");
+
+	/**
+	 * Initializes the view and sets all of its components to their default values
+	 *
+	 * @param parent the parent object of this view
+	 */
 	public SystemAdminDashboardView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Dashboard");
 
 		final FormLayout outerContent = new FormLayout();
 		final FormLayout innerContent = new FormLayout();
@@ -32,18 +53,28 @@ public class SystemAdminDashboardView extends VerticalLayout
 
 
 		buttonAddOrganisation.addClickListener(
-				event -> m_parent.addOrganisation(() ->
-				                                    { Notification.show("Organisation hinzugefügt");
-				                                    	textFieldOrganisationName.clear();
-					                                    textFieldAdminFirstName.clear();
-					                                    textFieldAdminLastName.clear();
-					                                    textFieldAdminEmail.clear();
-					                                    textFieldAdminPassword.clear();},
-				                                    errorMessage ->
-						                                    Notification.show(
-						                                    		"Organisation konnte nicht "
-										                                    + "hinzugefügt werden\n"
-										                                    + errorMessage),
+				event -> m_parent.addOrganisation(() -> m_parent.access(() ->
+				                                                        {
+					                                                        Notification popup = new Notification(
+							                                                        "Organisation hinzugefügt",
+							                                                        Notification.Type.WARNING_MESSAGE);
+					                                                        popup.setDelayMsec(3000);
+					                                                        popup.show(Page.getCurrent());
+					                                                        textFieldOrganisationName.clear();
+					                                                        textFieldAdminFirstName.clear();
+					                                                        textFieldAdminLastName.clear();
+					                                                        textFieldAdminEmail.clear();
+					                                                        textFieldAdminPassword.clear();
+				                                                        }),
+				                                  errorMessage -> m_parent.access(() ->
+				                                                                  {
+					                                                                  Notification popup = new Notification(
+							                                                                  "Organisation konnte nicht hinzugefügt werden\n" + errorMessage,
+							                                                                  Notification.Type.WARNING_MESSAGE);
+					                                                                  popup.setDelayMsec(3000);
+					                                                                  popup.show(Page.getCurrent());
+				                                                                  }),
+
 				                                  textFieldOrganisationName.getValue(),
 				                                  textFieldAdminFirstName.getValue(),
 				                                  textFieldAdminLastName.getValue(),
@@ -57,17 +88,10 @@ public class SystemAdminDashboardView extends VerticalLayout
 	}
 
 
-
-	private MainUI m_parent;
-
-	private final Label  title        = new Label("Willkommen bei METLAB-News - Dashboard!");
-	private final Button buttonLogout = new Button("Abmelden");
-	private final Panel panelNewOrganisation = new Panel("Neue Organisation hinzufügen");
-	private final TextField textFieldOrganisationName = new TextField("Name der Organisation:");
-	private final Button buttonAddOrganisation = new Button("Organisation hinzufügen");
-	private final Panel panelInitialUser = new Panel("Administrator hinzufügen");
-	private final TextField     textFieldAdminFirstName = new TextField("Vorname:");
-	private final TextField     textFieldAdminLastName  = new TextField("Nachname:");
-	private final TextField     textFieldAdminEmail     = new TextField("E-Mail:");
-	private final PasswordField textFieldAdminPassword  = new PasswordField("Passwort:");
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+		Page.getCurrent().setTitle("Dashboard");
+	}
 }

@@ -17,15 +17,15 @@
 
 
 	<!-- ClippingDaemon -->
-	<entry key="ClippingDaemon.EnqueuingTimeOut">5</entry>
+	<entry key="ClippingDaemon.EnqueuingTimeOut">12345</entry>
 
 
 	<!-- BaseX -->
-	<entry key="BaseX.Path">BaseXData</entry>
+	<entry key="BaseX.Path">C:\\USERS\\PORN</entry> <!-- TODO: relative path, don't store PORN in it! -->
 	<entry key="BaseX.DbName">ClippingDB</entry>
 	<entry key="BaseX.Port">1984</entry>
-	<entry key="BaseX.Username">admin</entry>
-	<entry key="BaseX.Password">admin</entry>
+	<entry key="BaseX.Username">ADMIN</entry>
+	<entry key="BaseX.Password">ADMIN</entry>
 
 
 	<!-- RDBMS -->
@@ -46,9 +46,9 @@
 
 
 	<!-- Logger -->
-	<entry key="Logger.LogDestination">ToConsole</entry> <!-- {ToFile, ToConsole -->
+	<entry key="Logger.LogType">ToFile</entry> <!-- {ToFile, ToConsole, ToDatabase} -->
 	<entry key="Logger.LogFilePath">\Logs\</entry> <!-- The subfolder of the logfiles -->
-	<entry key="Logger.isDisabled_ERROR">false</entry> <!-- {false, true} -->
-	<entry key="Logger.isDisabled_WARNING">false</entry> <!-- {false, true} -->
-	<entry key="Logger.isDisabled_DEBUG">false</entry> <!-- {false, true} -->
+	<entry key="Logger.FilterERROR">true</entry> <!-- {false, true} -->
+	<entry key="Logger.FilterWARNING">false</entry> <!-- {false, true} -->
+	<entry key="Logger.FilterDEBUG">false</entry> <!-- {false, true} -->
 </properties>
