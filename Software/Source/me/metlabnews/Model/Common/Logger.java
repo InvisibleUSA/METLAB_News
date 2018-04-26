@@ -256,7 +256,17 @@ public class Logger implements IResource
 	 */
 	public void disableChannel(Channel channel)
 	{
-		m_channelFlag.replace(channel, ChannelFlag.DISABLED);
+		String success = "Logger has been DISABLED for Channel: '" + channel.name() + "'";
+		String failure = "Logger DISABLED failed for Channel: '" + channel.name() + "' with Message: ";
+		try
+		{
+			log(this, LogLevel.ACTIVITY, channel, success);
+			m_channelFlag.replace(channel, ChannelFlag.DISABLED);
+		}
+		catch(Exception e)
+		{
+			log(this, LogLevel.ACTIVITY, channel, failure + e.toString());
+		}
 	}
 
 
