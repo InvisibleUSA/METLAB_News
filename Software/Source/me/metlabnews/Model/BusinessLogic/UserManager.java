@@ -1,7 +1,6 @@
 package me.metlabnews.Model.BusinessLogic;
 
 import me.metlabnews.Model.Common.Logger;
-import me.metlabnews.Model.Common.Mail;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.*;
 import me.metlabnews.Model.Entities.Organisation;
@@ -159,12 +158,12 @@ public class UserManager
 
 	public void getPendingVerificationRequests(Session session, IUserInterface.IFetchPendingVerificationRequestsEvent onSuccess, IGenericFailureEvent onFailure)
 	{
-		if(!adminCheck(session, onFailure))
+		if(!adminCheck(session, onFailure)) //Error handling in adminCheck
 		{
 			return;
 		}
 
-		QueryGetVerificationpending qgvp = new QueryGetVerificationpending();
+		QueryGetVerificationPending qgvp = new QueryGetVerificationPending();
 		qgvp.organization = ((Subscriber)session.getUser()).getOrganisationId().getName();
 		if(!qgvp.execute())
 		{
@@ -173,7 +172,6 @@ public class UserManager
 		}
 		UserDataRepresentation[] users = qgvp.users;
 		onSuccess.execute(users);
-		//TODO: Mails treatment
 	}
 
 	public void verifySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String subscriberEmail, Boolean grantAdmin)
@@ -213,7 +211,7 @@ public class UserManager
 			if(!qvu.execute())
 			{
 				onFailure.execute(Messages.UnknownError);
-				return; //TODO: Error handling
+				return;
 			}
 			if(!qvu.userExists)
 			{
@@ -241,24 +239,24 @@ public class UserManager
 		qls.password = password;
 		if(!qls.execute())
 		{
-			return; //TODO: Error handling
+			onFailure.execute(Messages.UnknownError);
+			return;
 		}
 		if(!qls.adminLoginSuccessful)
 		{
 			if(!qls.userExists)
 			{
 				onFailure.execute(Messages.UnknownEmail);
-				return; //TODO: Error handling User doesn't exist
+				return;
 			}
 			onFailure.execute(Messages.WrongPassword);
-			return; //TODO: Error handling invalid password
+			return;
 		}
 
 		SystemAdministrator admin = qls.sysadmin;
 
 		session.login(admin);
 		onSuccess.execute();
-		//TODO: Admin Login
 	}
 
 	public void addOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName, String adminFirstName, String adminLastName, String adminEmail, String adminPassword)
@@ -276,6 +274,7 @@ public class UserManager
 		if(!Validator.validateEmailAddress(adminEmail))
 		{
 			onFailure.execute(Messages.InvalidEmailAddress);
+			return;
 		}
 		if(!Validator.validatePassword(adminPassword))
 		{
@@ -287,7 +286,8 @@ public class UserManager
 		qao.orgName = organisationName;
 		if(!qao.execute())
 		{
-			return; //TODO: Error handling
+			onFailure.execute(Messages.UnknownError);
+			return;
 		}
 
 		Subscriber subscriber = new Subscriber(adminEmail, adminPassword, adminFirstName, adminLastName, organisation,
@@ -297,6 +297,7 @@ public class UserManager
 		qau.subscriber = subscriber;
 		if(!qau.execute())
 		{
+			onFailure.execute(Messages.UnknownError);
 			return;
 		}
 
@@ -368,7 +369,8 @@ public class UserManager
 		qdo.orgName = organisationName;
 		if(!qdo.execute())
 		{
-			return; //TODO: Error handling
+			onFailure.execute(Messages.UnknownError);
+			return;
 		}
 		onSuccess.execute();
 	}

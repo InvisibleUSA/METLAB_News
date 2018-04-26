@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by ln on 10.04.18.
  */
-public class QueryGetVerificationpending extends MariaDBQueryBase
+public class QueryGetVerificationPending extends MariaDBQueryBase
 {
 	public String                   organization;
 	public UserDataRepresentation[] users;
