@@ -20,7 +20,7 @@
 	<entry key="ClippingDaemon.EnqueuingTimeOut">12345</entry>
 
 
-	<!-- BaseX -->
+	<!-- DocDBMS -->
 	<entry key="BaseX.Path">C:\\USERS\\PORN</entry> <!-- TODO: relative path, don't store PORN in it! -->
 	<entry key="BaseX.DbName">ClippingDB</entry>
 	<entry key="BaseX.Port">1984</entry>

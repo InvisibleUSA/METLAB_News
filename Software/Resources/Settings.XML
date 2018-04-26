@@ -20,7 +20,7 @@
 	<entry key="ClippingDaemon.EnqueuingTimeOut">5</entry>
 
 
-	<!-- BaseX -->
+	<!-- DocDBMS -->
 	<entry key="BaseX.Path">BaseXData</entry>
 	<entry key="BaseX.DbName">ClippingDB</entry>
 	<entry key="BaseX.Port">1984</entry>

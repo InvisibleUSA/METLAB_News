@@ -109,7 +109,7 @@ public class Logger implements IResource
 		XMLTag,
 		Logger,
 		RDBMS,
-		BaseX,
+		DocDBMS,
 		UNREGISTERED_CHANNEL,
 		INFO
 	}
@@ -186,7 +186,7 @@ public class Logger implements IResource
 	 */
 	private String createLogString(Object sender, LogLevel level, Channel channel, String msg, int counter)
 	{
-		return ("#" + counter + " [" + level.name() + "] " + sender.getClass().getSimpleName() + " in " + channel.name() + " " + getTimeStamp() + ": " + msg + "\n");
+		return ("#" + counter + " [" + level.name() + "] " + sender.getClass().getSimpleName() + " in " + channel.name() + " " + getTimeStamp() + ": " + msg);
 	}
 
 

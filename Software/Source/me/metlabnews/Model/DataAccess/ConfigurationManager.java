@@ -204,7 +204,7 @@ public class ConfigurationManager implements IResource
 	// endregion ClippingDaemon
 
 
-	// region BaseX
+	// region DocDBMS
 
 	public String getBaseXPath()
 	{
@@ -244,7 +244,7 @@ public class ConfigurationManager implements IResource
 		return returnProperty(key);
 	}
 
-	// endregion BaseX
+	// endregion DocDBMS
 
 
 	// region RDBMS
