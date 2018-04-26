@@ -359,8 +359,6 @@ public class ConfigurationManager implements IResource
 					return LogDestination.ToFile.name();
 				case "ToConsole":
 					return LogDestination.ToConsole.name();
-				case "ToDatabase":
-					return LogDestination.ToDatabase.name();
 				default:
 					return null;
 			}
@@ -438,8 +436,8 @@ public class ConfigurationManager implements IResource
 		}
 		else
 		{
-			Logger.getInstance().logError(this, "Initialization Error returning property for key '" + key + "'. " +
-					                         "Logger has not been initialized!");
+			Logger.getInstance().logError(this, "Initialization Error returning property for key '" + key + "'. "
+					+ this.getClass().getSimpleName() + " has not been initialized!");
 			return null;
 		}
 	}

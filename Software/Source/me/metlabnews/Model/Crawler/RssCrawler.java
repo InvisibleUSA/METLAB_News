@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 
 
-public class RSSCrawler implements Runnable
+public class RssCrawler implements Runnable
 {
 
 	private boolean    m_running = false;
@@ -21,14 +21,14 @@ public class RSSCrawler implements Runnable
 
 	private Thread m_t;
 
-	RSSCrawler(NewsSource source)
+	RssCrawler(NewsSource source)
 	{
 		this.m_source = source;
 	}
 
 	static void initialize()
 	{
-		Logger.getInstance().register(RSSCrawler.class, Logger.Channel.Crawler);
+		Logger.getInstance().register(RssCrawler.class, Logger.Channel.Crawler);
 	}
 
 	void start()

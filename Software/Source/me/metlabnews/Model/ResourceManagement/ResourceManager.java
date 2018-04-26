@@ -21,6 +21,9 @@ public class ResourceManager implements ServletContextListener
 	static
 	{
 		Logger.getInstance().register(ResourceManager.class, Logger.Channel.ResourceManager);
+
+		// here you can disable single channels of the logger
+		Logger.getInstance().disableChannel(Logger.Channel.INFO);
 	}
 
 	public ResourceManager()

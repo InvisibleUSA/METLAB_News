@@ -110,7 +110,22 @@ public class Logger implements IResource
 		Logger,
 		RDBMS,
 		BaseX,
-		UNREGISTERED_CHANNEL
+		UNREGISTERED_CHANNEL,
+		INFO
+	}
+
+
+	/**
+	 * This enum represents the status of the Channel. You can enable and disable
+	 * each single Channels by a HashMap.
+	 * <p>
+	 * Unregistered = Channel by default disabled
+	 * </p>
+	 */
+	public enum ChannelFlag
+	{
+		ENABLED,
+		DISABLED,
 	}
 
 
@@ -184,32 +199,64 @@ public class Logger implements IResource
 	 */
 	private boolean isLevelForbidden(LogLevel level)
 	{
-		if(level != null)
+		if(!m_hasBeenInitialized)
 		{
-			if(!m_hasBeenInitialized) // return default values from code if not initialized
+			switch(level)
 			{
-				switch(level)
-				{
-					case DEBUG:
-						return m_debugIsForbidden;
-					case WARNING:
-						return m_warningIsForbidden;
-					case ERROR:
-						return m_errorIsForbidden;
-					default:
-						return false;
-				}
+				case DEBUG:
+					return m_debugIsForbidden;
+				case WARNING:
+					return m_warningIsForbidden;
+				case ERROR:
+					return m_errorIsForbidden;
+				case ACTIVITY:
+					return m_activityIsForbidden;
+				default:
+					return false;
 			}
-			else
+		}
+		else
+		{
+			return ConfigurationManager.getInstance().getFilteredPriorities(level.name());
+		}
+	}
+
+
+	/**
+	 * This method returns TRUE if the Channel is forbidden and FALSE if it is not forbidden.
+	 *
+	 * @param channel The Channel, e.g.: Crawler, UI, ...
+	 * @return true = FORBIDDEN // false = not forbidden
+	 */
+	private boolean isChannelForbidden(Channel channel)
+	{
+		if(channel != null)
+		{
+			switch(m_channelFlag.get(channel))
 			{
-				// TODO: evtl. gibt es hier Probleme bei nicht eingetragenen Keys (z.B.: Activity)
-				return ConfigurationManager.getInstance().getFilteredPriorities(level.name());
+				case DISABLED:
+					return true;
+				case ENABLED:
+					return false;
+				default:
+					return true;
 			}
 		}
 		else
 		{
 			return false;
 		}
+	}
+
+
+	/**
+	 * In this Method you can DISABLE a single Channel to force it NOT to log.
+	 *
+	 * @param channel the Channel, e.g. Crawler, UI, ...
+	 */
+	public void disableChannel(Channel channel)
+	{
+		m_channelFlag.replace(channel, ChannelFlag.DISABLED);
 	}
 
 
@@ -398,6 +445,12 @@ public class Logger implements IResource
 	@SuppressWarnings("WeakerAccess")
 	public void register(java.lang.Class sender, Channel channel)
 	{
+		// first of all ENABLE all channels and hash them into table
+		for(Channel c : Channel.values())
+		{
+			m_channelFlag.put(c, ChannelFlag.ENABLED);
+		}
+
 		if(sender != null)
 		{
 			String res = null;
@@ -405,7 +458,7 @@ public class Logger implements IResource
 			String pst = "' ";
 			try
 			{
-				m_classList.put(sender.getCanonicalName(), channel);
+				m_classList.put(sender.getCanonicalName(), channel); // Hash the Sendername to the Channel
 				res = "Registration successful:";
 			}
 			catch(Exception e)
@@ -442,12 +495,17 @@ public class Logger implements IResource
 	 */
 	private void log(Object sender, LogLevel level, Channel channel, String msg)
 	{
-		boolean isLevelForbidden = false; // log everything by default
+		boolean isLevelForbidden   = false; // log everything by default
+		boolean isChannelForbidden = false;
 		String  logType;
 
 		if(channel == null)
 		{
 			channel = Channel.UNREGISTERED_CHANNEL;
+		}
+		else
+		{
+			isChannelForbidden = isChannelForbidden(channel);
 		}
 
 		if(!m_hasBeenInitialized)
@@ -456,11 +514,11 @@ public class Logger implements IResource
 		}
 		else
 		{
-			isLevelForbidden = isLevelForbidden(level); // if typeForbidden = true -> NO logging
+			isLevelForbidden = isLevelForbidden(level); // if isLevelForbidden = true -> NO logging
 			logType = ConfigurationManager.getInstance().getLogDestination();
 		}
 
-		if(!isLevelForbidden)
+		if(!isLevelForbidden && !isChannelForbidden)
 		{
 			switch(logType)
 			{
@@ -477,11 +535,13 @@ public class Logger implements IResource
 	}
 
 
-	private static Logger                     m_instance;
-	private        boolean                    m_hasBeenInitialized;
-	private        int                        m_logCounterTotal    = 0;
-	private        boolean                    m_debugIsForbidden   = false;
-	private        boolean                    m_warningIsForbidden = false;
-	private        boolean                    m_errorIsForbidden   = false;
-	private        Hashtable<Object, Channel> m_classList          = new Hashtable<>();
+	private static Logger                          m_instance;
+	private        boolean                         m_hasBeenInitialized;
+	private        int                             m_logCounterTotal     = 0;
+	private        boolean                         m_debugIsForbidden    = false;
+	private        boolean                         m_warningIsForbidden  = false;
+	private        boolean                         m_errorIsForbidden    = false;
+	private        boolean                         m_activityIsForbidden = false;
+	private        Hashtable<Object, Channel>      m_classList           = new Hashtable<>();
+	private        Hashtable<Channel, ChannelFlag> m_channelFlag         = new Hashtable<>();
 }
