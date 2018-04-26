@@ -81,22 +81,22 @@ public class MainUI extends UI implements IUserInterface
 
 	private void openSubscriberDashboardView()
 	{
-		access(() -> setContent(m_subscriberDashboardView));
+		setContent(m_subscriberDashboardView);
 	}
 
 	private void openClientAdminDashboardView()
 	{
-		access(() -> setContent(m_subscriberAdminDashboardView));
+		setContent(m_subscriberAdminDashboardView);
 	}
 
 	private void openSystemAdminDashboardView()
 	{
-		access(() -> setContent(m_systemAdminDashboardView));
+		setContent(m_systemAdminDashboardView);
 	}
 
 	public void openLogoutView()
 	{
-		access(() -> setContent(m_logoutView));
+		setContent(m_logoutView);
 	}
 
 
