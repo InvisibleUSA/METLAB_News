@@ -27,7 +27,7 @@ public class QueryLoginUser extends MariaDBQueryBase
 		{
 			return "SELECT * FROM Abonnent WHERE PW = '" + password + "'";
 		}
-		return "SELECT * FROM Abonnent WHERE EMail = '" + email + "'";
+		return "SELECT * FROM Abonnent WHERE EMail = '" + email + "' AND PW = '" + password + "'";
 	}
 
 	@Override
@@ -58,12 +58,12 @@ public class QueryLoginUser extends MariaDBQueryBase
 			userLoginSuccessful = false;
 			return;
 		}
-		if(!readPassword.equals(password))
+		/*if(!readPassword.equals(password))
 		{
 			userExists = true;
 			userLoginSuccessful = false;
 			return;
-		}
+		}*/
 		if(!userVerified)
 		{
 			userExists = true;
