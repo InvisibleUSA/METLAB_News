@@ -1,5 +1,7 @@
 package me.metlabnews.Model.BusinessLogic;
 
+import me.metlabnews.Model.Common.Logger;
+import me.metlabnews.Model.Common.Mail;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.*;
 import me.metlabnews.Model.Entities.Organisation;
@@ -15,6 +17,7 @@ import me.metlabnews.Presentation.IUserInterface.IGetStringArrayEvent;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.sql.SQLException;
 
 
 
@@ -32,15 +35,24 @@ public class UserManager
 	                                  String firstName, String lastName,
 	                                  String organisationName, boolean clientAdmin)
 	{
-		if(userExists(email))
+		try
 		{
-			onFailure.execute(Messages.EmailAddressAlreadyInUse);
-			return; //TODO: Implement Error User exists
+			if(userExists(email))
+			{
+				onFailure.execute(Messages.EmailAddressAlreadyInUse);
+				return;
+			}
+			if(!organisationExists(organisationName))
+			{
+				onFailure.execute(Messages.UnknownOrganisation);
+				return;
+			}
 		}
-		if(!organisationExists(organisationName))
+		catch(SQLException e)
 		{
-			onFailure.execute(Messages.UnknownOrganisation);
-			return; //TODO: Implement Error Organization does not exist
+			Logger.getInstance().logError(this, "SQL DB Error: " + e.toString());
+			onFailure.execute(Messages.UnknownError);
+			return;
 		}
 		if(!Validator.validateEmailAddress(email))
 		{
@@ -53,42 +65,40 @@ public class UserManager
 			return;
 		}
 
+		Subscriber subscriber = new Subscriber(email, password, firstName, lastName, new Organisation(organisationName),
+		                                       clientAdmin); //TODO: Change Organisation
+
 		QueryAddUser qau = new QueryAddUser();
-		qau.email = email;
-		qau.password = password;
-		qau.firstName = firstName;
-		qau.lastName = lastName;
-		qau.organisationName = organisationName;
-		qau.clientAdmin = clientAdmin;
+		qau.subscriber = subscriber;
 		if(!qau.execute())
 		{
 			onFailure.execute(Messages.UnknownError);
-			return; //TODO: Error
+			return;
 		}
-		Subscriber subscriber = new Subscriber(email, password, firstName, lastName, new Organisation(organisationName),
-		                                       clientAdmin); //TODO: Change Organisation to String
+
+
 		session.login(subscriber);
 		onSuccess.execute();
 	}
 
-	private boolean organisationExists(String organisationName)
+	private boolean organisationExists(String organisationName) throws SQLException
 	{
 		QueryGetOrganisation qgo = new QueryGetOrganisation();
 		qgo.organisationName = organisationName;
 		if(!qgo.execute())
 		{
-			return false; //TODO: Error handling
+			throw new SQLException();
 		}
 		return qgo.organisationExists;
 	}
 
-	private boolean userExists(String email)
+	private boolean userExists(String email) throws SQLException
 	{
 		QueryGetUser qgu = new QueryGetUser();
 		qgu.email = email;
 		if(!qgu.execute())
 		{
-			return false; //TODO: Error handling
+			throw new SQLException();
 		}
 		return qgu.userExists;
 	}
@@ -100,14 +110,15 @@ public class UserManager
 		qlu.email = email;
 		if(!qlu.execute())
 		{
-			return; //TODO: Error handling
+			onFailure.execute(Messages.UnknownError);
+			return;
 		}
 		if(!qlu.userLoginSuccessful)
 		{
 			if(!qlu.userExists)
 			{
 				onFailure.execute(Messages.InvalidEmailAddress);
-				return; //TODO: Error handling User doesn't exist
+				return;
 			}
 			if(!qlu.userVerified)
 			{
@@ -115,12 +126,11 @@ public class UserManager
 				return;
 			}
 			onFailure.execute(Messages.WrongPassword);
-			return; //TODO: Error handling invalid password
+			return;
 		}
 
 		session.login(qlu.subscriber);
 		onSuccess.execute();
-		//TODO: User Login
 	}
 
 	// endregion Subscriber Interaction
@@ -159,16 +169,16 @@ public class UserManager
 		if(!qgvp.execute())
 		{
 			onFailure.execute(Messages.UnknownError);
-			return; //TODO: Error handling
+			return;
 		}
-		UserDataRepresentation[] users = qgvp.users; //TODO: Change users to needed type
+		UserDataRepresentation[] users = qgvp.users;
 		onSuccess.execute(users);
 		//TODO: Mails treatment
 	}
 
 	public void verifySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String subscriberEmail, Boolean grantAdmin)
 	{
-		if(!adminCheck(session, onFailure))
+		if(!adminCheck(session, onFailure)) //Error handling done in adminCheck method
 		{
 			return;
 		}
@@ -280,13 +290,11 @@ public class UserManager
 			return; //TODO: Error handling
 		}
 
+		Subscriber subscriber = new Subscriber(adminEmail, adminPassword, adminFirstName, adminLastName, organisation,
+		                                       true);
+
 		QueryAddUser qau = new QueryAddUser();
-		qau.organisationName = organisationName;
-		qau.password = adminPassword;
-		qau.firstName = adminFirstName;
-		qau.lastName = adminLastName;
-		qau.clientAdmin = true;
-		qau.email = adminEmail;
+		qau.subscriber = subscriber;
 		if(!qau.execute())
 		{
 			return;
