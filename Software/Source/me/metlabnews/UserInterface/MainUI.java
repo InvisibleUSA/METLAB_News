@@ -31,13 +31,12 @@ import java.util.Collection;
 @Push(PushMode.AUTOMATIC)
 public class MainUI extends UI implements IUserInterface
 {
-	private SubscriberLoginView          m_subscriberLoginView;
-	private SubscriberRegistrationView   m_subscriberRegistrationView;
-	private SubscriberDashboardView      m_subscriberDashboardView;
-	private SystemAdminLoginView         m_systemAdminLoginView;
-	private SubscriberAdminDashboardView m_subscriberAdminDashboardView;
-	private SystemAdminDashboardView     m_systemAdminDashboardView;
-	private LogoutView                   m_logoutView;
+	private SubscriberLoginView        m_subscriberLoginView;
+	private SubscriberRegistrationView m_subscriberRegistrationView;
+	private SubscriberDashboardView    m_subscriberDashboardView;
+	private SystemAdminLoginView       m_systemAdminLoginView;
+	private SystemAdminDashboardView   m_systemAdminDashboardView;
+	private LogoutView                 m_logoutView;
 
 
 	public MainUI()
@@ -51,7 +50,6 @@ public class MainUI extends UI implements IUserInterface
 		m_systemAdminLoginView = new SystemAdminLoginView(this);
 		m_subscriberRegistrationView = new SubscriberRegistrationView(this);
 		m_subscriberDashboardView = new SubscriberDashboardView(this);
-		m_subscriberAdminDashboardView = new SubscriberAdminDashboardView(this);
 		m_systemAdminDashboardView = new SystemAdminDashboardView(this);
 		m_logoutView = new LogoutView(this);
 
@@ -69,24 +67,17 @@ public class MainUI extends UI implements IUserInterface
 
 	public void openSystemAdminLoginView()
 	{
-
 		setContent(m_systemAdminLoginView);
 	}
 
 	public void openSubscriberRegisterView()
 	{
-
 		setContent(m_subscriberRegistrationView);
 	}
 
 	private void openSubscriberDashboardView()
 	{
 		setContent(m_subscriberDashboardView);
-	}
-
-	private void openClientAdminDashboardView()
-	{
-		setContent(m_subscriberAdminDashboardView);
 	}
 
 	private void openSystemAdminDashboardView()
@@ -130,7 +121,6 @@ public class MainUI extends UI implements IUserInterface
 		m_logoutCallback.execute(this::logoutEvent);
 	}
 
-
 	public void removeSubscriber(IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
 	                             String email)
@@ -159,7 +149,6 @@ public class MainUI extends UI implements IUserInterface
 		access(() -> m_denySubscriberCallback.execute(onSuccess, onFailure, email));
 	}
 
-
 	public void addOrganisation(IGenericEvent onSuccess,
 	                            IGenericFailureEvent onFailure,
 	                            String organisationName,
@@ -184,6 +173,16 @@ public class MainUI extends UI implements IUserInterface
 	                                IGenericFailureEvent onFailure)
 	{
 		m_FetchOrganisationsCallback.execute(onSuccess, onFailure);
+	}
+
+	public void addProfile(IGenericEvent onSuccess,
+	                       IGenericFailureEvent onFailure,
+	                       String profileName,
+	                       String[] sources,
+	                       String[] keywords,
+	                       String time)
+	{
+		m_addProfileCallback.execute(onSuccess, onFailure, profileName, sources, keywords, time);
 	}
 
 	// endregion GUI Methods
@@ -214,8 +213,7 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
-	public void registerCallbackFetchPendingVerificationRequests(
-			IFetchPendingVerificationRequestsCallback callback)
+	public void registerCallbackFetchPendingVerificationRequests(IFetchPendingVerificationRequestsCallback callback)
 	{
 		m_fetchPendingVerificationRequestsCallback = callback;
 	}
@@ -262,6 +260,12 @@ public class MainUI extends UI implements IUserInterface
 		m_logoutCallback = callback;
 	}
 
+	@Override
+	public void registerCallbackAddProfile(IAddProfileCallback callback)
+	{
+		m_addProfileCallback = callback;
+	}
+
 
 	private ISubscriberLoginCallback                  m_subscriberLoginCallback;
 	private ISysAdminLoginCallback                    m_sysAdminLoginCallback;
@@ -274,23 +278,19 @@ public class MainUI extends UI implements IUserInterface
 	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
 	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
-
+	private IAddProfileCallback                       m_addProfileCallback;
 	// endregion Callbacks
 
 
 
 	// region Events
-
 	private void loginSuccessfulEvent()
 	{
 		UserDataRepresentation myself = Presenter.getInstance().whoAmI(this);
 		if(myself.isSystemAdministrator())
 		{
 			access(this::openSystemAdminDashboardView);
-		}
-		else if(myself.isOrganisationAdministrator())
-		{
-			access(this::openClientAdminDashboardView);
+			access(m_systemAdminLoginView::clearFields);
 		}
 		else
 		{
@@ -304,9 +304,16 @@ public class MainUI extends UI implements IUserInterface
 		Notification notification = new Notification("Anmeldung fehlgeschlagen\n"
 				                                             + errorMessage);
 		notification.setDelayMsec(3000);
-		access(() -> notification .show(Page.getCurrent()));
+		access(() -> notification.show(Page.getCurrent()));
 	}
 
+	private void registrationFailedEvent(String errorMessage)
+	{
+		Notification notification = new Notification("Registrierung fehlgeschlagen\n"
+				                                             + errorMessage);
+		notification.setDelayMsec(3000);
+		access(() -> notification.show(Page.getCurrent()));
+	}
 
 	private void logoutEvent()
 	{
@@ -317,21 +324,11 @@ public class MainUI extends UI implements IUserInterface
 	private void subscriberVerificationPendingEvent()
 	{
 		Notification notification = new Notification("Verifizierung ausstehend\nWarten Sie auf die " +
-				                                      "Verifikation durch einen Administrator");
+				                                             "Verifikation durch einen Administrator");
 		notification.setDelayMsec(3000);
 		access(() -> notification.show(Page.getCurrent()));
 		access(m_subscriberLoginView::clearFields);
 	}
-
-
-	private void registrationFailedEvent(String errorMessage)
-	{
-		Notification notification = new Notification("Registrierung fehlgeschlagen\n"
-				                                            + errorMessage);
-		notification.setDelayMsec(3000);
-		access(() -> notification.show(Page.getCurrent()));
-	}
-
 	// endregion Events
 
 

@@ -6,25 +6,8 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-/**
- * The login form for system admins
- * Contains text fields for identifying a system admin
- */
-public class SystemAdminLoginView extends VerticalLayout implements IView
+public class SystemAdminLoginView extends VerticalLayout
 {
-	private MainUI m_parent;
-
-	private final Label         title                   = new Label("Willkommen bei METLAB-News - Anmeldung");
-	private final TextField     textFieldEmail          = new TextField("E-Mail:");
-	private final PasswordField textFieldPassword       = new PasswordField("Passwort:");
-	private final Button        buttonLogin             = new Button("Anmelden");
-	private final Button        buttonToSubscriberLogin = new Button("Zurück zur Anmeldeseite für Abonnenten");
-
-	/**
-	 * Initializes the view and sets all of its components to their default values
-	 *
-	 * @param parent the parent object of this view
-	 */
 	public SystemAdminLoginView(MainUI parent)
 	{
 		m_parent = parent;
@@ -39,14 +22,20 @@ public class SystemAdminLoginView extends VerticalLayout implements IView
 		                   buttonToSubscriberLogin);
 	}
 
-
-	@Override
-	public void show()
+	public void clearFields()
 	{
-		m_parent.setContent(this);
-		Page.getCurrent().setTitle("Anmelden");
+		textFieldEmail.setValue("");
+		textFieldPassword.setValue("");
 	}
 
+
+	private MainUI m_parent;
+
+	private final Label         title                   = new Label("Willkommen bei METLAB-News - Anmeldung");
+	private final TextField     textFieldEmail          = new TextField("E-Mail:");
+	private final PasswordField textFieldPassword       = new PasswordField("Passwort:");
+	private final Button        buttonLogin             = new Button("Anmelden");
+	private final Button        buttonToSubscriberLogin = new Button("Zurück zur Anmeldeseite für Abonnenten");
 
 	private void loginAction()
 	{
@@ -55,17 +44,11 @@ public class SystemAdminLoginView extends VerticalLayout implements IView
 
 		if(email.isEmpty())
 		{
-			Notification popup = new Notification("Bitte geben Sie Ihre Email-Adresse ein!",
-			                                      Notification.Type.WARNING_MESSAGE);
-			popup.setDelayMsec(3000);
-			popup.show(Page.getCurrent());
+			Notification.show("Bitte geben Sie Ihre Email-Adresse ein!");
 		}
 		else if(password.isEmpty())
 		{
-			Notification popup = new Notification("Bitte geben Sie Ihr Passwort ein!",
-			                                      Notification.Type.WARNING_MESSAGE);
-			popup.setDelayMsec(3000);
-			popup.show(Page.getCurrent());
+			Notification.show("Bitte geben Sie Ihr Passwort ein!");
 		}
 		else
 		{
