@@ -285,12 +285,6 @@ public class ConfigurationManager implements IResource
 		return returnProperty(key);
 	}
 
-	public String getRdbmsSqlDialect()
-	{
-		String key = "RDBMS.SQLDialect";
-		return returnProperty(key);
-	}
-
 	// endregion RDBMS
 
 

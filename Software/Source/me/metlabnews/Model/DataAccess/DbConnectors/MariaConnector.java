@@ -1,6 +1,7 @@
 package me.metlabnews.Model.DataAccess.DbConnectors;
 
 import me.metlabnews.Model.Common.Logger;
+import me.metlabnews.Model.DataAccess.ConfigurationManager;
 
 import java.sql.*;
 
@@ -13,7 +14,7 @@ class MariaConnector
 		Logger.getInstance().register(MariaConnector.class, Logger.Channel.RDBMS);
 		try
 		{
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(ConfigurationManager.getInstance().getRdbmsDriver());
 		}
 		catch(ClassNotFoundException e)
 		{
@@ -21,27 +22,39 @@ class MariaConnector
 		}
 	}
 
-	private String conString = "jdbc:mariadb://46.101.223.95:3306/METLAB_DB?user=test&password=test";
+	private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 
-	ResultSet query(String q) throws SQLException
+	private String     conString = (configurationManager.getRdbmsUseLocalDB()) ? configurationManager.getRdbmsLocalUrl() : configurationManager.getRdbmsRemoteUrl();
+	private Connection conn;
+
+	ResultSet query(String[] q) throws SQLException
 	{
-		return connect().executeQuery(q);
+		conn = connect();
+		PreparedStatement ps = conn.prepareStatement(q[0]);
+		for(int i = 1; i < q.length; i++)
+		{
+			ps.setString(i, q[i]);
+		}
+		ResultSet rs = ps.executeQuery();
+		ps.close();
+		disconnect();
+		return rs;
 	}
 
 
-	public MariaConnector()
+	MariaConnector()
 	{
 	}
 
 
-	private Statement connect() throws SQLException
+	private Connection connect() throws SQLException
 	{
-		Connection conn      = DriverManager.getConnection(conString);
-		Statement  statement = conn.createStatement();
-		return statement;
+		return DriverManager.getConnection(conString, configurationManager.getRdbmsUsername(),
+		                                   configurationManager.getRdbmsPassword());
 	}
 
-	private void disconnect()
+	private void disconnect() throws SQLException
 	{
+		conn.close();
 	}
 }
