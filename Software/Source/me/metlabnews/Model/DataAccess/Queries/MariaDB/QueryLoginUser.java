@@ -21,7 +21,7 @@ public class QueryLoginUser extends MariaDBQueryBase
 	public boolean byPassword = false;
 
 	@Override
-	protected String[] createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
 		if(byPassword)
 		{

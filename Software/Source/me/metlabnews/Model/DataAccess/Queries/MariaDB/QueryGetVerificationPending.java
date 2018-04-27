@@ -1,8 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
-import me.metlabnews.Model.DataAccess.Queries.QueryBase;
 import me.metlabnews.Presentation.UserDataRepresentation;
-import org.basex.core.Command;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,9 +17,9 @@ public class QueryGetVerificationPending extends MariaDBQueryBase
 	public UserDataRepresentation[] users;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "SELECT * FROM Abonnent WHERE isVerified = 0 AND Firma = '" + organization + "'";
+		return new String[] {"SELECT * FROM Abonnent WHERE isVerified = 0 AND Firma = ?", organization};
 	}
 
 	@Override

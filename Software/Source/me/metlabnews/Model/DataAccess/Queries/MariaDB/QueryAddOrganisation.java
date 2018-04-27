@@ -14,9 +14,9 @@ public class QueryAddOrganisation extends MariaDBQueryBase
 	public String orgName;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "INSERT INTO Klienten (Name) VALUES ('" + orgName + "')";
+		return new String[] {"INSERT INTO Klienten (Name) VALUES (?)", orgName};
 	}
 
 	@Override

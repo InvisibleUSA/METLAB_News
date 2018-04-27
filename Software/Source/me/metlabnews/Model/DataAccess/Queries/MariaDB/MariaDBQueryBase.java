@@ -25,7 +25,7 @@ abstract class MariaDBQueryBase extends QueryBase
 	{
 		try
 		{
-			String[]  sql = createSQLQuery();
+			Object[]  sql = createSQLQuery();
 			ResultSet rs  = m_dbConnector.mariaQuery(sql);
 
 			processResults(rs);
@@ -44,7 +44,7 @@ abstract class MariaDBQueryBase extends QueryBase
 	 *
 	 * @return the query to be executed
 	 */
-	protected abstract String[] createSQLQuery();
+	protected abstract Object[] createSQLQuery();
 
 	/**
 	 * Writes the results of the query back in the members of the specific subclass after the query was executed.

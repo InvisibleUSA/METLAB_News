@@ -20,7 +20,7 @@ public class DatabaseConnector
 		return baseXConnector.query(query);
 	}
 
-	public ResultSet mariaQuery(String[] query) throws SQLException
+	public ResultSet mariaQuery(Object[] query) throws SQLException
 	{
 		return mariaConnector.query(query);
 	}

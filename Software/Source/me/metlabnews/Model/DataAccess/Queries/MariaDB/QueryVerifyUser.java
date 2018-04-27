@@ -15,9 +15,9 @@ public class QueryVerifyUser extends MariaDBQueryBase
 	public boolean    userExists;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "UPDATE Abonnent SET isVerified = " + status + " WHERE EMail = '" + email + "'";
+		return new Object[] {"UPDATE Abonnent SET isVerified = ? WHERE EMail = ?", status, email};
 	}
 
 	@Override

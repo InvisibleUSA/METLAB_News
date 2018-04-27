@@ -27,13 +27,21 @@ class MariaConnector
 	private String     conString = (configurationManager.getRdbmsUseLocalDB()) ? configurationManager.getRdbmsLocalUrl() : configurationManager.getRdbmsRemoteUrl();
 	private Connection conn;
 
-	ResultSet query(String[] q) throws SQLException
+	ResultSet query(Object[] q) throws SQLException
 	{
 		conn = connect();
-		PreparedStatement ps = conn.prepareStatement(q[0]);
+		PreparedStatement ps = conn.prepareStatement((String)q[0]);
 		for(int i = 1; i < q.length; i++)
 		{
-			ps.setString(i, q[i]);
+			if(q[i] instanceof String)
+			{
+				ps.setString(i, (String)q[i]);
+			}
+			else if(q[i] instanceof Integer)
+			{
+				ps.setInt(i, (int)q[i]);
+			}
+
 		}
 		ResultSet rs = ps.executeQuery();
 		ps.close();

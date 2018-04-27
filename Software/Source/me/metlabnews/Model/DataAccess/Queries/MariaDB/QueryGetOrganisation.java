@@ -1,7 +1,5 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
-import org.basex.core.Command;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,13 +14,13 @@ public class QueryGetOrganisation extends MariaDBQueryBase
 	public String[] organisations;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
 		if(organisationName.isEmpty())
 		{
-			return "SELECT * FROM Klienten";
+			return new String[] {"SELECT * FROM Klienten"};
 		}
-		return "SELECT * FROM Klienten WHERE Name = '" + organisationName + "'";
+		return new String[] {"SELECT * FROM Klienten WHERE Name = ?", organisationName};
 	}
 
 	@Override
