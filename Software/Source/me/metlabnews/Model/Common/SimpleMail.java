@@ -9,22 +9,23 @@ import org.apache.commons.mail.SimpleEmail;
 @SuppressWarnings({"FieldCanBeLocal", "WeakerAccess"})
 /**
  * Simple class that stores information needed to send an e-mail and can send this e-mail.
- * The class relies on the Apache Commons Simple Mail API.
+ * The class relies on the Apache Commons Simple SimpleMail API.
  * @version 1.0
  * @author Erik
  */
-public class Mail
+public class SimpleMail
 {
 	static
 	{
-		Logger.getInstance().register(Mail.class, Logger.Channel.Mail);
+		Logger.getInstance().register(SimpleMail.class, Logger.Channel.Mail);
 	}
-	public        String To;
+
 	@SuppressWarnings("WeakerAccess")
+	public        String To         = null;
+	public        String Subject    = null;
+	public        String Text       = null;
 	final public  String From       = ConfigurationManager.getInstance().getMailFromAddress();
 	final private String password   = ConfigurationManager.getInstance().getMailPassword();
-	public        String Subject;
-	public        String Text;
 	final private String SMTPServer = ConfigurationManager.getInstance().getMailSMTPServer();
 	final private int    SMTPPort   = ConfigurationManager.getInstance().getMailSMTPPort();
 
@@ -40,7 +41,6 @@ public class Mail
 		try
 		{
 			email.setSmtpPort(SMTPPort);
-			//email.setDebug(true);
 			email.setAuthenticator(new DefaultAuthenticator(From, password));
 			email.setSSLOnConnect(true);
 
@@ -57,5 +57,28 @@ public class Mail
 			Logger.getInstance().logError(this, e.toString());
 			return false;
 		}
+	}
+
+
+	/**
+	 * Overload method of send(). Send the mail stored in this instance.
+	 * Any exception is logged in the mail channel.
+	 * The mail is send
+	 *
+	 * @param to      The receiver of this E-SimpleMail
+	 * @param subject Subject
+	 * @param text    The E-SimpleMail Text
+	 * @return true: send was successful  false: an exception occurred
+	 */
+	public boolean send(String to, String subject, String text)
+	{
+		if(to != null && subject != null && text != null)
+		{
+			To = to;
+			Subject = subject;
+			Text = text;
+			return send();
+		}
+		return false;
 	}
 }

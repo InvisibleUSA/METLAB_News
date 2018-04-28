@@ -38,17 +38,19 @@
 	<entry key="RDBMS.SQLDialect">org.hibernate.dialect.MySQLDialect</entry>
 
 
-	<!-- Mail -->
+	<!-- SimpleMail -->
 	<entry key="Mail.SMTPServer">smtp.gmail.com</entry>
-	<entry key="Mail.Password">metlabnews54321</entry>
+	<entry key="Mail.Password">gewgdagftzmeftwt</entry>
 	<entry key="Mail.FromAddress">metlabnews@gmail.com</entry>
-	<entry key="Mail.SMTPPort">465</entry>
+	<entry key="Mail.SMTPPort">587</entry>
 
 
 	<!-- Logger -->
-	<entry key="Logger.LogDestination">ToFile</entry> <!-- {ToFile, ToConsole -->
+	<entry key="Logger.LogDestination">ToConsole</entry> <!-- {ToFile, ToConsole -->
 	<entry key="Logger.LogFilePath">\Logs\</entry> <!-- The subfolder of the logfiles -->
 	<entry key="Logger.isDisabled_ERROR">false</entry> <!-- {false, true} -->
 	<entry key="Logger.isDisabled_WARNING">false</entry> <!-- {false, true} -->
+	<entry key="Logger.isDisabled_ACTIVITY">false</entry> <!-- {false, true} -->
+	<entry key="Logger.isDisabled_REGISTRATION">false</entry> <!-- {false, true} -->
 	<entry key="Logger.isDisabled_DEBUG">false</entry> <!-- {false, true} -->
 </properties>

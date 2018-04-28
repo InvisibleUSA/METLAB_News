@@ -344,7 +344,8 @@ public class Logger implements IResource
 
 			try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true)))
 			{
-				bufferedWriter.write(createLogString(sender, level, channel, msg + System.lineSeparator(), ++m_logCounterTotal));
+				bufferedWriter.write(
+						createLogString(sender, level, channel, msg + System.lineSeparator(), ++m_logCounterTotal));
 			}
 			catch(IOException e)
 			{
