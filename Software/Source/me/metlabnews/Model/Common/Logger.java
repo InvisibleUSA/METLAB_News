@@ -295,8 +295,8 @@ public class Logger implements IResource
 			}
 			catch(Exception e)
 			{
-				logError(this, "Error putting Key '" + c.name() + "' to '" + ChannelFlag.ENABLED.name());
-				res = false;
+				logError(this, "FATAL Error putting Key '" + c.name() + "' to '" + ChannelFlag.ENABLED.name());
+				return false;
 			}
 		}
 		return res;
