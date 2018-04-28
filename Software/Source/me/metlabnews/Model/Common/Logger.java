@@ -27,7 +27,7 @@ import java.util.Hashtable;
  * Careful: You need first to register the logger with the following Code:
  * <p>
  * {@code
- * Logger.getInstance.register(CLASSNAME.class, Logger.Channel.CHANNELNAME)
+ * Logger.getInstance.register(CLASSNAME.class, Logger.Channel.ChannelName)
  * }
  * </p>
  * </p>
@@ -40,7 +40,7 @@ import java.util.Hashtable;
  * </p>
  *
  * @author Tobias Reis
- * @version 1.4
+ * @version 2.0
  */
 public class Logger implements IResource
 {
@@ -80,13 +80,20 @@ public class Logger implements IResource
 		m_warningIsForbidden = config.getFilteredPriorities("WARNING");
 		m_errorIsForbidden = config.getFilteredPriorities("ERROR");
 
-		m_hasBeenInitialized = true;
+		if(m_hasBeenInitialized = enableChannel())
+		{
+			logActivity(this, "Logger has been initialized :)");
+		}
+		else
+		{
+			logError(this, "logger has NOT been initialized");
+		}
 	}
 
 	@Override
 	public void close()
 	{
-
+		logActivity(this, "Logger has been closed.");
 	}
 
 
@@ -99,6 +106,7 @@ public class Logger implements IResource
 	 */
 	public enum Channel
 	{
+		Default,
 		ConfigurationManager,
 		ClippingDaemon,
 		Crawler,
@@ -191,7 +199,7 @@ public class Logger implements IResource
 
 
 	/**
-	 * This Method will return the value of the forbidden Priority. If e.g. the DEBUG-Priority
+	 * This Method will return the value of the forbidden LogLevel. If e.g. the DEBUG-Priority
 	 * is forbidden, then every called DEBUG-calls will be ignored.
 	 *
 	 * @param level the Priority (e.g. DEBUG, WARNING, ERROR)
@@ -230,7 +238,7 @@ public class Logger implements IResource
 	 */
 	private boolean isChannelForbidden(Channel channel)
 	{
-		if(channel != null)
+		if(channel != null && m_hasBeenInitialized)
 		{
 			switch(m_channelFlag.get(channel))
 			{
@@ -242,10 +250,7 @@ public class Logger implements IResource
 					return true;
 			}
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 
@@ -271,6 +276,34 @@ public class Logger implements IResource
 
 
 	/**
+	 * This method is called by the variable 'm_hasBeenInitialized' in the initialize() method.
+	 * The Function will return true, if all Channels were correctly putted into the HashTable.
+	 * The Channels are by default ENABLED.
+	 *
+	 * @return true, if all Channels were correctly putted into the HashTable. False if not.
+	 */
+	private boolean enableChannel()
+	{
+		boolean res = false;
+
+		for(Channel c : Channel.values())
+		{
+			try
+			{
+				m_channelFlag.put(c, ChannelFlag.ENABLED);
+				res = true;
+			}
+			catch(Exception e)
+			{
+				logError(this, "Error putting Key '" + c.name() + "' to '" + ChannelFlag.ENABLED.name());
+				res = false;
+			}
+		}
+		return res;
+	}
+
+
+	/**
 	 * <p>This Message will write an error message to a file.</p>
 	 * <p>
 	 * If the file and/or the directory is NOT found, then the method will
@@ -280,12 +313,12 @@ public class Logger implements IResource
 	 * Filenames are e.g.: 04-05-2018-WebCrawler-log.txt
 	 * </p>
 	 *
-	 * @param sender   The source of the log
-	 * @param logLevel The log-priority
-	 * @param channel  The specific channel
-	 * @param msg      The log-Message
+	 * @param sender  The source of the log
+	 * @param level   The log-priority
+	 * @param channel The specific channel
+	 * @param msg     The log-Message
 	 */
-	private synchronized void writeToFile(Object sender, LogLevel logLevel, Channel channel, String msg)
+	private synchronized void writeToFile(Object sender, LogLevel level, Channel channel, String msg)
 	{
 		if(msg != null && channel != null)
 		{
@@ -311,11 +344,11 @@ public class Logger implements IResource
 
 			try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true)))
 			{
-				bufferedWriter.write(createLogString(sender, logLevel, channel, msg, ++m_logCounterTotal));
+				bufferedWriter.write(createLogString(sender, level, channel, msg + System.lineSeparator(), ++m_logCounterTotal));
 			}
 			catch(IOException e)
 			{
-				System.err.println("IO Exception! Error in Logger: " + e.getMessage());
+				writeToConsole(this, level, channel, "IO Exception! Error in Logger: " + e.getMessage());
 			}
 		}
 	}
@@ -456,10 +489,6 @@ public class Logger implements IResource
 	public void register(java.lang.Class sender, Channel channel)
 	{
 		// first of all ENABLE all channels and hash them into table
-		for(Channel c : Channel.values())
-		{
-			m_channelFlag.put(c, ChannelFlag.ENABLED);
-		}
 
 		if(sender != null)
 		{
@@ -477,7 +506,7 @@ public class Logger implements IResource
 			}
 			finally
 			{
-				String msg = res + pre + sender.getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTableSize: " + m_classList.size();
+				String msg = res + pre + sender.getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTable size: " + m_classList.size();
 				log(this, LogLevel.REGISTRATION, m_classList.get(sender.getCanonicalName()), msg);
 			}
 		}
@@ -545,13 +574,13 @@ public class Logger implements IResource
 	}
 
 
-	private static Logger                          m_instance;
-	private        boolean                         m_hasBeenInitialized;
-	private        int                             m_logCounterTotal     = 0;
-	private        boolean                         m_debugIsForbidden    = false;
-	private        boolean                         m_warningIsForbidden  = false;
-	private        boolean                         m_errorIsForbidden    = false;
-	private        boolean                         m_activityIsForbidden = false;
-	private        Hashtable<Object, Channel>      m_classList           = new Hashtable<>();
-	private        Hashtable<Channel, ChannelFlag> m_channelFlag         = new Hashtable<>();
+	private static Logger  m_instance;
+	private        boolean m_hasBeenInitialized;
+	private int                             m_logCounterTotal     = 0;
+	private boolean                         m_debugIsForbidden    = false;
+	private boolean                         m_warningIsForbidden  = false;
+	private boolean                         m_errorIsForbidden    = false;
+	private boolean                         m_activityIsForbidden = false;
+	private Hashtable<Object, Channel>      m_classList           = new Hashtable<>();
+	private Hashtable<Channel, ChannelFlag> m_channelFlag         = new Hashtable<>();
 }

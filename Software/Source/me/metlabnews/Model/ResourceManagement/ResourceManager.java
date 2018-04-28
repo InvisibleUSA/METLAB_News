@@ -23,7 +23,7 @@ public class ResourceManager implements ServletContextListener
 		Logger.getInstance().register(ResourceManager.class, Logger.Channel.ResourceManager);
 
 		// here you can disable single channels of the logger
-		Logger.getInstance().disableChannel(Logger.Channel.INFO);
+		Logger.getInstance().disableChannel(Logger.Channel.Default);
 	}
 
 	public ResourceManager()
@@ -40,17 +40,16 @@ public class ResourceManager implements ServletContextListener
 	{
 		Logger logger = Logger.getInstance();
 
-		logger.logDebug(this, "Initializing...");
-		logger.logDebug(this, "Server Info: "
-				+ sce.getServletContext().getServerInfo());
+		logger.logActivity(this, "Initializing...");
+		logger.logActivity(this, "Server Info: " + sce.getServletContext().getServerInfo());
 
 		// ConfigurationManager has to be initialized first!
 		ConfigurationManager.getInstance().initialize();
-		logger.logDebug(this, "ConfigurationManager initialized");
+		logger.logActivity(this, "ConfigurationManager initialized");
 
 		// Logger has to be initialized second!
 		Logger.getInstance().initialize();
-		logger.logDebug(this, "Logger initialized");
+		logger.logActivity(this, "Logger initialized");
 
 		// initialize DatabaseAccess
 		new QueryAddOrganisation();

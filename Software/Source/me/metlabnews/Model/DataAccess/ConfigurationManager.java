@@ -2,6 +2,7 @@ package me.metlabnews.Model.DataAccess;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.ResourceManagement.IResource;
+import sun.rmi.runtime.Log;
 
 import java.io.*;
 import java.util.Properties;
@@ -10,6 +11,11 @@ import java.util.Properties;
 
 public class ConfigurationManager implements IResource
 {
+	static
+	{
+		Logger.getInstance().register(ConfigurationManager.class, Logger.Channel.ConfigurationManager);
+	}
+
 	/**
 	 * Singleton call
 	 *
@@ -71,7 +77,7 @@ public class ConfigurationManager implements IResource
 	private void setNumberFormatException(NumberFormatException e, String key)
 	{
 		String errorMsg = "IOException in Configuration Manager." +
-				" Please check Settings.XML and depending getter-method for Key: '" + key +"'. Error Message: ";
+				" Please check Settings.XML and depending getter-method for Key: '" + key + "'. Error Message: ";
 		Logger.getInstance().logError(this, errorMsg + e.toString());
 	}
 
@@ -353,7 +359,7 @@ public class ConfigurationManager implements IResource
 		String key = "Logger.LogDestination";
 		try
 		{
-			switch(String.format(returnProperty(key)))
+			switch(returnProperty(key))
 			{
 				case "ToFile":
 					return LogDestination.ToFile.name();
@@ -411,7 +417,6 @@ public class ConfigurationManager implements IResource
 	{
 		ToFile,
 		ToConsole,
-		ToDatabase
 	}
 
 
@@ -430,7 +435,7 @@ public class ConfigurationManager implements IResource
 			if(value == null)
 			{
 				Logger.getInstance().logError(this, "Key '" + key + "' not found in: "
-						                         + m_XMLFilePath);
+						+ m_XMLFilePath);
 			}
 			return value;
 		}
@@ -446,6 +451,6 @@ public class ConfigurationManager implements IResource
 	private boolean m_hasBeenInitialized = false;
 	private static ConfigurationManager m_instance;
 	private final String m_XMLFilePath = (System.getProperty(
-			"user.dir") + "" + File.separator + "Resources" + File.separator + "Settings.XML");
+			"user.dir") + File.separator + "Software" + File.separator + "Resources" + File.separator + "Settings.XML");
 	private Properties m_properties;
 }
