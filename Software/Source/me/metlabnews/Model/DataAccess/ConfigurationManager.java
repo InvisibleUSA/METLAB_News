@@ -1,6 +1,7 @@
 package me.metlabnews.Model.DataAccess;
 
 import me.metlabnews.Model.Common.Logger;
+import me.metlabnews.Model.Entities.SystemAdministrator;
 import me.metlabnews.Model.ResourceManagement.IResource;
 
 import java.io.*;
@@ -440,10 +441,19 @@ public class ConfigurationManager implements IResource
 		}
 	}
 
+	private String setXMLFilePath()
+	{
+		if(System.getProperty("user.dir").contains("Software"))
+		{
+			return (System.getProperty("user.dir") + File.separator + "Resources" + File.separator + "Settings.XML");
+		}
+		return (System.getProperty(
+				"user.dir") + File.separator + "Software" + File.separator + "Resources" + File.separator + "Settings.XML");
+	}
+
 
 	private        boolean              m_hasBeenInitialized = false;
 	private static ConfigurationManager m_instance;
-	private final  String               m_XMLFilePath        = (System.getProperty(
-			"user.dir") + File.separator + "Software" + File.separator + "Resources" + File.separator + "Settings.XML");
+	private final  String               m_XMLFilePath        = setXMLFilePath();
 	private        Properties           m_properties;
 }
