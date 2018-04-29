@@ -2,7 +2,6 @@ package me.metlabnews.Model.DataAccess;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.ResourceManagement.IResource;
-import sun.rmi.runtime.Log;
 
 import java.io.*;
 import java.util.Properties;
@@ -30,6 +29,16 @@ public class ConfigurationManager implements IResource
 		return m_instance;
 	}
 
+
+	/**
+	 * Returns if the Configuration Manager has been correctly initialized
+	 *
+	 * @return true if it has been initialized
+	 */
+	public boolean isM_hasBeenInitialized()
+	{
+		return m_hasBeenInitialized;
+	}
 
 	@Override
 	public void initialize()
@@ -384,7 +393,7 @@ public class ConfigurationManager implements IResource
 	 * @param priority The Priority
 	 * @return true or false
 	 */
-	public boolean getFilteredPriorities(String priority)
+	public boolean isLevelDisabled(String priority)
 	{
 		String key = "Logger.isDisabled_" + priority;
 		return Boolean.parseBoolean(returnProperty(key));
@@ -448,9 +457,9 @@ public class ConfigurationManager implements IResource
 	}
 
 
-	private boolean m_hasBeenInitialized = false;
+	private        boolean              m_hasBeenInitialized = false;
 	private static ConfigurationManager m_instance;
-	private final String m_XMLFilePath = (System.getProperty(
+	private final  String               m_XMLFilePath        = (System.getProperty(
 			"user.dir") + File.separator + "Software" + File.separator + "Resources" + File.separator + "Settings.XML");
-	private Properties m_properties;
+	private        Properties           m_properties;
 }

@@ -75,18 +75,35 @@ public class Logger implements IResource
 	@Override
 	public void initialize()
 	{
-		ConfigurationManager config = ConfigurationManager.getInstance();
-		m_debugIsForbidden = config.getFilteredPriorities("DEBUG");
-		m_warningIsForbidden = config.getFilteredPriorities("WARNING");
-		m_errorIsForbidden = config.getFilteredPriorities("ERROR");
-
-		if(m_hasBeenInitialized = enableChannel())
+		if(ConfigurationManager.getInstance().isM_hasBeenInitialized())
 		{
-			logActivity(this, "Logger has been initialized :)");
+			for(LogLevel level : LogLevel.values())
+			{
+				if(!ConfigurationManager.getInstance().isLevelDisabled(level.name()))
+				{
+					m_levelFlag.put(level, LevelFlag.ENABLED);
+				}
+				else
+				{
+					m_levelFlag.put(level, LevelFlag.DISABLED);
+				}
+			}
+
+			LogDestination = ConfigurationManager.getInstance().getLogDestination();
+
+			if(m_hasBeenInitialized = enableChannel())
+			{
+				logActivity(this, "Logger has been initialized :)");
+			}
+			else
+			{
+				logError(this, "logger has NOT been initialized");
+			}
 		}
 		else
 		{
-			logError(this, "logger has NOT been initialized");
+			logError(this, "ConfigurationManager is NOT initialized. Logger will NOT bei initialized!");
+			m_hasBeenInitialized = ConfigurationManager.getInstance().isM_hasBeenInitialized();
 		}
 	}
 
@@ -131,6 +148,20 @@ public class Logger implements IResource
 	 * </p>
 	 */
 	public enum ChannelFlag
+	{
+		ENABLED,
+		DISABLED,
+	}
+
+
+	/**
+	 * This enum represents the status of the LogLevel. You can enable and disable
+	 * each single LogLevel by a HashMap.
+	 * <p>
+	 * Unregistered = Level by default disabled
+	 * </p>
+	 */
+	public enum LevelFlag
 	{
 		ENABLED,
 		DISABLED,
@@ -207,26 +238,17 @@ public class Logger implements IResource
 	 */
 	private boolean isLevelForbidden(LogLevel level)
 	{
-		if(!m_hasBeenInitialized)
+		if(m_hasBeenInitialized && level != null)
 		{
-			switch(level)
+			switch(m_levelFlag.get(level))
 			{
-				case DEBUG:
-					return m_debugIsForbidden;
-				case WARNING:
-					return m_warningIsForbidden;
-				case ERROR:
-					return m_errorIsForbidden;
-				case ACTIVITY:
-					return m_activityIsForbidden;
-				default:
+				case DISABLED:
+					return true;
+				case ENABLED:
 					return false;
 			}
 		}
-		else
-		{
-			return ConfigurationManager.getInstance().getFilteredPriorities(level.name());
-		}
+		return false;
 	}
 
 
@@ -238,15 +260,13 @@ public class Logger implements IResource
 	 */
 	private boolean isChannelForbidden(Channel channel)
 	{
-		if(channel != null && m_hasBeenInitialized)
+		if(m_hasBeenInitialized && channel != null)
 		{
 			switch(m_channelFlag.get(channel))
 			{
-				case DISABLED:
-					return true;
 				case ENABLED:
 					return false;
-				default:
+				case DISABLED:
 					return true;
 			}
 		}
@@ -533,9 +553,8 @@ public class Logger implements IResource
 	 */
 	private void log(Object sender, LogLevel level, Channel channel, String msg)
 	{
-		boolean isLevelForbidden   = false; // log everything by default
+		boolean isLevelForbidden   = false;
 		boolean isChannelForbidden = false;
-		String  logType;
 
 		if(channel == null)
 		{
@@ -546,19 +565,14 @@ public class Logger implements IResource
 			isChannelForbidden = isChannelForbidden(channel);
 		}
 
-		if(!m_hasBeenInitialized)
-		{
-			logType = "ToConsole"; // log ToConsole by default
-		}
-		else
+		if(m_hasBeenInitialized)
 		{
 			isLevelForbidden = isLevelForbidden(level); // if isLevelForbidden = true -> NO logging
-			logType = ConfigurationManager.getInstance().getLogDestination();
 		}
 
 		if(!isLevelForbidden && !isChannelForbidden)
 		{
-			switch(logType)
+			switch(LogDestination)
 			{
 				case "ToFile":
 					writeToFile(sender, level, channel, msg);
@@ -575,11 +589,9 @@ public class Logger implements IResource
 
 	private static Logger                          m_instance;
 	private        boolean                         m_hasBeenInitialized;
-	private        int                             m_logCounterTotal     = 0;
-	private        boolean                         m_debugIsForbidden    = false;
-	private        boolean                         m_warningIsForbidden  = false;
-	private        boolean                         m_errorIsForbidden    = false;
-	private        boolean                         m_activityIsForbidden = false;
-	private        Hashtable<Object, Channel>      m_classList           = new Hashtable<>();
-	private        Hashtable<Channel, ChannelFlag> m_channelFlag         = new Hashtable<>();
+	private        int                             m_logCounterTotal = 0;
+	private        String                          LogDestination    = "ToConsole";
+	private        Hashtable<Object, Channel>      m_classList       = new Hashtable<>();
+	private        Hashtable<Channel, ChannelFlag> m_channelFlag     = new Hashtable<>();
+	private        Hashtable<LogLevel, LevelFlag>  m_levelFlag       = new Hashtable<>();
 }
