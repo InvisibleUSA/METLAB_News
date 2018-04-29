@@ -88,6 +88,7 @@ public class Logger implements IResource
 			{
 				logError(this, "logger has NOT been initialized");
 			}
+			FullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath();
 		}
 		else
 
@@ -201,11 +202,9 @@ public class Logger implements IResource
 
 	/**
 	 * This method will return the final string which is logged to the target.
-	 * <p>
-	 * Example:
-	 * </p>
+	 * <p>Example:</p>
 	 * {@code
-	 * #1 | ERROR | [17:02:02] : java.lang.NumberFormatException: null
+	 * #6 [23:28:31] [ACTIVITY - Logger @ UNREGISTERED_CHANNEL]: Logger has been DISABLED for Channel: 'UNREGISTERED_CHANNEL'
 	 * }
 	 *
 	 * @param level   The priority of the logs
@@ -216,7 +215,7 @@ public class Logger implements IResource
 	 */
 	private String createLogString(Object sender, LogLevel level, Channel channel, String msg, int counter)
 	{
-		return ("#" + counter + " [" + level.name() + "] " + sender.getClass().getSimpleName() + " in " + channel.name() + " " + getTimeStamp() + ": " + msg);
+		return ("#" + counter + " " + getTimeStamp() + " [" + level.name() + " - " + sender.getClass().getSimpleName() + " @ " + channel.name() + "]: " + msg);
 	}
 
 
@@ -231,7 +230,6 @@ public class Logger implements IResource
 	{
 		boolean local  = false;
 		boolean global = false;
-		boolean result = false;
 
 		if(m_hasBeenInitialized && level != null)
 		{
@@ -252,9 +250,8 @@ public class Logger implements IResource
 					local = true;
 					break;
 			}
-			result = (global || local);
 		}
-		return result;
+		return (global || local);
 	}
 
 
@@ -294,11 +291,11 @@ public class Logger implements IResource
 	@SuppressWarnings("WeakerAccess")
 	public void disable(Channel channel, LogLevel level)
 	{
-		if(level.equals(LogLevel.NONE))
+		if(level.equals(LogLevel.NONE) && !channel.equals(Channel.NONE))
 		{
 			disableChannel(channel);
 		}
-		if(channel.equals(Channel.NONE))
+		if(channel.equals(Channel.NONE) && !level.equals(LogLevel.NONE))
 		{
 			disableLevel(level);
 		}
@@ -418,6 +415,49 @@ public class Logger implements IResource
 
 
 	/**
+	 * This method returns a String for a FileName, based on the Channel name.
+	 * <p>Example</p>
+	 * <p>{@code 20-04-2018-Crawler-log.txt}</p>
+	 *
+	 * @param channel The specific Channel
+	 * @return A String of FileName, e.g.: 20-04-2018-Crawler-log.txt
+	 */
+	private String getFileName(Channel channel)
+	{
+		return getDateString() + "-"
+				+ channel.name() + "-"
+				+ "log.txt";
+	}
+
+
+	/**
+	 * This method returns a FilePath-String, basend on the Channel name.
+	 * <p>Example</p>
+	 * <p>{@code /home/ln/IdeaProjects/METLAB_News}</p>
+	 *
+	 * @param channel The specific Channel
+	 * @return A String of FilePath, e.g.: /home/ln/IdeaProjects/METLAB_News
+	 */
+	private String createFilePath(Channel channel)
+	{
+		if(!m_hasBeenInitialized)
+		{
+			return System.getProperty(
+					"user.dir") + File.separator
+					+ "Logs" + File.separator
+					+ channel.name() + File.separator
+					+ getFileName(channel);
+		}
+		else
+		{
+			return FullFilePath
+					+ channel.name() + File.separator
+					+ getFileName(channel);
+		}
+	}
+
+
+	/**
 	 * <p>This Message will write an error message to a file.</p>
 	 * <p>
 	 * If the file and/or the directory is NOT found, then the method will
@@ -436,19 +476,7 @@ public class Logger implements IResource
 	{
 		if(msg != null && channel != null)
 		{
-			String fullFilePath;
-			String fileName = getDateString() + "-" + channel.name() + "-" + "log.txt"; // e.g.: 04-05-2018-WebCrawler-log.txt
-
-			if(!m_hasBeenInitialized)
-			{
-				fullFilePath = System.getProperty(
-						"user.dir") + File.separator + "Logs" + File.separator + channel.name() + File.separator + fileName; // by default: ..\Logs\..
-			}
-			else
-			{
-				fullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath() + channel.name() + File.separator + fileName;
-			}
-
+			String fullFilePath = createFilePath(channel);
 
 			File file = new File(fullFilePath);
 			if(file.getParentFile().mkdirs())
@@ -703,6 +731,7 @@ public class Logger implements IResource
 	private        boolean                         m_hasBeenInitialized;
 	private        int                             m_logCounterTotal = 0;
 	private        String                          LogDestination    = "ToConsole";
+	private        String                          FullFilePath      = null;
 	private        Hashtable<Object, Channel>      m_classList       = new Hashtable<>();
 	private        Hashtable<Channel, ChannelFlag> m_channelFlag     = new Hashtable<>();
 	private        Hashtable<LogLevel, LevelFlag>  m_globalLevelFlag = new Hashtable<>();
