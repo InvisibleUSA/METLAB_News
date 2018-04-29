@@ -286,7 +286,7 @@ public class Logger implements IResource
 		try
 		{
 			log(this, LogLevel.ACTIVITY, channel, success);
-			m_channelFlag.replace(channel, ChannelFlag.DISABLED);
+			m_channelFlag.put(channel, ChannelFlag.DISABLED);
 		}
 		catch(Exception e)
 		{
@@ -305,7 +305,6 @@ public class Logger implements IResource
 	private boolean enableChannel()
 	{
 		boolean res = false;
-
 		for(Channel c : Channel.values())
 		{
 			try

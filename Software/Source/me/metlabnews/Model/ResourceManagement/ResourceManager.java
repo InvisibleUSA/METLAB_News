@@ -21,9 +21,6 @@ public class ResourceManager implements ServletContextListener
 	static
 	{
 		Logger.getInstance().register(ResourceManager.class, Logger.Channel.ResourceManager);
-
-		// here you can disable single channels of the logger
-		Logger.getInstance().disableChannel(Logger.Channel.Default);
 	}
 
 	public ResourceManager()
@@ -50,6 +47,10 @@ public class ResourceManager implements ServletContextListener
 		// Logger has to be initialized second!
 		Logger.getInstance().initialize();
 		logger.logActivity(this, "Logger initialized");
+
+		// here you can disable single channels of the logger
+		// Disable Channels AFTER initializing
+		Logger.getInstance().disableChannel(Logger.Channel.Default);
 
 		// initialize DatabaseAccess
 		new QueryAddOrganisation();
