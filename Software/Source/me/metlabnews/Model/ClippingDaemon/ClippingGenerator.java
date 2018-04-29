@@ -23,6 +23,11 @@ class ClippingGenerator implements Runnable
 		m_profile = op;
 	}
 
+    /**
+     * @inheritDoc
+     *
+     * generates a clipping and sends it via e-mail to its owner
+     */
 	@Override
 	public void run()
 	{
@@ -30,9 +35,12 @@ class ClippingGenerator implements Runnable
 		QueryGetRelevantArticlesFromRSS query = new QueryGetRelevantArticlesFromRSS(m_profile);
 		if(!query.execute())
 		{
-			Logger.getInstance().logError(this, "Unknown Error");
+			Logger.getInstance().logError(this, "Unknown Database Error");
 			return;
 		}
+
+		Logger.getInstance().logDebug(this, "Fetched RSS Articles");
+
 		for(Article a : query.getCandidates())
 		{
 			m_clipping.addArticle(a);

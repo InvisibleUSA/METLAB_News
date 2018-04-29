@@ -15,7 +15,7 @@ public class QueryAddProfile extends BaseXQueryBase
 	@Override
 	protected Command createBaseXQuery()
 	{
-		return new Add("/Profiles/" + name, profile.toString());
+		return new Add("/Profiles/" + name, profile.toXML());
 	}
 
 	@Override
