@@ -40,7 +40,7 @@ import java.util.Hashtable;
  * </p>
  *
  * @author Tobias Reis
- * @version 2.0
+ * @version 2.1
  */
 public class Logger implements IResource
 {
@@ -78,21 +78,9 @@ public class Logger implements IResource
 	{
 		if(ConfigurationManager.getInstance().isM_hasBeenInitialized())
 		{
-			for(LogLevel level : LogLevel.values())
-			{
-				if(!ConfigurationManager.getInstance().isLevelDisabled(level.name()))
-				{
-					m_levelFlag.put(level, LevelFlag.ENABLED);
-				}
-				else
-				{
-					m_levelFlag.put(level, LevelFlag.DISABLED);
-				}
-			}
-
 			LogDestination = ConfigurationManager.getInstance().getLogDestination();
 
-			if(m_hasBeenInitialized = enableChannel())
+			if(m_hasBeenInitialized = (enableChannel() && enableLevel()))
 			{
 				logActivity(this, "Logger has been initialized :)");
 			}
@@ -102,6 +90,7 @@ public class Logger implements IResource
 			}
 		}
 		else
+
 		{
 			logError(this, "ConfigurationManager is NOT initialized. Logger will NOT bei initialized!");
 			m_hasBeenInitialized = ConfigurationManager.getInstance().isM_hasBeenInitialized();
@@ -240,17 +229,32 @@ public class Logger implements IResource
 	 */
 	private boolean isLevelForbidden(LogLevel level)
 	{
+		boolean local  = false;
+		boolean global = false;
+		boolean result = false;
+
 		if(m_hasBeenInitialized && level != null)
 		{
-			switch(m_levelFlag.get(level))
+			switch(m_globalLevelFlag.get(level))
 			{
 				case DISABLED:
-					return true;
+					global = true;
+					break;
 				case ENABLED:
-					return false;
+					break;
 			}
+
+			switch(m_localLevelFlag.get(level))
+			{
+				case ENABLED:
+					break;
+				case DISABLED:
+					local = true;
+					break;
+			}
+			result = (global || local);
 		}
-		return false;
+		return result;
 	}
 
 
@@ -287,6 +291,7 @@ public class Logger implements IResource
 	 * @param channel The specific channel you want to disable logging
 	 * @param level   The specific level you want to disable logging
 	 */
+	@SuppressWarnings("WeakerAccess")
 	public void disable(Channel channel, LogLevel level)
 	{
 		if(level.equals(LogLevel.NONE))
@@ -295,16 +300,45 @@ public class Logger implements IResource
 		}
 		if(channel.equals(Channel.NONE))
 		{
-			// TODO
+			disableLevel(level);
+		}
+
+		if(!level.equals(LogLevel.NONE) && !channel.equals(Channel.NONE))
+		{
+			disableLevel(level);
+			disableChannel(channel);
 		}
 	}
+
+
+	/**
+	 * In this Method you can DISABLE a single Level to force it NOT to log.
+	 * <p>Attention: ERROR-level is ALWAYS enabled!</p>
+	 *
+	 * @param level the Level, e.g. DEBUG, WARNING, ...
+	 */
+	private void disableLevel(LogLevel level)
+	{
+		String success = "Logger has been DISABLED for level: '" + level.name() + "'";
+		String failure = "Logger DISABLED failed for level: '" + level.name() + "' with Message: ";
+		try
+		{
+			log(this, LogLevel.ACTIVITY, Channel.Logger, success);
+			m_localLevelFlag.put(level, LevelFlag.DISABLED);
+		}
+		catch(Exception e)
+		{
+			log(this, LogLevel.ERROR, Channel.Logger, failure + e.toString());
+		}
+	}
+
 
 	/**
 	 * In this Method you can DISABLE a single Channel to force it NOT to log.
 	 *
 	 * @param channel the Channel, e.g. Crawler, UI, ...
 	 */
-	public void disableChannel(Channel channel)
+	private void disableChannel(Channel channel)
 	{
 		String success = "Logger has been DISABLED for Channel: '" + channel.name() + "'";
 		String failure = "Logger DISABLED failed for Channel: '" + channel.name() + "' with Message: ";
@@ -315,7 +349,7 @@ public class Logger implements IResource
 		}
 		catch(Exception e)
 		{
-			log(this, LogLevel.ACTIVITY, channel, failure + e.toString());
+			log(this, LogLevel.ERROR, channel, failure + e.toString());
 		}
 	}
 
@@ -340,6 +374,42 @@ public class Logger implements IResource
 			catch(Exception e)
 			{
 				logError(this, "FATAL Error putting Key '" + c.name() + "' to '" + ChannelFlag.ENABLED.name());
+				return false;
+			}
+		}
+		return res;
+	}
+
+
+	/**
+	 * This method is called by the variable 'm_hasBeenInitialized' in the initialize() method.
+	 * The Function will return true, if all Channels were correctly putted into the HashTable.
+	 * The Channels are by default ENABLED.
+	 *
+	 * @return true, if all Channels were correctly putted into the HashTable. False if not.
+	 */
+	private boolean enableLevel()
+	{
+		boolean res = false;
+		for(LogLevel level : LogLevel.values())
+		{
+			try
+			{
+				if(!ConfigurationManager.getInstance().isLevelDisabled(level.name()))
+				{
+					m_globalLevelFlag.put(level, LevelFlag.ENABLED);
+					m_localLevelFlag.put(level, LevelFlag.ENABLED);
+					res = true;
+				}
+				else
+				{
+					m_globalLevelFlag.put(level, LevelFlag.DISABLED);
+					m_localLevelFlag.put(level, LevelFlag.DISABLED);
+				}
+			}
+			catch(Exception e)
+			{
+				logError(this, "FATAL Error putting Key '" + level.name() + "' to '" + LevelFlag.ENABLED.name());
 				return false;
 			}
 		}
@@ -600,26 +670,22 @@ public class Logger implements IResource
 	 * @param channel the specific channel
 	 * @param msg     the log-message
 	 */
-	private void log(Object sender, LogLevel level, Channel channel, String msg)
+	@SuppressWarnings("WeakerAccess")
+	public void log(Object sender, LogLevel level, Channel channel, String msg)
 	{
-		boolean isLevelForbidden   = false;
-		boolean isChannelForbidden = false;
+		boolean isLevelForbidden   = isLevelForbidden(level);
+		boolean isChannelForbidden = isChannelForbidden(channel);
+
+		boolean loggerLogic = ((level.equals(LogLevel.ERROR))
+				|| ((!isLevelForbidden || !m_localLevelFlag.contains(level))
+				&& !isChannelForbidden));
 
 		if(channel == null)
 		{
 			channel = Channel.UNREGISTERED_CHANNEL;
 		}
-		else
-		{
-			isChannelForbidden = isChannelForbidden(channel);
-		}
 
-		if(m_hasBeenInitialized)
-		{
-			isLevelForbidden = isLevelForbidden(level);
-		}
-
-		if(!isLevelForbidden && !isChannelForbidden)
+		if(loggerLogic)
 		{
 			switch(LogDestination)
 			{
@@ -628,9 +694,6 @@ public class Logger implements IResource
 					break;
 				case "ToConsole":
 					writeToConsole(sender, level, channel, msg);
-					break;
-				default:
-					break;
 			}
 		}
 	}
@@ -642,5 +705,6 @@ public class Logger implements IResource
 	private        String                          LogDestination    = "ToConsole";
 	private        Hashtable<Object, Channel>      m_classList       = new Hashtable<>();
 	private        Hashtable<Channel, ChannelFlag> m_channelFlag     = new Hashtable<>();
-	private        Hashtable<LogLevel, LevelFlag>  m_levelFlag       = new Hashtable<>();
+	private        Hashtable<LogLevel, LevelFlag>  m_globalLevelFlag = new Hashtable<>();
+	private        Hashtable<LogLevel, LevelFlag>  m_localLevelFlag  = new Hashtable<>();
 }
