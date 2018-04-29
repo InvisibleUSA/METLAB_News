@@ -23,6 +23,11 @@ class ClippingGenerator implements Runnable
 		m_profile = op;
 	}
 
+    /**
+     * @inheritDoc
+     *
+     * generates a clipping and sends it via e-mail to its owner
+     */
 	@Override
 	public void run()
 	{

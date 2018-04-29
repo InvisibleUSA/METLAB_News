@@ -22,16 +22,25 @@ public class ClippingDaemon implements IResource
 		Logger.getInstance().register(ClippingDaemon.class, Logger.Channel.ClippingDaemon);
 		Logger.getInstance().register(ClippingGenerationManager.class, Logger.Channel.ClippingDaemon);
 	}
+
 	private ExecutorService                m_threadPool      = Executors.newCachedThreadPool();
 	private LinkedList<ObservationProfile> m_pendingProfiles = new LinkedList<>();
 	private Timer                          m_clippingManager = new Timer();
 	private long                           m_waitingPeriod; //in seconds
 
+    /**
+     * default constructor, does nothing, call initialize afterwards
+     */
 	public ClippingDaemon()
 	{
 
 	}
 
+    /**
+     * @inheritDoc
+     *
+     * settings are read from configuration manager and class is initialized
+     */
 	@Override
 	public void initialize()
 	{
@@ -40,6 +49,10 @@ public class ClippingDaemon implements IResource
 		m_clippingManager.scheduleAtFixedRate(new ClippingGenerationManager(), 0, m_waitingPeriod * 1000);
 	}
 
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
 	@Override
 	public void close() throws Exception
 	{
@@ -49,6 +62,11 @@ public class ClippingDaemon implements IResource
 
 	private class ClippingGenerationManager extends TimerTask
 	{
+        /**
+         * @inheritDoc
+         *
+         * enqueues new profiles and starts generation of clippings
+         */
 		@Override
 		public void run()
 		{

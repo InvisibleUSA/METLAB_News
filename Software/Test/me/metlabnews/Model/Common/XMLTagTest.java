@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class XMLTagTest
 {
 	private static String m_xml;
+	private static String m_cdata;
 
 	@BeforeAll
 	static void setUp()
@@ -81,6 +82,7 @@ class XMLTagTest
 				"<YEAR>1990</YEAR>" +
 				"</CD>" +
 				"</CATALOG>";
+		m_cdata = "<hello><test1><![CDATA[Atom]]></test1></hello>";
 	}
 
 	@Test
@@ -152,5 +154,12 @@ class XMLTagTest
 	{
 		XMLTag xt = new XMLTag(m_xml);
 		assertEquals("Bob Dylan", xt.child("CD").child("ARTIST").value());
+	}
+
+	@Test
+	void CDataValues()
+	{
+		XMLTag xt = new XMLTag(m_cdata);
+		assertEquals("Atom", xt.child("test1").value());
 	}
 }
