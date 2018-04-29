@@ -50,13 +50,21 @@ public class HTMLMail
 	 */
 	private Properties getProperties()
 	{
-		return new Properties()
-		{{
-			put("mail.smtp.auth", true);
-			put("mail.smtp.starttls.enable", true);
-			put("mail.smtp.host", SMTPServer);
-			put("mail.smtp.port", SMTPPort);
-		}};
+		try
+		{
+			return new Properties()
+			{{
+				put("mail.smtp.auth", true);
+				put("mail.smtp.starttls.enable", true);
+				put("mail.smtp.host", SMTPServer);
+				put("mail.smtp.port", SMTPPort);
+			}};
+		}
+		catch(Exception e)
+		{
+			log.logError(this, "Exception in getProperties: " + e.toString());
+			return null;
+		}
 	}
 
 
@@ -67,13 +75,19 @@ public class HTMLMail
 	 */
 	private Session getSession()
 	{
-		return Session.getInstance(getProperties(), new Authenticator()
+		Properties prop;
+
+		if((prop = getProperties()) != null)
 		{
-			protected PasswordAuthentication getPasswordAuthentication()
+			return Session.getInstance(prop, new Authenticator()
 			{
-				return new PasswordAuthentication(From, Password);
-			}
-		});
+				protected PasswordAuthentication getPasswordAuthentication()
+				{
+					return new PasswordAuthentication(From, Password);
+				}
+			});
+		}
+		return null;
 	}
 
 
@@ -116,20 +130,29 @@ public class HTMLMail
 	 */
 	public boolean send(String to, String subject)
 	{
-		if(to != null && subject != null)
+		if(to != null)
 		{
 			try
 			{
-				Transport.send(
-						new MimeMessage(getSession())
-						{{
-							setFrom(new InternetAddress(From));
-							setSubject(subject);
-							setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-							setContent(getHTMLContent(), "text/html; charset=utf-8");
-						}});
-				log.logActivity(this, "E-Mail successfully sent to: " + to);
-				return true;
+				Session session;
+				if((session = getSession()) != null)
+				{
+					Transport.send(
+							new MimeMessage(session)
+							{{
+								setFrom(new InternetAddress(From));
+								setSubject(subject);
+								setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+								setContent(getHTMLContent(), "text/html; charset=utf-8");
+							}});
+					log.logActivity(this, "E-Mail successfully sent to: " + to);
+					return true;
+				}
+				else
+				{
+					log.logError(this, "FATAL Error in sending E-Mail with Session. Session is null");
+					throw new MessagingException();
+				}
 			}
 			catch(MessagingException e)
 			{
