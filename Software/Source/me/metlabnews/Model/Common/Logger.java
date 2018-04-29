@@ -135,8 +135,7 @@ public class Logger implements IResource
 		Logger,
 		RDBMS,
 		DocDBMS,
-		UNREGISTERED_CHANNEL,
-		INFO
+		UNREGISTERED_CHANNEL
 	}
 
 
@@ -182,7 +181,8 @@ public class Logger implements IResource
 		WARNING,
 		ERROR,
 		REGISTRATION,
-		ACTIVITY
+		ACTIVITY,
+		INFO
 	}
 
 
@@ -486,6 +486,31 @@ public class Logger implements IResource
 	public void logActivity(Object sender, String msg)
 	{
 		log(sender, LogLevel.ACTIVITY, m_classList.get(sender.getClass().getCanonicalName()), msg);
+	}
+
+
+	/**
+	 * <p>
+	 * This method will log with the level 'Activity'.
+	 * </p>
+	 * <p>
+	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
+	 * </p>
+	 * <p>
+	 * You only need to call the following code:
+	 * {@code}
+	 * <p>
+	 * Logger.getInstance.logDebug(this, "your message here...");
+	 * </p>
+	 * </p>
+	 *
+	 * @param sender The source. ALWAYS call it with 'this'
+	 * @param msg    The log-message
+	 */
+	@SuppressWarnings({"WeakerAccess", "unused"})
+	public void logInfo(Object sender, String msg)
+	{
+		log(sender, LogLevel.INFO, m_classList.get(sender.getClass().getCanonicalName()), msg);
 	}
 
 
