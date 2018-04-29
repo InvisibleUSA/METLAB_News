@@ -69,6 +69,7 @@ public class Logger implements IResource
 
 	private Logger()
 	{
+
 	}
 
 
@@ -123,7 +124,7 @@ public class Logger implements IResource
 	 */
 	public enum Channel
 	{
-		Default,
+		NONE,
 		ConfigurationManager,
 		ClippingDaemon,
 		Crawler,
@@ -177,6 +178,7 @@ public class Logger implements IResource
 	 */
 	public enum LogLevel
 	{
+		NONE,
 		DEBUG,
 		WARNING,
 		ERROR,
@@ -273,6 +275,29 @@ public class Logger implements IResource
 		return false;
 	}
 
+
+	/**
+	 * <p>
+	 * This method disables pairs of Channels and Levels.
+	 * If you want to disable DEBUG-logging for Crawler-Channel,
+	 * then you can call this method like this:</p>
+	 * <p>{@code Logger.getInstance().disable(Channel.Crawler, LogLevel.DEBUG)}</p>
+	 * <p>You can also disable single Channels or Level if you use the .NONE - Type of the Enum.</p>
+	 *
+	 * @param channel The specific channel you want to disable logging
+	 * @param level   The specific level you want to disable logging
+	 */
+	public void disable(Channel channel, LogLevel level)
+	{
+		if(level.equals(LogLevel.NONE))
+		{
+			disableChannel(channel);
+		}
+		if(channel.equals(Channel.NONE))
+		{
+			// TODO
+		}
+	}
 
 	/**
 	 * In this Method you can DISABLE a single Channel to force it NOT to log.
@@ -540,7 +565,7 @@ public class Logger implements IResource
 			String pst = "' ";
 			try
 			{
-				m_classList.put(sender.getCanonicalName(), channel); // Hash the Sendername to the Channel
+				m_classList.put(sender.getCanonicalName(), channel);
 				res = "Registration successful:";
 			}
 			catch(Exception e)
@@ -591,7 +616,7 @@ public class Logger implements IResource
 
 		if(m_hasBeenInitialized)
 		{
-			isLevelForbidden = isLevelForbidden(level); // if isLevelForbidden = true -> NO logging
+			isLevelForbidden = isLevelForbidden(level);
 		}
 
 		if(!isLevelForbidden && !isChannelForbidden)

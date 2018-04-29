@@ -54,4 +54,5 @@
 	<entry key="Logger.isDisabled_REGISTRATION">false</entry> <!-- {false, true} -->
 	<entry key="Logger.isDisabled_DEBUG">false</entry> <!-- {false, true} -->
 	<entry key="Logger.isDisabled_INFO">false</entry> <!-- {false, true} -->
+
 </properties>

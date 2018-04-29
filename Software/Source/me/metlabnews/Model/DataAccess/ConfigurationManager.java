@@ -1,7 +1,6 @@
 package me.metlabnews.Model.DataAccess;
 
 import me.metlabnews.Model.Common.Logger;
-import me.metlabnews.Model.Entities.SystemAdministrator;
 import me.metlabnews.Model.ResourceManagement.IResource;
 
 import java.io.*;
