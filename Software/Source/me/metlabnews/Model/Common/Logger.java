@@ -489,8 +489,6 @@ public class Logger implements IResource
 	@SuppressWarnings("WeakerAccess")
 	public void register(java.lang.Class sender, Channel channel)
 	{
-		// first of all ENABLE all channels and hash them into table
-
 		if(sender != null)
 		{
 			String res = null;
@@ -575,13 +573,13 @@ public class Logger implements IResource
 	}
 
 
-	private static Logger  m_instance;
-	private        boolean m_hasBeenInitialized;
-	private int                             m_logCounterTotal     = 0;
-	private boolean                         m_debugIsForbidden    = false;
-	private boolean                         m_warningIsForbidden  = false;
-	private boolean                         m_errorIsForbidden    = false;
-	private boolean                         m_activityIsForbidden = false;
-	private Hashtable<Object, Channel>      m_classList           = new Hashtable<>();
-	private Hashtable<Channel, ChannelFlag> m_channelFlag         = new Hashtable<>();
+	private static Logger                          m_instance;
+	private        boolean                         m_hasBeenInitialized;
+	private        int                             m_logCounterTotal     = 0;
+	private        boolean                         m_debugIsForbidden    = false;
+	private        boolean                         m_warningIsForbidden  = false;
+	private        boolean                         m_errorIsForbidden    = false;
+	private        boolean                         m_activityIsForbidden = false;
+	private        Hashtable<Object, Channel>      m_classList           = new Hashtable<>();
+	private        Hashtable<Channel, ChannelFlag> m_channelFlag         = new Hashtable<>();
 }

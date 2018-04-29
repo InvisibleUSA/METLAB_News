@@ -36,7 +36,7 @@ public class HTMLMail
 
 
 	@SuppressWarnings("WeakerAccess")
-	private       Logger log        = Logger.getInstance();
+	final private Logger log        = Logger.getInstance();
 	final public  String From       = ConfigurationManager.getInstance().getMailFromAddress();
 	final private String Password   = ConfigurationManager.getInstance().getMailPassword();
 	final private String SMTPServer = ConfigurationManager.getInstance().getMailSMTPServer();
@@ -96,7 +96,7 @@ public class HTMLMail
 	 *
 	 * @return The HTML-File for sending an Email
 	 */
-	private String getHTMLContent()
+	public String getHTMLContent()
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 		String        sep           = File.separator;
@@ -110,7 +110,6 @@ public class HTMLMail
 			{
 				stringBuilder.append(str);
 			}
-			reader.close();
 		}
 		catch(IOException e)
 		{
@@ -128,7 +127,7 @@ public class HTMLMail
 	 * @param subject Subject
 	 * @return true: send was successful  false: an exception occurred
 	 */
-	public boolean send(String to, String subject)
+	public boolean send(String to, String subject, String message)
 	{
 		if(to != null)
 		{
@@ -143,7 +142,7 @@ public class HTMLMail
 								setFrom(new InternetAddress(From));
 								setSubject(subject);
 								setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-								setContent(getHTMLContent(), "text/html; charset=utf-8");
+								setContent(message, "text/html; charset=utf-8");
 							}});
 					log.logActivity(this, "E-Mail successfully sent to: " + to);
 					return true;
