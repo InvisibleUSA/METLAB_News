@@ -21,14 +21,14 @@ public class RssCrawler implements Runnable
 
 	private Thread m_t;
 
-	RssCrawler(NewsSource source)
+	RSSCrawler(NewsSource source)
 	{
 		this.m_source = source;
 	}
 
 	static void initialize()
 	{
-		Logger.getInstance().register(RssCrawler.class, Logger.Channel.Crawler);
+		Logger.getInstance().register(RSSCrawler.class, Logger.Channel.Crawler);
 	}
 
 	void start()

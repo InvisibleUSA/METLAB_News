@@ -82,11 +82,11 @@ public class Logger implements IResource
 
 			if(m_hasBeenInitialized = (enableChannel() && enableLevel()))
 			{
-				logActivity(this, "Logger has been initialized :)");
+				logActivity(this, "Logger has been initialized...");
 			}
 			else
 			{
-				logError(this, "logger has NOT been initialized");
+				logError(this, "logger has NOT been initialized !");
 			}
 			FullFilePath = ConfigurationManager.getInstance().getLoggerLogFilePath();
 		}
@@ -477,8 +477,7 @@ public class Logger implements IResource
 		if(msg != null && channel != null)
 		{
 			String fullFilePath = createFilePath(channel);
-
-			File file = new File(fullFilePath);
+			File   file         = new File(fullFilePath);
 			if(file.getParentFile().mkdirs())
 			{
 				logActivity(this, "Created directory: " + fullFilePath);
@@ -699,7 +698,7 @@ public class Logger implements IResource
 	 * @param msg     the log-message
 	 */
 	@SuppressWarnings("WeakerAccess")
-	public void log(Object sender, LogLevel level, Channel channel, String msg)
+	private void log(Object sender, LogLevel level, Channel channel, String msg)
 	{
 		boolean isLevelForbidden   = isLevelForbidden(level);
 		boolean isChannelForbidden = isChannelForbidden(channel);
@@ -731,9 +730,10 @@ public class Logger implements IResource
 	private        boolean                         m_hasBeenInitialized;
 	private        int                             m_logCounterTotal = 0;
 	private        String                          LogDestination    = "ToConsole";
-	private        String                          FullFilePath      = null;
 	private        Hashtable<Object, Channel>      m_classList       = new Hashtable<>();
 	private        Hashtable<Channel, ChannelFlag> m_channelFlag     = new Hashtable<>();
 	private        Hashtable<LogLevel, LevelFlag>  m_globalLevelFlag = new Hashtable<>();
 	private        Hashtable<LogLevel, LevelFlag>  m_localLevelFlag  = new Hashtable<>();
+	private        String                          FullFilePath      = (System.getProperty(
+			"user.dir")) + File.separator + "Logs" + File.separator;
 }

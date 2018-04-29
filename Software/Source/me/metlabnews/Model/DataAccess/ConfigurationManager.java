@@ -48,6 +48,7 @@ public class ConfigurationManager implements IResource
 		{
 			m_properties.loadFromXML(inputStream);
 			m_hasBeenInitialized = true;
+			Logger.getInstance().logActivity(this, "ConfigurationManager has been initialized...");
 		}
 		catch(FileNotFoundException e)
 		{
@@ -343,7 +344,7 @@ public class ConfigurationManager implements IResource
 	public String getLoggerLogFilePath()
 	{
 		String key = "Logger.LogFilePath";
-		return (System.getProperty("user.dir")) + File.separator + returnProperty(key) + File.separator;
+		return (System.getProperty("user.dir")) + returnProperty(key);
 	}
 
 
