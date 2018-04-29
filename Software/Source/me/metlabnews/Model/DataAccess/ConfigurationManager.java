@@ -40,6 +40,7 @@ public class ConfigurationManager implements IResource
 		return m_hasBeenInitialized;
 	}
 
+
 	@Override
 	public void initialize()
 	{
@@ -58,23 +59,6 @@ public class ConfigurationManager implements IResource
 		}
 	}
 
-	// TODO: ONLY FOR DEBUGGING
-	public void startOnlyForDebugPurposesThisMethodWillBeRemoved()
-	{
-		try(InputStream inputStream = new FileInputStream(new File(m_XMLFilePath)))
-		{
-			m_properties.loadFromXML(inputStream);
-			m_hasBeenInitialized = true;
-		}
-		catch(FileNotFoundException e)
-		{
-			Logger.getInstance().logError(this, m_XMLFilePath + " not found:\n" + e.toString());
-		}
-		catch(Exception e)
-		{
-			Logger.getInstance().logError(this, e.toString());
-		}
-	}
 
 	@Override
 	public void close()
