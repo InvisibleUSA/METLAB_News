@@ -20,6 +20,7 @@ public class ClippingDaemon implements IResource
 	static
 	{
 		Logger.getInstance().register(ClippingDaemon.class, Logger.Channel.ClippingDaemon);
+		Logger.getInstance().register(ClippingGenerationManager.class, Logger.Channel.ClippingDaemon);
 	}
 	private ExecutorService                m_threadPool      = Executors.newCachedThreadPool();
 	private LinkedList<ObservationProfile> m_pendingProfiles = new LinkedList<>();
@@ -54,9 +55,10 @@ public class ClippingDaemon implements IResource
 			//Run due clipping
 			if(!m_pendingProfiles.isEmpty())
 			{
-				ObservationProfile p = m_pendingProfiles.getFirst();
+				ObservationProfile p = m_pendingProfiles.removeFirst();
 				m_threadPool.submit(new ClippingGenerator(p));
 			}
+
 
 			//Add new profiles to queue
 			LocalTime                          start           = LocalTime.now();
@@ -74,6 +76,7 @@ public class ClippingDaemon implements IResource
 					m_pendingProfiles.add(op);
 				}
 			});
+			Logger.getInstance().logDebug(this, m_pendingProfiles.size() + " profiles in queue.");
 		}
 	}
 }

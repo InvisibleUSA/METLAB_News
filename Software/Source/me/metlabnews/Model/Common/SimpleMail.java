@@ -2,6 +2,7 @@ package me.metlabnews.Model.Common;
 
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.SimpleEmail;
 
 
@@ -33,7 +34,7 @@ public class SimpleMail
 	 * Send the mail stored in this instance. Any exception is logged in the mail channel.
 	 * The mail is send
 	 *
-	 * @return true: send was successful  false: an exception occurred
+	 * @return true: sending was successful  false: an exception occurred
 	 */
 	public boolean send()
 	{
@@ -49,6 +50,31 @@ public class SimpleMail
 			email.setFrom(From);
 			email.setSubject(Subject);
 			email.setMsg(Text);
+			email.send();
+			return true;
+		}
+		catch(Exception e)
+		{
+			Logger.getInstance().logError(this, e.toString());
+			return false;
+		}
+	}
+
+	public boolean sendHTML()
+	{
+		HtmlEmail email = new HtmlEmail();
+		try
+		{
+			email.setSmtpPort(SMTPPort);
+			email.setAuthenticator(new DefaultAuthenticator(From, password));
+			email.setSSLOnConnect(true);
+
+
+			email.setHostName(SMTPServer);
+			email.addTo(To);
+			email.setFrom(From);
+			email.setSubject(Subject);
+			email.setHtmlMsg(Text);
 			email.send();
 			return true;
 		}
