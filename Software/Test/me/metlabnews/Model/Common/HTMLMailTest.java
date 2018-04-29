@@ -17,6 +17,6 @@ class HTMLMailTest {
     @Test
     void send() {
         HTMLMail m = new HTMLMail();
-        m.send("metlabnews@gmail.com", "test");
+        m.send("metlabnews@gmail.com", "test", m.getHTMLContent());
     }
 }
