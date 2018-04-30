@@ -21,7 +21,7 @@ public class RssCrawler implements Runnable
 
 	private Thread m_t;
 
-	RSSCrawler(NewsSource source)
+	RssCrawler(NewsSource source)
 	{
 		this.m_source = source;
 	}
