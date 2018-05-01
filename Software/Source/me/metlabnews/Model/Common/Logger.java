@@ -474,24 +474,22 @@ public class Logger implements IResource
 	 */
 	private synchronized void writeToFile(Object sender, LogLevel level, Channel channel, String msg)
 	{
-		if(msg != null && channel != null)
-		{
-			String fullFilePath = createFilePath(channel);
-			File   file         = new File(fullFilePath);
-			if(file.getParentFile().mkdirs())
-			{
-				logActivity(this, "Created directory: " + fullFilePath);
-			}
+		Object o = this;
+		msg = msg + System.lineSeparator();
 
-			try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true)))
+		try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(createFilePath(channel))
+		{{
+			if(getParentFile().mkdirs())
 			{
-				bufferedWriter.write(
-						createLogString(sender, level, channel, msg + System.lineSeparator(), ++m_logCounterTotal));
+				logActivity(o, "Created File: " + getAbsolutePath());
 			}
-			catch(IOException e)
-			{
-				writeToConsole(this, level, channel, "IO Exception! Error in Logger: " + e.getMessage());
-			}
+		}}, true)))
+		{
+			bufferedWriter.write(createLogString(sender, level, channel, msg, ++m_logCounter));
+		}
+		catch(IOException e)
+		{
+			writeToConsole(o, level, channel, "IO Exception! Error in Logger: " + e.getMessage());
 		}
 	}
 
@@ -506,7 +504,7 @@ public class Logger implements IResource
 	 */
 	private void writeToConsole(Object sender, LogLevel logLevel, Channel channel, String msg)
 	{
-		System.err.println(createLogString(sender, logLevel, channel, msg, ++m_logCounterTotal));
+		System.err.println(createLogString(sender, logLevel, channel, msg, ++m_logCounter));
 	}
 
 
@@ -728,7 +726,7 @@ public class Logger implements IResource
 
 	private static Logger                          m_instance;
 	private        boolean                         m_hasBeenInitialized;
-	private        int                             m_logCounterTotal = 0;
+	private        int                             m_logCounter      = 0;
 	private        String                          LogDestination    = "ToConsole";
 	private        Hashtable<Object, Channel>      m_classList       = new Hashtable<>();
 	private        Hashtable<Channel, ChannelFlag> m_channelFlag     = new Hashtable<>();
