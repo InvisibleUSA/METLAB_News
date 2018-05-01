@@ -28,7 +28,7 @@ public class RssCrawler implements Runnable
 
 	static void initialize()
 	{
-		Logger.getInstance().register(RSSCrawler.class, Logger.Channel.Crawler);
+		Logger.getInstance().register(RssCrawler.class, Logger.Channel.Crawler);
 	}
 
 	void start()
