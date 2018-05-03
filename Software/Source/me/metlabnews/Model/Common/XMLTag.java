@@ -42,8 +42,8 @@ public class XMLTag
 {
 	static
 	{
-		Logger.getInstance().register(XMLTag.class, Logger.Channel.XMLTag);
 		Logger.getInstance().register(Key.class, Logger.Channel.XMLTag);
+		Logger.getInstance().register(XMLTag.class, Logger.Channel.XMLTag);
 	}
 	/**
 	 * Alternate constructor. Use only if you need the Java XML-API anyway.

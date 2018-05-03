@@ -56,7 +56,7 @@ public class ResourceManager implements ServletContextListener
 		Logger.getInstance().disable(Logger.Channel.Crawler,
 		                             Logger.LogLevel.NONE);  // This will disable Crawler-Channel
 		*/
-		Logger.getInstance().disable(Logger.Channel.XMLTag, Logger.LogLevel.DEBUG);
+		//Logger.getInstance().disable(Logger.Channel.XMLTag, Logger.LogLevel.DEBUG);
 		// initialize DatabaseAccess
 		new QueryAddOrganisation();
 

@@ -654,7 +654,7 @@ public class Logger implements IResource
 	@SuppressWarnings("WeakerAccess")
 	public void register(java.lang.Class sender, Channel channel)
 	{
-		if(!m_classList.contains(channel))
+		if(!m_classList.containsKey(sender.getCanonicalName()))
 		{
 			if(sender != null)
 			{
@@ -676,6 +676,10 @@ public class Logger implements IResource
 					log(this, LogLevel.REGISTRATION, m_classList.get(sender.getCanonicalName()), msg);
 				}
 			}
+		}
+		else
+		{
+			logWarning(this, "Class is already registered: " + sender.getCanonicalName() + " with Channel: " + channel);
 		}
 	}
 
