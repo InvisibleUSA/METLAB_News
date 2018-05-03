@@ -2,7 +2,9 @@ package me.metlabnews.UserInterface.Views;
 
 
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.*;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryGetOrganisation;
 import me.metlabnews.UserInterface.MainUI;
@@ -28,6 +30,7 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 	private final CheckBox         checkBoxClientAdmin = new CheckBox("Administrator Status beantragen");
 	private final Button           buttonRegister      = new Button("Registrieren");
 	private final Button           buttonLogin         = new Button("Zurück zur Anmeldung");
+	private NativeSelect textFieldCompany;
 	private final HorizontalLayout buttonBar           = new HorizontalLayout();
 
 	/**
@@ -39,13 +42,21 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 	{
 		m_parent = parent;
 
+		textFieldPassword.setWidth("310");
+		textFieldEmail.setWidth("310");
+		textFieldFirstName.setWidth("310");
+		textFieldLastName.setWidth("310");
+
+		textFieldEmail.setIcon(VaadinIcons.ENVELOPE);
+		textFieldPassword.setIcon(VaadinIcons.KEY);
+
 		QueryGetOrganisation qgo = new QueryGetOrganisation();
 		if(!qgo.execute())
 		{
 			return;
 		}
 		List<String> data             = Arrays.asList(qgo.organisations);
-		NativeSelect textFieldCompany = new NativeSelect<>("Organisation:", data);
+		textFieldCompany = new NativeSelect<>("Organisation:", data);
 		textFieldCompany.setEmptySelectionAllowed(false);
 
 		textFieldCompany.addValueChangeListener(event -> getDropDownvalue(event.getValue().toString()));
@@ -77,34 +88,40 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 
 	private void register()
 	{
-		String  firstName = textFieldFirstName.getValue();
-		String  lastName  = textFieldLastName.getValue();
-		String  email     = textFieldEmail.getValue();
-		String  password  = textFieldPassword.getValue();
-		boolean admin     = checkBoxClientAdmin.getValue();
+		String  firstName  = textFieldFirstName.getValue();
+		String  lastName   = textFieldLastName.getValue();
+		String  email      = textFieldEmail.getValue();
+		String  password   = textFieldPassword.getValue();
+		boolean admin      = checkBoxClientAdmin.getValue();
+		boolean doRegister = true;
 
 		if(company.isEmpty())
 		{
-			Notification popup = new Notification("Bitte wählen sie eine Organisation aus!",
-			                                      Notification.Type.WARNING_MESSAGE);
-			popup.setDelayMsec(3000);
-			popup.show(Page.getCurrent());
+			doRegister = false;
+			textFieldCompany.setComponentError(new UserError("Bitte wählen sie eine Organisation aus!"));
+			//Notification popup = new Notification("Bitte wählen sie eine Organisation aus!", Notification.Type.WARNING_MESSAGE);
+			//popup.setDelayMsec(3000);
+			//popup.show(Page.getCurrent());
 		}
-		else if(email.isEmpty())
+		if(email.isEmpty())
 		{
-			Notification popup = new Notification("Bitte geben Sie eine Email Adresse ein!",
-			                                      Notification.Type.WARNING_MESSAGE);
-			popup.setDelayMsec(3000);
-			popup.show(Page.getCurrent());
+			doRegister = false;
+			textFieldEmail.setPlaceholder("Bitte geben Sie eine Email Adresse ein!");
+			textFieldEmail.setComponentError(new UserError("Bitte geben Sie eine Email Adresse ein!"));
+			//Notification popup = new Notification("Bitte geben Sie eine Email Adresse ein!", Notification.Type.WARNING_MESSAGE);
+			//popup.setDelayMsec(3000);
+			//popup.show(Page.getCurrent());
 		}
-		else if(password.isEmpty())
+		if(password.isEmpty())
 		{
-			Notification popup = new Notification("Bitte geben Sie ein Passwort ein!",
-			                                      Notification.Type.WARNING_MESSAGE);
-			popup.setDelayMsec(3000);
-			popup.show(Page.getCurrent());
+			doRegister = false;
+			textFieldPassword.setPlaceholder("Bitte geben Sie ein Passwort ein!");
+			textFieldPassword.setComponentError(new UserError("Bitte geben Sie ein Passwort ein!"));
+			//Notification popup = new Notification("Bitte geben Sie ein Passwort ein!", Notification.Type.WARNING_MESSAGE);
+			//popup.setDelayMsec(3000);
+			//popup.show(Page.getCurrent());
 		}
-		else
+		else if(doRegister)
 		{
 			m_parent.registerSubscriber(firstName, lastName, company, email, password, admin);
 		}

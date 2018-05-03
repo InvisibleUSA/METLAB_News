@@ -5,6 +5,7 @@ import me.metlabnews.Presentation.UserDataRepresentation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 
@@ -34,8 +35,8 @@ public class QueryGetVerificationPending extends MariaDBQueryBase
 			while(rs.next())
 			{
 				data = new UserDataRepresentation(rs.getString("EMail"), rs.getString("VName"), rs.getString("Name"),
-				                                  rs.getString("isAdmin") == "1", false,
-				                                  rs.getString("isVerified") == "1");
+				                                  Objects.equals(rs.getString("isAdmin"), "1"), false,
+				                                  Objects.equals(rs.getString("isVerified"), "1"));
 				tempUsers.add(data);
 				i++;
 			}

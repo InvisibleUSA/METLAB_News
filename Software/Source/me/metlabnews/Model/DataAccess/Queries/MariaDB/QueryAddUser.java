@@ -19,7 +19,7 @@ public class QueryAddUser extends MariaDBQueryBase
 		return new Object[] {
 				"INSERT INTO Abonnent (EMail, Name, VName, PW, Firma, isAdmin, isVerified) VALUES (?,?,?,?,?,?,0)",
 				subscriber.getEmail(), subscriber.getLastName(), subscriber.getFirstName(), subscriber.getPassword(),
-				subscriber.getOrganisationId().getName(), (subscriber.isOrganisationAdministrator() ? 0 : 1)};
+				subscriber.getOrganisationId().getName(), (subscriber.isOrganisationAdministrator() ? 1 : 0)};
 	}
 
 	@Override

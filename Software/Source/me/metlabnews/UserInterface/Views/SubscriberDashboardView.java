@@ -5,6 +5,9 @@ import com.vaadin.ui.*;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.MainUI;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 
 /**
@@ -17,6 +20,9 @@ public class SubscriberDashboardView extends VerticalLayout
 	{
 		m_parent = parent;
 		Page.getCurrent().setTitle("Dashboard");
+
+		m_textTime.setDateFormat("HH:mm");
+		m_textTime.setValue(LocalDateTime.now());
 
 		m_buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
 
@@ -36,7 +42,7 @@ public class SubscriberDashboardView extends VerticalLayout
 				                                                 m_textProfileName.getValue(),
 				                                                 m_textSources.getValue().split(" "),
 				                                                 m_textKeywords.getValue().split(" "),
-				                                                 m_textTime.getValue()));
+				                                                 m_textTime.getValue().getHour() + ":" + m_textTime.getValue().getMinute() + ":00"));
 
 		m_layoutHeaderBar.addComponents(m_title, m_buttonQuitAccount, m_buttonLogout);
 		this.addComponent(m_layoutHeaderBar);
@@ -78,7 +84,7 @@ public class SubscriberDashboardView extends VerticalLayout
 			"Quellen: (mit Komma getennt)");
 	private final TextField        m_textKeywords                          = new TextField(
 			"Suchbegriffe: (siehe Quellen)");
-	private final TextField        m_textTime                              = new TextField("Zeitpunkt HH:MM:SS");
+	private final DateTimeField    m_textTime                              = new DateTimeField("Zeitpunkt HH:MM");
 	private final Button           m_buttonProfileCreate                   = new Button("Profil erstellen");
 	private final VerticalLayout   m_adminLayout                           = new VerticalLayout();
 	private final Button           m_buttonShowPendingVerificationRequests = new Button("Offene Anfragen abrufen");
@@ -97,6 +103,7 @@ public class SubscriberDashboardView extends VerticalLayout
 			row.addComponent(new Label(subscriber.getLastName()));
 			row.addComponent(new Label(subscriber.getEmail()));
 			CheckBox grantAdminStatus = new CheckBox("Admin:");
+			grantAdminStatus.setValue(false);
 			row.addComponent(grantAdminStatus);
 			grantAdminStatus.setEnabled(subscriber.isOrganisationAdministrator());
 			Button verify = new Button("Verifizieren");

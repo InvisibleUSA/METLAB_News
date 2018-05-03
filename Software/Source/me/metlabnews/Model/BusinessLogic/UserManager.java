@@ -1,5 +1,6 @@
 package me.metlabnews.Model.BusinessLogic;
 
+import com.vaadin.server.Page;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.*;
