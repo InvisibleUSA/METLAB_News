@@ -50,6 +50,8 @@ public class SubscriberDashboardView extends VerticalLayout
 	{
 		m_tabLayout.addTab(m_layoutProfileBar, "Abonnenten - Dashboard");
 		m_tabLayout.addTab(m_adminLayout, "Administrator - Dashboard");
+		m_adminLayout.addComponent(m_buttonShowPendingVerificationRequests);
+		m_adminLayout.addComponent(m_panelSubscriberVerification);
 		this.addComponent(m_tabLayout);
 	}
 
