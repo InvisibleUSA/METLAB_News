@@ -13,9 +13,9 @@ public class QueryRemoveSubscriber extends MariaDBQueryBase
 	public String email;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "DELETE FROM Abonnent WHERE EMail = '" + email + "'";
+		return new String[] {"DELETE FROM Abonnent WHERE EMail = ?", email};
 	}
 
 	@Override

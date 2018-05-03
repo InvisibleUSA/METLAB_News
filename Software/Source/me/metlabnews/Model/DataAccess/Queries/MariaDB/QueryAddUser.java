@@ -14,9 +14,12 @@ public class QueryAddUser extends MariaDBQueryBase
 
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "INSERT INTO Abonnent (EMail, Name, VName, PW, Firma, isAdmin, isVerified) VALUES ('" + subscriber.getEmail() + "','" + subscriber.getLastName() + "','" + subscriber.getFirstName() + "','" + subscriber.getPassword() + "','" + subscriber.getOrganisationId().getName() + "', 0, " + (subscriber.isOrganisationAdministrator() ? 0 : 1) + ")";
+		return new Object[] {
+				"INSERT INTO Abonnent (EMail, Name, VName, PW, Firma, isAdmin, isVerified) VALUES (?,?,?,?,?,?,0)",
+				subscriber.getEmail(), subscriber.getLastName(), subscriber.getFirstName(), subscriber.getPassword(),
+				subscriber.getOrganisationId().getName(), (subscriber.isOrganisationAdministrator() ? 0 : 1)};
 	}
 
 	@Override

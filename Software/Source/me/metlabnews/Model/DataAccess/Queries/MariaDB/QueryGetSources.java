@@ -14,9 +14,9 @@ public class QueryGetSources extends MariaDBQueryBase
 	private ArrayList<NewsSource> m_sources = new ArrayList<>();
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "SELECT * FROM Quellen";
+		return new String[] {"SELECT * FROM Quellen"};
 	}
 
 	@Override

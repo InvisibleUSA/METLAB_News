@@ -30,12 +30,11 @@
 
 	<!-- RDBMS -->
 	<entry key="RDBMS.Driver">org.mariadb.jdbc.Driver</entry>
-	<entry key="RDBMS.RemoteURL">jdbc:mariadb://metlabnews.me:3306/METLAB_DB_MARCO</entry>
-	<entry key="RDBMS.LocalURL">jdbc:mariadb://localhost:3306/METLAB_DB_MARCO</entry>
-	<entry key="RDBMS.UseLocalDB">true</entry> <!-- {false, true} -->
+	<entry key="RDBMS.RemoteURL">jdbc:mariadb://metlabnews.me:3306/METLAB_DB</entry>
+	<entry key="RDBMS.LocalURL">jdbc:mariadb://localhost:3306/METLAB_DB</entry>
+	<entry key="RDBMS.UseLocalDB">flase</entry> <!-- {false, true} -->
 	<entry key="RDBMS.Username">test</entry>
 	<entry key="RDBMS.Password">test</entry>
-	<entry key="RDBMS.SQLDialect">org.hibernate.dialect.MySQLDialect</entry>
 
 
 	<!-- SimpleMail -->

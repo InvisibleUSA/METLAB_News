@@ -21,13 +21,13 @@ public class QueryLoginUser extends MariaDBQueryBase
 	public boolean byPassword = false;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
 		if(byPassword)
 		{
-			return "SELECT * FROM Abonnent WHERE PW = '" + password + "'";
+			return new String[] {"SELECT * FROM Abonnent WHERE PW = ?", password};
 		}
-		return "SELECT * FROM Abonnent WHERE EMail = '" + email + "'";
+		return new String[] {"SELECT * FROM Abonnent WHERE EMail = ?", email};
 	}
 
 	@Override

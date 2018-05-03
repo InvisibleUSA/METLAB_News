@@ -20,9 +20,9 @@ public class QueryLoginSysadmin extends MariaDBQueryBase
 	public SystemAdministrator sysadmin;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "SELECT * FROM SystemAdmins WHERE EMail = '" + email + "'";
+		return new String[] {"SELECT * FROM SystemAdmins WHERE EMail = ?", email};
 	}
 
 	@Override

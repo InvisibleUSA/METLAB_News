@@ -1,8 +1,5 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
-import me.metlabnews.Model.DataAccess.Queries.QueryBase;
-import org.basex.core.Command;
-
 import java.sql.ResultSet;
 
 
@@ -16,9 +13,9 @@ public class QueryDeleteOrganization extends MariaDBQueryBase
 	public String orgName;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "DELETE FROM Klienten WHERE Name = '" + orgName + "'";
+		return new String[] {"DELETE FROM Klienten WHERE Name = ?", orgName};
 	}
 
 	@Override

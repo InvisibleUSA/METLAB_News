@@ -1,8 +1,5 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
-import me.metlabnews.Model.DataAccess.Queries.QueryBase;
-import org.basex.core.Command;
-
 import java.sql.ResultSet;
 
 
@@ -16,9 +13,9 @@ public class QueryGetVerificationstatus extends MariaDBQueryBase
 	public String email;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "SELECT isVeryfied FROM Abonnent WHERE EMail = '" + email + "'";
+		return new String[] {"SELECT isVeryfied FROM Abonnent WHERE EMail = ?", email};
 	}
 
 	@Override
