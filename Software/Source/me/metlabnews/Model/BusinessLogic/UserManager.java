@@ -344,25 +344,26 @@ public class UserManager
 		onSuccess.execute();
 	}
 
-	public void getAllOrganisations(Session session, IGetStringArrayEvent onSuccess, IGenericFailureEvent onFailure)
+	public String[] getAllOrganisations(Session session, IGetStringArrayEvent onSuccess, IGenericFailureEvent onFailure)
 	{
 		if(!session.isLoggedIn())
 		{
 			onFailure.execute(Messages.NotLoggedIn);
-			return;
+			return null;
 		}
 		if(session.getUser().getClass() != Subscriber.class)
 		{
 			onFailure.execute(Messages.NotSystemAdmin);
-			return;
+			return null;
 		}
 		QueryGetOrganisation qgo = new QueryGetOrganisation();
 		if(!qgo.execute())
 		{
 			onFailure.execute(Messages.UnknownError);
-			return;
+			return null;
 		}
 		onSuccess.execute(qgo.organisations);
+		return qgo.organisations;
 	}
 
 	public void removeOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName)

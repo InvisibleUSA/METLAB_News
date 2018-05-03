@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class QueryGetOrganisation extends MariaDBQueryBase
 {
 
-	public String organisationName;
+	public String  organisationName   = "";
 	public boolean organisationExists = false;
 	public String[] organisations;
 
