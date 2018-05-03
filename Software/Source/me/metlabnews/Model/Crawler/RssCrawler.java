@@ -89,11 +89,7 @@ public class RssCrawler implements Runnable
 		qte.execute();
 		boolean result = qte.getResult();
 		Logger.getInstance().logDebug(this, "exists \"" + a.getTitle() + "\"? --> " + result);
-		if(result)
-		{
-			return true;
-		}
-		return false;
+		return result;
 	}
 
 	void stop()
