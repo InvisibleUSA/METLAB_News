@@ -37,7 +37,7 @@ class ClippingDaemonTest {
         cd.initialize();
 
         try {
-            Thread.sleep(5000000);
+            Thread.sleep(5);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
