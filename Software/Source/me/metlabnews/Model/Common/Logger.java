@@ -431,7 +431,7 @@ public class Logger implements IResource
 
 
 	/**
-	 * This method returns a FilePath-String, basend on the Channel name.
+	 * This method returns a FilePath-String, based on the Channel name.
 	 * <p>Example</p>
 	 * <p>{@code /home/ln/IdeaProjects/METLAB_News}</p>
 	 *
@@ -461,7 +461,7 @@ public class Logger implements IResource
 	 * <p>This Message will write an error message to a file.</p>
 	 * <p>
 	 * If the file and/or the directory is NOT found, then the method will
-	 * automatically create this for you. The default directory is in METLAB_NEWS/Logs/...
+	 * automatically create this for you. The default directory is in METLAB_News/Logs/...
 	 * </p>
 	 * <p>
 	 * Filenames are e.g.: 04-05-2018-WebCrawler-log.txt
@@ -610,7 +610,7 @@ public class Logger implements IResource
 
 	/**
 	 * <p>
-	 * This method will log with the level 'Activity'.
+	 * This method will log with the level 'Info'.
 	 * </p>
 	 * <p>
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
@@ -619,7 +619,7 @@ public class Logger implements IResource
 	 * You only need to call the following code:
 	 * {@code}
 	 * <p>
-	 * Logger.getInstance.logDebug(this, "your message here...");
+	 * Logger.getInstance.logInfo(this, "your message here...");
 	 * </p>
 	 * </p>
 	 *
@@ -698,17 +698,14 @@ public class Logger implements IResource
 	@SuppressWarnings("WeakerAccess")
 	private void log(Object sender, LogLevel level, Channel channel, String msg)
 	{
-		boolean isLevelForbidden   = isLevelForbidden(level);
-		boolean isChannelForbidden = isChannelForbidden(channel);
-
-		boolean loggerLogic = ((level.equals(LogLevel.ERROR))
-				|| ((!isLevelForbidden || !m_localLevelFlag.contains(level))
-				&& !isChannelForbidden));
-
 		if(channel == null)
 		{
 			channel = Channel.UNREGISTERED_CHANNEL;
 		}
+
+		boolean loggerLogic = ((level.equals(LogLevel.ERROR))
+				|| ((!isLevelForbidden(level) || !m_localLevelFlag.contains(level))
+				&& !isChannelForbidden(channel)));
 
 		if(loggerLogic)
 		{
@@ -724,14 +721,14 @@ public class Logger implements IResource
 	}
 
 
-	private static Logger                          m_instance;
-	private        boolean                         m_hasBeenInitialized;
-	private        int                             m_logCounter      = 0;
-	private        String                          LogDestination    = "ToConsole";
-	private        Hashtable<Object, Channel>      m_classList       = new Hashtable<>();
-	private        Hashtable<Channel, ChannelFlag> m_channelFlag     = new Hashtable<>();
-	private        Hashtable<LogLevel, LevelFlag>  m_globalLevelFlag = new Hashtable<>();
-	private        Hashtable<LogLevel, LevelFlag>  m_localLevelFlag  = new Hashtable<>();
-	private        String                          FullFilePath      = (System.getProperty(
+	private static Logger m_instance;
+	private boolean                         m_hasBeenInitialized = false;
+	private int                             m_logCounter         = 0;
+	private String                          LogDestination       = "ToConsole";
+	private Hashtable<Object, Channel>      m_classList          = new Hashtable<>();
+	private Hashtable<Channel, ChannelFlag> m_channelFlag        = new Hashtable<>();
+	private Hashtable<LogLevel, LevelFlag>  m_globalLevelFlag    = new Hashtable<>();
+	private Hashtable<LogLevel, LevelFlag>  m_localLevelFlag     = new Hashtable<>();
+	private String                          FullFilePath         = (System.getProperty(
 			"user.dir")) + File.separator + "Logs" + File.separator;
 }
