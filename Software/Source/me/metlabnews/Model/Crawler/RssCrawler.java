@@ -87,9 +87,8 @@ public class RssCrawler implements Runnable
 	{
 		QueryTitleExists qte = new QueryTitleExists(a.getTitle());
 		qte.execute();
-		boolean result = qte.getResult();
-		Logger.getInstance().logDebug(this, "exists \"" + a.getTitle() + "\"? --> " + result);
-		return result;
+		Logger.getInstance().logDebug(this, "exists \"" + a.getTitle() + "\"? --> " + qte.getResult());
+		return qte.getResult();
 	}
 
 	void stop()
