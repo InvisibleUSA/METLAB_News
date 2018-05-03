@@ -43,16 +43,19 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_layoutProfileBar.addComponents(m_panelProfiles, m_layoutProfileSidebar);
 		m_layoutProfileSidebar.addComponents(m_textProfileName, m_textSources, m_textKeywords,
 		                                     m_textTime, m_buttonProfileCreate);
+
+	}
+
+	public void showAdminLayout()
+	{
 		m_tabLayout.addTab(m_layoutProfileBar, "Abonnenten - Dashboard");
 		m_tabLayout.addTab(m_adminLayout, "Administrator - Dashboard");
-		if(m_parent.whoAmI().isOrganisationAdministrator())
-		{
-			this.addComponent(m_tabLayout);
-		}
-		else
-		{
-			this.addComponent(m_layoutProfileBar);
-		}
+		this.addComponent(m_tabLayout);
+	}
+
+	public void showSubscriberLayout()
+	{
+		this.addComponent(m_layoutProfileBar);
 	}
 
 

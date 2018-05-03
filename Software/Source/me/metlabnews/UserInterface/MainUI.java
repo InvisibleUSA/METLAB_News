@@ -294,6 +294,14 @@ public class MainUI extends UI implements IUserInterface
 		}
 		else
 		{
+			if(myself.isOrganisationAdministrator())
+			{
+				m_subscriberDashboardView.showAdminLayout();
+			}
+			else
+			{
+				m_subscriberDashboardView.showSubscriberLayout();
+			}
 			access(this::openSubscriberDashboardView);
 			access(m_subscriberLoginView::clearFields);
 		}
