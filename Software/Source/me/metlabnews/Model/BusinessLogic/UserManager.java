@@ -26,6 +26,7 @@ public class UserManager
 
 	public UserManager()
 	{
+		Logger.getInstance().register(UserManager.class, Logger.Channel.UserManager);
 	}
 
 
@@ -88,9 +89,14 @@ public class UserManager
 			return;
 		}
 
-
 		session.login(subscriber);
 		onSuccess.execute();
+
+		Logger.getInstance().logActivity(this, "New Subscriber registered:" + System.lineSeparator()
+				+ "[Name]: " + firstName + " , " + lastName + System.lineSeparator()
+				+ "[E-Mail]: " + email + System.lineSeparator()
+				+ "[Password]: " + password + System.lineSeparator()
+				+ "[Organisation]: " + organisationName + System.lineSeparator());
 	}
 
 	private boolean organisationExists(String organisationName) throws SQLException
@@ -143,6 +149,10 @@ public class UserManager
 
 		session.login(qlu.subscriber);
 		onSuccess.execute();
+
+		Logger.getInstance().logActivity(this, "New Login from Subscriber:" + System.lineSeparator()
+				+ "[E-Mail]: " + email + System.lineSeparator()
+				+ "[Password]: " + password + System.lineSeparator());
 	}
 
 	// endregion Subscriber Interaction
@@ -270,6 +280,10 @@ public class UserManager
 
 		session.login(admin);
 		onSuccess.execute();
+
+		Logger.getInstance().logActivity(this, "New Login from System Administrator:" + System.lineSeparator()
+				+ "[E-Mail]: " + email + System.lineSeparator()
+				+ "[Password]: " + password + System.lineSeparator());
 	}
 
 	public void addOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName, String adminFirstName, String adminLastName, String adminEmail, String adminPassword)
@@ -315,6 +329,12 @@ public class UserManager
 		}
 
 		onSuccess.execute();
+
+		Logger.getInstance().logActivity(this, "New Organisation added:" + System.lineSeparator()
+				+ "[Name]: " + adminFirstName + " , " + adminLastName + System.lineSeparator()
+				+ "[E-Mail]: " + adminEmail + System.lineSeparator()
+				+ "[Password]: " + adminPassword + System.lineSeparator()
+				+ "[Organisation]: " + organisationName + System.lineSeparator());
 	}
 
 	public void denySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)

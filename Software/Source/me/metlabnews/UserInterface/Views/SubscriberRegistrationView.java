@@ -4,10 +4,7 @@ package me.metlabnews.UserInterface.Views;
 
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
-import me.metlabnews.Model.BusinessLogic.UserManager;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryGetOrganisation;
-import me.metlabnews.Presentation.Messages;
-import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.MainUI;
 
 import java.util.Arrays;

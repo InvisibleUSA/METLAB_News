@@ -121,6 +121,7 @@ public class Logger implements IResource
 		UI,
 		Presenter,
 		ResourceManager,
+		UserManager,
 		Mail,
 		XMLTag,
 		Logger,
@@ -653,24 +654,27 @@ public class Logger implements IResource
 	@SuppressWarnings("WeakerAccess")
 	public void register(java.lang.Class sender, Channel channel)
 	{
-		if(sender != null)
+		if(!m_classList.contains(channel))
 		{
-			String res = null;
-			String pre = " '";
-			String pst = "' ";
-			try
+			if(sender != null)
 			{
-				m_classList.put(sender.getCanonicalName(), channel);
-				res = "Registration successful:";
-			}
-			catch(Exception e)
-			{
-				res = "Registration FAILED: " + e.toString();
-			}
-			finally
-			{
-				String msg = res + pre + sender.getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTable size: " + m_classList.size();
-				log(this, LogLevel.REGISTRATION, m_classList.get(sender.getCanonicalName()), msg);
+				String res = null;
+				String pre = " '";
+				String pst = "' ";
+				try
+				{
+					m_classList.put(sender.getCanonicalName(), channel);
+					res = "Registration successful:";
+				}
+				catch(Exception e)
+				{
+					res = "Registration FAILED: " + e.toString();
+				}
+				finally
+				{
+					String msg = res + pre + sender.getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTable size: " + m_classList.size();
+					log(this, LogLevel.REGISTRATION, m_classList.get(sender.getCanonicalName()), msg);
+				}
 			}
 		}
 	}

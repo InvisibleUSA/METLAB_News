@@ -49,12 +49,14 @@ public class ResourceManager implements ServletContextListener
 		logger.logActivity(this, "Logger initialized");
 
 		// here you can disable single channels of the logger
+		/*
 		Logger.getInstance().disable(Logger.Channel.Crawler,
 		                             Logger.LogLevel.DEBUG); // This will disable DEBUGS from CRAWLER
 		Logger.getInstance().disable(Logger.Channel.NONE, Logger.LogLevel.WARNING);  // This will disable ALL WARNINGS
 		Logger.getInstance().disable(Logger.Channel.Crawler,
 		                             Logger.LogLevel.NONE);  // This will disable Crawler-Channel
-
+		*/
+		Logger.getInstance().disable(Logger.Channel.XMLTag, Logger.LogLevel.DEBUG);
 		// initialize DatabaseAccess
 		new QueryAddOrganisation();
 
