@@ -20,7 +20,7 @@ import java.util.List;
 public class QueryGetRelevantArticlesFromRSS extends BaseXQueryBase
 {
 	private ObservationProfile m_op;
-	private ArrayList<Article> m_candidates;
+	private ArrayList<Article> m_candidates = new ArrayList<>();
 
 	public QueryGetRelevantArticlesFromRSS(ObservationProfile op)
 	{
@@ -72,7 +72,7 @@ public class QueryGetRelevantArticlesFromRSS extends BaseXQueryBase
 
 				final String     description = article.child("description").value();
 
-				//TODO NewsSource is instanciated with final fields for name, link and rss_link so that wont work
+				//TODO NewsSource is instantiated with final fields for name, link and rss_link so that wont work
 				final NewsSource source = new NewsSource("", "", "");
 
 				Article a = new Article(title, source, link, description, guid, pubDate);

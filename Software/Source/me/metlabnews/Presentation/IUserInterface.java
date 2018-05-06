@@ -7,16 +7,24 @@ public interface IUserInterface
 	// region Events
 
 	interface IGenericEvent
-	{ void execute(); }
+	{
+		void execute();
+	}
 
 	interface IGenericFailureEvent
-	{ void execute(String errorMessage); }
+	{
+		void execute(String errorMessage);
+	}
 
 	interface IGetStringArrayEvent
-	{ void execute(String[] result); }
+	{
+		void execute(String[] result);
+	}
 
 	interface IFetchPendingVerificationRequestsEvent
-	{ void execute(UserDataRepresentation[] data); }
+	{
+		void execute(UserDataRepresentation[] data);
+	}
 
 	// endregion Events
 
@@ -27,8 +35,10 @@ public interface IUserInterface
 	// and executed by a class inside the Model package
 
 	interface IGenericCallback
-	{ void execute(IGenericEvent onSuccess,
-	               IGenericFailureEvent onFailure); }
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure);
+	}
 
 
 
@@ -42,6 +52,7 @@ public interface IUserInterface
 		             String email,
 		             String password);
 	}
+
 	void registerCallbackSubscriberLogin(ISubscriberLoginCallback callback);
 
 
@@ -58,10 +69,25 @@ public interface IUserInterface
 
 
 	interface IRemoveSubscriberCallback
-	{ void execute(IGenericEvent onSuccess,
-	               IGenericFailureEvent onFailure,
-	               String email); }
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String email);
+	}
+
 	void registerCallbackSubscriberRemoval(IRemoveSubscriberCallback callback);
+
+	interface IAddProfileCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String profileName,
+		             String[] sources,
+		             String[] keywords,
+		             String time);
+	}
+
+	void registerCallbackAddProfile(IAddProfileCallback callback);
 
 	// endregion Subscriber Interaction
 
@@ -69,22 +95,30 @@ public interface IUserInterface
 	// region Client Admin Interaction
 
 	interface IFetchPendingVerificationRequestsCallback
-	{ void execute(IFetchPendingVerificationRequestsEvent onSuccess,
-	               IGenericFailureEvent onFailure); }
+	{
+		void execute(IFetchPendingVerificationRequestsEvent onSuccess,
+		             IGenericFailureEvent onFailure);
+	}
+
 	void registerCallbackFetchPendingVerificationRequests(
 			IFetchPendingVerificationRequestsCallback callback);
 
 	interface IVerifySubscriberCallback
-	{ void execute(IGenericEvent onSuccess,
-	               IGenericFailureEvent onFailure,
-	               String subscriberEmail, boolean grantAdminStatus);
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String email, boolean grantAdminStatus);
 	}
+
 	void registerCallbackVerifySubscriber(IVerifySubscriberCallback callback);
 
 	interface IDenySubscriberCallback
-	{ void execute(IGenericEvent onSuccess,
-	               IGenericFailureEvent onFailure,
-	               String email); }
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String email);
+	}
+
 	void registerCallbackDenySubscriber(IDenySubscriberCallback callback);
 
 	// endregion Client Admin Interaction
@@ -95,29 +129,41 @@ public interface IUserInterface
 	{
 		void execute(IGenericEvent onSuccess,
 		             IGenericFailureEvent onFailure,
-		             String email, String password); }
+		             String email, String password);
+	}
+
 	void registerCallbackSysAdminLogin(ISysAdminLoginCallback callback);
 
-	interface IAddOrganisationCallback { void execute(IGenericEvent onSuccess,
-	                                                  IGenericFailureEvent onFailure,
-	                                                  String organisationName,
-	                                                  String adminFirstName,
-	                                                  String adminLastName,
-	                                                  String adminEmail,
-	                                                  String adminPassword); }
+	interface IAddOrganisationCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String organisationName,
+		             String adminFirstName,
+		             String adminLastName,
+		             String adminEmail,
+		             String adminPassword);
+	}
+
 	void registerCallbackAddOrganisation(IAddOrganisationCallback callback);
 
 
 	interface IRemoveOrganisationCallback
-	{ void execute(IGenericEvent onSuccess,
-	               IGenericFailureEvent onFailure,
-	               String organisationName); }
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String organisationName);
+	}
+
 	void registerCallbackRemoveOrganisation(IRemoveOrganisationCallback callback);
 
 
 	interface IFetchOrganisationsCallback
-	{void execute(IGetStringArrayEvent onSuccess,
-	              IGenericFailureEvent onFailure); }
+	{
+		void execute(IGetStringArrayEvent onSuccess,
+		             IGenericFailureEvent onFailure);
+	}
+
 	void registerCallbackFetchOrganisations(IFetchOrganisationsCallback callback);
 
 	// endregion System Admin Interaction
@@ -126,7 +172,10 @@ public interface IUserInterface
 	// region Common Interaction
 
 	interface ILogoutCallback
-	{ void execute(IGenericEvent onExecute); }
+	{
+		void execute(IGenericEvent onExecute);
+	}
+
 	void registerCallbackLogout(ILogoutCallback callback);
 
 	// endregion Common Interaction

@@ -10,6 +10,11 @@ import java.util.Properties;
 
 public class ConfigurationManager implements IResource
 {
+	static
+	{
+		Logger.getInstance().register(ConfigurationManager.class, Logger.Channel.ConfigurationManager);
+	}
+
 	/**
 	 * Singleton call
 	 *
@@ -25,6 +30,17 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns if the Configuration Manager has been correctly initialized
+	 *
+	 * @return true if it has been initialized
+	 */
+	public boolean isM_hasBeenInitialized()
+	{
+		return m_hasBeenInitialized;
+	}
+
+
 	@Override
 	public void initialize()
 	{
@@ -32,6 +48,7 @@ public class ConfigurationManager implements IResource
 		{
 			m_properties.loadFromXML(inputStream);
 			m_hasBeenInitialized = true;
+			Logger.getInstance().logActivity(this, "ConfigurationManager has been initialized...");
 		}
 		catch(FileNotFoundException e)
 		{
@@ -43,23 +60,6 @@ public class ConfigurationManager implements IResource
 		}
 	}
 
-	// TODO: ONLY FOR DEBUGGING
-	public void startOnlyForDebugPurposesThisMethodWillBeRemoved()
-	{
-		try(InputStream inputStream = new FileInputStream(new File(m_XMLFilePath)))
-		{
-			m_properties.loadFromXML(inputStream);
-			m_hasBeenInitialized = true;
-		}
-		catch(FileNotFoundException e)
-		{
-			Logger.getInstance().logError(this, m_XMLFilePath + " not found:\n" + e.toString());
-		}
-		catch(Exception e)
-		{
-			Logger.getInstance().logError(this, e.toString());
-		}
-	}
 
 	@Override
 	public void close()
@@ -71,7 +71,7 @@ public class ConfigurationManager implements IResource
 	private void setNumberFormatException(NumberFormatException e, String key)
 	{
 		String errorMsg = "IOException in Configuration Manager." +
-				" Please check Settings.XML and depending getter-method for Key: '" + key +"'. Error Message: ";
+				" Please check Settings.XML and depending getter-method for Key: '" + key + "'. Error Message: ";
 		Logger.getInstance().logError(this, errorMsg + e.toString());
 	}
 
@@ -204,7 +204,7 @@ public class ConfigurationManager implements IResource
 	// endregion ClippingDaemon
 
 
-	// region BaseX
+	// region DocDBMS
 
 	public String getBaseXPath()
 	{
@@ -244,7 +244,7 @@ public class ConfigurationManager implements IResource
 		return returnProperty(key);
 	}
 
-	// endregion BaseX
+	// endregion DocDBMS
 
 
 	// region RDBMS
@@ -282,12 +282,6 @@ public class ConfigurationManager implements IResource
 	public String getRdbmsPassword()
 	{
 		String key = "RDBMS.Password";
-		return returnProperty(key);
-	}
-
-	public String getRdbmsSqlDialect()
-	{
-		String key = "RDBMS.SQLDialect";
 		return returnProperty(key);
 	}
 
@@ -344,7 +338,7 @@ public class ConfigurationManager implements IResource
 	public String getLoggerLogFilePath()
 	{
 		String key = "Logger.LogFilePath";
-		return (System.getProperty("user.dir")) + File.separator + returnProperty(key) + File.separator;
+		return (System.getProperty("user.dir")) + returnProperty(key);
 	}
 
 
@@ -353,14 +347,12 @@ public class ConfigurationManager implements IResource
 		String key = "Logger.LogDestination";
 		try
 		{
-			switch(String.format(returnProperty(key)))
+			switch(returnProperty(key))
 			{
 				case "ToFile":
 					return LogDestination.ToFile.name();
 				case "ToConsole":
 					return LogDestination.ToConsole.name();
-				case "ToDatabase":
-					return LogDestination.ToDatabase.name();
 				default:
 					return null;
 			}
@@ -380,7 +372,7 @@ public class ConfigurationManager implements IResource
 	 * @param priority The Priority
 	 * @return true or false
 	 */
-	public boolean getFilteredPriorities(String priority)
+	public boolean isLevelDisabled(String priority)
 	{
 		String key = "Logger.isDisabled_" + priority;
 		return Boolean.parseBoolean(returnProperty(key));
@@ -413,7 +405,6 @@ public class ConfigurationManager implements IResource
 	{
 		ToFile,
 		ToConsole,
-		ToDatabase
 	}
 
 
@@ -432,22 +423,31 @@ public class ConfigurationManager implements IResource
 			if(value == null)
 			{
 				Logger.getInstance().logError(this, "Key '" + key + "' not found in: "
-						                         + m_XMLFilePath);
+						+ m_XMLFilePath);
 			}
 			return value;
 		}
 		else
 		{
-			Logger.getInstance().logError(this, "Initialization Error returning property for key '" + key + "'. " +
-					                         "Logger has not been initialized!");
+			Logger.getInstance().logError(this, "Initialization Error returning property for key '" + key + "'. "
+					+ this.getClass().getSimpleName() + " has not been initialized!");
 			return null;
 		}
 	}
 
+	private String setXMLFilePath()
+	{
+		if(System.getProperty("user.dir").contains("Software"))
+		{
+			return (System.getProperty("user.dir") + File.separator + "Resources" + File.separator + "Settings.XML");
+		}
+		return (System.getProperty(
+				"user.dir") + File.separator + "Software" + File.separator + "Resources" + File.separator + "Settings.XML");
+	}
 
-	private boolean m_hasBeenInitialized = false;
+
+	private        boolean              m_hasBeenInitialized = false;
 	private static ConfigurationManager m_instance;
-	private final String m_XMLFilePath = (System.getProperty(
-			"user.dir") + "" + File.separator + "Resources" + File.separator + "Settings.XML");
-	private Properties m_properties;
+	private final  String               m_XMLFilePath        = setXMLFilePath();
+	private        Properties           m_properties;
 }

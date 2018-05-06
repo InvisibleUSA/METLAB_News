@@ -16,9 +16,9 @@ public class QueryGetUser extends MariaDBQueryBase
 	public Subscriber subscriber;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "SELECT * FROM Abonnent WHERE EMail = '" + email + "'";
+		return new String[] {"SELECT * FROM Abonnent WHERE EMail = ?", email};
 	}
 
 	@Override

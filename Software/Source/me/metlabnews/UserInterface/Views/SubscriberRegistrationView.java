@@ -2,9 +2,15 @@ package me.metlabnews.UserInterface.Views;
 
 
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.*;
+import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryGetOrganisation;
 import me.metlabnews.UserInterface.MainUI;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 
@@ -19,12 +25,12 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 	private final Label            title               = new Label("Willkommen bei METLAB-News - Registrierung");
 	private final TextField        textFieldFirstName  = new TextField("Vorname:");
 	private final TextField        textFieldLastName   = new TextField("Nachname:");
-	private final TextField        textFieldCompany    = new TextField("Organisation:");
 	private final TextField        textFieldEmail      = new TextField("E-Mail:");
 	private final PasswordField    textFieldPassword   = new PasswordField("Passwort:");
 	private final CheckBox         checkBoxClientAdmin = new CheckBox("Administrator Status beantragen");
 	private final Button           buttonRegister      = new Button("Registrieren");
 	private final Button           buttonLogin         = new Button("Zurück zur Anmeldung");
+	private NativeSelect textFieldCompany;
 	private final HorizontalLayout buttonBar           = new HorizontalLayout();
 
 	/**
@@ -36,6 +42,25 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 	{
 		m_parent = parent;
 
+		textFieldPassword.setWidth("310");
+		textFieldEmail.setWidth("310");
+		textFieldFirstName.setWidth("310");
+		textFieldLastName.setWidth("310");
+
+		textFieldEmail.setIcon(VaadinIcons.ENVELOPE);
+		textFieldPassword.setIcon(VaadinIcons.KEY);
+
+		QueryGetOrganisation qgo = new QueryGetOrganisation();
+		if(!qgo.execute())
+		{
+			return;
+		}
+		List<String> data             = Arrays.asList(qgo.organisations);
+		textFieldCompany = new NativeSelect<>("Organisation:", data);
+		textFieldCompany.setEmptySelectionAllowed(false);
+
+		textFieldCompany.addValueChangeListener(event -> getDropDownvalue(event.getValue().toString()));
+
 		buttonRegister.addClickListener((Button.ClickEvent event) -> register());
 
 		buttonLogin.addClickListener((Button.ClickEvent event) ->
@@ -46,6 +71,11 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 		                   textFieldEmail, textFieldPassword, checkBoxClientAdmin, buttonBar);
 	}
 
+	private void getDropDownvalue(String temp)
+	{
+		company = temp;
+	}
+
 
 	@Override
 	public void show()
@@ -54,31 +84,44 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 		Page.getCurrent().setTitle("Registrieren");
 	}
 
+	private String company = "";
 
 	private void register()
 	{
-		String  firstName = textFieldFirstName.getValue();
-		String  lastName  = textFieldLastName.getValue();
-		String  company   = textFieldCompany.getValue();
-		String  email     = textFieldEmail.getValue();
-		String  password  = textFieldPassword.getValue();
-		boolean admin     = checkBoxClientAdmin.getValue();
+		String  firstName  = textFieldFirstName.getValue();
+		String  lastName   = textFieldLastName.getValue();
+		String  email      = textFieldEmail.getValue();
+		String  password   = textFieldPassword.getValue();
+		boolean admin      = checkBoxClientAdmin.getValue();
+		boolean doRegister = true;
 
+		if(company.isEmpty())
+		{
+			doRegister = false;
+			textFieldCompany.setComponentError(new UserError("Bitte wählen sie eine Organisation aus!"));
+			//Notification popup = new Notification("Bitte wählen sie eine Organisation aus!", Notification.Type.WARNING_MESSAGE);
+			//popup.setDelayMsec(3000);
+			//popup.show(Page.getCurrent());
+		}
 		if(email.isEmpty())
 		{
-			Notification popup = new Notification("Bitte geben Sie eine Email Adresse ein!",
-			                                      Notification.Type.WARNING_MESSAGE);
-			popup.setDelayMsec(3000);
-			popup.show(Page.getCurrent());
+			doRegister = false;
+			textFieldEmail.setPlaceholder("Bitte geben Sie eine Email Adresse ein!");
+			textFieldEmail.setComponentError(new UserError("Bitte geben Sie eine Email Adresse ein!"));
+			//Notification popup = new Notification("Bitte geben Sie eine Email Adresse ein!", Notification.Type.WARNING_MESSAGE);
+			//popup.setDelayMsec(3000);
+			//popup.show(Page.getCurrent());
 		}
-		else if(password.isEmpty())
+		if(password.isEmpty())
 		{
-			Notification popup = new Notification("Bitte geben Sie ein Passwort ein!",
-			                                      Notification.Type.WARNING_MESSAGE);
-			popup.setDelayMsec(3000);
-			popup.show(Page.getCurrent());
+			doRegister = false;
+			textFieldPassword.setPlaceholder("Bitte geben Sie ein Passwort ein!");
+			textFieldPassword.setComponentError(new UserError("Bitte geben Sie ein Passwort ein!"));
+			//Notification popup = new Notification("Bitte geben Sie ein Passwort ein!", Notification.Type.WARNING_MESSAGE);
+			//popup.setDelayMsec(3000);
+			//popup.show(Page.getCurrent());
 		}
-		else
+		else if(doRegister)
 		{
 			m_parent.registerSubscriber(firstName, lastName, company, email, password, admin);
 		}

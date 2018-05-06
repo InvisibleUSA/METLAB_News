@@ -16,7 +16,7 @@ import java.util.Properties;
 
 
 /**
- * class used indirectly by BaseXQueryBase to access the BaseX database. Responsible for starting the BaseX server
+ * class used indirectly by BaseXQueryBase to access the DocDBMS database. Responsible for starting the DocDBMS server
  * and requesting data from it.
  *
  * @author Erik
@@ -26,7 +26,7 @@ class BaseXConnector
 {
 	static
 	{
-		Logger.getInstance().register(BaseXConnector.class, Logger.Channel.BaseX);
+		Logger.getInstance().register(BaseXConnector.class, Logger.Channel.DocDBMS);
 	}
 
 	private       String          m_username       = "admin";
@@ -41,12 +41,12 @@ class BaseXConnector
 	private       BaseXServer     m_server;
 
 	/**
-	 * Starts the BaseX Server in a separate process and initializes ClientSessions as well as settings
+	 * Starts the DocDBMS Server in a separate process and initializes ClientSessions as well as settings
 	 * Errors are logged to DataBase channel
 	 */
 	BaseXConnector()
 	{
-		Logger.getInstance().logDebug(this, "Starting BaseX");
+		Logger.getInstance().logDebug(this, "Starting DocDBMS");
 		loadConfig();
 		try
 		{
@@ -56,7 +56,7 @@ class BaseXConnector
 		}
 		catch(IOException e)
 		{
-			Logger.getInstance().logError(this, "BaseX Error: " + e.toString());
+			Logger.getInstance().logError(this, "DocDBMS Error: " + e.toString());
 		}
 	}
 
@@ -172,7 +172,7 @@ class BaseXConnector
 		}
 		catch(IOException e)
 		{
-			Logger.getInstance().logError(this, "BaseX Error: " + e.toString());
+			Logger.getInstance().logError(this, "DocDBMS Error: " + e.toString());
 		}
 	}
 }

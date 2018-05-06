@@ -13,7 +13,7 @@ abstract class BaseXQueryBase extends QueryBase
 {
 	static
 	{
-		Logger.getInstance().register(BaseXQueryBase.class, Logger.Channel.BaseX);
+		Logger.getInstance().register(BaseXQueryBase.class, Logger.Channel.DocDBMS);
 	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -37,7 +37,7 @@ abstract class BaseXQueryBase extends QueryBase
 
 		catch(IOException e)
 		{
-			Logger.getInstance().logError(this, "BaseX DB Error: " + e.toString());
+			Logger.getInstance().logError(this, "DocDBMS DB Error: " + e.toString());
 			return false;
 		}
 	}

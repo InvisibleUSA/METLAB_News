@@ -25,4 +25,44 @@ class LoggerTest
 	void log()
 	{
 	}
+
+	@org.junit.Test
+	public void getInstance()
+	{
+	}
+
+	@org.junit.Test
+	public void initialize()
+	{
+	}
+
+	@org.junit.Test
+	public void close()
+	{
+	}
+
+	@org.junit.Test
+	public void logDebug()
+	{
+	}
+
+	@org.junit.Test
+	public void logError()
+	{
+	}
+
+	@org.junit.Test
+	public void logWarning()
+	{
+	}
+
+	@org.junit.Test
+	public void logActivity()
+	{
+	}
+
+	@org.junit.Test
+	public void register()
+	{
+	}
 }

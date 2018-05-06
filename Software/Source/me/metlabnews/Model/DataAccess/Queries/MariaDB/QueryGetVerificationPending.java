@@ -1,27 +1,26 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
-import me.metlabnews.Model.DataAccess.Queries.QueryBase;
 import me.metlabnews.Presentation.UserDataRepresentation;
-import org.basex.core.Command;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 
 /**
  * Created by ln on 10.04.18.
  */
-public class QueryGetVerificationpending extends MariaDBQueryBase
+public class QueryGetVerificationPending extends MariaDBQueryBase
 {
 	public String                   organization;
 	public UserDataRepresentation[] users;
 
 	@Override
-	protected String createSQLQuery()
+	protected Object[] createSQLQuery()
 	{
-		return "SELECT * FROM Abonnent WHERE isVerified = 0 AND Firma = '" + organization + "'";
+		return new String[] {"SELECT * FROM Abonnent WHERE isVerified = 0 AND Firma = ?", organization};
 	}
 
 	@Override
@@ -36,8 +35,8 @@ public class QueryGetVerificationpending extends MariaDBQueryBase
 			while(rs.next())
 			{
 				data = new UserDataRepresentation(rs.getString("EMail"), rs.getString("VName"), rs.getString("Name"),
-				                                  rs.getString("isAdmin") == "1", false,
-				                                  rs.getString("isVerified") == "1");
+				                                  Objects.equals(rs.getString("isAdmin"), "1"), false,
+				                                  Objects.equals(rs.getString("isVerified"), "1"));
 				tempUsers.add(data);
 				i++;
 			}

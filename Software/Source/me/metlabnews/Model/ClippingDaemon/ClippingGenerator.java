@@ -1,7 +1,7 @@
 package me.metlabnews.Model.ClippingDaemon;
 
+import me.metlabnews.Model.Common.HTMLMail;
 import me.metlabnews.Model.Common.Logger;
-import me.metlabnews.Model.Common.Mail;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetRelevantArticlesFromRSS;
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.Clipping;
@@ -23,6 +23,11 @@ class ClippingGenerator implements Runnable
 		m_profile = op;
 	}
 
+    /**
+     * @inheritDoc
+     *
+     * generates a clipping and sends it via e-mail to its owner
+     */
 	@Override
 	public void run()
 	{
@@ -30,18 +35,18 @@ class ClippingGenerator implements Runnable
 		QueryGetRelevantArticlesFromRSS query = new QueryGetRelevantArticlesFromRSS(m_profile);
 		if(!query.execute())
 		{
-			Logger.getInstance().logError(this, "Unknown Error");
+			Logger.getInstance().logError(this, "Unknown Database Error");
 			return;
 		}
+
+		Logger.getInstance().logDebug(this, "Fetched RSS Articles");
+
 		for(Article a : query.getCandidates())
 		{
 			m_clipping.addArticle(a);
 		}
 
-		Mail m = new Mail();
-		m.To = m_profile.getUserMail();
-		m.Subject = "New clipping";
-		m.Text = m_clipping.prettyPrint();
-		m.send();
+		HTMLMail m = new HTMLMail();
+		m.send(m_profile.getUserMail(), "New clipping", m_clipping.prettyPrint());
 	}
 }

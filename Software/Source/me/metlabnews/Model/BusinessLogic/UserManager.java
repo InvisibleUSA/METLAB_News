@@ -1,7 +1,7 @@
 package me.metlabnews.Model.BusinessLogic;
 
+import com.vaadin.server.Page;
 import me.metlabnews.Model.Common.Logger;
-import me.metlabnews.Model.Common.Mail;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.*;
 import me.metlabnews.Model.Entities.Organisation;
@@ -27,6 +27,7 @@ public class UserManager
 
 	public UserManager()
 	{
+		Logger.getInstance().register(UserManager.class, Logger.Channel.UserManager);
 	}
 
 
@@ -64,6 +65,19 @@ public class UserManager
 			onFailure.execute(Messages.PasswordDoesNotMatchRequirements);
 			return;
 		}
+		QueryLoginUser qlu = new QueryLoginUser();
+		qlu.byPassword = true;
+		qlu.password = password;
+		if(!qlu.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+		if(qlu.userExists)
+		{
+			onFailure.execute("Das Passwort wird bereits von diesem Nutzer verwendet: " + qlu.subscriber.getEmail());
+			return;
+		}
 
 		Subscriber subscriber = new Subscriber(email, password, firstName, lastName, new Organisation(organisationName),
 		                                       clientAdmin); //TODO: Change Organisation
@@ -76,9 +90,14 @@ public class UserManager
 			return;
 		}
 
-
 		session.login(subscriber);
 		onSuccess.execute();
+
+		Logger.getInstance().logActivity(this, "New Subscriber registered:" + System.lineSeparator()
+				+ "[Name]: " + firstName + " , " + lastName + System.lineSeparator()
+				+ "[E-Mail]: " + email + System.lineSeparator()
+				+ "[Password]: " + password + System.lineSeparator()
+				+ "[Organisation]: " + organisationName + System.lineSeparator());
 	}
 
 	private boolean organisationExists(String organisationName) throws SQLException
@@ -131,6 +150,10 @@ public class UserManager
 
 		session.login(qlu.subscriber);
 		onSuccess.execute();
+
+		Logger.getInstance().logActivity(this, "New Login from Subscriber:" + System.lineSeparator()
+				+ "[E-Mail]: " + email + System.lineSeparator()
+				+ "[Password]: " + password + System.lineSeparator());
 	}
 
 	// endregion Subscriber Interaction
@@ -159,12 +182,12 @@ public class UserManager
 
 	public void getPendingVerificationRequests(Session session, IUserInterface.IFetchPendingVerificationRequestsEvent onSuccess, IGenericFailureEvent onFailure)
 	{
-		if(!adminCheck(session, onFailure))
+		if(!adminCheck(session, onFailure)) //Error handling in adminCheck
 		{
 			return;
 		}
 
-		QueryGetVerificationpending qgvp = new QueryGetVerificationpending();
+		QueryGetVerificationPending qgvp = new QueryGetVerificationPending();
 		qgvp.organization = ((Subscriber)session.getUser()).getOrganisationId().getName();
 		if(!qgvp.execute())
 		{
@@ -173,7 +196,6 @@ public class UserManager
 		}
 		UserDataRepresentation[] users = qgvp.users;
 		onSuccess.execute(users);
-		//TODO: Mails treatment
 	}
 
 	public void verifySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String subscriberEmail, Boolean grantAdmin)
@@ -213,7 +235,7 @@ public class UserManager
 			if(!qvu.execute())
 			{
 				onFailure.execute(Messages.UnknownError);
-				return; //TODO: Error handling
+				return;
 			}
 			if(!qvu.userExists)
 			{
@@ -241,24 +263,28 @@ public class UserManager
 		qls.password = password;
 		if(!qls.execute())
 		{
-			return; //TODO: Error handling
+			onFailure.execute(Messages.UnknownError);
+			return;
 		}
 		if(!qls.adminLoginSuccessful)
 		{
 			if(!qls.userExists)
 			{
 				onFailure.execute(Messages.UnknownEmail);
-				return; //TODO: Error handling User doesn't exist
+				return;
 			}
 			onFailure.execute(Messages.WrongPassword);
-			return; //TODO: Error handling invalid password
+			return;
 		}
 
 		SystemAdministrator admin = qls.sysadmin;
 
 		session.login(admin);
 		onSuccess.execute();
-		//TODO: Admin Login
+
+		Logger.getInstance().logActivity(this, "New Login from System Administrator:" + System.lineSeparator()
+				+ "[E-Mail]: " + email + System.lineSeparator()
+				+ "[Password]: " + password + System.lineSeparator());
 	}
 
 	public void addOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName, String adminFirstName, String adminLastName, String adminEmail, String adminPassword)
@@ -276,6 +302,7 @@ public class UserManager
 		if(!Validator.validateEmailAddress(adminEmail))
 		{
 			onFailure.execute(Messages.InvalidEmailAddress);
+			return;
 		}
 		if(!Validator.validatePassword(adminPassword))
 		{
@@ -287,7 +314,8 @@ public class UserManager
 		qao.orgName = organisationName;
 		if(!qao.execute())
 		{
-			return; //TODO: Error handling
+			onFailure.execute(Messages.UnknownError);
+			return;
 		}
 
 		Subscriber subscriber = new Subscriber(adminEmail, adminPassword, adminFirstName, adminLastName, organisation,
@@ -297,10 +325,17 @@ public class UserManager
 		qau.subscriber = subscriber;
 		if(!qau.execute())
 		{
+			onFailure.execute(Messages.UnknownError);
 			return;
 		}
 
 		onSuccess.execute();
+
+		Logger.getInstance().logActivity(this, "New Organisation added:" + System.lineSeparator()
+				+ "[Name]: " + adminFirstName + " , " + adminLastName + System.lineSeparator()
+				+ "[E-Mail]: " + adminEmail + System.lineSeparator()
+				+ "[Password]: " + adminPassword + System.lineSeparator()
+				+ "[Organisation]: " + organisationName + System.lineSeparator());
 	}
 
 	public void denySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
@@ -330,25 +365,26 @@ public class UserManager
 		onSuccess.execute();
 	}
 
-	public void getAllOrganisations(Session session, IGetStringArrayEvent onSuccess, IGenericFailureEvent onFailure)
+	public String[] getAllOrganisations(Session session, IGetStringArrayEvent onSuccess, IGenericFailureEvent onFailure)
 	{
 		if(!session.isLoggedIn())
 		{
 			onFailure.execute(Messages.NotLoggedIn);
-			return;
+			return null;
 		}
 		if(session.getUser().getClass() != Subscriber.class)
 		{
 			onFailure.execute(Messages.NotSystemAdmin);
-			return;
+			return null;
 		}
 		QueryGetOrganisation qgo = new QueryGetOrganisation();
 		if(!qgo.execute())
 		{
 			onFailure.execute(Messages.UnknownError);
-			return;
+			return null;
 		}
 		onSuccess.execute(qgo.organisations);
+		return qgo.organisations;
 	}
 
 	public void removeOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName)
@@ -368,7 +404,8 @@ public class UserManager
 		qdo.orgName = organisationName;
 		if(!qdo.execute())
 		{
-			return; //TODO: Error handling
+			onFailure.execute(Messages.UnknownError);
+			return;
 		}
 		onSuccess.execute();
 	}

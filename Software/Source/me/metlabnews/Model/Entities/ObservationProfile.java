@@ -130,4 +130,20 @@ public class ObservationProfile
 		s.append("------------------------------------------\n");
 		return s.toString();
 	}
+
+	public String toXML()
+	{
+		StringBuilder res = new StringBuilder("<profile>\n" +
+				"    <name>" + m_profileName + "</name>\n" +
+				"    <owner>" + m_userMail + "</owner>\n" +
+				"    <generationtime>" + m_generationTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "</generationtime>\n" +
+				"    <keywords>\n");
+		for (String k : m_keywords)
+				res.append("        <keyword>").append(k).append("</keyword>\n");
+		res.append("    </keywords>\n" + "<sources>\n");
+		for (String src: m_sources)
+				res.append("        <source>").append(src).append("</source>\n");
+		res.append("</sources>\n" + "</profile>\n");
+		return res.toString();
+	}
 }

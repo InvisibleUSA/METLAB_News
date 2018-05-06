@@ -15,6 +15,8 @@ import me.metlabnews.Presentation.IUserInterface;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.Views.*;
 
+import java.util.Collection;
+
 
 
 /**
@@ -29,13 +31,12 @@ import me.metlabnews.UserInterface.Views.*;
 @Push(PushMode.AUTOMATIC)
 public class MainUI extends UI implements IUserInterface
 {
-	private SubscriberLoginView          m_subscriberLoginView;
-	private SubscriberRegistrationView   m_subscriberRegistrationView;
-	private SubscriberDashboardView      m_subscriberDashboardView;
-	private SystemAdminLoginView         m_systemAdminLoginView;
-	private SubscriberAdminDashboardView m_subscriberAdminDashboardView;
-	private SystemAdminDashboardView     m_systemAdminDashboardView;
-	private LogoutView                   m_logoutView;
+	private SubscriberLoginView        m_subscriberLoginView;
+	private SubscriberRegistrationView m_subscriberRegistrationView;
+	private SubscriberDashboardView    m_subscriberDashboardView;
+	private SystemAdminLoginView       m_systemAdminLoginView;
+	private SystemAdminDashboardView   m_systemAdminDashboardView;
+	private LogoutView                 m_logoutView;
 
 
 	public MainUI()
@@ -45,13 +46,10 @@ public class MainUI extends UI implements IUserInterface
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
-		MainUIServlet.ui = this;
-
 		m_subscriberLoginView = new SubscriberLoginView(this);
 		m_systemAdminLoginView = new SystemAdminLoginView(this);
 		m_subscriberRegistrationView = new SubscriberRegistrationView(this);
 		m_subscriberDashboardView = new SubscriberDashboardView(this);
-		m_subscriberAdminDashboardView = new SubscriberAdminDashboardView(this);
 		m_systemAdminDashboardView = new SystemAdminDashboardView(this);
 		m_logoutView = new LogoutView(this);
 
@@ -69,34 +67,27 @@ public class MainUI extends UI implements IUserInterface
 
 	public void openSystemAdminLoginView()
 	{
-
 		setContent(m_systemAdminLoginView);
 	}
 
 	public void openSubscriberRegisterView()
 	{
-
 		setContent(m_subscriberRegistrationView);
 	}
 
 	private void openSubscriberDashboardView()
 	{
-		access(() -> setContent(m_subscriberDashboardView));
-	}
-
-	private void openClientAdminDashboardView()
-	{
-		access(() -> setContent(m_subscriberAdminDashboardView));
+		setContent(m_subscriberDashboardView);
 	}
 
 	private void openSystemAdminDashboardView()
 	{
-		access(() -> setContent(m_systemAdminDashboardView));
+		setContent(m_systemAdminDashboardView);
 	}
 
 	public void openLogoutView()
 	{
-		access(() -> setContent(m_logoutView));
+		setContent(m_logoutView);
 	}
 
 
@@ -130,7 +121,6 @@ public class MainUI extends UI implements IUserInterface
 		m_logoutCallback.execute(this::logoutEvent);
 	}
 
-
 	public void removeSubscriber(IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
 	                             String email)
@@ -159,7 +149,6 @@ public class MainUI extends UI implements IUserInterface
 		access(() -> m_denySubscriberCallback.execute(onSuccess, onFailure, email));
 	}
 
-
 	public void addOrganisation(IGenericEvent onSuccess,
 	                            IGenericFailureEvent onFailure,
 	                            String organisationName,
@@ -184,6 +173,16 @@ public class MainUI extends UI implements IUserInterface
 	                                IGenericFailureEvent onFailure)
 	{
 		m_FetchOrganisationsCallback.execute(onSuccess, onFailure);
+	}
+
+	public void addProfile(IGenericEvent onSuccess,
+	                       IGenericFailureEvent onFailure,
+	                       String profileName,
+	                       String[] sources,
+	                       String[] keywords,
+	                       String time)
+	{
+		m_addProfileCallback.execute(onSuccess, onFailure, profileName, sources, keywords, time);
 	}
 
 	// endregion GUI Methods
@@ -214,8 +213,7 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
-	public void registerCallbackFetchPendingVerificationRequests(
-			IFetchPendingVerificationRequestsCallback callback)
+	public void registerCallbackFetchPendingVerificationRequests(IFetchPendingVerificationRequestsCallback callback)
 	{
 		m_fetchPendingVerificationRequestsCallback = callback;
 	}
@@ -262,6 +260,12 @@ public class MainUI extends UI implements IUserInterface
 		m_logoutCallback = callback;
 	}
 
+	@Override
+	public void registerCallbackAddProfile(IAddProfileCallback callback)
+	{
+		m_addProfileCallback = callback;
+	}
+
 
 	private ISubscriberLoginCallback                  m_subscriberLoginCallback;
 	private ISysAdminLoginCallback                    m_sysAdminLoginCallback;
@@ -274,40 +278,50 @@ public class MainUI extends UI implements IUserInterface
 	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
 	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
-
+	private IAddProfileCallback                       m_addProfileCallback;
 	// endregion Callbacks
 
 
 
 	// region Events
-
 	private void loginSuccessfulEvent()
 	{
 		UserDataRepresentation myself = Presenter.getInstance().whoAmI(this);
 		if(myself.isSystemAdministrator())
 		{
-			openSystemAdminDashboardView();
-		}
-		else if(myself.isOrganisationAdministrator())
-		{
-			access(m_subscriberLoginView::clearFields);
-			openClientAdminDashboardView();
+			access(this::openSystemAdminDashboardView);
+			access(m_systemAdminLoginView::clearFields);
 		}
 		else
 		{
+			if(myself.isOrganisationAdministrator())
+			{
+				m_subscriberDashboardView.showAdminLayout();
+			}
+			else
+			{
+				m_subscriberDashboardView.showSubscriberLayout();
+			}
+			access(this::openSubscriberDashboardView);
 			access(m_subscriberLoginView::clearFields);
-			openSubscriberDashboardView();
 		}
 	}
 
 	private void loginFailedEvent(String errorMessage)
 	{
-		Notification popup = new Notification("Anmeldung fehlgeschlagen\n" + errorMessage,
-		                                      Notification.Type.WARNING_MESSAGE);
-		popup.setDelayMsec(3000);
-		access(() -> popup.show(Page.getCurrent()));
+		Notification notification = new Notification("Anmeldung fehlgeschlagen\n"
+				                                             + errorMessage);
+		notification.setDelayMsec(3000);
+		access(() -> notification.show(Page.getCurrent()));
 	}
 
+	private void registrationFailedEvent(String errorMessage)
+	{
+		Notification notification = new Notification("Registrierung fehlgeschlagen\n"
+				                                             + errorMessage);
+		notification.setDelayMsec(3000);
+		access(() -> notification.show(Page.getCurrent()));
+	}
 
 	private void logoutEvent()
 	{
@@ -317,26 +331,12 @@ public class MainUI extends UI implements IUserInterface
 
 	private void subscriberVerificationPendingEvent()
 	{
-		access(() ->
-		       {
-			       Notification popup = new Notification("Verifizierung ausstehend\nWarten Sie auf die " +
-					                                             "Verifikation durch einen Administrator",
-			                                             Notification.Type.WARNING_MESSAGE);
-			       popup.setDelayMsec(3000);
-			       access(() -> popup.show(Page.getCurrent()));
-			       m_subscriberLoginView.clearFields();
-		       });
+		Notification notification = new Notification("Verifizierung ausstehend\nWarten Sie auf die " +
+				                                             "Verifikation durch einen Administrator");
+		notification.setDelayMsec(3000);
+		access(() -> notification.show(Page.getCurrent()));
+		access(m_subscriberLoginView::clearFields);
 	}
-
-
-	private void registrationFailedEvent(String errorMessage)
-	{
-		Notification popup = new Notification("Registrierung fehlgeschlagen\n" + errorMessage,
-		                                      Notification.Type.WARNING_MESSAGE);
-		popup.setDelayMsec(3000);
-		access(() -> popup.show(Page.getCurrent()));
-	}
-
 	// endregion Events
 
 
@@ -350,8 +350,6 @@ public class MainUI extends UI implements IUserInterface
 		{
 			super.init();
 		}
-
-		static MainUI ui = null;
 
 		@Override
 		protected void servletInitialized() throws ServletException
@@ -369,7 +367,14 @@ public class MainUI extends UI implements IUserInterface
 		@Override
 		public void sessionDestroy(SessionDestroyEvent event)
 		{
-			Presenter.getInstance().disconnect(ui);
+			Collection<UI> sessionUIs = event.getSession().getUIs();
+			for(UI ui : sessionUIs)
+			{
+				if(ui != null)
+				{
+					Presenter.getInstance().disconnect((MainUI)ui);
+				}
+			}
 		}
 	}
 }

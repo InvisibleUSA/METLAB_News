@@ -20,7 +20,7 @@
 	<entry key="ClippingDaemon.EnqueuingTimeOut">5</entry>
 
 
-	<!-- BaseX -->
+	<!-- DocDBMS -->
 	<entry key="BaseX.Path">BaseXData</entry>
 	<entry key="BaseX.DbName">ClippingDB</entry>
 	<entry key="BaseX.Port">1984</entry>
@@ -30,19 +30,18 @@
 
 	<!-- RDBMS -->
 	<entry key="RDBMS.Driver">org.mariadb.jdbc.Driver</entry>
-	<entry key="RDBMS.RemoteURL">jdbc:mariadb://metlabnews.me:3306/METLAB_DB_MARCO</entry>
-	<entry key="RDBMS.LocalURL">jdbc:mariadb://localhost:3306/METLAB_DB_MARCO</entry>
-	<entry key="RDBMS.UseLocalDB">true</entry> <!-- {false, true} -->
+	<entry key="RDBMS.RemoteURL">jdbc:mariadb://metlabnews.me:3306/METLAB_DB</entry>
+	<entry key="RDBMS.LocalURL">jdbc:mariadb://localhost:3306/METLAB_DB</entry>
+	<entry key="RDBMS.UseLocalDB">flase</entry> <!-- {false, true} -->
 	<entry key="RDBMS.Username">test</entry>
 	<entry key="RDBMS.Password">test</entry>
-	<entry key="RDBMS.SQLDialect">org.hibernate.dialect.MySQLDialect</entry>
 
 
-	<!-- Mail -->
+	<!-- SimpleMail -->
 	<entry key="Mail.SMTPServer">smtp.gmail.com</entry>
-	<entry key="Mail.Password">metlabnews54321</entry>
+	<entry key="Mail.Password">gewgdagftzmeftwt</entry>
 	<entry key="Mail.FromAddress">metlabnews@gmail.com</entry>
-	<entry key="Mail.SMTPPort">465</entry>
+	<entry key="Mail.SMTPPort">587</entry>
 
 
 	<!-- Logger -->
@@ -50,5 +49,10 @@
 	<entry key="Logger.LogFilePath">\Logs\</entry> <!-- The subfolder of the logfiles -->
 	<entry key="Logger.isDisabled_ERROR">false</entry> <!-- {false, true} -->
 	<entry key="Logger.isDisabled_WARNING">false</entry> <!-- {false, true} -->
+	<entry key="Logger.isDisabled_ACTIVITY">false</entry> <!-- {false, true} -->
+	<entry key="Logger.isDisabled_REGISTRATION">false</entry> <!-- {false, true} -->
 	<entry key="Logger.isDisabled_DEBUG">false</entry> <!-- {false, true} -->
+	<entry key="Logger.isDisabled_INFO">false</entry> <!-- {false, true} -->
+	<entry key="Logger.isDisabled_NONE">false</entry> <!-- {false, true} -->
+
 </properties>
