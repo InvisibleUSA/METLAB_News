@@ -3,6 +3,7 @@ import me.metlabnews.Model.Common.Helper;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 import me.metlabnews.Model.Entities.NewsSource;
+import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,11 +17,6 @@ public class WebCrawler
 	WebCrawler(NewsSource source)
 	{
 		this.m_source = source;
-	}
-
-	static void initialize()
-	{
-		Logger.getInstance().register(WebCrawler.class, Logger.Channel.Crawler);
 	}
 
 	void start()
@@ -51,7 +47,8 @@ public class WebCrawler
 					"&crawlingURL=" + m_source.getLink();
 			try
 			{
-				Logger.getInstance().logDebug(this, Helper.getHTTPResponse(startURL));
+				Helper.getHTTPResponse(startURL);
+				Logger.getInstance().logInfo(this, "Started new YaCy crawler for " + m_source.getName());
 			}
 			catch(IOException e)
 			{
@@ -62,9 +59,20 @@ public class WebCrawler
 
 	void stop()
 	{
+		Logger.getInstance().logInfo(this, "Stopping Webcrawler on " + m_source.getName() + "...");
+
 		if(isRunning())
 		{
-			//TODO
+			String handle = getHandle();
+			String url    = "http://localhost:8090/Crawler_p.html?terminate=Terminate&handle=" + handle;
+			try
+			{
+				Helper.getHTTPResponse(url);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -89,6 +97,29 @@ public class WebCrawler
 			Logger.getInstance().logWarning(this, "YaCy isn't running");
 		}
 		return false;
+	}
+
+	public String getHandle()
+	{
+		try
+		{
+			XMLTag profileSummary = new XMLTag(
+					Helper.getHTTPResponse("http://localhost:8090/CrawlProfileEditor_p.xml")
+			);
+			ArrayList<XMLTag> profiles = profileSummary.children("crawlProfile");
+			for(XMLTag tag : profiles)
+			{
+				if(tag.child("name").value().equals(m_source.getLink()))
+				{
+					return tag.child("handle").value();
+				}
+			}
+		}
+		catch(IOException e)
+		{
+			Logger.getInstance().logWarning(this, "YaCy isn't running");
+		}
+		return null;
 	}
 
 	public NewsSource getSource()

@@ -37,8 +37,8 @@ public class CrawlerController implements Runnable
 	public static void initialize()
 	{
 		Logger.getInstance().register(CrawlerController.class, Logger.Channel.Crawler);
-		RssCrawler.initialize();
-		WebCrawler.initialize();
+		Logger.getInstance().register(RssCrawler.class, Logger.Channel.Crawler);
+		Logger.getInstance().register(WebCrawler.class, Logger.Channel.Crawler);
 	}
 
 	public void stop()

@@ -26,11 +26,6 @@ public class RssCrawler implements Runnable
 		this.m_source = source;
 	}
 
-	static void initialize()
-	{
-		Logger.getInstance().register(RssCrawler.class, Logger.Channel.Crawler);
-	}
-
 	void start()
 	{
 		if(!m_running)
@@ -44,7 +39,7 @@ public class RssCrawler implements Runnable
 	@Override
 	public void run()
 	{
-		Logger.getInstance().logDebug(this, "started crawler for \"" + m_source.getName() + "\"");
+		Logger.getInstance().logInfo(this, "started crawler for \"" + m_source.getName() + "\"");
 		while(m_running)
 		{
 			Logger.getInstance().logDebug(this, "crawling " + m_source.getName() + " --> " + m_source.getRss_link());
@@ -73,7 +68,7 @@ public class RssCrawler implements Runnable
 				Logger.getInstance().logWarning(this, m_source.getName() + "is not reachable!");
 			}
 		}
-		Logger.getInstance().logDebug(this, "stopped crawler on \"" + m_source.getName() + "\"");
+		Logger.getInstance().logInfo(this, "stopped crawler on \"" + m_source.getName() + "\"");
 	}
 
 	private void writeToBaseX(Article a)
@@ -93,7 +88,7 @@ public class RssCrawler implements Runnable
 
 	void stop()
 	{
-		Logger.getInstance().logDebug(this, "stopping crawler on \"" + m_source.getName() + "\"");
+		Logger.getInstance().logInfo(this, "stopping crawler on \"" + m_source.getName() + "\"");
 		m_running = false;
 	}
 
