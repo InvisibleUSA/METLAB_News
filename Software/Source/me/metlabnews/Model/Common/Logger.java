@@ -712,7 +712,7 @@ public class Logger implements IResource
 		}
 
 		boolean loggerLogic = ((level.equals(LogLevel.ERROR))
-				|| ((!isLevelForbidden(level) || !m_localLevelFlag.contains(level))
+				|| ((!isLevelForbidden(level) && !m_localLevelFlag.contains(level))
 				&& !isChannelForbidden(channel)));
 
 		if(loggerLogic)
