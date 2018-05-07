@@ -62,6 +62,7 @@ public class XMLTag
 	 */
 	public XMLTag(String xmlData)
 	{
+		xmlData = xmlData.replaceAll("<\\?.*?\\?>", "");
 		Logger                 l         = Logger.getInstance();
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		try

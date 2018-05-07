@@ -162,4 +162,10 @@ class XMLTagTest
 		XMLTag xt = new XMLTag(m_cdata);
 		assertEquals("Atom", xt.child("test1").value());
 	}
+
+	@Test
+	void processingInstructions()
+	{
+		XMLTag xt = new XMLTag("<?xml version='1.0' encoding='UTF-8'?><?app?><channel></channel>");
+	}
 }

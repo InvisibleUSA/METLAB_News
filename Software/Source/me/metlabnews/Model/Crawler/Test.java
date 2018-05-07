@@ -29,6 +29,6 @@ public class Test
 			System.out.println(articles.get(i).toString());
 		}*/
 
-		new XMLTag("<?xml version='1.0' encoding='UTF-8'?><?app?><rss></rss>");
+		//new XMLTag("<?xml version='1.0' encoding='UTF-8'?><?app?><rss></rss>");
 	}
 }
