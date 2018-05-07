@@ -41,6 +41,10 @@ class MariaConnector
 			{
 				ps.setInt(i, (int)q[i]);
 			}
+			else if(q[i] instanceof Date)
+			{
+				ps.setDate(i, (Date)q[i]);
+			}
 
 		}
 		ResultSet rs = ps.executeQuery();

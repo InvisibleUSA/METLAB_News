@@ -95,14 +95,14 @@ public class Presenter implements IResource
 					                                                  grantAdminStatus)));
 
 
-		ui.registerCallbackDenySubscriber((onSuccess, onFailure, email) ->
+		ui.registerCallbackDenySubscriber((onSuccess, onFailure, email, date) ->
 			m_threadPool.execute(() ->
-					                     userManager.denySubscriber(session, onSuccess, onFailure, email)));
+					                     userManager.denySubscriber(session, onSuccess, onFailure, email, date)));
 
 
-		ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email) ->
+		ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email, date) ->
 			m_threadPool.execute(() ->
-					                     userManager.deactivateSubscriber(session, onSuccess, onFailure, email)));
+					                     userManager.deactivateSubscriber(session, onSuccess, onFailure, email, date)));
 
 
 		ui.registerCallbackAddOrganisation((onSuccess, onFailure, organisationName,

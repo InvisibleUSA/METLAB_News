@@ -5,8 +5,10 @@ import com.vaadin.ui.*;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.MainUI;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 
 
@@ -29,7 +31,8 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_buttonQuitAccount.addClickListener(
 				(Button.ClickEvent event) -> m_parent.removeSubscriber(m_parent::openLogoutView,
 				                                                       errorMessage -> Notification.show(errorMessage),
-				                                                       m_parent.whoAmI().getEmail()));
+				                                                       m_parent.whoAmI().getEmail(),
+				                                                       java.sql.Date.valueOf(LocalDate.now())));
 
 		m_buttonShowPendingVerificationRequests.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchPendingSubscriberVerifications(
@@ -128,7 +131,8 @@ public class SubscriberDashboardView extends VerticalLayout
 					                                 },
 					                                 errorMessage ->
 							                                 Notification.show(errorMessage),
-					                                 subscriber.getEmail()));
+					                                 subscriber.getEmail(),
+					                                 java.sql.Date.valueOf(LocalDate.now())));
 			table.addComponent(row);
 		}
 		m_panelSubscriberVerification.setContent(table);

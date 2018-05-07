@@ -17,6 +17,7 @@ public class QueryLoginUser extends MariaDBQueryBase
 	public boolean userLoginSuccessful = false;
 	public boolean userExists          = false;
 	public boolean userVerified        = false;
+	public boolean isDeactivated       = false;
 	public Subscriber subscriber;
 	public boolean byPassword = false;
 
@@ -46,6 +47,7 @@ public class QueryLoginUser extends MariaDBQueryBase
 				m_organisation = rs.getString("Firma");
 				isAdmin = rs.getString("isAdmin");
 				userVerified = rs.getString("isVerified").equals("1");
+				isDeactivated = !(rs.getString("deactivatedSince") == null);
 			}
 		}
 		catch(SQLException e)
@@ -65,6 +67,12 @@ public class QueryLoginUser extends MariaDBQueryBase
 			return;
 		}
 		if(!userVerified)
+		{
+			userExists = true;
+			userLoginSuccessful = false;
+			return;
+		}
+		if(isDeactivated)
 		{
 			userExists = true;
 			userLoginSuccessful = false;

@@ -15,6 +15,7 @@ import me.metlabnews.Presentation.IUserInterface;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.Views.*;
 
+import java.sql.Date;
 import java.util.Collection;
 
 
@@ -123,9 +124,10 @@ public class MainUI extends UI implements IUserInterface
 
 	public void removeSubscriber(IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
-	                             String email)
+	                             String email,
+	                             Date date)
 	{
-		m_removeSubscriberCallback.execute(onSuccess, onFailure, email);
+		m_removeSubscriberCallback.execute(onSuccess, onFailure, email, date);
 	}
 
 	public void fetchPendingSubscriberVerifications(
@@ -144,9 +146,10 @@ public class MainUI extends UI implements IUserInterface
 
 	public void denySubscriber(IGenericEvent onSuccess,
 	                           IGenericFailureEvent onFailure,
-	                           String email)
+	                           String email,
+	                           Date date)
 	{
-		access(() -> m_denySubscriberCallback.execute(onSuccess, onFailure, email));
+		access(() -> m_denySubscriberCallback.execute(onSuccess, onFailure, email, date));
 	}
 
 	public void addOrganisation(IGenericEvent onSuccess,

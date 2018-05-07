@@ -2,6 +2,10 @@ package me.metlabnews.Presentation;
 
 
 
+import java.sql.Date;
+
+
+
 public interface IUserInterface
 {
 	// region Events
@@ -72,7 +76,8 @@ public interface IUserInterface
 	{
 		void execute(IGenericEvent onSuccess,
 		             IGenericFailureEvent onFailure,
-		             String email);
+		             String email,
+		             Date date);
 	}
 
 	void registerCallbackSubscriberRemoval(IRemoveSubscriberCallback callback);
@@ -116,7 +121,8 @@ public interface IUserInterface
 	{
 		void execute(IGenericEvent onSuccess,
 		             IGenericFailureEvent onFailure,
-		             String email);
+		             String email,
+		             Date date);
 	}
 
 	void registerCallbackDenySubscriber(IDenySubscriberCallback callback);

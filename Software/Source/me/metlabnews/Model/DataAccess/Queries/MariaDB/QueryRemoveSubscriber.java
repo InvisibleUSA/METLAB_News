@@ -20,9 +20,10 @@ public class QueryRemoveSubscriber extends MariaDBQueryBase
 	{
 		if(isFinal)
 		{
-			return new Object[] {"UPDATE Abonnent SET deactivatedSince = ? WHERE EMail = ?", date, email};
+			return new String[] {"DELETE FROM Abonnent WHERE EMail = ?", email};
 		}
-		return new String[] {"DELETE FROM Abonnent WHERE EMail = ?", email};
+		return new Object[] {"UPDATE Abonnent SET deactivatedSince = ? WHERE EMail = ?", date, email};
+
 	}
 
 	@Override

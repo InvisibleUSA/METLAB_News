@@ -144,6 +144,11 @@ public class UserManager
 				onVerificationPending.execute();
 				return;
 			}
+			if(qlu.isDeactivated)
+			{
+				onFailure.execute("Konto wurde deaktiviert");
+				return;
+			}
 			onFailure.execute(Messages.WrongPassword);
 			return;
 		}
