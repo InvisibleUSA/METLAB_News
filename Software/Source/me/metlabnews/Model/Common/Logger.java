@@ -50,13 +50,9 @@ public class Logger implements IResource
 	}
 
 	/**
-	 * Singleton call of this instance.
-	 * <p>
-	 * Example:
-	 * </p>
-	 * Logger.getInstance().log(Channel channel, Priority priority, String message);
+	 * Singleton call of this Instance.
 	 *
-	 * @return instance of this Class with all its methods
+	 * @return The {@link Logger} application instance.
 	 */
 	public static Logger getInstance()
 	{
@@ -65,11 +61,6 @@ public class Logger implements IResource
 			m_instance = new Logger();
 		}
 		return m_instance;
-	}
-
-	private Logger()
-	{
-
 	}
 
 
