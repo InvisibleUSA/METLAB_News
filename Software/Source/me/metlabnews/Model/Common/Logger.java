@@ -127,6 +127,7 @@ public class Logger implements IResource
 		Logger,
 		RDBMS,
 		DocDBMS,
+		YaCy,
 		UNREGISTERED_CHANNEL
 	}
 
