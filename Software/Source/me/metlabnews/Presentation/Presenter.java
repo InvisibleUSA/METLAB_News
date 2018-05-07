@@ -102,7 +102,7 @@ public class Presenter implements IResource
 
 		ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email) ->
 			m_threadPool.execute(() ->
-				userManager.removeSubscriber(session, onSuccess, onFailure, email)));
+					                     userManager.deactivateSubscriber(session, onSuccess, onFailure, email)));
 
 
 		ui.registerCallbackAddOrganisation((onSuccess, onFailure, organisationName,

@@ -1,6 +1,7 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
 
+import java.sql.Date;
 import java.sql.ResultSet;
 
 
@@ -10,11 +11,17 @@ import java.sql.ResultSet;
  */
 public class QueryRemoveSubscriber extends MariaDBQueryBase
 {
-	public String email;
+	public String  email;
+	public Date    date;
+	public boolean isFinal;
 
 	@Override
 	protected Object[] createSQLQuery()
 	{
+		if(isFinal)
+		{
+			return new Object[] {"UPDATE Abonnent SET deactivatedSince = ? WHERE EMail = ?", date, email};
+		}
 		return new String[] {"DELETE FROM Abonnent WHERE EMail = ?", email};
 	}
 

@@ -1,6 +1,5 @@
 package me.metlabnews.Model.BusinessLogic;
 
-import com.vaadin.server.Page;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.*;
@@ -17,6 +16,7 @@ import me.metlabnews.Presentation.IUserInterface.IGetStringArrayEvent;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.sql.Date;
 import java.sql.SQLException;
 
 
@@ -338,9 +338,33 @@ public class UserManager
 				+ "[Organisation]: " + organisationName + System.lineSeparator());
 	}
 
-	public void denySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
+	public void denySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, Date date)
 	{
-		removeSubscriber(session, onSuccess, onFailure, email);
+		deactivateSubscriber(session, onSuccess, onFailure, email, date);
+	}
+
+	public void deactivateSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, Date date)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.NotSystemAdmin);
+			return;
+		}
+		QueryRemoveSubscriber qrs = new QueryRemoveSubscriber();
+		qrs.email = email;
+		qrs.isFinal = false;
+		qrs.date = date;
+		if(!qrs.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+		onSuccess.execute();
 	}
 
 	public void removeSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
@@ -357,6 +381,7 @@ public class UserManager
 		}
 		QueryRemoveSubscriber qrs = new QueryRemoveSubscriber();
 		qrs.email = email;
+		qrs.isFinal = true;
 		if(!qrs.execute())
 		{
 			onFailure.execute(Messages.UnknownError);
