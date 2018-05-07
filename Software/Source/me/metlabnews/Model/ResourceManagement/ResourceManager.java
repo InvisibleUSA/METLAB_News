@@ -7,7 +7,6 @@ import me.metlabnews.Model.Crawler.CrawlerController;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryAddOrganisation;
 import me.metlabnews.Presentation.Presenter;
-import sun.rmi.runtime.Log;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

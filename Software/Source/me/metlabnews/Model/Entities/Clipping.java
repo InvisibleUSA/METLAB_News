@@ -35,6 +35,11 @@ public class Clipping
 		m_articles.add(a);
 	}
 
+	public ArrayList<Article> getArticles()
+	{
+		return m_articles;
+	}
+
 	@Override
 	public String toString()
 	{

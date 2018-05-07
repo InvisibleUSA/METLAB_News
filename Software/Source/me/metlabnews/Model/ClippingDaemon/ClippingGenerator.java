@@ -15,6 +15,7 @@ class ClippingGenerator implements Runnable
 	{
 		Logger.getInstance().register(ClippingGenerator.class, Logger.Channel.ClippingDaemon);
 	}
+
 	private ObservationProfile m_profile;
 	private Clipping           m_clipping;
 
@@ -23,11 +24,9 @@ class ClippingGenerator implements Runnable
 		m_profile = op;
 	}
 
-    /**
-     * @inheritDoc
-     *
-     * generates a clipping and sends it via e-mail to its owner
-     */
+	/**
+	 * @inheritDoc generates a clipping and sends it via e-mail to its owner
+	 */
 	@Override
 	public void run()
 	{
@@ -39,13 +38,30 @@ class ClippingGenerator implements Runnable
 			return;
 		}
 
-		Logger.getInstance().logDebug(this, "Fetched RSS Articles");
+		Logger.getInstance().logDebug(this, "Fetched potential RSS Articles");
 
 		for(Article a : query.getCandidates())
 		{
 			m_clipping.addArticle(a);
 		}
 
+		sendMail();
+	}
+
+
+	//	public static void main(String... args)
+//	{
+//		ConfigurationManager.getInstance().initialize();
+//		Logger.getInstance().initialize();
+//
+//		ObservationProfile p = new ObservationProfile("test", "test@tester.de", new ArrayList<>(), new ArrayList<>(),
+//		                                              LocalTime.now());
+//		ClippingGenerator cg = new ClippingGenerator(p);
+//		cg.m_clipping = new Clipping(p);
+//		cg.sendMail();
+//	}
+	private void sendMail()
+	{
 		MailDeliverer m = new MailDeliverer();
 		m.send(m_profile.getUserMail(), "New clipping", m_clipping.prettyPrintHTML());
 	}

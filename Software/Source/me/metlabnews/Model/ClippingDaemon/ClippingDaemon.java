@@ -1,6 +1,6 @@
 package me.metlabnews.Model.ClippingDaemon;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -79,8 +79,8 @@ public class ClippingDaemon implements IResource
 
 
 			//Add new profiles to queue
-			LocalTime                          start           = LocalTime.now();
-			LocalTime                          end             = start.plusSeconds(m_waitingPeriod);
+			LocalDateTime                      start           = LocalDateTime.now();
+			LocalDateTime                      end             = start.plusSeconds(m_waitingPeriod);
 			QueryGetEnqueuingProfileCandidates queryCandidates = new QueryGetEnqueuingProfileCandidates(start, end);
 			if(!queryCandidates.execute())
 			{
