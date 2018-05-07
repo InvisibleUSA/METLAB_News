@@ -290,7 +290,7 @@ public class Logger implements IResource
 	 * @param channel The specific channel you want to disable logging
 	 * @param level   The specific level you want to disable logging
 	 */
-	@SuppressWarnings("WeakerAccess")
+	@SuppressWarnings({"WeakerAccess", "unused"})
 	public void disable(Channel channel, LogLevel level)
 	{
 		if(level.equals(LogLevel.NONE) && !channel.equals(Channel.NONE))
@@ -653,29 +653,26 @@ public class Logger implements IResource
 	 * @param channel The Channel you want to put this class into
 	 */
 	@SuppressWarnings("WeakerAccess")
-	public void register(java.lang.Class sender, Channel channel)
+	public void register(Class sender, Channel channel)
 	{
 		if(!m_classList.containsKey(sender.getCanonicalName()))
 		{
-			if(sender != null)
+			String res = null;
+			String pre = " '";
+			String pst = "' ";
+			try
 			{
-				String res = null;
-				String pre = " '";
-				String pst = "' ";
-				try
-				{
-					m_classList.put(sender.getCanonicalName(), channel);
-					res = "Registration successful:";
-				}
-				catch(Exception e)
-				{
-					res = "Registration FAILED: " + e.toString();
-				}
-				finally
-				{
-					String msg = res + pre + sender.getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTable size: " + m_classList.size();
-					log(this, LogLevel.REGISTRATION, m_classList.get(sender.getCanonicalName()), msg);
-				}
+				m_classList.put(sender.getCanonicalName(), channel);
+				res = "Registration successful:";
+			}
+			catch(Exception e)
+			{
+				res = "Registration FAILED: " + e.toString();
+			}
+			finally
+			{
+				String msg = res + pre + sender.getCanonicalName() + pst + "->" + pre + channel.name() + pst + "| HashTable size: " + m_classList.size();
+				log(this, LogLevel.REGISTRATION, m_classList.get(sender.getCanonicalName()), msg);
 			}
 		}
 		else
@@ -730,14 +727,14 @@ public class Logger implements IResource
 	}
 
 
-	private static Logger m_instance;
-	private boolean                         m_hasBeenInitialized = false;
-	private int                             m_logCounter         = 0;
-	private String                          LogDestination       = "ToConsole";
-	private Hashtable<Object, Channel>      m_classList          = new Hashtable<>();
-	private Hashtable<Channel, ChannelFlag> m_channelFlag        = new Hashtable<>();
-	private Hashtable<LogLevel, LevelFlag>  m_globalLevelFlag    = new Hashtable<>();
-	private Hashtable<LogLevel, LevelFlag>  m_localLevelFlag     = new Hashtable<>();
-	private String                          FullFilePath         = (System.getProperty(
+	private static Logger                          m_instance;
+	private        boolean                         m_hasBeenInitialized = false;
+	private        int                             m_logCounter         = 0;
+	private        String                          LogDestination       = "ToConsole";
+	private        Hashtable<Object, Channel>      m_classList          = new Hashtable<>();
+	private        Hashtable<Channel, ChannelFlag> m_channelFlag        = new Hashtable<>();
+	private        Hashtable<LogLevel, LevelFlag>  m_globalLevelFlag    = new Hashtable<>();
+	private        Hashtable<LogLevel, LevelFlag>  m_localLevelFlag     = new Hashtable<>();
+	private        String                          FullFilePath         = (System.getProperty(
 			"user.dir")) + File.separator + "Logs" + File.separator;
 }
