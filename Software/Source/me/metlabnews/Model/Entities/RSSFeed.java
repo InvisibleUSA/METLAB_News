@@ -5,6 +5,7 @@ import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 
@@ -12,21 +13,18 @@ import java.util.Collection;
 
 public class RSSFeed
 {
-	NewsSource         source;
-	ArrayList<Article> articles;
+	private NewsSource source;
+	private ArrayList<Article> articles = new ArrayList<>();
 
 	public RSSFeed()
 	{
-		articles = new ArrayList<>();
+
 	}
 
 	public RSSFeed(NewsSource s, Article... articles)
 	{
 		source = s;
-		for(Article a : articles)
-		{
-			this.articles.add(a);
-		}
+		this.articles.addAll(Arrays.asList(articles));
 	}
 
 	public RSSFeed(NewsSource s, ArrayList<Article> articles)
@@ -81,7 +79,15 @@ public class RSSFeed
 				{
 					guid = "";
 				}
-				Calendar pubDate = CalendarParser.parseCalendar(curr_article.child("pubDate").value());
+				Calendar pubDate;
+				try
+				{
+					pubDate = CalendarParser.parseCalendar(curr_article.child("pubDate").value());
+				}
+				catch(NumberFormatException e)
+				{
+					pubDate = Calendar.getInstance();
+				}
 				if(!guid.equals("") && !title.equals(""))
 				{
 					Article a = new Article(title, source, link, description, guid, pubDate);

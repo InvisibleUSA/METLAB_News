@@ -63,7 +63,7 @@ public class RssCrawler implements Runnable
 				{
 				}
 			}
-			catch(IOException e)
+			catch(IOException | NullPointerException e)
 			{
 				Logger.getInstance().logWarning(this, m_source.getName() + "is not reachable!");
 			}
