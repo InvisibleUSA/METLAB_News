@@ -47,6 +47,6 @@ class ClippingGenerator implements Runnable
 		}
 
 		MailDeliverer m = new MailDeliverer();
-		m.send(m_profile.getUserMail(), "New clipping", m_clipping.prettyPrint());
+		m.send(m_profile.getUserMail(), "New clipping", m_clipping.prettyPrintHTML());
 	}
 }

@@ -713,6 +713,7 @@ public class Logger implements IResource
 					break;
 				case "ToConsole":
 					writeToConsole(sender, level, channel, msg);
+					break;
 			}
 		}
 	}

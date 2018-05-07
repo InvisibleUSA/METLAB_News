@@ -31,6 +31,8 @@ class ClippingDaemonTest {
         keywords.add("USA");
         sources.add("Spiegel");
         qap.profile = new ObservationProfile(qap.name, "ede1998@arcor.de", keywords, sources, LocalTime.now().plusSeconds(12));
+	    qap.profile = new ObservationProfile(qap.name, "tobias.reis@gmx.de", keywords, sources,
+	                                         LocalTime.now().plusSeconds(12));
         assert qap.execute();
 
         ClippingDaemon cd = new ClippingDaemon();

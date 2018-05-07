@@ -2,6 +2,8 @@ package me.metlabnews.Model.Entities;
 
 
 
+import me.metlabnews.Model.Common.Mail.ResponsiveHTMLMessage;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -62,5 +64,17 @@ public class Clipping
 		s.append("*********************************************************************************" +
 				         "*************************************************************************\n");
 		return s.toString();
+	}
+
+	public String prettyPrintHTML()
+	{
+		StringBuilder s = new StringBuilder();
+		s.append(m_generationTime).append("\n");
+		s.append(m_profile);
+		for(Article a : m_articles)
+		{
+			s.append(a).append("\n");
+		}
+		return ResponsiveHTMLMessage.getInstance().createHTMLMail(s.toString());
 	}
 }
