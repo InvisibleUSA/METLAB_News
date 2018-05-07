@@ -1,5 +1,6 @@
-package me.metlabnews.Model.Common;
+package me.metlabnews.Model.Common.Mail;
 
+import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 
 import javax.mail.*;
@@ -19,7 +20,7 @@ import java.util.Properties;
  * <p>Example:</p>
  * <p>
  * {@code}
- * <p>HTMLMail m = new HTMLMail();</p>
+ * <p>MailDeliverer m = new MailDeliverer();</p>
  * <p>m.send("test@test.de, "Subject Title");</p>
  * </p>
  *
@@ -27,11 +28,11 @@ import java.util.Properties;
  * @version 1.0
  */
 @SuppressWarnings({"FieldCanBeLocal", "WeakerAccess"})
-public class HTMLMail
+public class MailDeliverer
 {
 	static
 	{
-		Logger.getInstance().register(HTMLMail.class, Logger.Channel.Mail);
+		Logger.getInstance().register(MailDeliverer.class, Logger.Channel.Mail);
 	}
 
 

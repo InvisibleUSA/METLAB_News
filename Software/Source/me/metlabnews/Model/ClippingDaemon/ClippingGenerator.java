@@ -1,6 +1,6 @@
 package me.metlabnews.Model.ClippingDaemon;
 
-import me.metlabnews.Model.Common.HTMLMail;
+import me.metlabnews.Model.Common.Mail.MailDeliverer;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetRelevantArticlesFromRSS;
 import me.metlabnews.Model.Entities.Article;
@@ -46,7 +46,7 @@ class ClippingGenerator implements Runnable
 			m_clipping.addArticle(a);
 		}
 
-		HTMLMail m = new HTMLMail();
+		MailDeliverer m = new MailDeliverer();
 		m.send(m_profile.getUserMail(), "New clipping", m_clipping.prettyPrint());
 	}
 }
