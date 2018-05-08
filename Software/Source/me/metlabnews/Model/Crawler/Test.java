@@ -28,7 +28,12 @@ public class Test
 		{
 			System.out.println(articles.get(i).toString());
 		}*/
-
-		//new XMLTag("<?xml version='1.0' encoding='UTF-8'?><?app?><rss></rss>");
+		QuerySearchArticle qsa = new QuerySearchArticle(new NewsSource("Gamestar", "www.gamestar.de", ""), "avengers",
+		                                                "infinity", "war");
+		qsa.execute();
+		ArrayList<Article> articles = qsa.getArticles();
+		for(Article a : articles) {
+			System.out.println(a.toString());
+		}
 	}
 }

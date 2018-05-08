@@ -568,7 +568,7 @@ public class ConfigurationManager implements IResource
 				Logger.getInstance().logError(this, "Key '" + key + "' not found in: "
 						+ m_XMLFilePath);
 			}
-			return null;
+			return value;
 		}
 		else
 		{
