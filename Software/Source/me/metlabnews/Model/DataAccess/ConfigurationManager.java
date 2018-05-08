@@ -8,6 +8,7 @@ import java.util.Properties;
 
 
 
+@SuppressWarnings({"ConstantConditions", "unused"})
 public class ConfigurationManager implements IResource
 {
 	static
@@ -78,6 +79,11 @@ public class ConfigurationManager implements IResource
 
 	// region Security
 
+	/**
+	 * Returns the minimum length of the security password.
+	 *
+	 * @return an Integer of the minimum length.
+	 */
 	public int getSecurityPasswordMinimumLength()
 	{
 		String key = "Security.Password.MinimumLength";
@@ -93,6 +99,11 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns true or false if the Password requires lower case Letters.
+	 *
+	 * @return TRUE if a low case letter is required.
+	 */
 	public boolean getSecurityPasswordLowerCaseLetterRequired()
 	{
 		String key = "Security.Password.LowerCaseLetterRequired";
@@ -100,6 +111,11 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns true or false if the Password requires upper case Letters.
+	 *
+	 * @return TRUE if a upper case letter is required.
+	 */
 	public boolean getSecurityPasswordUpperCaseLetterRequired()
 	{
 		String key = "Security.Password.UpperCaseLetterRequired";
@@ -107,6 +123,11 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns true or false if the Password requires special character Letters.
+	 *
+	 * @return TRUE if a special character letter is required.
+	 */
 	public boolean getSecurityPasswordSpecialCharacterRequired()
 	{
 		String key = "Security.Password.SpecialCharacterRequired";
@@ -114,6 +135,11 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns true or false if the Password requires digits.
+	 *
+	 * @return TRUE if a digit is required.
+	 */
 	public boolean getSecurityPasswordDigitRequired()
 	{
 		String key = "Security.Password.DigitRequired";
@@ -121,17 +147,26 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns true or false if the Password forbids whitespace.
+	 *
+	 * @return TRUE if whitespace is forbidden.
+	 */
 	public boolean getSecurityPasswordWhitespaceForbidden()
 	{
 		String key = "Security.Password.WhitespaceForbidden";
 		return Boolean.parseBoolean(returnProperty(key));
 	}
-
 	// endregion Security
 
 
 	// region Crawler
 
+	/**
+	 * Returns the Timeout interval of the Crawler as Long type.
+	 *
+	 * @return The Timeout interval of the Crawler.
+	 */
 	public long getCrawlerTimeout()
 	{
 		String key = "Crawler.Timeout";
@@ -146,6 +181,13 @@ public class ConfigurationManager implements IResource
 		}
 	}
 
+
+	/**
+	 * Returns the maximum documents of the domain, which the crawler will crawl.
+	 * This is needed to reduce the amount of space and memory.
+	 *
+	 * @return The maximum Documents to crawl per domain
+	 */
 	public int getCrawlerMaxDocsPerDomain()
 	{
 		String key = "Crawler.MaxDocsPerDomain";
@@ -160,12 +202,22 @@ public class ConfigurationManager implements IResource
 		}
 	}
 
+
+	/**
+	 * Returns the preferred Type of the Crawler. It can return:
+	 * <p>
+	 * {@code}
+	 * RSSFeed or Website
+	 * </p>
+	 *
+	 * @return RSSFeed or Website as TypePrefered ENUM.
+	 */
 	public TypePreferred getCrawlerTypePreferred()
 	{
 		String key = "Crawler.TypePreferred";
 		try
 		{
-			switch(String.format(returnProperty(key)))
+			switch(returnProperty(key))
 			{
 				case "RSSFeed":
 					return TypePreferred.RSSFeed;
@@ -181,12 +233,16 @@ public class ConfigurationManager implements IResource
 			return null;
 		}
 	}
-
 	// endregion Crawler
 
 
 	// region ClippingDaemon
 
+	/**
+	 * Returns the enqueuing timeout for the Clipping Daemon.
+	 *
+	 * @return the enqueuing timeout for the Clipping Daemon.
+	 */
 	public long getClippingDaemonEnqueuingTimeOut()
 	{
 		String key = "ClippingDaemon.EnqueuingTimeOut";
@@ -200,24 +256,40 @@ public class ConfigurationManager implements IResource
 			return 0L;
 		}
 	}
-
 	// endregion ClippingDaemon
 
 
 	// region DocDBMS
 
+	/**
+	 * Returns the path of the BaseX
+	 *
+	 * @return the path of the BaseX
+	 */
 	public String getBaseXPath()
 	{
 		String key = "BaseX.Path";
 		return returnProperty(key);
 	}
 
+
+	/**
+	 * Returns the name of the BaseX database
+	 *
+	 * @return the name of the BaseX database
+	 */
 	public String getBaseXDbName()
 	{
 		String key = "BaseX.DbName";
 		return returnProperty(key);
 	}
 
+
+	/**
+	 * Returns the port of the BaseX database
+	 *
+	 * @return the port of the BaseX database
+	 */
 	public int getBaseXPort()
 	{
 		String key = "BaseX.Port";
@@ -232,64 +304,114 @@ public class ConfigurationManager implements IResource
 		}
 	}
 
+
+	/**
+	 * Returns the username of the BaseX database
+	 *
+	 * @return the username of the BaseX database to login and queue
+	 */
 	public String getBaseXUsername()
 	{
 		String key = "BaseX.Username";
 		return returnProperty(key);
 	}
 
+
+	/**
+	 * Returns the password of the BaseX database
+	 *
+	 * @return the password of the BaseX database to login
+	 */
 	public String getBaseXPassword()
 	{
 		String key = "BaseX.Password";
 		return returnProperty(key);
 	}
-
 	// endregion DocDBMS
 
 
 	// region RDBMS
 
+	/**
+	 * Returns the driver of the RDBMS database
+	 *
+	 * @return the driver of the RDBMS database
+	 */
 	public String getRdbmsDriver()
 	{
 		String key = "RDBMS.Driver";
 		return returnProperty(key);
 	}
 
+
+	/**
+	 * Returns the remote URL of the RDBMS database
+	 *
+	 * @return the remote URL of the RDBMS database
+	 */
 	public String getRdbmsRemoteUrl()
 	{
 		String key = "RDBMS.RemoteURL";
 		return returnProperty(key);
 	}
 
+
+	/**
+	 * Returns the local URL of the RDBMS database
+	 *
+	 * @return the local URL of the RDBMS database
+	 */
 	public String getRdbmsLocalUrl()
 	{
 		String key = "RDBMS.LocalURL";
 		return returnProperty(key);
 	}
 
+
+	/**
+	 * Returns the usage of the RDBMS database
+	 *
+	 * @return the usage of the RDBMS database
+	 */
 	public boolean getRdbmsUseLocalDB()
 	{
 		String key = "RDBMS.UseLocalDB";
 		return Boolean.parseBoolean(returnProperty(key));
 	}
 
+
+	/**
+	 * Returns the username of the RDBMS database
+	 *
+	 * @return the username of the RDBMS database
+	 */
 	public String getRdbmsUsername()
 	{
 		String key = "RDBMS.Username";
 		return returnProperty(key);
 	}
 
+
+	/**
+	 * Returns the password of the RDBMS database
+	 *
+	 * @return the password of the RDBMS database
+	 */
 	public String getRdbmsPassword()
 	{
 		String key = "RDBMS.Password";
 		return returnProperty(key);
 	}
-
 	// endregion RDBMS
 
 
 	// region Mail
 
+	/**
+	 * Returns the E-Mail address of the sender. (usually it is metlabnews@gmail.com)
+	 *
+	 * @return the E-Mail of the sender
+	 */
 	public String getMailFromAddress()
 	{
 		String key = "Mail.FromAddress";
@@ -297,6 +419,11 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns the password of the sender E-Mail
+	 *
+	 * @return the password of the sender E-Mail
+	 */
 	public String getMailPassword()
 	{
 		String key = "Mail.Password";
@@ -304,6 +431,11 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns the SMTP Server of the sender E-Mail
+	 *
+	 * @return the SMTP Server of the sender E-Mail
+	 */
 	public String getMailSMTPServer()
 	{
 		String key = "Mail.SMTPServer";
@@ -311,6 +443,11 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns the port of the sender E-Mail Host
+	 *
+	 * @return the port of the sender E-Mail Host
+	 */
 	public int getMailSMTPPort()
 	{
 		String key = "Mail.SMTPPort";
@@ -324,7 +461,6 @@ public class ConfigurationManager implements IResource
 			return 0;
 		}
 	}
-
 	// endregion Mail
 
 
@@ -342,6 +478,12 @@ public class ConfigurationManager implements IResource
 	}
 
 
+	/**
+	 * Returns the log destination of the logger.
+	 * This can e.g. be ToFile or ToConsole
+	 *
+	 * @return the log destination of the logger.
+	 */
 	public String getLogDestination()
 	{
 		String key = "Logger.LogDestination";
@@ -377,7 +519,6 @@ public class ConfigurationManager implements IResource
 		String key = "Logger.isDisabled_" + priority;
 		return Boolean.parseBoolean(returnProperty(key));
 	}
-
 	// endregion Logger
 
 
@@ -392,7 +533,7 @@ public class ConfigurationManager implements IResource
 
 
 	/**
-	 * Prefered Type to Crawl
+	 * Preferred Type to Crawl
 	 */
 	private enum TypePreferred
 	{
@@ -400,7 +541,9 @@ public class ConfigurationManager implements IResource
 		Website
 	}
 
-
+	/**
+	 * Preferred LogDestination
+	 */
 	private enum LogDestination
 	{
 		ToFile,
@@ -425,7 +568,7 @@ public class ConfigurationManager implements IResource
 				Logger.getInstance().logError(this, "Key '" + key + "' not found in: "
 						+ m_XMLFilePath);
 			}
-			return value;
+			return null;
 		}
 		else
 		{
@@ -446,8 +589,8 @@ public class ConfigurationManager implements IResource
 	}
 
 
-	private        boolean              m_hasBeenInitialized = false;
+	private Properties m_properties;
+	private boolean m_hasBeenInitialized = false;
 	private static ConfigurationManager m_instance;
-	private final  String               m_XMLFilePath        = setXMLFilePath();
-	private        Properties           m_properties;
+	private final String m_XMLFilePath = setXMLFilePath();
 }
