@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries.YaCy;
 
+import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.NewsSource;
 import me.metlabnews.Model.Entities.RSSFeed;
@@ -10,6 +11,11 @@ import java.util.ArrayList;
 
 public class QuerySearchArticle extends YaCyQueryBase
 {
+	static
+	{
+		Logger.getInstance().register(QuerySearchArticle.class, Logger.Channel.YaCy);
+	}
+
 	private int                m_maximumRecords = 10;
 	//determines if results where terms are near should be higher ranked
 	private boolean            m_rankNearHigher = true;
@@ -38,7 +44,8 @@ public class QuerySearchArticle extends YaCyQueryBase
 		m_maximumRecords = maximumRecords;
 	}
 
-	public void setSortByDate(boolean sortByDate) {
+	public void setSortByDate(boolean sortByDate)
+	{
 		m_sortByDate = sortByDate;
 	}
 
@@ -53,13 +60,15 @@ public class QuerySearchArticle extends YaCyQueryBase
 		String query = "";
 		for(int i = 0; i < m_searchTerms.length; i++)
 		{
-			if(i > 1 && m_rankNearHigher) {
+			if(i > 1 && m_rankNearHigher)
+			{
 				//the search results where the terms are nearer together will be ranked higher
 				query += "%20/near%20";
 			}
 			query += m_searchTerms[i] + "%20";
 		}
-		if(m_sortByDate) {
+		if(m_sortByDate)
+		{
 			//sort search results by date
 			query += "/date%20";
 		}
@@ -68,14 +77,14 @@ public class QuerySearchArticle extends YaCyQueryBase
 			query += "site:" + m_source.getLink();
 		}
 		String url = "http://localhost:8090/yacysearch.rss?query=" + query + "&maximumRecords=" + m_maximumRecords;
-		System.out.println(url);
+		m_logger.logDebug(this, url);
 		return url;
 	}
 
 	@Override
 	protected void processResults(String result)
 	{
-		System.out.println(result);
+		m_logger.logDebug(this, result);
 		RSSFeed search_res = RSSFeed.parseFeed(result,
 		                                       new NewsSource("YaCy Search", "localhost:8090", "localhost:8090"));
 		if(search_res != null)

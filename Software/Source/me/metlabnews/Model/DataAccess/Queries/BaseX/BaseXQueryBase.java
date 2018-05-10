@@ -15,7 +15,6 @@ abstract class BaseXQueryBase extends QueryBase
 		Logger.getInstance().register(BaseXQueryBase.class, Logger.Channel.DocDBMS);
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	/**
 	 *  This method is called to execute the concrete subclass of BaseXQueryBase.
 	 *  The return value says nothing about the result of the query. It informs the

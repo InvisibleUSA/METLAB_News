@@ -2,7 +2,7 @@ package me.metlabnews.Model.Crawler;
 import me.metlabnews.Model.Common.Helper;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
-import me.metlabnews.Model.DataAccess.Queries.BaseX.AddArticle;
+import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddArticle;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryTitleExists;
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.RSSFeed;
@@ -73,7 +73,7 @@ public class RssCrawler implements Runnable
 
 	private void writeToBaseX(Article a)
 	{
-		AddArticle addArticle = new AddArticle(a);
+		QueryAddArticle addArticle = new QueryAddArticle(a);
 		addArticle.execute();
 		Logger.getInstance().logDebug(this, addArticle.getResult());
 	}

@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries.BaseX;
 
+import me.metlabnews.Model.Common.Logger;
 import org.basex.core.Command;
 import org.basex.core.cmd.XQuery;
 
@@ -7,6 +8,10 @@ import org.basex.core.cmd.XQuery;
 
 public class QueryTitleExists extends BaseXQueryBase
 {
+	static
+	{
+		Logger.getInstance().register(QueryTitleExists.class, Logger.Channel.DocDBMS);
+	}
 	private String  m_title;
 	private boolean m_result;
 
@@ -24,14 +29,7 @@ public class QueryTitleExists extends BaseXQueryBase
 	@Override
 	protected void processResults(String str)
 	{
-		if(str.equals("true"))
-		{
-			m_result = true;
-		}
-		else
-		{
-			m_result = false;
-		}
+		m_result = str.equals("true");
 	}
 
 	public boolean getResult()

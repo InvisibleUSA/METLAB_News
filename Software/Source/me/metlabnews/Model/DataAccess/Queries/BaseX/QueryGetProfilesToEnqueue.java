@@ -14,13 +14,18 @@ import java.util.List;
 
 
 
-public class QueryGetEnqueuingProfileCandidates extends BaseXQueryBase
+public class QueryGetProfilesToEnqueue extends BaseXQueryBase
 {
+	static
+	{
+		m_logger.register(QueryGetProfilesToEnqueue.class, Logger.Channel.DocDBMS);
+	}
+
 	private LocalDateTime                 m_startingTime;
 	private LocalDateTime                 m_endingTime;
 	private ArrayList<ObservationProfile> m_results = new ArrayList<>();
 
-	public QueryGetEnqueuingProfileCandidates(LocalDateTime start, LocalDateTime end)
+	public QueryGetProfilesToEnqueue(LocalDateTime start, LocalDateTime end)
 	{
 		m_startingTime = start;
 		m_endingTime = end;
@@ -43,14 +48,15 @@ public class QueryGetEnqueuingProfileCandidates extends BaseXQueryBase
 			return null;
 		}
 
-		DateTimeFormatter dtf   = DateTimeFormatter.ofPattern("YYYY-MM-DD'T'HH:mm:ss");
+		DateTimeFormatter dtf   = DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss");
 		final String      start = m_startingTime.format(dtf);
 		final String      end   = m_endingTime.format(dtf);
-		final String query = "for $profile in /profile " +
-				"where xs:dateTime('" + start + "') < (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))" +
-				" and xs:dateTime('" + end + " ') > (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period)) " +
-				"order by $profile/generationtime " +
+		final String query = "for $profile in /profile \n" +
+				"where xs:dateTime('" + start + "') < (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
+				" and xs:dateTime('" + end + "') > (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period)) \n" +
+				"order by (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period)) \n" +
 				"return $profile";
+		Logger.getInstance().logDebug(this, query);
 		return new XQuery(query);
 	}
 

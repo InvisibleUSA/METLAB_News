@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
-import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetEnqueuingProfileCandidates;
+import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetProfilesToEnqueue;
 import me.metlabnews.Model.Entities.ObservationProfile;
 import me.metlabnews.Model.ResourceManagement.IResource;
 
@@ -79,9 +79,9 @@ public class ClippingDaemon implements IResource
 
 
 			//Add new profiles to queue
-			LocalDateTime                      start           = LocalDateTime.now();
-			LocalDateTime                      end             = start.plusSeconds(m_waitingPeriod);
-			QueryGetEnqueuingProfileCandidates queryCandidates = new QueryGetEnqueuingProfileCandidates(start, end);
+			LocalDateTime             start           = LocalDateTime.now();
+			LocalDateTime             end             = start.plusSeconds(m_waitingPeriod);
+			QueryGetProfilesToEnqueue queryCandidates = new QueryGetProfilesToEnqueue(start, end);
 			if(!queryCandidates.execute())
 			{
 				Logger.getInstance().logError(this, "Unknown database error when fetching new profiles.");

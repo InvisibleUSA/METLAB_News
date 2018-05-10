@@ -17,12 +17,16 @@ import java.util.List;
 
 
 
-public class QueryGetRelevantArticlesFromRSS extends BaseXQueryBase
+public class QuerySearchArticleRSS extends BaseXQueryBase
 {
+	static
+	{
+		Logger.getInstance().register(QuerySearchArticleRSS.class, Logger.Channel.DocDBMS);
+	}
 	private ObservationProfile m_op;
 	private ArrayList<Article> m_candidates = new ArrayList<>();
 
-	public QueryGetRelevantArticlesFromRSS(ObservationProfile op)
+	public QuerySearchArticleRSS(ObservationProfile op)
 	{
 		m_op = op;
 	}
@@ -72,8 +76,7 @@ public class QueryGetRelevantArticlesFromRSS extends BaseXQueryBase
 
 				final String     description = article.child("description").value();
 
-				//TODO NewsSource is instantiated with final fields for name, link and rss_link so that wont work
-				final NewsSource source = new NewsSource("", "", "");
+				final NewsSource source = new NewsSource("BaseXRSSarticleQuery", "", "");
 
 				Article a = new Article(title, source, link, description, guid, pubDate);
 				m_candidates.add(a);

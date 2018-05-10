@@ -124,7 +124,7 @@ public class MailDeliverer
 	 * Send the mail stored in this instance. Any exception is logged in the mail channel.
 	 * The mail is send
 	 *
-	 * @param to      The receiver of this E-SimpleMail
+	 * @param to      The receiver of this HTML E-Mail
 	 * @param subject Subject
 	 * @return true: send was successful  false: an exception occurred
 	 */

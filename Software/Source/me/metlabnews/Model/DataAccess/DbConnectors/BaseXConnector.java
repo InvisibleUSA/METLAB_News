@@ -29,16 +29,17 @@ class BaseXConnector
 		Logger.getInstance().register(BaseXConnector.class, Logger.Channel.DocDBMS);
 	}
 
-	private       String          m_username       = "admin";
-	private       String          m_password       = "admin";
-	final private String          m_host           = "127.0.0.1";
+	private       String          m_username        = "admin";
+	private       String          m_password        = "admin";
+	final private String          m_host            = "127.0.0.1";
 	private       String          m_path;
-	private       String          m_dbName         = "ClippingDB";
-	private       int             m_port           = 1984;
+	private       String          m_dbName          = "ClippingDB";
+	private       int             m_port            = 1984;
 	private       ClientSession[] m_sessions;
 	private       boolean[]       m_sessionInUse;
-	private       int             m_currSessionNum = 0;
+	private       int             m_currSessionNum  = 0;
 	private       BaseXServer     m_server;
+	private       boolean         m_isServerRunning = true;
 
 	/**
 	 * Starts the DocDBMS Server in a separate process and initializes ClientSessions as well as settings
@@ -57,6 +58,7 @@ class BaseXConnector
 		catch(IOException e)
 		{
 			Logger.getInstance().logError(this, "DocDBMS Error: " + e.toString());
+			m_isServerRunning = false;
 		}
 	}
 
@@ -100,6 +102,8 @@ class BaseXConnector
 	@Deprecated
 	String query(String q) throws IOException
 	{
+		if (!m_isServerRunning)
+			throw new IOException("Server not started");
 		int sessionnum = getSession();
 		if(sessionnum == -1)
 		{
@@ -122,6 +126,8 @@ class BaseXConnector
 	 */
 	String query(Command cmd) throws IOException
 	{
+		if (!m_isServerRunning)
+			throw new IOException("Server not started");
 		int sessionnum = getSession();
 		if(sessionnum == -1)
 		{
@@ -161,6 +167,12 @@ class BaseXConnector
 	 */
 	public void stop()
 	{
+		if (!m_isServerRunning)
+		{
+			Logger.getInstance().logInfo(this, "BaseX server already stopped");
+			return;
+		}
+
 		try
 		{
 			disconnect();

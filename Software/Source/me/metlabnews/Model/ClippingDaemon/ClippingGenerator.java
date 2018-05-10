@@ -2,7 +2,7 @@ package me.metlabnews.Model.ClippingDaemon;
 
 import me.metlabnews.Model.Common.Mail.MailDeliverer;
 import me.metlabnews.Model.Common.Logger;
-import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetRelevantArticlesFromRSS;
+import me.metlabnews.Model.DataAccess.Queries.BaseX.QuerySearchArticleRSS;
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.Clipping;
 import me.metlabnews.Model.Entities.ObservationProfile;
@@ -31,7 +31,7 @@ class ClippingGenerator implements Runnable
 	public void run()
 	{
 		m_clipping = new Clipping(m_profile);
-		QueryGetRelevantArticlesFromRSS query = new QueryGetRelevantArticlesFromRSS(m_profile);
+		QuerySearchArticleRSS query = new QuerySearchArticleRSS(m_profile);
 		if(!query.execute())
 		{
 			Logger.getInstance().logError(this, "Unknown Database Error");

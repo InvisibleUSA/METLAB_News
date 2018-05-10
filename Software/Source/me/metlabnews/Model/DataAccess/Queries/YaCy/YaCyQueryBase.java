@@ -1,6 +1,7 @@
 package me.metlabnews.Model.DataAccess.Queries.YaCy;
 
 import me.metlabnews.Model.Common.Helper;
+import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.QueryBase;
 
 import java.io.IOException;
@@ -11,8 +12,7 @@ public abstract class YaCyQueryBase extends QueryBase
 {
 	static
 	{
-		//TODO
-		//Logger.getInstance().register(YaCyQueryBase.class, Logger.Channel.YaCy);
+		m_logger.register(YaCyQueryBase.class, Logger.Channel.YaCy);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public abstract class YaCyQueryBase extends QueryBase
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			m_logger.logError(this, e.toString());
 			return false;
 		}
 	}

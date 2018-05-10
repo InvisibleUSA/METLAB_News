@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries;
 
+import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.DbConnectors.DatabaseConnector;
 
 
@@ -7,9 +8,9 @@ import me.metlabnews.Model.DataAccess.DbConnectors.DatabaseConnector;
 public abstract class QueryBase
 {
 
+	protected static Logger m_logger = Logger.getInstance();
 	protected static DatabaseConnector m_dbConnector = new DatabaseConnector();
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	/**
 	 *  This method is called to execute the concrete subclass of QueryBase.
 	 *  The return value says nothing about the result of the query. It informs the

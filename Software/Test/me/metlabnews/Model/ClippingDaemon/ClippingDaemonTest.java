@@ -1,6 +1,7 @@
 package me.metlabnews.Model.ClippingDaemon;
 
 import me.metlabnews.Model.Common.Logger;
+import me.metlabnews.Model.Common.XMLTag;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddProfile;
 import me.metlabnews.Model.Entities.ObservationProfile;
@@ -23,6 +24,7 @@ class ClippingDaemonTest
 	{
 		ConfigurationManager.getInstance().initialize();
 		Logger.getInstance().initialize();
+		Logger.getInstance().disable(Logger.Channel.XMLTag, Logger.LogLevel.DEBUG);
 	}
 
 	@Test

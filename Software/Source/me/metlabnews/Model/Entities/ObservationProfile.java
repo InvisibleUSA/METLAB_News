@@ -14,12 +14,13 @@ import java.util.List;
 
 public class ObservationProfile
 {
-	private String        m_profileName;
-	private String        m_userMail;
-	private List<String>  m_keywords = new ArrayList<>();
-	private List<String>  m_sources  = new ArrayList<>();
-	private LocalDateTime m_lastGeneration;
-	private Duration      m_period   = Duration.ofDays(1);
+	private       String            m_profileName;
+	private       String            m_userMail;
+	private       List<String>      m_keywords        = new ArrayList<>();
+	private       List<String>      m_sources         = new ArrayList<>();
+	private       LocalDateTime     m_lastGeneration;
+	private       Duration          m_period          = Duration.ofDays(1);
+	private       DateTimeFormatter m_dateTimePattern = DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss");
 
 
 	public ObservationProfile(String name, String userMail, ArrayList<String> keywords, ArrayList<String> sources, LocalDateTime lastgenerationTime, Duration p)
@@ -32,7 +33,7 @@ public class ObservationProfile
 		m_period = p;
 	}
 
-	public ObservationProfile(XMLTag tag)
+	public ObservationProfile(XMLTag tag) throws IllegalArgumentException
 	{
 		try
 		{
@@ -53,7 +54,7 @@ public class ObservationProfile
 		catch(NullPointerException e)
 		{
 			Logger.getInstance().logError(this, "Not a valid profile.");
-			throw new IllegalArgumentException("tag does not accurately represent a profile.");
+			throw new IllegalArgumentException("Parameter tag does not accurately represent a profile.");
 		}
 	}
 
@@ -138,13 +139,13 @@ public class ObservationProfile
 
 	public String toXML()
 	{
-		StringBuilder res = new StringBuilder("<profile>\n" +
-				                                      "    <name>" + m_profileName + "</name>\n" +
-				                                      "    <owner>" + m_userMail + "</owner>\n" +
-				                                      "    <last-generation>" + m_lastGeneration.format(
-				DateTimeFormatter.ofPattern("YYYY-MM-DD'T'HH:mm:ss")) + "</last-generation>\n" +
-				                                      "    <period>" + m_period + "</period>\n" +
-				                                      "    <keywords>\n");
+		StringBuilder res = new StringBuilder(
+				"<profile>\n" +
+						"    <name>" + m_profileName + "</name>\n" +
+						"    <owner>" + m_userMail + "</owner>\n" +
+						"    <last-generation>" + m_lastGeneration.format(m_dateTimePattern) + "</last-generation>\n" +
+						"    <period>" + m_period + "</period>\n" +
+						"    <keywords>\n");
 		for(String k : m_keywords)
 		{
 			res.append("        <keyword>").append(k).append("</keyword>\n");

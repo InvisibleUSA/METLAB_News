@@ -1,16 +1,21 @@
 package me.metlabnews.Model.DataAccess.Queries.BaseX;
 
+import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Entities.Clipping;
 import org.basex.core.Command;
 import org.basex.core.cmd.Add;
-
-import java.time.format.DateTimeFormatter;
 
 
 
 public class QueryAddClipping extends BaseXQueryBase
 {
+	static
+	{
+		Logger.getInstance().register(QueryAddClipping.class, Logger.Channel.DocDBMS);
+	}
+
 	public Clipping clipping;
+	public String result;
 
 	@Override
 	protected Command createBaseXQuery()
@@ -24,6 +29,6 @@ public class QueryAddClipping extends BaseXQueryBase
 	@Override
 	protected void processResults(String str)
 	{
-
+		result = str;
 	}
 }
