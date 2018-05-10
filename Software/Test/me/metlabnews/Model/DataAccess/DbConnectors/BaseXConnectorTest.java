@@ -3,19 +3,17 @@ package me.metlabnews.Model.DataAccess.DbConnectors;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddProfile;
+import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetClippings;
 import me.metlabnews.Model.Entities.ObservationProfile;
 import org.basex.server.ClientSession;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.ejb.Local;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 
 
@@ -31,11 +29,12 @@ class BaseXConnectorTest
 	@Test
 	void query()
 	{
+		QueryGetClippings q = new QueryGetClippings();
 		//TODO write test
-		ConfigurationManager cm = mock(ConfigurationManager.class);
-		when(cm.getBaseXPassword()).thenReturn("mepmep");
-		when(cm.getBaseXUsername()).thenReturn("mepmep");
-		when(cm.getBaseXPath()).thenReturn("mepmep");
+		//ConfigurationManager cm = mock(ConfigurationManager.class);
+		//when(cm.getBaseXPassword()).thenReturn("mepmep");
+		//when(cm.getBaseXUsername()).thenReturn("mepmep");
+		//when(cm.getBaseXPath()).thenReturn("mepmep");
 		//ClientSession
 	}
 
@@ -48,7 +47,27 @@ class BaseXConnectorTest
 		ArrayList<String> sources = new ArrayList<>();
 		keywords.add("USA");
 		sources.add("Spiegel");
-		qap.profile = new ObservationProfile(qap.name, "metlabnews@gmail.com", keywords, sources, LocalTime.now().plusSeconds(60));
+		qap.profile = new ObservationProfile(qap.name, "metlabnews@gmail.com", keywords, sources, LocalDateTime.now(),
+		                                     Duration.ofSeconds(60));
 		assert qap.execute();
+	}
+
+	@Test
+	void queryParallel()
+	{
+		Thread[] queries = new Thread[1];
+		Runnable query = () -> {
+			QueryGetClippings q = new QueryGetClippings();
+			q.execute();
+		};
+		for(int i = 0; i < 1; i++)
+		{
+			queries[i] = new Thread(query);
+		}
+		for(Thread t : queries)
+		{
+			t.start();
+		}
+		System.out.println("Threads started.");
 	}
 }

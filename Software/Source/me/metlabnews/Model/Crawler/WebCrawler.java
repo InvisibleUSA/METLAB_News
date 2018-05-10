@@ -3,7 +3,6 @@ import me.metlabnews.Model.Common.Helper;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 import me.metlabnews.Model.Entities.NewsSource;
-import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;

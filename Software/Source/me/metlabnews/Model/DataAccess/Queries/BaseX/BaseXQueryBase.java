@@ -4,7 +4,6 @@ package me.metlabnews.Model.DataAccess.Queries.BaseX;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.QueryBase;
 import org.basex.core.Command;
-
 import java.io.IOException;
 
 
@@ -30,7 +29,12 @@ abstract class BaseXQueryBase extends QueryBase
 		try
 		{
 			Command basex = createBaseXQuery();
-			String  str   = m_dbConnector.baseXQuery(basex);
+			if(basex == null)
+			{
+				Logger.getInstance().logError(this, "No command issued.");
+				return false;
+			}
+			String str = m_dbConnector.baseXQuery(basex);
 			processResults(str);
 			return true;
 		}

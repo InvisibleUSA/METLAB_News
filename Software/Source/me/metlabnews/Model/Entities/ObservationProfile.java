@@ -3,7 +3,8 @@ package me.metlabnews.Model.Entities;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 
-import java.time.LocalTime;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,19 +14,22 @@ import java.util.List;
 
 public class ObservationProfile
 {
-	private String       m_profileName;
-	private String       m_userMail;
-	private List<String> m_keywords = new ArrayList<>();
-	private List<String> m_sources  = new ArrayList<>();
-	private LocalTime    m_generationTime;
+	private String        m_profileName;
+	private String        m_userMail;
+	private List<String>  m_keywords = new ArrayList<>();
+	private List<String>  m_sources  = new ArrayList<>();
+	private LocalDateTime m_lastGeneration;
+	private Duration      m_period   = Duration.ofDays(1);
 
-	public ObservationProfile(String name, String userMail, ArrayList<String> keywords, ArrayList<String> sources, LocalTime generationTime)
+
+	public ObservationProfile(String name, String userMail, ArrayList<String> keywords, ArrayList<String> sources, LocalDateTime lastgenerationTime, Duration p)
 	{
 		m_profileName = name;
 		this.m_userMail = userMail;
 		this.m_sources = sources;
 		this.m_keywords = keywords;
-		m_generationTime = generationTime;
+		m_lastGeneration = lastgenerationTime;
+		m_period = p;
 	}
 
 	public ObservationProfile(XMLTag tag)
@@ -34,8 +38,8 @@ public class ObservationProfile
 		{
 			m_profileName = tag.child("name").value();
 			m_userMail = tag.child("owner").value();
-			m_generationTime = LocalTime.parse(tag.child("generationtime").value(),
-			                                   DateTimeFormatter.ofPattern("HH:mm:ss"));
+			m_lastGeneration = LocalDateTime.parse(tag.child("last-generation").value());
+			m_period = Duration.parse(tag.child("period").value());
 			for(XMLTag keyword : tag.children("keywords"))
 			{
 				m_keywords.add(keyword.child("keyword").value());
@@ -68,9 +72,9 @@ public class ObservationProfile
 		m_sources.add(sourceLink);
 	}
 
-	public void setGenerationTime(LocalTime gt)
+	public void setLastGenerationTime(LocalDateTime gt)
 	{
-		m_generationTime = gt;
+		m_lastGeneration = gt;
 	}
 
 	public String getName()
@@ -93,9 +97,9 @@ public class ObservationProfile
 		return Collections.unmodifiableList(m_sources);
 	}
 
-	public LocalTime getGenerationTime()
+	public LocalDateTime getLastGenerationTime()
 	{
-		return m_generationTime;
+		return m_lastGeneration;
 	}
 
 	public boolean equals(Object o)
@@ -112,7 +116,8 @@ public class ObservationProfile
 	public String toString()
 	{
 		StringBuilder s = new StringBuilder("---------------------" + m_profileName + "---------------------\n");
-		s.append("Generation time: ").append(m_generationTime).append("\n");
+		s.append("Last generation time: ").append(m_lastGeneration).append("\n");
+		s.append("Period: ").append(m_period).append("\n");
 		s.append("Keywords:\n");
 		for(String key : m_keywords)
 		{
@@ -134,16 +139,22 @@ public class ObservationProfile
 	public String toXML()
 	{
 		StringBuilder res = new StringBuilder("<profile>\n" +
-				"    <name>" + m_profileName + "</name>\n" +
-				"    <owner>" + m_userMail + "</owner>\n" +
-				"    <generationtime>" + m_generationTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "</generationtime>\n" +
-				"    <keywords>\n");
-		for (String k : m_keywords)
-				res.append("        <keyword>").append(k).append("</keyword>\n");
-		res.append("    </keywords>\n" + "<sources>\n");
-		for (String src: m_sources)
-				res.append("        <source>").append(src).append("</source>\n");
-		res.append("</sources>\n" + "</profile>\n");
+				                                      "    <name>" + m_profileName + "</name>\n" +
+				                                      "    <owner>" + m_userMail + "</owner>\n" +
+				                                      "    <last-generation>" + m_lastGeneration.format(
+				DateTimeFormatter.ofPattern("YYYY-MM-DD'T'HH:mm:ss")) + "</last-generation>\n" +
+				                                      "    <period>" + m_period + "</period>\n" +
+				                                      "    <keywords>\n");
+		for(String k : m_keywords)
+		{
+			res.append("        <keyword>").append(k).append("</keyword>\n");
+		}
+		res.append("    </keywords>\n" + "    <sources>\n");
+		for(String src : m_sources)
+		{
+			res.append("        <source>").append(src).append("</source>\n");
+		}
+		res.append("    </sources>\n" + "</profile>\n");
 		return res.toString();
 	}
 }
