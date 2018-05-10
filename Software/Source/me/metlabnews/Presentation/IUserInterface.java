@@ -3,6 +3,8 @@ package me.metlabnews.Presentation;
 
 
 import java.sql.Date;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 
 
@@ -23,6 +25,11 @@ public interface IUserInterface
 	interface IGetStringArrayEvent
 	{
 		void execute(String[] result);
+	}
+
+	interface IFetchProfilesEvent
+	{
+		void execute(ProfileDataRepresentation[] data);
 	}
 
 	interface IFetchPendingVerificationRequestsEvent
@@ -82,6 +89,16 @@ public interface IUserInterface
 
 	void registerCallbackSubscriberRemoval(IRemoveSubscriberCallback callback);
 
+
+	interface IFetchProfilesCallback
+	{
+		void execute(IFetchProfilesEvent onSuccess,
+		             IGenericFailureEvent onFailure);
+	}
+
+	void registerCallbackFetchProfiles(IFetchProfilesCallback callback);
+
+
 	interface IAddProfileCallback
 	{
 		void execute(IGenericEvent onSuccess,
@@ -89,10 +106,22 @@ public interface IUserInterface
 		             String profileName,
 		             String[] sources,
 		             String[] keywords,
-		             String time);
+		             LocalDateTime time,
+		             Duration interval);
 	}
 
-	void registerCallbackAddProfile(IAddProfileCallback callback);
+	void registerCallbackAddProfile(IAddProfileCallback callback); //TODO: implement in Presentation
+
+
+	interface IDeleteProfileCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String ownerEmail,
+		             String profileName);
+	}
+
+	void registerCallbackDeleteProfile(IDeleteProfileCallback callback); //TODO: implement in Presentation
 
 	// endregion Subscriber Interaction
 

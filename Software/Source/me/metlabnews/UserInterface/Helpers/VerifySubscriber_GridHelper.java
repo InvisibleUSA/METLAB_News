@@ -8,10 +8,8 @@ import me.metlabnews.UserInterface.MainUI;
 import java.time.LocalDate;
 
 
-
 public class VerifySubscriber_GridHelper
 {
-
 	public VerifySubscriber_GridHelper(MainUI parent, String firstName, String lastName, String email, Boolean isAdmin)
 	{
 		m_parent = parent;

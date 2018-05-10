@@ -16,6 +16,8 @@ import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.Views.*;
 
 import java.sql.Date;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 
@@ -178,14 +180,29 @@ public class MainUI extends UI implements IUserInterface
 		m_FetchOrganisationsCallback.execute(onSuccess, onFailure);
 	}
 
+	public void fetchProfiles(IFetchProfilesEvent onSuccess,
+	                          IGenericFailureEvent onFailure)
+	{
+		m_fetchProfilesCallback.execute(onSuccess, onFailure);
+	}
+
 	public void addProfile(IGenericEvent onSuccess,
 	                       IGenericFailureEvent onFailure,
 	                       String profileName,
 	                       String[] sources,
 	                       String[] keywords,
-	                       String time)
+	                       LocalDateTime time,
+	                       Duration interval)
 	{
-		m_addProfileCallback.execute(onSuccess, onFailure, profileName, sources, keywords, time);
+		m_addProfileCallback.execute(onSuccess, onFailure, profileName, sources, keywords, time, interval);
+	}
+
+	public void deleteProfile(IGenericEvent onSuccess,
+	                          IGenericFailureEvent onFailure,
+	                          String ownerMail,
+	                          String profileName)
+	{
+		m_deleteProfileCallback.execute(onSuccess, onFailure, ownerMail, profileName);
 	}
 
 	// endregion GUI Methods
@@ -264,9 +281,21 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
+	public void registerCallbackFetchProfiles(IFetchProfilesCallback callback)
+	{
+		m_fetchProfilesCallback = callback;
+	}
+
+	@Override
 	public void registerCallbackAddProfile(IAddProfileCallback callback)
 	{
 		m_addProfileCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackDeleteProfile(IDeleteProfileCallback callback)
+	{
+		m_deleteProfileCallback = callback;
 	}
 
 
@@ -281,7 +310,9 @@ public class MainUI extends UI implements IUserInterface
 	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
 	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
+	private IFetchProfilesCallback                    m_fetchProfilesCallback;
 	private IAddProfileCallback                       m_addProfileCallback;
+	private IDeleteProfileCallback                    m_deleteProfileCallback;
 	// endregion Callbacks
 
 
