@@ -59,20 +59,21 @@ public class SubscriberDashboardView extends VerticalLayout
 		this.addComponent(m_layoutHeaderBar);
 		m_layoutHeaderBar.addComponents(m_title, m_buttonQuitAccount, m_buttonLogout);
 
-		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
 		m_tabsSubscriber.addTab(m_layoutProfileDisplay, "Profile anzeigen");
 		m_layoutProfileDisplay.addComponents(m_gridProfiles, m_buttonShowProfiles);
 		m_tabsSubscriber.addTab(m_layoutProfileCreationColumns, "Profil erstellen");
 		m_layoutProfileCreationColumns.addComponents(m_layoutProfileCreation1, m_layoutProfileCreation2);
 		m_layoutProfileCreation1.addComponents(m_textProfileName, m_textSources, m_textKeywords, m_buttonProfileCreate);
 		m_layoutProfileCreation2.addComponents(m_dateTime, m_textTime);
-		m_tabLayout.addTab(m_adminLayout, "Administrator - Dashboard");
 		m_adminLayout.addComponents(m_gridSubscriberVerification, m_buttonShowPendingVerificationRequests);
 	}
 
 	public void showAdminLayout()
 	{
 		this.addComponent(m_tabLayout);
+		m_tabLayout.removeAllComponents();
+		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
+		m_tabLayout.addTab(m_adminLayout, "Administrator - Dashboard");
 		/*
 		m_parent.fetchProfiles(
 				data -> showProfiles(data),
@@ -85,12 +86,14 @@ public class SubscriberDashboardView extends VerticalLayout
 
 	public void showSubscriberLayout()
 	{
+		this.addComponent(m_tabLayout);
+		m_tabLayout.removeAllComponents();
+		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
 		/*
 		m_parent.fetchProfiles(
 				data -> showProfiles(data),
 				errorMessage -> Notification.show(errorMessage));
 		*/
-		this.addComponent(m_tabsSubscriber);
 	}
 
 
@@ -196,7 +199,6 @@ public class SubscriberDashboardView extends VerticalLayout
 	private void showProfiles(ProfileDataRepresentation[] data)
 	{
 		List<Profile_GridHelper> profiles = new ArrayList<>();
-
 		for(ProfileDataRepresentation profile : data)
 		{
 			profiles.add(new Profile_GridHelper(m_parent,
@@ -207,14 +209,13 @@ public class SubscriberDashboardView extends VerticalLayout
 			                                    profile.getLastGenerationTime(),
 			                                    profile.getInterval()));
 		}
-
 		m_gridProfiles.setItems(profiles);
+		m_gridProfiles.recalculateColumnWidths();
 	}
 
 	private void showPendingVerificationRequests(UserDataRepresentation[] data)
 	{
 		List<VerifySubscriber_GridHelper> subs = new ArrayList<>();
-
 		for(UserDataRepresentation subscriber : data)
 		{
 			subs.add(new VerifySubscriber_GridHelper(m_parent,
@@ -223,7 +224,7 @@ public class SubscriberDashboardView extends VerticalLayout
 			                                         subscriber.getEmail(),
 			                                         subscriber.isOrganisationAdministrator()));
 		}
-
 		m_gridSubscriberVerification.setItems(subs);
+		m_gridSubscriberVerification.recalculateColumnWidths();
 	}
 }
