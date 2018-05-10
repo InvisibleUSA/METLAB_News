@@ -3,12 +3,15 @@ package me.metlabnews.UserInterface.Views;
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.UserDataRepresentation;
+import me.metlabnews.UserInterface.Helpers.VerifySubscriber_GridHelper;
 import me.metlabnews.UserInterface.MainUI;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 /**
  * The dashboard for subscribers
@@ -45,13 +48,15 @@ public class SubscriberDashboardView extends VerticalLayout
 				                                                 m_textKeywords.getValue().split(" "),
 				                                                 m_textTime.getValue().getHour() + ":" + m_textTime.getValue().getMinute() + ":00"));
 
-		m_gridSubscriberVerification.addColumn(SubscriberHelper::getFirstName).setCaption("Vorname");
-		m_gridSubscriberVerification.addColumn(SubscriberHelper::getLastName).setCaption("Nachname");
-		m_gridSubscriberVerification.addColumn(SubscriberHelper::getEmail).setCaption("Email");
-		m_gridSubscriberVerification.addComponentColumn(SubscriberHelper::getAdminCheckBox).setCaption(
+		m_gridSubscriberVerification.addColumn(VerifySubscriber_GridHelper::getFirstName).setCaption("Vorname");
+		m_gridSubscriberVerification.addColumn(VerifySubscriber_GridHelper::getLastName).setCaption("Nachname");
+		m_gridSubscriberVerification.addColumn(VerifySubscriber_GridHelper::getEmail).setCaption("Email");
+		m_gridSubscriberVerification.addComponentColumn(VerifySubscriber_GridHelper::getAdminCheckBox).setCaption(
 				"Adminrechte gewähren");
-		m_gridSubscriberVerification.addComponentColumn(SubscriberHelper::getVerifyButton).setCaption("Verifizieren");
-		m_gridSubscriberVerification.addComponentColumn(SubscriberHelper::getDenyButton).setCaption("Ablehnen");
+		m_gridSubscriberVerification.addComponentColumn(VerifySubscriber_GridHelper::getVerifyButton).setCaption(
+				"Verifizieren");
+		m_gridSubscriberVerification.addComponentColumn(VerifySubscriber_GridHelper::getDenyButton).setCaption(
+				"Ablehnen");
 		m_gridSubscriberVerification.setBodyRowHeight(42.0);
 		m_gridSubscriberVerification.setSizeFull();
 
@@ -100,99 +105,26 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final DateTimeField    m_textTime             = new DateTimeField("Zeitpunkt HH:MM");
 	private final Button           m_buttonProfileCreate  = new Button("Profil erstellen");
 
-	private final VerticalLayout         m_adminLayout                           = new VerticalLayout();
-	private final Grid<SubscriberHelper> m_gridSubscriberVerification            = new Grid<>(
+	private final VerticalLayout                    m_adminLayout                           = new VerticalLayout();
+	private final Grid<VerifySubscriber_GridHelper> m_gridSubscriberVerification            = new Grid<>(
 			"Ausstehende Verifikationen");
-	private final Button                 m_buttonShowPendingVerificationRequests = new Button(
+	private final Button                            m_buttonShowPendingVerificationRequests = new Button(
 			"Ausstehende Verifikationen aktualisieren");
 
 
 	private void showPendingVerificationRequests(UserDataRepresentation[] data)
 	{
-		List<SubscriberHelper> subs = new ArrayList<>();
+		List<VerifySubscriber_GridHelper> subs = new ArrayList<>();
 
 		for(UserDataRepresentation subscriber : data)
 		{
-			subs.add(new SubscriberHelper(m_parent,
-			                              subscriber.getFirstName(),
-			                              subscriber.getLastName(),
-			                              subscriber.getEmail(),
-			                              subscriber.isOrganisationAdministrator()));
+			subs.add(new VerifySubscriber_GridHelper(m_parent,
+			                                         subscriber.getFirstName(),
+			                                         subscriber.getLastName(),
+			                                         subscriber.getEmail(),
+			                                         subscriber.isOrganisationAdministrator()));
 		}
 
 		m_gridSubscriberVerification.setItems(subs);
 	}
-}
-
-
-
-class SubscriberHelper
-{
-	SubscriberHelper(MainUI parent, String firstName, String lastName, String email, Boolean isAdmin)
-	{
-		m_parent = parent;
-		m_firstName = firstName;
-		m_lastName = lastName;
-		m_email = email;
-		m_grantAdminStatus.setValue(false);
-		m_grantAdminStatus.setEnabled(isAdmin);
-		m_buttonVerify.addClickListener(
-				event -> m_parent.verifySubscriber(() ->
-				                                   {
-					                                   m_buttonVerify.setEnabled(false);
-					                                   m_buttonDeny.setEnabled(false);
-				                                   },
-				                                   errorMessage ->
-						                                   Notification.show(errorMessage),
-				                                   m_email,
-				                                   isAdmin));
-		m_buttonDeny.addClickListener(
-				event -> m_parent.denySubscriber(() ->
-				                                 {
-					                                 m_buttonVerify.setEnabled(false);
-					                                 m_buttonDeny.setEnabled(false);
-				                                 },
-				                                 errorMessage ->
-						                                 Notification.show(errorMessage),
-				                                 m_email,
-				                                 java.sql.Date.valueOf(LocalDate.now())));
-	}
-
-	public String getFirstName()
-	{
-		return m_firstName;
-	}
-
-	public String getLastName()
-	{
-		return m_lastName;
-	}
-
-	public String getEmail()
-	{
-		return m_email;
-	}
-
-	public CheckBox getAdminCheckBox()
-	{
-		return m_grantAdminStatus;
-	}
-
-	public Button getVerifyButton()
-	{
-		return m_buttonVerify;
-	}
-
-	public Button getDenyButton()
-	{
-		return m_buttonDeny;
-	}
-
-	private MainUI m_parent;
-	private String m_firstName;
-	private String m_lastName;
-	private String m_email;
-	private final CheckBox m_grantAdminStatus = new CheckBox("Adminrechte");
-	private final Button   m_buttonVerify     = new Button("Verifizieren");
-	private final Button   m_buttonDeny       = new Button("Ablehnen");
 }
