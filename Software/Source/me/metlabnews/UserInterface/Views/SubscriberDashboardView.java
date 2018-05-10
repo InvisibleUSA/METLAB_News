@@ -29,9 +29,6 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_parent = parent;
 		Page.getCurrent().setTitle("Dashboard");
 
-		m_textTime.setDateFormat("HH:mm");
-		m_textTime.setValue(LocalDateTime.now());
-
 		setupGrids();
 		m_dateTime.setValue(LocalDateTime.now());
 		m_dateTime.setLocale(Locale.GERMANY);
@@ -39,11 +36,11 @@ public class SubscriberDashboardView extends VerticalLayout
 
 		m_buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
 
-		m_buttonQuitAccount.addClickListener(
-				(Button.ClickEvent event) -> m_parent.removeSubscriber(m_parent::openLogoutView,
-				                                                       errorMessage -> Notification.show(errorMessage),
-				                                                       m_parent.whoAmI().getEmail(),
-				                                                       java.sql.Date.valueOf(LocalDate.now())));
+		m_buttonQuitAccount.addClickListener((Button.ClickEvent event) -> m_parent.removeSubscriber(
+				m_parent::openLogoutView,
+				errorMessage -> Notification.show(errorMessage),
+				m_parent.whoAmI().getEmail(),
+				java.sql.Date.valueOf(LocalDate.now())));
 
 		m_buttonShowPendingVerificationRequests.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchPendingSubscriberVerifications(
@@ -56,20 +53,7 @@ public class SubscriberDashboardView extends VerticalLayout
 						errorMessage -> Notification.show(errorMessage)));
 
 		m_buttonProfileCreate.addClickListener(
-				(Button.ClickEvent event) -> m_parent.addProfile(
-						() -> {
-							m_textProfileName.setValue("");
-							m_textKeywords.setValue("");
-							m_textSources.setValue("");
-						},
-						errorMessage -> Notification.show(errorMessage),
-						m_textProfileName.getValue(),
-						m_textSources.getValue().split(" "),
-						m_textKeywords.getValue().split(" "),
-						m_dateTime.getValue(),
-						Duration.ofHours(m_textTime.getValue().getHour())
-								.plus(Duration.ofMinutes(m_textTime.getValue().getMinute()))
-				                                                ));
+				(Button.ClickEvent event) -> createProfileAction());
 
 
 		this.addComponent(m_layoutHeaderBar);
@@ -78,9 +62,10 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
 		m_tabsSubscriber.addTab(m_layoutProfileDisplay, "Profile anzeigen");
 		m_layoutProfileDisplay.addComponents(m_gridProfiles, m_buttonShowProfiles);
-		m_tabsSubscriber.addTab(m_layoutProfileCreation, "Profil erstellen");
-		m_layoutProfileCreation.addComponents(m_textProfileName, m_textSources, m_textKeywords,
-		                                      m_dateTime, m_textTime, m_buttonProfileCreate);
+		m_tabsSubscriber.addTab(m_layoutProfileCreationColumns, "Profil erstellen");
+		m_layoutProfileCreationColumns.addComponents(m_layoutProfileCreation1, m_layoutProfileCreation2);
+		m_layoutProfileCreation1.addComponents(m_textProfileName, m_textSources, m_textKeywords, m_buttonProfileCreate);
+		m_layoutProfileCreation2.addComponents(m_dateTime, m_textTime);
 		m_tabLayout.addTab(m_adminLayout, "Administrator - Dashboard");
 		m_adminLayout.addComponents(m_gridSubscriberVerification, m_buttonShowPendingVerificationRequests);
 	}
@@ -88,9 +73,11 @@ public class SubscriberDashboardView extends VerticalLayout
 	public void showAdminLayout()
 	{
 		this.addComponent(m_tabLayout);
+		/*
 		m_parent.fetchProfiles(
 				data -> showProfiles(data),
 				errorMessage -> Notification.show(errorMessage));
+		*/
 		m_parent.fetchPendingSubscriberVerifications(
 				data -> showPendingVerificationRequests(data),
 				errorMessage -> Notification.show(errorMessage));
@@ -98,9 +85,11 @@ public class SubscriberDashboardView extends VerticalLayout
 
 	public void showSubscriberLayout()
 	{
+		/*
 		m_parent.fetchProfiles(
 				data -> showProfiles(data),
 				errorMessage -> Notification.show(errorMessage));
+		*/
 		this.addComponent(m_tabsSubscriber);
 	}
 
@@ -116,24 +105,69 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final TabSheet m_tabLayout      = new TabSheet();
 	private final TabSheet m_tabsSubscriber = new TabSheet();
 
-	private final VerticalLayout           m_layoutProfileDisplay  = new VerticalLayout();
-	private final Grid<Profile_GridHelper> m_gridProfiles          = new Grid<>("Profile");
-	private final Button                   m_buttonShowProfiles    = new Button("Profile aktualisieren");
-	private final VerticalLayout           m_layoutProfileCreation = new VerticalLayout();
-	private final TextField                m_textProfileName       = new TextField("Name:");
-	private final TextField                m_textSources           = new TextField(
+	private final VerticalLayout           m_layoutProfileDisplay         = new VerticalLayout();
+	private final Grid<Profile_GridHelper> m_gridProfiles                 = new Grid<>("Profile");
+	private final Button                   m_buttonShowProfiles           = new Button("Profile aktualisieren");
+	private final HorizontalLayout         m_layoutProfileCreationColumns = new HorizontalLayout();
+	private final VerticalLayout           m_layoutProfileCreation1       = new VerticalLayout();
+	private final VerticalLayout           m_layoutProfileCreation2       = new VerticalLayout();
+	private final TextField                m_textProfileName              = new TextField("Name:");
+	private final TextField                m_textKeywords                 = new TextField(
+			"Suchbegriffe: (mit Komma getennt)");
+	private final TextField                m_textSources                  = new TextField(
 			"Quellen: (mit Komma getennt)");
-	private final TextField                m_textKeywords          = new TextField(
-			"Suchbegriffe: (siehe Quellen)");
-	private final InlineDateTimeField      m_dateTime              = new InlineDateTimeField("partially implemented");
-	private final DateTimeField            m_textTime              = new DateTimeField("Intervall HH:MM");
-	private final Button                   m_buttonProfileCreate   = new Button("Profil erstellen");
+	private final InlineDateTimeField      m_dateTime                     = new InlineDateTimeField(
+			"Zeitpunkt für erste Zustellung wählen");
+	private final TextField                m_textTime                     = new TextField(
+			"Zustellungsntervall DD:HH:MM");
+	private final Button                   m_buttonProfileCreate          = new Button("Profil erstellen");
 
 	private final VerticalLayout                    m_adminLayout                           = new VerticalLayout();
 	private final Grid<VerifySubscriber_GridHelper> m_gridSubscriberVerification            = new Grid<>(
 			"Ausstehende Verifikationen");
 	private final Button                            m_buttonShowPendingVerificationRequests = new Button(
 			"Ausstehende Verifikationen aktualisieren");
+
+	private void createProfileAction()
+	{
+		String[] intervalString = m_textTime.getValue().split(":");
+
+		if(m_textProfileName.isEmpty())
+		{
+			Notification.show("Bitte geben Sie einen Profilnamen ein!");
+		}
+		else if(m_textKeywords.isEmpty())
+		{
+			Notification.show("Bitte geben Sie Suchbegriffe ein!");
+		}
+		else if(m_textSources.isEmpty())
+		{
+			Notification.show("Bitte geben Sie Quellen ein!");
+		}
+		else if(!m_textTime.getValue().matches("[0-9]+:[0-9]+:[0-9]+"))
+		{
+			Notification.show("Bitte geben Sie ein Intervall im Format DD:HH:MM ein!");
+		}
+		else
+		{
+			Duration days     = Duration.ofDays(Long.parseLong(intervalString[0]));
+			Duration hours    = Duration.ofHours(Long.parseLong(intervalString[1]));
+			Duration minutes  = Duration.ofMinutes(Long.parseLong(intervalString[2]));
+			Duration interval = days.plus(hours).plus(minutes);
+			m_parent.addProfile(
+					() -> {
+						m_textProfileName.setValue("");
+						m_textKeywords.setValue("");
+						m_textSources.setValue("");
+					},
+					errorMessage -> Notification.show(errorMessage),
+					m_textProfileName.getValue(),
+					m_textSources.getValue().split(" "),
+					m_textKeywords.getValue().split(" "),
+					m_dateTime.getValue(),
+					interval);
+		}
+	}
 
 	private void setupGrids()
 	{
