@@ -37,6 +37,11 @@ public interface IUserInterface
 		void execute(UserDataRepresentation[] data);
 	}
 
+	interface IFetchSourcesEvent
+	{
+		void execute(SourceDataRepresentation[] data);
+	}
+
 	// endregion Events
 
 
@@ -68,14 +73,17 @@ public interface IUserInterface
 
 
 	interface ISubscriberRegisterCallback
-	{ void execute(IGenericEvent onSuccess,
-	               IGenericFailureEvent onFailure,
-	               String firstName,
-	               String lastName,
-	               String company,
-	               String email,
-	               String password,
-	               boolean clientAdmin); }
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String firstName,
+		             String lastName,
+		             String company,
+		             String email,
+		             String password,
+		             boolean clientAdmin);
+	}
+
 	void registerCallbackSubscriberRegistration(ISubscriberRegisterCallback callback);
 
 
@@ -201,6 +209,34 @@ public interface IUserInterface
 
 	void registerCallbackFetchOrganisations(IFetchOrganisationsCallback callback);
 
+
+	interface IFetchSourcesCallback
+	{
+		void execute(IFetchSourcesEvent onSuccss,
+		             IGenericFailureEvent onFailure);
+	}
+
+	void registerCallbackFetchSources(IFetchSourcesCallback callback);
+
+
+	interface IAddSourceCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String name, String link, String rssLink);
+	}
+
+	void registerCallbackAddSource(IAddSourceCallback callback);
+
+
+	interface IRemoveSourceCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String name);
+	}
+
+	void registerCallbackRemoveSource(IRemoveSourceCallback callback);
 	// endregion System Admin Interaction
 
 

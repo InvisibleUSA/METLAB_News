@@ -190,7 +190,7 @@ public class MainUI extends UI implements IUserInterface
 	public void getAllOrganisations(IGetStringArrayEvent onSuccess,
 	                                IGenericFailureEvent onFailure)
 	{
-		m_FetchOrganisationsCallback.execute(onSuccess, onFailure);
+		m_fetchOrganisationsCallback.execute(onSuccess, onFailure);
 	}
 
 	public void fetchProfiles(IFetchProfilesEvent onSuccess,
@@ -216,6 +216,26 @@ public class MainUI extends UI implements IUserInterface
 	                          String profileName)
 	{
 		m_deleteProfileCallback.execute(onSuccess, onFailure, ownerMail, profileName);
+	}
+
+	public void fetchSources(IFetchSourcesEvent onSuccess,
+	                         IGenericFailureEvent onFailure)
+	{
+		m_fetchSourcesCallback.execute(onSuccess, onFailure);
+	}
+
+	public void addSource(IGenericEvent onSuccess,
+	                      IGenericFailureEvent onFailure,
+	                      String name, String link, String rssLink)
+	{
+		m_addSourceCallback.execute(onSuccess, onFailure, name, link, rssLink);
+	}
+
+	public void removeSource(IGenericEvent onSuccess,
+	                         IGenericFailureEvent onFailure,
+	                         String name)
+	{
+		m_removeSourceCallback.execute(onSuccess, onFailure, name);
 	}
 
 	// endregion GUI Methods
@@ -284,7 +304,7 @@ public class MainUI extends UI implements IUserInterface
 	@Override
 	public void registerCallbackFetchOrganisations(IFetchOrganisationsCallback callback)
 	{
-		m_FetchOrganisationsCallback = callback;
+		m_fetchOrganisationsCallback = callback;
 	}
 
 	@Override
@@ -311,6 +331,24 @@ public class MainUI extends UI implements IUserInterface
 		m_deleteProfileCallback = callback;
 	}
 
+	@Override
+	public void registerCallbackFetchSources(IFetchSourcesCallback callback)
+	{
+		m_fetchSourcesCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackAddSource(IAddSourceCallback callback)
+	{
+		m_addSourceCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackRemoveSource(IRemoveSourceCallback callback)
+	{
+		m_removeSourceCallback = callback;
+	}
+
 
 	private ISubscriberLoginCallback                  m_subscriberLoginCallback;
 	private ISysAdminLoginCallback                    m_sysAdminLoginCallback;
@@ -320,12 +358,15 @@ public class MainUI extends UI implements IUserInterface
 	private IFetchPendingVerificationRequestsCallback m_fetchPendingVerificationRequestsCallback;
 	private IVerifySubscriberCallback                 m_verifySubscriberCallback;
 	private IDenySubscriberCallback                   m_denySubscriberCallback;
-	private IFetchOrganisationsCallback               m_FetchOrganisationsCallback;
+	private IFetchOrganisationsCallback               m_fetchOrganisationsCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
 	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
 	private IFetchProfilesCallback                    m_fetchProfilesCallback;
 	private IAddProfileCallback                       m_addProfileCallback;
 	private IDeleteProfileCallback                    m_deleteProfileCallback;
+	private IFetchSourcesCallback                     m_fetchSourcesCallback;
+	private IAddSourceCallback                        m_addSourceCallback;
+	private IRemoveSourceCallback                     m_removeSourceCallback;
 	// endregion Callbacks
 
 

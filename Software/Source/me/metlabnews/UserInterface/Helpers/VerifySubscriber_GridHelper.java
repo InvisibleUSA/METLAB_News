@@ -22,8 +22,10 @@ public class VerifySubscriber_GridHelper
 		m_buttonVerify.addClickListener(
 				event -> m_parent.verifySubscriber(
 						() -> {
+							m_grantAdminStatus.setEnabled(false);
 							m_buttonVerify.setEnabled(false);
 							m_buttonDeny.setEnabled(false);
+							m_parent.access(() -> Notification.show("Abonnent verifiziert"));
 						},
 						errorMessage -> m_parent.access(() -> Notification.show(errorMessage)),
 						m_email,
@@ -31,8 +33,10 @@ public class VerifySubscriber_GridHelper
 		m_buttonDeny.addClickListener(
 				event -> m_parent.denySubscriber(
 						() -> {
+							m_grantAdminStatus.setEnabled(false);
 							m_buttonVerify.setEnabled(false);
 							m_buttonDeny.setEnabled(false);
+							m_parent.access(() -> Notification.show("Abonnent abgelehnt"));
 						},
 						errorMessage -> m_parent.access(() -> Notification.show(errorMessage)),
 						m_email,
