@@ -19,7 +19,8 @@ public class QueryLoginUser extends MariaDBQueryBase
 	public boolean userVerified        = false;
 	public boolean isDeactivated       = false;
 	public Subscriber subscriber;
-	public boolean byPassword = false;
+	public boolean byPassword    = false;
+	public boolean checkPassword = true;
 
 	@Override
 	protected Object[] createSQLQuery()
@@ -60,7 +61,7 @@ public class QueryLoginUser extends MariaDBQueryBase
 			userLoginSuccessful = false;
 			return;
 		}
-		if(!readPassword.equals(password))
+		if(!readPassword.equals(password) && checkPassword)
 		{
 			userExists = true;
 			userLoginSuccessful = false;
@@ -78,7 +79,7 @@ public class QueryLoginUser extends MariaDBQueryBase
 			userLoginSuccessful = false;
 			return;
 		}
-		subscriber = new Subscriber(email, password, m_vName, m_name, new Organisation(m_organisation),
+		subscriber = new Subscriber(email, readPassword, m_vName, m_name, new Organisation(m_organisation),
 		                            isAdmin.equals("1"));
 		userExists = true;
 		userLoginSuccessful = true;

@@ -225,6 +225,8 @@ public interface IUserInterface
 
 	void registerCallbackFetchOrganisations(IFetchOrganisationsCallback callback);
 
+	void registerCallbackChangePW(IChangePasswordCallback callback);
+
 
 	interface IFetchSourcesCallback
 	{
@@ -250,6 +252,15 @@ public interface IUserInterface
 		void execute(IGenericEvent onSuccess,
 		             IGenericFailureEvent onFailure,
 		             String name);
+	}
+
+	interface IChangePasswordCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String email,
+		             String oldPW,
+		             String newPW);
 	}
 
 	void registerCallbackRemoveSource(IRemoveSourceCallback callback); //TODO implement in Presentation

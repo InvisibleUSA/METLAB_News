@@ -121,6 +121,11 @@ public class Presenter implements IResource
 			m_threadPool.execute(() ->
 				userManager.getAllOrganisations(session, onSuccess, onFailure)));
 
+		ui.registerCallbackChangePW(((onSuccess, onFailure, email, oldPW, newPW) ->
+				m_threadPool.execute(() ->
+						                     userManager.changePassword(session, onSuccess, onFailure, email, oldPW,
+						                                                newPW))));
+
 	}
 
 

@@ -2,6 +2,9 @@ package me.metlabnews.UserInterface.Views;
 
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
+import me.metlabnews.Model.Common.Mail.MailDeliverer;
+import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryLoginUser;
+import me.metlabnews.Presentation.Messages;
 import me.metlabnews.UserInterface.MainUI;
 
 
@@ -20,9 +23,37 @@ public class SubscriberLoginView extends VerticalLayout
 
 		buttonToSysAdminLogin.addClickListener((Button.ClickEvent event)
 				                                       -> m_parent.openSystemAdminLoginView());
+		buttonForgotPassword.addClickListener((Button.ClickEvent event) -> passwordForgotAction());
 
 		this.addComponents(title, textFieldEmail, textFieldPassword, buttonLogin,
-		                   buttonRegister, buttonToSysAdminLogin);
+		                   buttonRegister, buttonToSysAdminLogin, buttonForgotPassword);
+	}
+
+	private void passwordForgotAction()
+	{
+		if(textFieldEmail.getValue().isEmpty())
+		{
+			Notification.show("Bitte geben sie Ihre Email-Adresse ein!");
+			return;
+		}
+		//TODO: implement
+		QueryLoginUser qlu = new QueryLoginUser();
+		qlu.email = textFieldEmail.getValue();
+		qlu.checkPassword = false;
+		if(!qlu.execute())
+		{
+			Notification.show(Messages.UnknownError);
+			return;
+		}
+		if(qlu.subscriber == null)
+		{
+			Notification.show(Messages.InvalidEmailAddress);
+			return;
+		}
+		MailDeliverer md = new MailDeliverer();
+		md.send(textFieldEmail.getValue(), "Passwort wiederherstellen",
+		        "Ihr Passwort: " + qlu.subscriber.getPassword());
+		Notification.show("Email zur Passwortwiederherstellung wurde versendet");
 	}
 
 	public void clearFields()
@@ -40,6 +71,7 @@ public class SubscriberLoginView extends VerticalLayout
 	private final Button        buttonLogin           = new Button("Anmelden");
 	private final Button        buttonToSysAdminLogin = new Button("Zur Anmeldeseite für Systemadministratoren");
 	private final Button        buttonRegister        = new Button("Zur Registrierung");
+	private final Button        buttonForgotPassword  = new Button("Passwort vergessen");
 
 	private void loginAction()
 	{

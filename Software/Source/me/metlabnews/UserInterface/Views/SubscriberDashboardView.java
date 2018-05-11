@@ -11,6 +11,8 @@ import me.metlabnews.UserInterface.Helpers.Subscriber_GridHelper;
 import me.metlabnews.UserInterface.Helpers.VerifySubscriber_GridHelper;
 import me.metlabnews.UserInterface.MainUI;
 
+import javax.swing.text.TabSet;
+import javax.xml.soap.Text;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -81,10 +83,22 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_layoutProfileCreation3.addComponents(m_dateTime, m_textTime);
 		m_selectSources.setLeftColumnCaption("Verfügbare Quellen");
 		m_selectSources.setRightColumnCaption("Ausgewählte Quellen");
+
 		m_tabsAdmin.addTab(m_displayVerifications, "Ausstehende Verifikationen");
 		m_displayVerifications.addComponents(m_gridSubscriberVerification, m_buttonShowPendingVerificationRequests);
+
 		m_tabsAdmin.addTab(m_displaySubscribers, "Abonnenten");
 		m_displaySubscribers.addComponents(m_gridSubscribers, m_buttonShowSubscribers);
+
+		m_tabsSettings.addTab(m_displayPWReset, "Passwort zurücksetzen");
+		m_displayPWReset.addComponents(m_textCurrentPW, m_textNewPW1, m_textNewPW2, m_buttonPWReset);
+		m_buttonPWReset.addClickListener((Button.ClickEvent event) -> m_parent.changePassword(null,
+		                                                                                      errorMessage -> Notification.show(
+				                                                                                      "test"),
+		                                                                                      m_parent.whoAmI().getEmail(),
+		                                                                                      m_textCurrentPW.getValue(),
+		                                                                                      m_textNewPW1.getValue(),
+		                                                                                      m_textNewPW2.getValue()));
 
 		m_tabsSubscriber.addSelectedTabChangeListener(event -> updateGridSub());
 		m_tabsAdmin.addSelectedTabChangeListener(event -> updateGridAdmin());
@@ -96,6 +110,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_tabLayout.removeAllComponents();
 		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
 		m_tabLayout.addTab(m_tabsAdmin, "Administrator - Dashboard");
+		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
 		/*
 		m_parent.fetchProfiles(
 				data -> showProfiles(data),
@@ -108,6 +123,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		this.addComponent(m_tabLayout);
 		m_tabLayout.removeAllComponents();
 		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
+		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
 		/*
 		m_parent.fetchProfiles(
 				data -> showProfiles(data),
@@ -127,13 +143,14 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final TabSheet m_tabLayout      = new TabSheet();
 	private final TabSheet m_tabsSubscriber = new TabSheet();
 	private final TabSheet m_tabsAdmin      = new TabSheet();
+	private final TabSheet m_tabsSettings   = new TabSheet();
 
-	private final VerticalLayout                    m_displayProfiles                       = new VerticalLayout();
-	private final Grid<Profile_GridHelper>          m_gridProfiles                          = new Grid<>("Profile");
-	private final Button                            m_buttonShowProfiles                    = new Button(
+	private final VerticalLayout              m_displayProfiles                       = new VerticalLayout();
+	private final Grid<Profile_GridHelper>    m_gridProfiles                          = new Grid<>("Profile");
+	private final Button                      m_buttonShowProfiles                    = new Button(
 			"Profile aktualisieren");
-	private final HorizontalLayout                  m_displayProfileCreation                = new HorizontalLayout();
-	private final Panel                             m_panelProfileCreation1                 = new Panel("Allgemeines");
+	private final HorizontalLayout            m_displayProfileCreation                = new HorizontalLayout();
+	private final Panel                       m_panelProfileCreation1                 = new Panel("Allgemeines");
 	private final VerticalLayout                    m_layoutProfileCreation1                = new VerticalLayout();
 	private final TextField                         m_textProfileName                       = new TextField("Name:");
 	private final TextField                         m_textKeywords                          = new TextField(
@@ -152,12 +169,21 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final VerticalLayout                    m_displayVerifications                  = new VerticalLayout();
 	private final Grid<VerifySubscriber_GridHelper> m_gridSubscriberVerification            = new Grid<>(
 			"Ausstehende Verifikationen");
-	private final Button                            m_buttonShowPendingVerificationRequests = new Button(
+	private final Button                      m_buttonShowPendingVerificationRequests = new Button(
 			"Ausstehende Verifikationen aktualisieren");
-	private final VerticalLayout                    m_displaySubscribers                    = new VerticalLayout();
-	private final Grid<Subscriber_GridHelper>       m_gridSubscribers                       = new Grid<>();
-	private final Button                            m_buttonShowSubscribers                 = new Button(
+	private final VerticalLayout              m_displaySubscribers                    = new VerticalLayout();
+	private final Grid<Subscriber_GridHelper> m_gridSubscribers                       = new Grid<>();
+	private final Button                      m_buttonShowSubscribers                 = new Button(
 			"Abonnenten aktualisieren");
+	private final VerticalLayout              m_displayPWReset                        = new VerticalLayout();
+	private final TextField                   m_textCurrentPW                         = new TextField(
+			"Aktuelles Passwort:");
+	private final TextField                   m_textNewPW1                            = new TextField(
+			"Neues Passwort:");
+	private final TextField                   m_textNewPW2                            = new TextField(
+			"Passwort wiederholen:");
+	private final Button                      m_buttonPWReset                         = new Button(
+			"Passwort zurücksetzen");
 
 	private void createProfileAction()
 	{

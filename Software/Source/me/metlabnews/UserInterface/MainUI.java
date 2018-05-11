@@ -137,6 +137,16 @@ public class MainUI extends UI implements IUserInterface
 		m_logoutCallback.execute(this::logoutEvent);
 	}
 
+	public void changePassword(IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String oldPW, String newPW1, String newPW2)
+	{
+		if(!newPW1.equals(newPW2))
+		{
+			Notification.show("Passworter sind nicht gleich");
+			return;
+		}
+		m_changePasswordCallback.execute(onSuccess, onFailure, email, oldPW, newPW1);
+	}
+
 	public void removeSubscriber(IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
 	                             String email,
@@ -320,6 +330,12 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
+	public void registerCallbackChangePW(IChangePasswordCallback callback)
+	{
+		m_changePasswordCallback = callback;
+	}
+
+	@Override
 	public void registerCallbackLogout(ILogoutCallback callback)
 	{
 		m_logoutCallback = callback;
@@ -373,13 +389,14 @@ public class MainUI extends UI implements IUserInterface
 	private IFetchSubscribersCallback                 m_fetchSubscribers;
 	private IFetchOrganisationsCallback               m_fetchOrganisationsCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
-	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
-	private IFetchProfilesCallback                    m_fetchProfilesCallback;
-	private IAddProfileCallback                       m_addProfileCallback;
-	private IDeleteProfileCallback                    m_deleteProfileCallback;
-	private IFetchSourcesCallback                     m_fetchSourcesCallback;
-	private IAddSourceCallback                        m_addSourceCallback;
-	private IRemoveSourceCallback                     m_removeSourceCallback;
+	private IRemoveOrganisationCallback m_removeOrganisationCallback;
+	private IFetchProfilesCallback      m_fetchProfilesCallback;
+	private IAddProfileCallback         m_addProfileCallback;
+	private IDeleteProfileCallback      m_deleteProfileCallback;
+	private IFetchSourcesCallback       m_fetchSourcesCallback;
+	private IAddSourceCallback          m_addSourceCallback;
+	private IRemoveSourceCallback       m_removeSourceCallback;
+	private IChangePasswordCallback     m_changePasswordCallback;
 	// endregion Callbacks
 
 

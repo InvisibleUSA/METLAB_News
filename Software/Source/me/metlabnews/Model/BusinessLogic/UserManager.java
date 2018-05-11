@@ -444,6 +444,59 @@ public class UserManager
 		onSuccess.execute();
 	}
 
+	public void changePassword(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String oldPW, String newPW)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.NotSystemAdmin);
+			return;
+		}
+
+		QueryLoginUser qlu = new QueryLoginUser();
+		qlu.password = oldPW;
+		qlu.email = email;
+		if(!qlu.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+		if(!qlu.userLoginSuccessful)
+		{
+			if(!qlu.userExists)
+			{
+				onFailure.execute(Messages.InvalidEmailAddress);
+				return;
+			}
+			if(!qlu.userVerified)
+			{
+				onFailure.execute(Messages.UnknownError);
+				return;
+			}
+			if(qlu.isDeactivated)
+			{
+				onFailure.execute("Konto wurde deaktiviert");
+				return;
+			}
+			onFailure.execute(Messages.WrongPassword);
+			return;
+		}
+
+		QueryChangePassword qcp = new QueryChangePassword();
+		qcp.email = email;
+		qcp.password = newPW;
+		if(!qcp.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+		onSuccess.execute();
+	}
+
 	// endregion Client Admin Interaction
 
 	public static class Validator implements IResource
