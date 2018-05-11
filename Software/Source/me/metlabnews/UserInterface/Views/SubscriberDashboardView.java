@@ -6,6 +6,7 @@ import com.vaadin.ui.*;
 import me.metlabnews.Presentation.ProfileDataRepresentation;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.Helpers.Profile_GridHelper;
+import me.metlabnews.UserInterface.Helpers.Subscriber_GridHelper;
 import me.metlabnews.UserInterface.Helpers.VerifySubscriber_GridHelper;
 import me.metlabnews.UserInterface.MainUI;
 
@@ -47,6 +48,12 @@ public class SubscriberDashboardView extends VerticalLayout
 						data -> showPendingVerificationRequests(data),
 						errorMessage -> Notification.show(errorMessage)));
 
+
+		m_buttonShowSubscribers.addClickListener(
+				(Button.ClickEvent event) -> m_parent.fetchSubscribers(
+						data -> showSubscribers(data),
+						errorMessage -> Notification.show(errorMessage)));
+
 		m_buttonShowProfiles.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchProfiles(
 						data -> showProfiles(data),
@@ -68,9 +75,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_tabsAdmin.addTab(m_displayVerifications, "Ausstehende Verifikationen");
 		m_displayVerifications.addComponents(m_gridSubscriberVerification, m_buttonShowPendingVerificationRequests);
 		m_tabsAdmin.addTab(m_displaySubscribers, "Abonnenten");
-		m_displaySubscribers.addComponents(m_gridSubscribers, m_buttonshowSubscriberes);
-
-
+		m_displaySubscribers.addComponents(m_gridSubscribers, m_buttonShowSubscribers);
 
 		m_tabsSubscriber.addSelectedTabChangeListener(event -> updateGridSub());
 		m_tabsAdmin.addSelectedTabChangeListener(event -> updateGridAdmin());
@@ -87,9 +92,6 @@ public class SubscriberDashboardView extends VerticalLayout
 				data -> showProfiles(data),
 				errorMessage -> Notification.show(errorMessage));
 		*/
-		m_parent.fetchPendingSubscriberVerifications(
-				data -> showPendingVerificationRequests(data),
-				errorMessage -> Notification.show(errorMessage));
 	}
 
 	public void showSubscriberLayout()
@@ -141,8 +143,8 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final Button                            m_buttonShowPendingVerificationRequests = new Button(
 			"Ausstehende Verifikationen aktualisieren");
 	private final VerticalLayout                    m_displaySubscribers                    = new VerticalLayout();
-	private final Grid                              m_gridSubscribers                       = new Grid();
-	private final Button                            m_buttonshowSubscriberes                = new Button(
+	private final Grid<Subscriber_GridHelper>       m_gridSubscribers                       = new Grid<>();
+	private final Button                            m_buttonShowSubscribers                 = new Button(
 			"Abonnenten aktualisieren");
 
 	private void createProfileAction()
@@ -218,6 +220,16 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_gridSubscriberVerification.setBodyRowHeight(42.0);
 		m_gridSubscriberVerification.setSizeFull();
 
+		m_gridSubscribers.addColumn(Subscriber_GridHelper::getFirstName)
+				.setCaption("Vorname");
+		m_gridSubscribers.addColumn(Subscriber_GridHelper::getLastName)
+				.setCaption("Nachname");
+		m_gridSubscribers.addColumn(Subscriber_GridHelper::getEmail)
+				.setCaption("Email");
+		m_gridSubscribers.addComponentColumn(Subscriber_GridHelper::getAdminCheckBox)
+				.setCaption("Adminrechte");
+		m_gridSubscribers.addComponentColumn(Subscriber_GridHelper::getRemoveButton)
+				.setCaption("Entfernen");
 		m_gridSubscribers.setBodyRowHeight(42.0);
 		m_gridSubscribers.setSizeFull();
 	}
@@ -242,7 +254,9 @@ public class SubscriberDashboardView extends VerticalLayout
 		}
 		else if(m_tabsAdmin.getSelectedTab().equals(m_displaySubscribers))
 		{
-
+			m_parent.fetchSubscribers(
+				data -> showSubscribers(data),
+				errorMessage -> Notification.show(errorMessage));
 		}
 	}
 
@@ -276,5 +290,20 @@ public class SubscriberDashboardView extends VerticalLayout
 		}
 		m_gridSubscriberVerification.setItems(subs);
 		m_gridSubscriberVerification.recalculateColumnWidths();
+	}
+
+	private void showSubscribers(UserDataRepresentation[] data)
+	{
+		List<Subscriber_GridHelper> subs = new ArrayList<>();
+		for(UserDataRepresentation subscriber : data)
+		{
+			subs.add(new Subscriber_GridHelper(m_parent,
+			                                   subscriber.getFirstName(),
+			                                   subscriber.getLastName(),
+			                                   subscriber.getEmail(),
+			                                   subscriber.isOrganisationAdministrator()));
+		}
+		m_gridSubscribers.setItems(subs);
+		m_gridSubscribers.recalculateColumnWidths();
 	}
 }

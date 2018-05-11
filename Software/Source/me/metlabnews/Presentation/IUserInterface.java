@@ -37,6 +37,11 @@ public interface IUserInterface
 		void execute(UserDataRepresentation[] data);
 	}
 
+	interface IFetchSubscribersEvent
+	{
+		void execute(UserDataRepresentation[] data);
+	}
+
 	interface IFetchSourcesEvent
 	{
 		void execute(SourceDataRepresentation[] data);
@@ -145,6 +150,7 @@ public interface IUserInterface
 	void registerCallbackFetchPendingVerificationRequests(
 			IFetchPendingVerificationRequestsCallback callback);
 
+
 	interface IVerifySubscriberCallback
 	{
 		void execute(IGenericEvent onSuccess,
@@ -153,6 +159,7 @@ public interface IUserInterface
 	}
 
 	void registerCallbackVerifySubscriber(IVerifySubscriberCallback callback);
+
 
 	interface IDenySubscriberCallback
 	{
@@ -163,6 +170,15 @@ public interface IUserInterface
 	}
 
 	void registerCallbackDenySubscriber(IDenySubscriberCallback callback);
+
+
+	interface IFetchSubscribersCallback
+	{
+		void execute(IFetchSubscribersEvent onSuccess,
+		             IGenericFailureEvent onFailure);
+	}
+
+	void registerCallbackFetchSubscribers(IFetchSubscribersCallback callback);
 
 	// endregion Client Admin Interaction
 

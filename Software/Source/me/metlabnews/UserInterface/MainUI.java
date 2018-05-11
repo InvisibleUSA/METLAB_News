@@ -167,6 +167,12 @@ public class MainUI extends UI implements IUserInterface
 		access(() -> m_denySubscriberCallback.execute(onSuccess, onFailure, email, date));
 	}
 
+	public void fetchSubscribers(IFetchSubscribersEvent onSuccess,
+	                             IGenericFailureEvent onFailure)
+	{
+		m_fetchSubscribers.execute(onSuccess, onFailure);
+	}
+
 	public void addOrganisation(IGenericEvent onSuccess,
 	                            IGenericFailureEvent onFailure,
 	                            String organisationName,
@@ -284,6 +290,12 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
+	public void registerCallbackFetchSubscribers(IFetchSubscribersCallback callback)
+	{
+		m_fetchSubscribers = callback;
+	}
+
+	@Override
 	public void registerCallbackSysAdminLogin(ISysAdminLoginCallback callback)
 	{
 		m_sysAdminLoginCallback = callback;
@@ -358,6 +370,7 @@ public class MainUI extends UI implements IUserInterface
 	private IFetchPendingVerificationRequestsCallback m_fetchPendingVerificationRequestsCallback;
 	private IVerifySubscriberCallback                 m_verifySubscriberCallback;
 	private IDenySubscriberCallback                   m_denySubscriberCallback;
+	private IFetchSubscribersCallback                 m_fetchSubscribers;
 	private IFetchOrganisationsCallback               m_fetchOrganisationsCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
 	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
