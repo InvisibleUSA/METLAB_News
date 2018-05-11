@@ -16,6 +16,7 @@ import me.metlabnews.Presentation.IUserInterface.IGetStringArrayEvent;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import org.apache.commons.validator.routines.EmailValidator;
 
+// TODO: FOR FUCKS SAKE! Why the heck is anything SQL specific used here?
 import java.sql.Date;
 import java.sql.SQLException;
 
@@ -106,6 +107,7 @@ public class UserManager
 		qgo.organisationName = organisationName;
 		if(!qgo.execute())
 		{
+			// TODO: WHAT THE FUCKING FUCK?!
 			throw new SQLException();
 		}
 		return qgo.organisationExists;
@@ -117,6 +119,7 @@ public class UserManager
 		qgu.email = email;
 		if(!qgu.execute())
 		{
+			// TODO: WHAT THE FUCKING FUCK?!
 			throw new SQLException();
 		}
 		return qgu.userExists;

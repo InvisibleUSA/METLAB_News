@@ -14,26 +14,19 @@ import java.util.List;
 
 public class ObservationProfile
 {
-	private       String            m_profileName;
-	private       String            m_userMail;
-	private       List<String>      m_keywords        = new ArrayList<>();
-	private       List<String>      m_sources         = new ArrayList<>();
-	private       LocalDateTime     m_lastGeneration;
-	private       Duration          m_period          = Duration.ofDays(1);
-	private       DateTimeFormatter m_dateTimePattern = DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss");
-
-
-	public ObservationProfile(String name, String userMail, ArrayList<String> keywords, ArrayList<String> sources, LocalDateTime lastgenerationTime, Duration p)
+	public ObservationProfile(String name, String userMail, ArrayList<String> keywords,
+	                          ArrayList<String> sources, LocalDateTime lastGenerationTime, Duration period)
 	{
 		m_profileName = name;
-		this.m_userMail = userMail;
-		this.m_sources = sources;
-		this.m_keywords = keywords;
-		m_lastGeneration = lastgenerationTime;
-		m_period = p;
+		m_userMail = userMail;
+		m_sources = sources;
+		m_keywords = keywords;
+		m_lastGeneration = lastGenerationTime;
+		m_period = period;
 	}
 
-	public ObservationProfile(XMLTag tag) throws IllegalArgumentException
+	public ObservationProfile(XMLTag tag)
+			throws IllegalArgumentException
 	{
 		try
 		{
@@ -103,6 +96,7 @@ public class ObservationProfile
 		return m_lastGeneration;
 	}
 
+
 	public boolean equals(Object o)
 	{
 		if(o.getClass() != this.getClass())
@@ -110,8 +104,10 @@ public class ObservationProfile
 			return false;
 		}
 		ObservationProfile p = (ObservationProfile)o;
+		// TODO: NO! This is not what equals(Object) is supposed to do! Having the same name DOES NOT MEAN EQUALITY!
 		return m_profileName.equals(p.m_profileName);
 	}
+
 
 	@Override
 	public String toString()
@@ -137,25 +133,36 @@ public class ObservationProfile
 		return s.toString();
 	}
 
+
 	public String toXML()
 	{
-		StringBuilder res = new StringBuilder(
+		StringBuilder stringBuilder = new StringBuilder(
 				"<profile>\n" +
 						"    <name>" + m_profileName + "</name>\n" +
 						"    <owner>" + m_userMail + "</owner>\n" +
 						"    <last-generation>" + m_lastGeneration.format(m_dateTimePattern) + "</last-generation>\n" +
 						"    <period>" + m_period + "</period>\n" +
 						"    <keywords>\n");
-		for(String k : m_keywords)
+		for(String keyword : m_keywords)
 		{
-			res.append("        <keyword>").append(k).append("</keyword>\n");
+			stringBuilder.append("        <keyword>").append(keyword).append("</keyword>\n");
 		}
-		res.append("    </keywords>\n" + "    <sources>\n");
+		stringBuilder.append("    </keywords>\n" + "    <sources>\n");
 		for(String src : m_sources)
 		{
-			res.append("        <source>").append(src).append("</source>\n");
+			stringBuilder.append("        <source>").append(src).append("</source>\n");
 		}
-		res.append("    </sources>\n" + "</profile>\n");
-		return res.toString();
+		stringBuilder.append("    </sources>\n" + "</profile>\n");
+		return stringBuilder.toString();
 	}
+
+
+
+	private       String            m_profileName;
+	private       String            m_userMail;
+	private       List<String>      m_keywords        = new ArrayList<>();
+	private       List<String>      m_sources         = new ArrayList<>();
+	private       LocalDateTime     m_lastGeneration;
+	private       Duration          m_period          = Duration.ofDays(1);
+	private       DateTimeFormatter m_dateTimePattern = DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss");
 }
