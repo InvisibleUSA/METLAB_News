@@ -119,6 +119,19 @@ public class MainUI extends UI implements IUserInterface
 		                                         password, clientAdmin);
 	}
 
+	public void registerVerifiedSubscriber(IGenericEvent onSuccess,
+	                                       String firstName, String lastName, String company,
+	                                       String email, String password, boolean clientAdmin)
+	{
+		m_subscriberRegistrationCallback.execute(
+				() -> m_verifySubscriberCallback.execute(onSuccess,
+				                                         errorMessage -> access(() -> Notification.show(errorMessage)),
+				                                         email, true),
+				this::registrationFailedEvent,
+				firstName, lastName, company, email,
+				password, clientAdmin);
+	}
+
 	public void logout()
 	{
 		m_logoutCallback.execute(this::logoutEvent);

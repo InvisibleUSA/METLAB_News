@@ -21,20 +21,17 @@ public class Organization_GridHelper
 		                              m_textAdminEmail, m_textAdminPassword, m_buttonAddUser);
 
 		m_buttonAddUser.addClickListener(
-				event -> {
-					m_parent.registerSubscriber(
-							m_textAdminFirstName.getValue(), m_textAdminLastName.getValue(), m_name,
-							m_textAdminEmail.getValue(), m_textAdminPassword.getValue(), true);
-					m_parent.verifySubscriber(() -> {
-						                          Notification.show("Administrator hinzugefügt");
-						                          m_textAdminFirstName.setValue("");
-						                          m_textAdminLastName.setValue("");
-						                          m_textAdminEmail.setValue("");
-						                          m_textAdminPassword.setValue("");
-					                          },
-					                          errorMessage -> Notification.show(errorMessage),
-					                          m_textAdminEmail.getValue(), true);
-				});
+				event -> m_parent.registerVerifiedSubscriber(
+						() -> {
+							m_parent.access(() -> Notification.show("Administrator hinzugefügt"));
+							m_textAdminFirstName.setValue("");
+							m_textAdminLastName.setValue("");
+							m_textAdminEmail.setValue("");
+							m_textAdminPassword.setValue("");
+						},
+						m_textAdminFirstName.getValue(), m_textAdminLastName.getValue(), m_name,
+						m_textAdminEmail.getValue(), m_textAdminPassword.getValue(), true)
+				);
 
 		m_buttonRemoveOrganization.addClickListener(event -> m_parent.removeOrganisation(
 				() -> m_buttonRemoveOrganization.setEnabled(false),

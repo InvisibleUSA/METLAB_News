@@ -251,6 +251,7 @@ public class UserManager
 			subscriber.setVerificationPending(false);
 			subscriber.setOrganisationAdministrator(grantAdmin);
 			onSuccess.execute();
+			return;
 		}
 		onFailure.execute(Messages.UserIsAlreadyVerified);
 

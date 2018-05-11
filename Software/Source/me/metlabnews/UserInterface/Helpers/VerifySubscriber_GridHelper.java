@@ -8,6 +8,7 @@ import me.metlabnews.UserInterface.MainUI;
 import java.time.LocalDate;
 
 
+
 public class VerifySubscriber_GridHelper
 {
 	public VerifySubscriber_GridHelper(MainUI parent, String firstName, String lastName, String email, Boolean isAdmin)
@@ -19,25 +20,23 @@ public class VerifySubscriber_GridHelper
 		m_grantAdminStatus.setValue(false);
 		m_grantAdminStatus.setEnabled(isAdmin);
 		m_buttonVerify.addClickListener(
-				event -> m_parent.verifySubscriber(() ->
-				                                   {
-					                                   m_buttonVerify.setEnabled(false);
-					                                   m_buttonDeny.setEnabled(false);
-				                                   },
-				                                   errorMessage ->
-						                                   Notification.show(errorMessage),
-				                                   m_email,
-				                                   isAdmin));
+				event -> m_parent.verifySubscriber(
+						() -> {
+							m_buttonVerify.setEnabled(false);
+							m_buttonDeny.setEnabled(false);
+						},
+						errorMessage -> m_parent.access(() -> Notification.show(errorMessage)),
+						m_email,
+						isAdmin));
 		m_buttonDeny.addClickListener(
-				event -> m_parent.denySubscriber(() ->
-				                                 {
-					                                 m_buttonVerify.setEnabled(false);
-					                                 m_buttonDeny.setEnabled(false);
-				                                 },
-				                                 errorMessage ->
-						                                 Notification.show(errorMessage),
-				                                 m_email,
-				                                 java.sql.Date.valueOf(LocalDate.now())));
+				event -> m_parent.denySubscriber(
+						() -> {
+							m_buttonVerify.setEnabled(false);
+							m_buttonDeny.setEnabled(false);
+						},
+						errorMessage -> m_parent.access(() -> Notification.show(errorMessage)),
+						m_email,
+						java.sql.Date.valueOf(LocalDate.now())));
 	}
 
 	public String getFirstName()
