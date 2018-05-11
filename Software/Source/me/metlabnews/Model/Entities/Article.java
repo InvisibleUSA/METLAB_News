@@ -1,9 +1,17 @@
 package me.metlabnews.Model.Entities;
+import me.metlabnews.Model.Common.Logger;
+import me.metlabnews.Model.Common.XMLTag;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Article
 {
+	static
+	{
+		Logger.getInstance().register(Article.class, Logger.Channel.Entities);
+	}
 
 	private String     m_title;
 	private String     m_link;
@@ -20,6 +28,31 @@ public class Article
 		this.m_description = format(description);
 		this.m_guid = format(guid);
 		this.m_pubDate = pubDate;
+	}
+
+	public Article(XMLTag tag) throws IllegalArgumentException
+	{
+		SimpleDateFormat sdf      = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+		try
+		{
+			m_title = tag.child("title").value();
+			m_link = tag.child("link").value();
+			m_description = tag.child("description").value();
+			m_guid = tag.child("guid").value();
+			m_source = new NewsSource(tag.child("source").value(), "", "");
+			//FIXME read ID for article
+			m_pubDate = Calendar.getInstance();
+			m_pubDate.setTime(sdf.parse(tag.child("pubDate").value()));
+		}
+		catch(NullPointerException e)
+		{
+			Logger.getInstance().logError(this, "Not a valid article. " + e.toString());
+			throw new IllegalArgumentException("Parameter tag does not accurately represent a article.");
+		}
+		catch(ParseException e)
+		{
+			Logger.getInstance().logError(this, "Invalid Date format: " + e.toString());
+		}
 	}
 
 	private String removeAllTags(String s)

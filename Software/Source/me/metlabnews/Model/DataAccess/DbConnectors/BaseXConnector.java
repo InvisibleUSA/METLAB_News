@@ -102,8 +102,10 @@ class BaseXConnector
 	@Deprecated
 	String query(String q) throws IOException
 	{
-		if (!m_isServerRunning)
+		if(!m_isServerRunning)
+		{
 			throw new IOException("Server not started");
+		}
 		int sessionnum = getSession();
 		if(sessionnum == -1)
 		{
@@ -126,8 +128,10 @@ class BaseXConnector
 	 */
 	String query(Command cmd) throws IOException
 	{
-		if (!m_isServerRunning)
+		if(!m_isServerRunning)
+		{
 			throw new IOException("Server not started");
+		}
 		int sessionnum = getSession();
 		if(sessionnum == -1)
 		{
@@ -167,7 +171,7 @@ class BaseXConnector
 	 */
 	public void stop()
 	{
-		if (!m_isServerRunning)
+		if(!m_isServerRunning)
 		{
 			Logger.getInstance().logInfo(this, "BaseX server already stopped");
 			return;

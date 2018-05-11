@@ -11,16 +11,15 @@ public class QueryAddProfile extends BaseXQueryBase
 {
 	static
 	{
-		Logger.getInstance().register(QueryAddProfile.class, Logger.Channel.DocDBMS);
+		m_logger.register(QueryAddProfile.class, Logger.Channel.DocDBMS);
 	}
 
 	public ObservationProfile profile;
-	public String             name;
 
 	@Override
 	protected Command createBaseXQuery()
 	{
-		return new Add("/Profiles/" + name, profile.toXML());
+		return new Add("/profiles/", profile.toXML());
 	}
 
 	@Override

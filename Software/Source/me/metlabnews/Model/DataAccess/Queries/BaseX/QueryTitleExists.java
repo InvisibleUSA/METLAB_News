@@ -10,7 +10,7 @@ public class QueryTitleExists extends BaseXQueryBase
 {
 	static
 	{
-		Logger.getInstance().register(QueryTitleExists.class, Logger.Channel.DocDBMS);
+		m_logger.register(QueryTitleExists.class, Logger.Channel.DocDBMS);
 	}
 	private String  m_title;
 	private boolean m_result;

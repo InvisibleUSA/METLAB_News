@@ -120,6 +120,7 @@ public class Logger implements IResource
 		DocDBMS,
 		YaCy,
 		JUnitTest,
+		Entities,
 		UNREGISTERED_CHANNEL
 	}
 

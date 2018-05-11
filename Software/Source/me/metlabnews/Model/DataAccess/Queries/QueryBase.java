@@ -8,7 +8,7 @@ import me.metlabnews.Model.DataAccess.DbConnectors.DatabaseConnector;
 public abstract class QueryBase
 {
 
-	protected static Logger m_logger = Logger.getInstance();
+	protected static Logger            m_logger      = Logger.getInstance();
 	protected static DatabaseConnector m_dbConnector = new DatabaseConnector();
 
 	/**

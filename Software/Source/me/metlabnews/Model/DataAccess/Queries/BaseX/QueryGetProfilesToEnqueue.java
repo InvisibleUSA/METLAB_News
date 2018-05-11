@@ -31,7 +31,7 @@ public class QueryGetProfilesToEnqueue extends BaseXQueryBase
 		m_endingTime = end;
 		if(m_startingTime == null || m_endingTime == null)
 		{
-			Logger.getInstance().logError(this, "Start or End-time missing");
+			m_logger.logError(this, "Start or End-time missing");
 		}
 	}
 
@@ -52,10 +52,11 @@ public class QueryGetProfilesToEnqueue extends BaseXQueryBase
 		final String      start = m_startingTime.format(dtf);
 		final String      end   = m_endingTime.format(dtf);
 		final String query = "for $profile in /profile \n" +
-				"where xs:dateTime('" + start + "') < (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
-				" and xs:dateTime('" + end + "') > (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period)) \n" +
-				"order by (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period)) \n" +
-				"return $profile";
+				" where xs:dateTime('" + start + "') < (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
+				" and xs:dateTime('" + end + "') > (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
+				" and $profile/activated = 'true'\n" +
+				" order by (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
+				" return $profile";
 		Logger.getInstance().logDebug(this, query);
 		return new XQuery(query);
 	}
@@ -73,7 +74,7 @@ public class QueryGetProfilesToEnqueue extends BaseXQueryBase
 			}
 			catch(IllegalArgumentException e)
 			{
-				Logger.getInstance().logError(this, "Database contains invalid profiles.");
+				m_logger.logError(this, "Database contains invalid profiles. " + e.toString());
 			}
 		}
 	}
