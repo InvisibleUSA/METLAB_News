@@ -12,7 +12,7 @@ import java.util.List;
 
 
 
-public class ObservationProfile
+public class ObservationProfile extends ObservationProfileTemplate
 {
 	public ObservationProfile(String name, String userMail, ArrayList<String> keywords,
 	                          ArrayList<String> sources, LocalDateTime lastGenerationTime, Duration period)
@@ -97,15 +97,29 @@ public class ObservationProfile
 	}
 
 
-	public boolean equals(Object o)
+	public boolean isActive()
 	{
-		if(o.getClass() != this.getClass())
+		return m_isActive;
+	}
+
+	public void setActive(boolean state)
+	{
+		m_isActive = state;
+	}
+
+
+	public boolean equals(Object otherObject)
+	{
+		if(otherObject.getClass() != this.getClass())
 		{
 			return false;
 		}
-		ObservationProfile p = (ObservationProfile)o;
-		// TODO: NO! This is not what equals(Object) is supposed to do! Having the same name DOES NOT MEAN EQUALITY!
-		return m_profileName.equals(p.m_profileName);
+		ObservationProfile otherProfile = (ObservationProfile)otherObject;
+		boolean result = m_profileName.equals(otherProfile.m_profileName)
+				&& m_userMail.equals(otherProfile.m_userMail)
+				&& m_keywords.equals(otherProfile.m_keywords)
+				&& m_sources.equals(otherProfile.m_sources);
+		return result;
 	}
 
 
@@ -158,11 +172,9 @@ public class ObservationProfile
 
 
 
-	private       String            m_profileName;
-	private       String            m_userMail;
-	private       List<String>      m_keywords        = new ArrayList<>();
-	private       List<String>      m_sources         = new ArrayList<>();
 	private       LocalDateTime     m_lastGeneration;
 	private       Duration          m_period          = Duration.ofDays(1);
+	private       boolean           m_isActive        = false;
+
 	private       DateTimeFormatter m_dateTimePattern = DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss");
 }
