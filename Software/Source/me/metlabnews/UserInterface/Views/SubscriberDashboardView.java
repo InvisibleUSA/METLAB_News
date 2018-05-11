@@ -4,6 +4,7 @@ import com.vaadin.server.Page;
 import com.vaadin.shared.ui.datefield.DateTimeResolution;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.ProfileDataRepresentation;
+import me.metlabnews.Presentation.SourceDataRepresentation;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.Helpers.Profile_GridHelper;
 import me.metlabnews.UserInterface.Helpers.Subscriber_GridHelper;
@@ -33,7 +34,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		setupGrids();
 		m_dateTime.setValue(LocalDateTime.now());
 		m_dateTime.setLocale(Locale.GERMANY);
-		m_dateTime.setResolution(DateTimeResolution.MINUTE);
+		m_dateTime.setResolution(DateTimeResolution.SECOND);
 
 		m_buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
 
@@ -69,9 +70,17 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_tabsSubscriber.addTab(m_displayProfiles, "Profile anzeigen");
 		m_displayProfiles.addComponents(m_gridProfiles, m_buttonShowProfiles);
 		m_tabsSubscriber.addTab(m_displayProfileCreation, "Profil erstellen");
-		m_displayProfileCreation.addComponents(m_layoutProfileCreation1, m_layoutProfileCreation2);
-		m_layoutProfileCreation1.addComponents(m_textProfileName, m_textSources, m_textKeywords, m_buttonProfileCreate);
-		m_layoutProfileCreation2.addComponents(m_dateTime, m_textTime);
+		m_displayProfileCreation.addComponents(m_panelProfileCreation1,
+		                                       m_panelProfileCreation2,
+		                                       m_panelProfileCreation3);
+		m_panelProfileCreation1.setContent(m_layoutProfileCreation1);
+		m_layoutProfileCreation1.addComponents(m_textProfileName, m_textKeywords, m_buttonProfileCreate);
+		m_panelProfileCreation2.setContent(m_layoutProfileCreation2);
+		m_layoutProfileCreation2.addComponents(m_selectSources);
+		m_panelProfileCreation3.setContent(m_layoutProfileCreation3);
+		m_layoutProfileCreation3.addComponents(m_dateTime, m_textTime);
+		m_selectSources.setLeftColumnCaption("Verfügbare Quellen");
+		m_selectSources.setRightColumnCaption("Ausgewählte Quellen");
 		m_tabsAdmin.addTab(m_displayVerifications, "Ausstehende Verifikationen");
 		m_displayVerifications.addComponents(m_gridSubscriberVerification, m_buttonShowPendingVerificationRequests);
 		m_tabsAdmin.addTab(m_displaySubscribers, "Abonnenten");
@@ -124,19 +133,22 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final Button                            m_buttonShowProfiles                    = new Button(
 			"Profile aktualisieren");
 	private final HorizontalLayout                  m_displayProfileCreation                = new HorizontalLayout();
+	private final Panel                             m_panelProfileCreation1                 = new Panel("Allgemeines");
 	private final VerticalLayout                    m_layoutProfileCreation1                = new VerticalLayout();
-	private final VerticalLayout                    m_layoutProfileCreation2                = new VerticalLayout();
 	private final TextField                         m_textProfileName                       = new TextField("Name:");
 	private final TextField                         m_textKeywords                          = new TextField(
 			"Suchbegriffe: (mit Komma getennt)");
-	private final TextField                         m_textSources                           = new TextField(
-			"Quellen: (mit Komma getennt)");
+	private final Button                            m_buttonProfileCreate                   = new Button(
+			"Profil erstellen");
+	private final Panel                             m_panelProfileCreation2                 = new Panel("Quellen");
+	private final VerticalLayout                    m_layoutProfileCreation2                = new VerticalLayout();
+	private final TwinColSelect<String>             m_selectSources                         = new TwinColSelect<>();
+	private final Panel                             m_panelProfileCreation3                 = new Panel("Zeiten");
+	private final VerticalLayout                    m_layoutProfileCreation3                = new VerticalLayout();
 	private final InlineDateTimeField               m_dateTime                              = new InlineDateTimeField(
 			"Zeitpunkt für erste Zustellung wählen");
 	private final TextField                         m_textTime                              = new TextField(
-			"Zustellungsntervall DD:HH:MM");
-	private final Button                            m_buttonProfileCreate                   = new Button(
-			"Profil erstellen");
+			"Zustellungsntervall DD:HH:MM:SS");
 	private final VerticalLayout                    m_displayVerifications                  = new VerticalLayout();
 	private final Grid<VerifySubscriber_GridHelper> m_gridSubscriberVerification            = new Grid<>(
 			"Ausstehende Verifikationen");
@@ -159,29 +171,30 @@ public class SubscriberDashboardView extends VerticalLayout
 		{
 			Notification.show("Bitte geben Sie Suchbegriffe ein!");
 		}
-		else if(m_textSources.isEmpty())
+		else if(m_selectSources.isEmpty())
 		{
 			Notification.show("Bitte geben Sie Quellen ein!");
 		}
-		else if(!m_textTime.getValue().matches("[0-9]+:[0-9]+:[0-9]+"))
+		else if(!m_textTime.getValue().matches("[0-9]+:[0-9]+:[0-9]:[0-9]+"))
 		{
-			Notification.show("Bitte geben Sie ein Intervall im Format DD:HH:MM ein!");
+			Notification.show("Bitte geben Sie ein Intervall im Format DD:HH:MM:SS ein!");
 		}
 		else
 		{
 			Duration days     = Duration.ofDays(Long.parseLong(intervalString[0]));
 			Duration hours    = Duration.ofHours(Long.parseLong(intervalString[1]));
 			Duration minutes  = Duration.ofMinutes(Long.parseLong(intervalString[2]));
-			Duration interval = days.plus(hours).plus(minutes);
+			Duration seconds  = Duration.ofSeconds(Long.parseLong(intervalString[3]));
+			Duration interval = days.plus(hours).plus(minutes).plus(seconds);
 			m_parent.addProfile(
 					() -> {
 						m_textProfileName.setValue("");
 						m_textKeywords.setValue("");
-						m_textSources.setValue("");
+						m_selectSources.deselectAll();
 					},
 					errorMessage -> Notification.show(errorMessage),
 					m_textProfileName.getValue(),
-					m_textSources.getValue().split(" "),
+					(String[])m_selectSources.getSelectedItems().toArray(),
 					m_textKeywords.getValue().split(" "),
 					m_dateTime.getValue(),
 					interval);
@@ -242,6 +255,12 @@ public class SubscriberDashboardView extends VerticalLayout
 					data -> showProfiles(data),
 					errorMessage -> Notification.show(errorMessage));
 		}
+		if(m_tabsSubscriber.getSelectedTab().equals(m_displayProfileCreation))
+		{
+			m_parent.fetchSources(
+					data -> showSources(data),
+					errorMessage -> Notification.show(errorMessage));
+		}
 	}
 
 	private void updateGridAdmin()
@@ -255,8 +274,8 @@ public class SubscriberDashboardView extends VerticalLayout
 		else if(m_tabsAdmin.getSelectedTab().equals(m_displaySubscribers))
 		{
 			m_parent.fetchSubscribers(
-				data -> showSubscribers(data),
-				errorMessage -> Notification.show(errorMessage));
+					data -> showSubscribers(data),
+					errorMessage -> Notification.show(errorMessage));
 		}
 	}
 
@@ -305,5 +324,15 @@ public class SubscriberDashboardView extends VerticalLayout
 		}
 		m_gridSubscribers.setItems(subs);
 		m_gridSubscribers.recalculateColumnWidths();
+	}
+
+	private void showSources(SourceDataRepresentation[] data)
+	{
+		List<String> sources = new ArrayList<>();
+		for(SourceDataRepresentation source : data)
+		{
+			sources.add(source.getName());
+		}
+		m_selectSources.setItems(sources);
 	}
 }
