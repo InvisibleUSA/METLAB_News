@@ -349,7 +349,7 @@ public class UserManager
 
 	public void denySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, Date date)
 	{
-		deactivateSubscriber(session, onSuccess, onFailure, email, date);
+		removeSubscriber(session, onSuccess, onFailure, email);
 	}
 
 	public void deactivateSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, Date date)
