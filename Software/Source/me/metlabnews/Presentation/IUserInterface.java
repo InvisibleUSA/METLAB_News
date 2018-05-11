@@ -109,7 +109,7 @@ public interface IUserInterface
 		             IGenericFailureEvent onFailure);
 	}
 
-	void registerCallbackFetchProfiles(IFetchProfilesCallback callback);
+	void registerCallbackFetchProfiles(IFetchProfilesCallback callback); //TODO implement in Presentation
 
 
 	interface IAddProfileCallback
@@ -178,7 +178,7 @@ public interface IUserInterface
 		             IGenericFailureEvent onFailure);
 	}
 
-	void registerCallbackFetchSubscribers(IFetchSubscribersCallback callback);
+	void registerCallbackFetchSubscribers(IFetchSubscribersCallback callback); //TODO implement in Presentation
 
 	// endregion Client Admin Interaction
 
@@ -232,7 +232,7 @@ public interface IUserInterface
 		             IGenericFailureEvent onFailure);
 	}
 
-	void registerCallbackFetchSources(IFetchSourcesCallback callback);
+	void registerCallbackFetchSources(IFetchSourcesCallback callback); //TODO implement in Presentation
 
 
 	interface IAddSourceCallback
@@ -242,7 +242,7 @@ public interface IUserInterface
 		             String name, String link, String rssLink);
 	}
 
-	void registerCallbackAddSource(IAddSourceCallback callback);
+	void registerCallbackAddSource(IAddSourceCallback callback); //TODO implement in Presentation
 
 
 	interface IRemoveSourceCallback
@@ -252,7 +252,7 @@ public interface IUserInterface
 		             String name);
 	}
 
-	void registerCallbackRemoveSource(IRemoveSourceCallback callback);
+	void registerCallbackRemoveSource(IRemoveSourceCallback callback); //TODO implement in Presentation
 	// endregion System Admin Interaction
 
 
