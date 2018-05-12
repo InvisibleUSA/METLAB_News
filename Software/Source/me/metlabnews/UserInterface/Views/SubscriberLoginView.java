@@ -25,8 +25,12 @@ public class SubscriberLoginView extends VerticalLayout
 				                                       -> m_parent.openSystemAdminLoginView());
 		buttonForgotPassword.addClickListener((Button.ClickEvent event) -> passwordForgotAction());
 
-		this.addComponents(title, textFieldEmail, textFieldPassword, buttonLogin,
-		                   buttonRegister, buttonToSysAdminLogin, buttonForgotPassword);
+		this.addComponents(title, layout);
+		layout.addComponents(panelLogin, panelOptions);
+		panelLogin.setContent(layoutLogin);
+		layoutLogin.addComponents(textFieldEmail, textFieldPassword, buttonLogin);
+		panelOptions.setContent(layoutOptions);
+		layoutOptions.addComponents(buttonRegister, buttonToSysAdminLogin, buttonForgotPassword);
 	}
 
 	private void passwordForgotAction()
@@ -65,13 +69,18 @@ public class SubscriberLoginView extends VerticalLayout
 
 	private MainUI m_parent;
 
-	private final Label         title                 = new Label("Willkommen bei METLAB-News - Anmeldung");
-	private final TextField     textFieldEmail        = new TextField("E-Mail:");
-	private final PasswordField textFieldPassword     = new PasswordField("Passwort:");
-	private final Button        buttonLogin           = new Button("Anmelden");
-	private final Button        buttonToSysAdminLogin = new Button("Zur Anmeldeseite für Systemadministratoren");
-	private final Button        buttonRegister        = new Button("Zur Registrierung");
-	private final Button        buttonForgotPassword  = new Button("Passwort vergessen");
+	private final Label            title                 = new Label("Willkommen bei METLAB-News");
+	private final HorizontalLayout layout                = new HorizontalLayout();
+	private final Panel            panelLogin            = new Panel("Anmeldung");
+	private final VerticalLayout   layoutLogin           = new VerticalLayout();
+	private final TextField        textFieldEmail        = new TextField("E-Mail:");
+	private final PasswordField    textFieldPassword     = new PasswordField("Passwort:");
+	private final Button           buttonLogin           = new Button("Anmelden");
+	private final Panel            panelOptions          = new Panel("Weitere Optionen");
+	private final VerticalLayout   layoutOptions         = new VerticalLayout();
+	private final Button           buttonToSysAdminLogin = new Button("Zur Anmeldeseite für Systemadministratoren");
+	private final Button           buttonRegister        = new Button("Zur Registrierung");
+	private final Button           buttonForgotPassword  = new Button("Passwort vergessen");
 
 	private void loginAction()
 	{

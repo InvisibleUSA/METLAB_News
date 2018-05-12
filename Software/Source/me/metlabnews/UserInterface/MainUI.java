@@ -259,9 +259,25 @@ public class MainUI extends UI implements IUserInterface
 	public void shareProfile(IGenericEvent onSuccess,
 	                         IGenericFailureEvent onFailure,
 	                         String profileName,
+	                         String[] keywords, String[] sources, Boolean isActive,
+	                         LocalDateTime lastGenerationTime, Duration interval,
 	                         String receiverEmail)
 	{
-		m_shareProfileCallback.execute(onSuccess, onFailure, whoAmI().getEmail(), profileName, receiverEmail);
+		m_shareProfileCallback.execute(onSuccess, onFailure, whoAmI().getEmail(), profileName,
+		                               keywords, sources, isActive,
+		                               lastGenerationTime, interval, receiverEmail);
+	}
+
+	public void updateProfileAction(IGenericEvent onSuccess,
+	                                IGenericFailureEvent onFailure,
+	                                String email, String profileName,
+	                                String[] keywords, String[] sources, Boolean isActive,
+	                                LocalDateTime lastGenerationTime, Duration interval)
+	{
+		m_updateProfileCallback.execute(onSuccess, onFailure,
+		                                email, profileName,
+		                                keywords, sources, isActive,
+		                                lastGenerationTime, interval);
 	}
 
 	public void fetchSources(IFetchSourcesEvent onSuccess,
@@ -414,6 +430,12 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
+	public void registerCallbackUpdateProfile(IUpdateProfileCallback callback)
+	{
+		m_updateProfileCallback = callback;
+	}
+
+	@Override
 	public void registerCallbackFetchSources(IFetchSourcesCallback callback)
 	{
 		m_fetchSourcesCallback = callback;
@@ -451,6 +473,7 @@ public class MainUI extends UI implements IUserInterface
 	private IAddProfileCallback                       m_addProfileCallback;
 	private IDeleteProfileCallback                    m_deleteProfileCallback;
 	private IShareProfileCallback                     m_shareProfileCallback;
+	private IUpdateProfileCallback                    m_updateProfileCallback;
 	private IFetchSourcesCallback                     m_fetchSourcesCallback;
 	private IAddSourceCallback                        m_addSourceCallback;
 	private IRemoveSourceCallback                     m_removeSourceCallback;

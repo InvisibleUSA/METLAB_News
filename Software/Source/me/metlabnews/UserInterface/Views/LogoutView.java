@@ -27,6 +27,7 @@ public class LogoutView extends VerticalLayout implements IView
 	public LogoutView(MainUI parent)
 	{
 		m_parent = parent;
+		Page.getCurrent().setTitle("abgemeldet");
 
 		buttonLogin.addClickListener((Button.ClickEvent event)
 				                             -> m_parent.openSubscriberLoginView());

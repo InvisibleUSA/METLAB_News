@@ -172,12 +172,25 @@ public interface IUserInterface
 	{
 		void execute(IGenericEvent onSuccess,
 		             IGenericFailureEvent onFailure,
-		             String senderEmail,
-		             String profileName, // transmitting a complete profile here is no big effort. What is better?
+		             String senderEmail, String profileName,
+		             String[] keywords, String[] sources, Boolean isActive,
+		             LocalDateTime lastGenerationTime, Duration interval,
 		             String receiverEmail);
 	}
 
 	void registerCallbackShareProfile(IShareProfileCallback callback); //TODO: implement in Presentation
+
+
+	interface IUpdateProfileCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String email, String profileName,
+		             String[] keywords, String[] sources, Boolean isActive,
+		             LocalDateTime lastGenerationTime, Duration interval);
+	}
+
+	void registerCallbackUpdateProfile(IUpdateProfileCallback callback); //TODO: implement in Presentation
 
 	// endregion Subscriber Interaction
 

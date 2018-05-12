@@ -66,8 +66,8 @@ public class SystemAdminDashboardView extends VerticalLayout
 				m_textSourceRssLink.getValue()));
 
 
-		this.addComponents(m_layoutHeaderBar, m_tabLayout);
-		m_layoutHeaderBar.addComponents(m_title, m_buttonLogout);
+		this.addComponents(m_title, m_layoutHeaderBar, m_tabLayout);
+		m_layoutHeaderBar.addComponents(m_buttonLogout);
 		m_tabLayout.addTab(m_displayOrganizations, "Organisationen");
 		m_displayOrganizations.addComponents(m_gridOrganizations, m_buttonShowOrganizations);
 		m_tabLayout.addTab(m_layoutAddOrganization, "Organisation hinzufügen");
@@ -89,7 +89,7 @@ public class SystemAdminDashboardView extends VerticalLayout
 
 	private MainUI m_parent;
 
-	private final Label            m_title           = new Label("Willkommen bei METLAB-News - Dashboard");
+	private final Label            m_title           = new Label("Willkommen bei METLAB-News");
 	private final Button           m_buttonLogout    = new Button("Abmelden");
 	private final HorizontalLayout m_layoutHeaderBar = new HorizontalLayout();
 

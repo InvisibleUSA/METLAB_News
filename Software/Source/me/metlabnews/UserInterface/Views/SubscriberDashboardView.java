@@ -104,8 +104,8 @@ public class SubscriberDashboardView extends VerticalLayout
 
 		m_buttonShare.addClickListener((Button.ClickEvent event) -> shareAction());
 
-		this.addComponent(m_layoutHeaderBar);
-		m_layoutHeaderBar.addComponents(m_title, m_buttonQuitAccount, m_buttonLogout);
+		this.addComponents(m_title, m_layoutHeaderBar);
+		m_layoutHeaderBar.addComponents(m_buttonQuitAccount, m_buttonLogout);
 
 		m_tabsSubscriber.addTab(m_displayProfiles, "Profile anzeigen");
 		m_displayProfiles.addComponents(m_gridProfiles, m_buttonShowProfiles,
@@ -189,7 +189,7 @@ public class SubscriberDashboardView extends VerticalLayout
 
 	private MainUI m_parent;
 
-	private final Label            m_title             = new Label("Willkommen bei METLAB-News - Dashboard");
+	private final Label            m_title             = new Label("Willkommen bei METLAB-News");
 	private final Button           m_buttonQuitAccount = new Button("Konto löschen");
 	private final Button           m_buttonLogout      = new Button("Abmelden");
 	private final HorizontalLayout m_layoutHeaderBar   = new HorizontalLayout();
@@ -364,6 +364,11 @@ public class SubscriberDashboardView extends VerticalLayout
 				() -> Notification.show(note),
 				errorMessage -> Notification.show(errorMessage),
 				profile.getName(),
+				(String[])profile.getKeywords().toArray(),
+				(String[])profile.getSources().toArray(),
+				profile.getIsActive(),
+				profile.getLastTime(),
+				profile.getInterval(),
 				subscriber.getEmail());
 
 		m_gridProfiles.deselectAll();
@@ -378,9 +383,11 @@ public class SubscriberDashboardView extends VerticalLayout
 				.setCaption("Suchbegriffe");
 		m_gridProfiles.addComponentColumn(Profile_GridHelper::getSourcesSelect)
 				.setCaption("Quellen");
+		m_gridProfiles.addComponentColumn(Profile_GridHelper::getIsActiveCheckBox)
+				.setCaption("Aktiv");
 		m_gridProfiles.addColumn(Profile_GridHelper::getNextTime)
 				.setCaption("Nächste Zustellung");
-		m_gridProfiles.addColumn(Profile_GridHelper::getInterval)
+		m_gridProfiles.addColumn(Profile_GridHelper::getIntervalString)
 				.setCaption("Zustellungsintervall");
 		m_gridProfiles.addComponentColumn(Profile_GridHelper::getDeleteButton)
 				.setCaption("Löschen");
@@ -496,6 +503,7 @@ public class SubscriberDashboardView extends VerticalLayout
 			                                    profile.getName(),
 			                                    profile.getKeywords(),
 			                                    profile.getSources(),
+			                                    profile.getIsActive(),
 			                                    profile.getLastGenerationTime(),
 			                                    profile.getInterval()));
 		}
@@ -515,6 +523,7 @@ public class SubscriberDashboardView extends VerticalLayout
 				                                     template.getName(),
 				                                     template.getKeywords(),
 				                                     template.getSources(),
+				                                     template.getIsActive(),
 				                                     template.getLastGenerationTime(),
 				                                     template.getInterval()));
 			}
@@ -526,6 +535,7 @@ public class SubscriberDashboardView extends VerticalLayout
 			                                     "keine Vorlage vorhanden",
 			                                     new ArrayList<>(),
 			                                     new ArrayList<>(),
+			                                     Boolean.FALSE,
 			                                     LocalDateTime.now(),
 			                                     Duration.ofDays(1)));
 		}
