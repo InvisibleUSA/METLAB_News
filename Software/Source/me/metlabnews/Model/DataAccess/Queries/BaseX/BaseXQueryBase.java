@@ -8,6 +8,12 @@ import java.io.IOException;
 
 
 
+/**
+ * parent class for all basex queries.
+ * implements execute method for basex
+ *
+ * @author Erik Hennig
+ */
 abstract class BaseXQueryBase extends QueryBase
 {
 	static

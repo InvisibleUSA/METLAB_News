@@ -88,7 +88,7 @@ public class Clipping
 		for(Article a : m_articles)
 		{
 			s.append("\t\t<articleID>\n");
-			s.append(a); //FIXME only add article ID
+			s.append(a.getguid());
 			s.append("</articleID>\n");
 		}
 		s.append("\t</articles>\n").append("</clipping>\n");

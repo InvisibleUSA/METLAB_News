@@ -12,6 +12,13 @@ import java.util.List;
 
 
 
+/**
+ * This query loads all clippings made for the selected profileID.
+ * Executing this query results in a number of queries being executed in the background,
+ * because profiles only contain articleIDs from which the actual article needs to be queried.
+ *
+ * @author Erik Hennig
+ */
 public class QueryGetClippings extends BaseXQueryBase
 {
 	static
@@ -19,7 +26,7 @@ public class QueryGetClippings extends BaseXQueryBase
 		m_logger.register(QueryGetClippings.class, Logger.Channel.DocDBMS);
 	}
 
-	public String               profileID = "";
+	public String profileID = "";
 
 	private ArrayList<Clipping> m_results = new ArrayList<>();
 
@@ -27,6 +34,7 @@ public class QueryGetClippings extends BaseXQueryBase
 	{
 		return Collections.unmodifiableList(m_results);
 	}
+
 	@Override
 	protected Command createBaseXQuery()
 	{

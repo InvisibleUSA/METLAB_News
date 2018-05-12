@@ -36,7 +36,7 @@ public class ConfigurationManager implements IResource
 	 *
 	 * @return true if it has been initialized
 	 */
-	public boolean isM_hasBeenInitialized()
+	public boolean hasBeenInitialized()
 	{
 		return m_hasBeenInitialized;
 	}

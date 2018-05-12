@@ -9,6 +9,11 @@ import java.sql.SQLException;
 
 
 
+/**
+ *  simple wrapper class to store the connector classes in
+ *
+ * @author Lukas Niedergriese
+ */
 public class DatabaseConnector
 {
 

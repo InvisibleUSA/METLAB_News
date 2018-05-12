@@ -9,6 +9,10 @@ import java.time.format.DateTimeFormatter;
 
 
 
+/**
+ * writes the given clipping in instance.clipping to BaseX when the query is executed
+ * @author Erik Hennig
+ */
 public class QueryAddClipping extends BaseXQueryBase
 {
 	static
@@ -22,7 +26,6 @@ public class QueryAddClipping extends BaseXQueryBase
 	@Override
 	protected Command createBaseXQuery()
 	{
-		//TODO implement clipping
 		String filename = "/Clippings/" + clipping.getProfile().getName() + "/" + clipping.getGenerationTime().format( //FIXME use ID instead of profilename
 				DateTimeFormatter.ofPattern("YYYY-MM-DD"));
 		return new Add(filename, clipping.toString());

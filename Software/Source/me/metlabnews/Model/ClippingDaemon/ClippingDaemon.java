@@ -15,6 +15,14 @@ import me.metlabnews.Model.ResourceManagement.IResource;
 
 
 
+/**
+ * This class is a task run in the background.
+ * It queries basex every x seconds (as set in Settings.xml/ClippingDaemon.EnqueuingTimeOut)
+ * for new profiles that are due to be generated. For each profile found, it delegates a clipping generation to
+ * ClippingGenerator
+ * @author Erik Hennig
+ * @see ClippingGenerator
+ */
 public class ClippingDaemon implements IResource
 {
 	static
@@ -71,7 +79,7 @@ public class ClippingDaemon implements IResource
 		public void run()
 		{
 			//Run due clipping
-			if(!m_pendingProfiles.isEmpty())
+			while(!m_pendingProfiles.isEmpty())
 			{
 				ObservationProfile p = m_pendingProfiles.removeFirst();
 				m_threadPool.submit(new ClippingGenerator(p));
@@ -94,7 +102,7 @@ public class ClippingDaemon implements IResource
 					m_pendingProfiles.add(op);
 				}
 			});
-			Logger.getInstance().logDebug(this, m_pendingProfiles.size() + " profiles in queue.");
+			Logger.getInstance().logInfo(this, m_pendingProfiles.size() + " profiles in queue.");
 		}
 	}
 }

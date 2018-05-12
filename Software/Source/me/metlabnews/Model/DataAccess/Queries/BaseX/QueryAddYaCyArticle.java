@@ -10,12 +10,7 @@ import java.util.Calendar;
 
 
 
-/**
- * Query to add an article to basex
- * returns: nothing
- * @author Erik Hennig
- */
-public class QueryAddArticle extends BaseXQueryBase
+public class QueryAddYaCyArticle extends BaseXQueryBase
 {
 	static
 	{
@@ -25,22 +20,23 @@ public class QueryAddArticle extends BaseXQueryBase
 	private Article m_article;
 	private String  m_result;
 
-	public QueryAddArticle(Article article)
+	public QueryAddYaCyArticle(Article article)
 	{
-		if (!article.isRSS())
-			m_logger.logWarning(this, "Article " + article.getguid() + " is YaCy article.");
+		if (article.isRSS())
+			m_logger.logWarning(this, "Article " + article.getguid() + " is no YaCy article.");
 		m_article = article;
 	}
 
 	@Override
 	protected Command createBaseXQuery()
 	{
-		return new Add("sources/" + m_article.getSource().getName()
+		String art = m_article.toString();
+		return new Add("sources/" + "YaCy"
 				               + "/" + m_article.getPubDate().get(Calendar.YEAR) + "-"
 				               + m_article.getPubDate().get(Calendar.MONTH) + "-"
 				               + m_article.getPubDate().get(Calendar.DAY_OF_MONTH)
 				               + "/" + Helper.formatForFileName(m_article.getTitle())
-				, m_article.toString());
+				, art);
 	}
 
 	@Override

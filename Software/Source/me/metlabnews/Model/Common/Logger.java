@@ -67,7 +67,7 @@ public class Logger implements IResource
 	@Override
 	public void initialize()
 	{
-		if(ConfigurationManager.getInstance().isM_hasBeenInitialized())
+		if(ConfigurationManager.getInstance().hasBeenInitialized())
 		{
 			LogDestination = ConfigurationManager.getInstance().getLogDestination();
 
@@ -85,7 +85,7 @@ public class Logger implements IResource
 
 		{
 			logError(this, "ConfigurationManager is NOT initialized. Logger will NOT bei initialized!");
-			m_hasBeenInitialized = ConfigurationManager.getInstance().isM_hasBeenInitialized();
+			m_hasBeenInitialized = ConfigurationManager.getInstance().hasBeenInitialized();
 		}
 	}
 

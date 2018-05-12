@@ -86,10 +86,11 @@ public class QuerySearchArticle extends YaCyQueryBase
 	{
 		m_logger.logDebug(this, result);
 		RSSFeed search_res = RSSFeed.parseFeed(result,
-		                                       new NewsSource("YaCy Search", "localhost:8090", "localhost:8090"));
+		                                       new NewsSource("YaCy", "localhost:8090", "localhost:8090"));
 		if(search_res != null)
 		{
 			m_articles = search_res.getArticles();
+			m_articles.forEach((a) -> a.setisRSS(false));
 		}
 	}
 }

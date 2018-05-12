@@ -19,6 +19,7 @@ public class Article
 	private NewsSource m_source;
 	private String     m_guid;
 	private Calendar   m_pubDate;
+	private boolean    m_isRSS = true;
 
 	public Article(String title, NewsSource source, String link, String description, String guid, Calendar pubDate)
 	{
@@ -79,6 +80,7 @@ public class Article
 						+ "\t<link><![CDATA[" + m_link + "]]></link>\n"
 						+ "\t<description><![CDATA[" + m_description + "]]></description>\n"
 						+ "\t<guid><![CDATA[" + m_guid + "]]></guid>\n"
+						+ "\t<isRSS>" + m_isRSS + "</isRSS>\n"
 						+ "\t<pubDate>" + sdf.format(m_pubDate.getTime()) + "</pubDate>\n"
 						+ "</article>";
 		return erg;
@@ -106,5 +108,23 @@ public class Article
 
 	public void setGuid(String guid) {
 		this.m_guid = guid;
+	}
+
+	/**
+	 * check if article is from RSS feed (true)
+	 * or from YaCy search result (false)
+	 */
+	public boolean isRSS()
+	{
+		return m_isRSS;
+	}
+
+	/**
+	 * set whether article is from RSS feed (true)
+	 * or from YaCy search result (false)
+	 */
+	public void setisRSS(boolean m_isRSS)
+	{
+		this.m_isRSS = m_isRSS;
 	}
 }

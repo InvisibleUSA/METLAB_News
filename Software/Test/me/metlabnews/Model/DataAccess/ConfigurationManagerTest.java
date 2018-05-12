@@ -12,7 +12,7 @@ public class ConfigurationManagerTest
 	public void initialize()
 	{
 		ConfigurationManager.getInstance().initialize();
-		Assert.assertTrue(ConfigurationManager.getInstance().isM_hasBeenInitialized());
+		Assert.assertTrue(ConfigurationManager.getInstance().hasBeenInitialized());
 	}
 
 	@Test

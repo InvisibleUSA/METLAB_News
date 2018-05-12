@@ -57,6 +57,7 @@ public class QuerySearchArticleRSS extends BaseXQueryBase
 				" for $article in /article\n" +
 				" where ((title|description) contains text {" + keywords + "} all) and (source=(" + src + "))\n" +
 				" and ($newest < xs:dateTime($article/pubDate) or fn:empty($newest))\n" +
+				" and ($article/isRSS = 'true')\n" +
 				" return $article";
 		return new XQuery(query);
 	}
