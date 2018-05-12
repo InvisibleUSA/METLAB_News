@@ -40,7 +40,6 @@ public class Article
 			m_description = tag.child("description").value();
 			m_guid = tag.child("guid").value();
 			m_source = new NewsSource(tag.child("source").value(), "", "");
-			//FIXME read ID for article
 			m_pubDate = Calendar.getInstance();
 			m_pubDate.setTime(sdf.parse(tag.child("pubDate").value()));
 		}
@@ -103,5 +102,9 @@ public class Article
 	public String getTitle()
 	{
 		return m_title;
+	}
+
+	public void setGuid(String guid) {
+		this.m_guid = guid;
 	}
 }

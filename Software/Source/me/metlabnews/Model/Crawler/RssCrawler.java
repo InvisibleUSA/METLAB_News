@@ -4,6 +4,8 @@ import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddArticle;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryTitleExists;
+import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryGetSourceArticleCounter;
+import me.metlabnews.Model.DataAccess.Queries.MariaDB.QuerySetSourceArticleCounter;
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.RSSFeed;
 import me.metlabnews.Model.Entities.NewsSource;
@@ -49,10 +51,16 @@ public class RssCrawler implements Runnable
 				ArrayList<Article> articles = RSSFeed.parseFeed(doc, this.m_source).getArticles();
 				for(Article a : articles)
 				{
+					QueryGetSourceArticleCounter count = new QueryGetSourceArticleCounter(m_source);
+					count.execute();
+					String guid = m_source.getName() + count.getNumArticles();
+					System.out.println(guid);
+					a.setGuid(guid);
 					boolean exists = articleExists(a);
 					if(!exists)
 					{
 						writeToBaseX(a);
+						new QuerySetSourceArticleCounter(count.getNumArticles() + 1, m_source).execute();
 					}
 				}
 				try
