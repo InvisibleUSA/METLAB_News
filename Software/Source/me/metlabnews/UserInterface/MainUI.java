@@ -221,6 +221,22 @@ public class MainUI extends UI implements IUserInterface
 		m_fetchTemplatesCallback.execute(onSuccess, onFailure);
 	}
 
+	public void addTemplate(IGenericEvent onSuccess,
+	                        IGenericFailureEvent onFailure,
+	                        String templateName,
+	                        String[] keywords,
+	                        String[] sources)
+	{
+		m_addTemplateCallback.execute(onSuccess, onFailure, templateName, keywords, sources);
+	}
+
+	public void removeTemplate(IGenericEvent onSuccess,
+	                           IGenericFailureEvent onFailure,
+	                           String templateName)
+	{
+		m_removeTemplateCallback.execute(onSuccess, onFailure, templateName);
+	}
+
 	public void addProfile(IGenericEvent onSuccess,
 	                       IGenericFailureEvent onFailure,
 	                       String profileName,
@@ -360,6 +376,18 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
+	public void registerCallbackAddTemplate(IAddTemplateCallback callback)
+	{
+		m_addTemplateCallback = callback;
+	}
+
+	@Override
+	public void registerCallbackRemoveTemplate(IRemoveTemplateCallback callback)
+	{
+		m_removeTemplateCallback = callback;
+	}
+
+	@Override
 	public void registerCallbackAddProfile(IAddProfileCallback callback)
 	{
 		m_addProfileCallback = callback;
@@ -401,15 +429,17 @@ public class MainUI extends UI implements IUserInterface
 	private IFetchSubscribersCallback                 m_fetchSubscribers;
 	private IFetchOrganisationsCallback               m_fetchOrganisationsCallback;
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
-	private IRemoveOrganisationCallback m_removeOrganisationCallback;
-	private IFetchProfilesCallback      m_fetchProfilesCallback;
+	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
+	private IFetchProfilesCallback                    m_fetchProfilesCallback;
 	private IFetchTemplatesCallback                   m_fetchTemplatesCallback;
-	private IAddProfileCallback         m_addProfileCallback;
-	private IDeleteProfileCallback      m_deleteProfileCallback;
-	private IFetchSourcesCallback       m_fetchSourcesCallback;
-	private IAddSourceCallback          m_addSourceCallback;
-	private IRemoveSourceCallback       m_removeSourceCallback;
-	private IChangePasswordCallback     m_changePasswordCallback;
+	private IAddTemplateCallback                      m_addTemplateCallback;
+	private IRemoveTemplateCallback                   m_removeTemplateCallback;
+	private IAddProfileCallback                       m_addProfileCallback;
+	private IDeleteProfileCallback                    m_deleteProfileCallback;
+	private IFetchSourcesCallback                     m_fetchSourcesCallback;
+	private IAddSourceCallback                        m_addSourceCallback;
+	private IRemoveSourceCallback                     m_removeSourceCallback;
+	private IChangePasswordCallback                   m_changePasswordCallback;
 	// endregion Callbacks
 
 

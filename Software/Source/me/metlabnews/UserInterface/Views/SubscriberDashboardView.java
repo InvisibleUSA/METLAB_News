@@ -8,6 +8,7 @@ import me.metlabnews.Presentation.SourceDataRepresentation;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import me.metlabnews.UserInterface.Helpers.Profile_GridHelper;
 import me.metlabnews.UserInterface.Helpers.Subscriber_GridHelper;
+import me.metlabnews.UserInterface.Helpers.Template_GridHelper;
 import me.metlabnews.UserInterface.Helpers.VerifySubscriber_GridHelper;
 import me.metlabnews.UserInterface.MainUI;
 
@@ -36,7 +37,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_dateTime.setLocale(Locale.GERMANY);
 		m_dateTime.setResolution(DateTimeResolution.SECOND);
 		m_textProfileName.setWidth("350");
-		m_textKeywords.setWidth("350");
+		m_textProfileKeywords.setWidth("350");
 
 
 		m_buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
@@ -66,41 +67,73 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_buttonProfileCreate.addClickListener(
 				(Button.ClickEvent event) -> createProfileAction());
 
-		m_buttonShowTemplates.addClickListener(
+		m_buttonShowProfileSources.addClickListener(
+				(Button.ClickEvent event) ->
+						m_parent.fetchSources(
+								data -> showSources(data),
+								errorMessage -> Notification.show(errorMessage)));
+
+		m_buttonShowTemplatesForSubscribers.addClickListener(
 				(Button.ClickEvent event) ->
 						m_parent.fetchTemplates(
-						data -> showTemplates(data),
-						errorMessage -> {
-							Notification.show(errorMessage);
-							showTemplates(null);
-						}));
+								data -> showTemplatesForSubscribers(data),
+								errorMessage -> {
+									Notification.show(errorMessage);
+									showTemplatesForSubscribers(null);
+								}));
+
+		m_buttonShowTemplatesForAdmins.addClickListener(
+				(Button.ClickEvent event) ->
+						m_parent.fetchTemplates(
+								data -> showTemplatesForAdmins(data),
+								errorMessage -> Notification.show(errorMessage)));
+
+		m_buttonTemplateCreate.addClickListener(
+				(Button.ClickEvent event) -> createTemplateAction());
+
+		m_buttonShowTemplateSources.addClickListener(
+				(Button.ClickEvent event) ->
+						m_parent.fetchSources(
+								data -> showSources(data),
+								errorMessage -> Notification.show(errorMessage)));
 
 		this.addComponent(m_layoutHeaderBar);
 		m_layoutHeaderBar.addComponents(m_title, m_buttonQuitAccount, m_buttonLogout);
 
 		m_tabsSubscriber.addTab(m_displayProfiles, "Profile anzeigen");
 		m_displayProfiles.addComponents(m_gridProfiles, m_buttonShowProfiles);
+
 		m_tabsSubscriber.addTab(m_displayProfileCreation, "Profil erstellen");
 		m_displayProfileCreation.addComponents(m_panelProfileCreation1,
 		                                       m_panelProfileCreation2,
 		                                       m_panelProfileCreation3,
 		                                       m_panelProfileCreation4);
 		m_panelProfileCreation1.setContent(m_layoutProfileCreation1);
-		m_layoutProfileCreation1.addComponents(m_textProfileName, m_textKeywords, m_buttonProfileCreate);
+		m_layoutProfileCreation1.addComponents(m_textProfileName, m_textProfileKeywords, m_buttonProfileCreate);
 		m_panelProfileCreation2.setContent(m_layoutProfileCreation2);
-		m_layoutProfileCreation2.addComponents(m_selectSources);
+		m_layoutProfileCreation2.addComponents(m_selectProfileSources, m_buttonShowProfileSources);
 		m_panelProfileCreation3.setContent(m_layoutProfileCreation3);
 		m_layoutProfileCreation3.addComponents(m_dateTime, m_textTime);
 		m_panelProfileCreation4.setContent(m_layoutProfileCreation4);
-		m_layoutProfileCreation4.addComponents(m_listTemplates, m_buttonShowTemplates);
-		m_selectSources.setLeftColumnCaption("Verfügbare Quellen");
-		m_selectSources.setRightColumnCaption("Ausgewählte Quellen");
+		m_layoutProfileCreation4.addComponents(m_listTemplates, m_buttonShowTemplatesForSubscribers);
+		m_selectProfileSources.setLeftColumnCaption("Verfügbare Quellen");
+		m_selectProfileSources.setRightColumnCaption("Ausgewählte Quellen");
 
 		m_tabsAdmin.addTab(m_displayVerifications, "Ausstehende Verifikationen");
 		m_displayVerifications.addComponents(m_gridSubscriberVerification, m_buttonShowPendingVerificationRequests);
 
 		m_tabsAdmin.addTab(m_displaySubscribers, "Abonnenten");
 		m_displaySubscribers.addComponents(m_gridSubscribers, m_buttonShowSubscribers);
+
+		m_tabsAdmin.addTab(m_displayTemplates, "Vorlagen");
+		m_displayTemplates.addComponents(m_gridTemplates, m_buttonShowTemplatesForAdmins);
+
+		m_tabsAdmin.addTab(m_displayTemplateCreation, "Vorlage erstellen");
+		m_displayTemplateCreation.addComponents(m_panelTemplateCreation1, m_panelTemplateCreation2);
+		m_panelTemplateCreation1.setContent(m_layoutTemplateCreation1);
+		m_layoutTemplateCreation1.addComponents(m_textTemplateName, m_textTemplateKeywords, m_buttonTemplateCreate);
+		m_panelTemplateCreation2.setContent(m_layoutTemplateCreation2);
+		m_layoutTemplateCreation2.addComponents(m_selectTemplateSources, m_buttonShowTemplateSources);
 
 		m_tabsSettings.addTab(m_displayPWReset, "Passwort zurücksetzen");
 		m_displayPWReset.addComponents(m_textCurrentPW, m_textNewPW1, m_textNewPW2, m_buttonPWReset);
@@ -166,13 +199,15 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final Panel                             m_panelProfileCreation1                 = new Panel("Allgemeines");
 	private final VerticalLayout                    m_layoutProfileCreation1                = new VerticalLayout();
 	private final TextField                         m_textProfileName                       = new TextField("Name:");
-	private final TextField                         m_textKeywords                          = new TextField(
+	private final TextField                         m_textProfileKeywords                   = new TextField(
 			"Suchbegriffe: (mit Komma getennt)");
 	private final Button                            m_buttonProfileCreate                   = new Button(
 			"Profil erstellen");
 	private final Panel                             m_panelProfileCreation2                 = new Panel("Quellen");
 	private final VerticalLayout                    m_layoutProfileCreation2                = new VerticalLayout();
-	private final TwinColSelect<String>             m_selectSources                         = new TwinColSelect<>();
+	private final TwinColSelect<String>             m_selectProfileSources                  = new TwinColSelect<>();
+	private final Button                            m_buttonShowProfileSources              = new Button(
+			"Quellen aktualisieren");
 	private final Panel                             m_panelProfileCreation3                 = new Panel("Zeiten");
 	private final VerticalLayout                    m_layoutProfileCreation3                = new VerticalLayout();
 	private final InlineDateTimeField               m_dateTime                              = new InlineDateTimeField(
@@ -183,17 +218,34 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final VerticalLayout                    m_layoutProfileCreation4                = new VerticalLayout();
 	private final ListSelect<Profile_GridHelper>    m_listTemplates                         = new ListSelect<>(
 			"Vorlage aus Liste wählen:");
-	private final Button                            m_buttonShowTemplates                   = new Button(
+	private final Button                            m_buttonShowTemplatesForSubscribers     = new Button(
 			"Vorlagen aktualisieren");
 	private final VerticalLayout                    m_displayVerifications                  = new VerticalLayout();
 	private final Grid<VerifySubscriber_GridHelper> m_gridSubscriberVerification            = new Grid<>(
 			"Ausstehende Verifikationen");
-	private final Button                            m_buttonShowPendingVerificationRequests = new Button(
+	private final Button                      m_buttonShowPendingVerificationRequests = new Button(
 			"Ausstehende Verifikationen aktualisieren");
-	private final VerticalLayout                    m_displaySubscribers                    = new VerticalLayout();
-	private final Grid<Subscriber_GridHelper>       m_gridSubscribers                       = new Grid<>();
-	private final Button                            m_buttonShowSubscribers                 = new Button(
+	private final VerticalLayout              m_displaySubscribers                    = new VerticalLayout();
+	private final Grid<Subscriber_GridHelper> m_gridSubscribers                       = new Grid<>();
+	private final Button                      m_buttonShowSubscribers                 = new Button(
 			"Abonnenten aktualisieren");
+	private final VerticalLayout              m_displayTemplates                      = new VerticalLayout();
+	private final Grid<Template_GridHelper>   m_gridTemplates                         = new Grid<>("Vorlagen");
+	private final Button                      m_buttonShowTemplatesForAdmins          = new Button(
+			"Vorlagen aktualisieren");
+	private final HorizontalLayout            m_displayTemplateCreation               = new HorizontalLayout();
+	private final Panel                       m_panelTemplateCreation1                = new Panel("Allgemeins");
+	private final VerticalLayout                    m_layoutTemplateCreation1               = new VerticalLayout();
+	private final TextField                         m_textTemplateName                      = new TextField("Name:");
+	private final TextField                         m_textTemplateKeywords                  = new TextField(
+			"Suchbegriffe: (mit Komma getennt)");
+	private final Button                            m_buttonTemplateCreate                  = new Button(
+			"Template erstellen");
+	private final Panel                             m_panelTemplateCreation2                = new Panel("Quellen");
+	private final VerticalLayout                    m_layoutTemplateCreation2               = new VerticalLayout();
+	private final TwinColSelect<String>             m_selectTemplateSources                 = new TwinColSelect<>();
+	private final Button                            m_buttonShowTemplateSources             = new Button(
+			"Quellen aktualisieren");
 	private final VerticalLayout                    m_displayPWReset                        = new VerticalLayout();
 	private final TextField                         m_textCurrentPW                         = new TextField(
 			"Aktuelles Passwort:");
@@ -212,11 +264,11 @@ public class SubscriberDashboardView extends VerticalLayout
 		{
 			Notification.show("Bitte geben Sie einen Profilnamen ein!");
 		}
-		else if(m_textKeywords.isEmpty())
+		else if(m_textProfileKeywords.isEmpty())
 		{
 			Notification.show("Bitte geben Sie Suchbegriffe ein!");
 		}
-		else if(m_selectSources.isEmpty())
+		else if(m_selectProfileSources.isEmpty())
 		{
 			Notification.show("Bitte geben Sie Quellen ein!");
 		}
@@ -234,15 +286,44 @@ public class SubscriberDashboardView extends VerticalLayout
 			m_parent.addProfile(
 					() -> {
 						m_textProfileName.setValue("");
-						m_textKeywords.setValue("");
-						m_selectSources.deselectAll();
+						m_textProfileKeywords.setValue("");
+						m_selectProfileSources.deselectAll();
 					},
 					errorMessage -> Notification.show(errorMessage),
 					m_textProfileName.getValue(),
-					(String[])m_selectSources.getSelectedItems().toArray(),
-					m_textKeywords.getValue().split(" "),
+					(String[])m_selectProfileSources.getSelectedItems().toArray(),
+					m_textProfileKeywords.getValue().split(" "),
 					m_dateTime.getValue(),
 					interval);
+		}
+	}
+
+	private void createTemplateAction()
+	{
+		if(m_textTemplateName.isEmpty())
+		{
+			Notification.show("Bitte geben Sie einen Vorlagenamen ein!");
+		}
+		else if(m_textTemplateKeywords.isEmpty())
+		{
+			Notification.show("Bitte geben Sie Suchbegriffe ein!");
+		}
+		else if(m_selectTemplateSources.isEmpty())
+		{
+			Notification.show("Bitte geben Sie Quellen ein!");
+		}
+		else
+		{
+			m_parent.addTemplate(
+					() -> {
+						m_textTemplateName.setValue("");
+						m_textTemplateKeywords.setValue("");
+						m_selectTemplateSources.deselectAll();
+					},
+					errorMessage -> Notification.show(errorMessage),
+					m_textTemplateName.getValue(),
+					m_textTemplateKeywords.getValue().split(" "),
+					(String[])m_selectTemplateSources.getSelectedItems().toArray());
 		}
 	}
 
@@ -262,6 +343,17 @@ public class SubscriberDashboardView extends VerticalLayout
 				.setCaption("Löschen");
 		m_gridProfiles.setBodyRowHeight(42.0);
 		m_gridProfiles.setSizeFull();
+
+		m_gridTemplates.addColumn(Template_GridHelper::getName)
+				.setCaption("Vorlagenname");
+		m_gridTemplates.addComponentColumn(Template_GridHelper::getKeywordsSelect)
+				.setCaption("Suchbegriffe");
+		m_gridTemplates.addComponentColumn(Template_GridHelper::getSourcesSelect)
+				.setCaption("Quellen");
+		m_gridTemplates.addComponentColumn(Template_GridHelper::getDeleteButton)
+				.setCaption("Löschen");
+		m_gridTemplates.setBodyRowHeight(42.0);
+		m_gridTemplates.setSizeFull();
 
 		m_gridSubscriberVerification.addColumn(VerifySubscriber_GridHelper::getFirstName)
 				.setCaption("Vorname");
@@ -306,10 +398,10 @@ public class SubscriberDashboardView extends VerticalLayout
 					data -> showSources(data),
 					errorMessage -> Notification.show(errorMessage));
 			m_parent.fetchTemplates(
-					data -> showTemplates(data),
+					data -> showTemplatesForSubscribers(data),
 					errorMessage -> {
 						Notification.show(errorMessage);
-						showTemplates(null);
+						showTemplatesForSubscribers(null);
 					});
 		}
 	}
@@ -327,6 +419,18 @@ public class SubscriberDashboardView extends VerticalLayout
 			m_parent.fetchSubscribers(
 					data -> showSubscribers(data),
 					errorMessage -> Notification.show(errorMessage));
+		}
+		else if(m_tabsAdmin.getSelectedTab().equals(m_displayTemplates))
+		{
+			m_parent.fetchTemplates(
+					data -> showTemplatesForAdmins(data),
+					errorMessage -> Notification.show(errorMessage));
+		}
+		else if(m_tabsAdmin.getSelectedTab().equals(m_displayTemplateCreation))
+		{
+			m_parent.fetchTemplates(
+				data -> showTemplatesForAdmins(data),
+				errorMessage -> Notification.show(errorMessage));
 		}
 	}
 
@@ -347,7 +451,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_gridProfiles.recalculateColumnWidths();
 	}
 
-	private void showTemplates(ProfileDataRepresentation[] data)
+	private void showTemplatesForSubscribers(ProfileDataRepresentation[] data)
 	{
 		List<Profile_GridHelper> templates = new ArrayList<>();
 		if(data != null)
@@ -377,6 +481,21 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_listTemplates.setItems(templates);
 	}
 
+	private void showTemplatesForAdmins(ProfileDataRepresentation[] data)
+	{
+		List<Template_GridHelper> templates = new ArrayList<>();
+		for(ProfileDataRepresentation template : data)
+		{
+			templates.add(new Template_GridHelper(m_parent,
+			                                      template.getEmail(),
+			                                      template.getName(),
+			                                      template.getKeywords(),
+			                                      template.getSources()));
+		}
+		m_gridTemplates.setItems(templates);
+		m_gridTemplates.recalculateColumnWidths();
+	}
+
 	private void applyTemplate()
 	{
 		Object[] templates = m_listTemplates.getSelectedItems().toArray();
@@ -398,12 +517,12 @@ public class SubscriberDashboardView extends VerticalLayout
 		}
 
 		m_textProfileName.setValue(template.getName());
-		m_textKeywords.setValue(keywords.toString());
+		m_textProfileKeywords.setValue(keywords.toString());
 
-		m_selectSources.deselectAll();
+		m_selectProfileSources.deselectAll();
 		for(String source : template.getSources())
 		{
-			m_selectSources.select(source);
+			m_selectProfileSources.select(source);
 		}
 	}
 
@@ -444,6 +563,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		{
 			sources.add(source.getName());
 		}
-		m_selectSources.setItems(sources);
+		m_selectProfileSources.setItems(sources);
+		m_selectTemplateSources.setItems(sources);
 	}
 }

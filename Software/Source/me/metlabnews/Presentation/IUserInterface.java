@@ -121,6 +121,28 @@ public interface IUserInterface
 	void registerCallbackFetchTemplates(IFetchTemplatesCallback callback); //TODO implement in Presentation
 
 
+	interface IAddTemplateCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String templateName,
+		             String[] keywords,
+		             String[] sources);
+	}
+
+	void registerCallbackAddTemplate(IAddTemplateCallback callback); //TODO implement in Presentation
+
+
+	interface IRemoveTemplateCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String templateName);
+	}
+
+	void registerCallbackRemoveTemplate(IRemoveTemplateCallback callback); //TODO implement in Presentation
+
+
 	interface IAddProfileCallback
 	{
 		void execute(IGenericEvent onSuccess,
