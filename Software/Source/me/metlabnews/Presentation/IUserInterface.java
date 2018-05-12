@@ -112,6 +112,15 @@ public interface IUserInterface
 	void registerCallbackFetchProfiles(IFetchProfilesCallback callback); //TODO implement in Presentation
 
 
+	interface IFetchTemplatesCallback
+	{
+		void execute(IFetchProfilesEvent onSuccess,
+		             IGenericFailureEvent onFailure);
+	}
+
+	void registerCallbackFetchTemplates(IFetchTemplatesCallback callback); //TODO implement in Presentation
+
+
 	interface IAddProfileCallback
 	{
 		void execute(IGenericEvent onSuccess,

@@ -18,15 +18,17 @@ public class Profile_GridHelper
 		m_parent = parent;
 		m_email = email;
 		m_profileName = name;
-		m_keywordsView.setData(keywords);
-		m_sourcesView.setData(sources);
+		m_keywords = keywords;
+		m_sources = sources;
 		m_lastGenerationTime = lastGenerationTiem;
 		m_interval = interval;
 
 		m_keywordsView.setEmptySelectionAllowed(false);
+		m_keywordsView.setData(m_keywords);
 		m_keywordsView.setSelectedItem("Suchbegriffe zeigen");
 		m_keywordsView.addValueChangeListener(event -> m_keywordsView.setSelectedItem("Suchbegriffe zeigen"));
 		m_sourcesView.setEmptySelectionAllowed(false);
+		m_sourcesView.setData(m_sources);
 		m_sourcesView.setSelectedItem("Quellen zeigen");
 		m_sourcesView.addValueChangeListener(event -> m_sourcesView.setSelectedItem("Quellen zeigen"));
 
@@ -37,19 +39,35 @@ public class Profile_GridHelper
 				m_profileName));
 	}
 
+	@Override
+	public String toString()
+	{
+		return m_profileName;
+	}
+
 	public String getName()
 	{
 		return m_profileName;
 	}
 
-	public NativeSelect<String> getKeywords()
+	public NativeSelect<String> getKeywordsSelect()
 	{
 		return m_keywordsView;
 	}
 
-	public NativeSelect<String> getSources()
+	public List<String> getKeywords()
+	{
+		return m_keywords;
+	}
+
+	public NativeSelect<String> getSourcesSelect()
 	{
 		return m_sourcesView;
+	}
+
+	public List<String> getSources()
+	{
+		return m_sources;
 	}
 
 	public String getNextTime()
@@ -88,6 +106,8 @@ public class Profile_GridHelper
 	private String        m_profileName;
 	private LocalDateTime m_lastGenerationTime;
 	private Duration      m_interval;
+	private List<String>  m_keywords;
+	private List<String>  m_sources;
 	private final NativeSelect<String> m_keywordsView = new NativeSelect<>();
 	private final NativeSelect<String> m_sourcesView  = new NativeSelect<>();
 	private final Button               m_buttonDelete = new Button("Löschen");

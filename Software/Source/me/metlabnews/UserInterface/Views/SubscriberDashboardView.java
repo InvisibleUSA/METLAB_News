@@ -11,8 +11,6 @@ import me.metlabnews.UserInterface.Helpers.Subscriber_GridHelper;
 import me.metlabnews.UserInterface.Helpers.VerifySubscriber_GridHelper;
 import me.metlabnews.UserInterface.MainUI;
 
-import javax.swing.text.TabSet;
-import javax.xml.soap.Text;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +35,9 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_dateTime.setValue(LocalDateTime.now());
 		m_dateTime.setLocale(Locale.GERMANY);
 		m_dateTime.setResolution(DateTimeResolution.SECOND);
+		m_textProfileName.setWidth("350");
+		m_textKeywords.setWidth("350");
+
 
 		m_buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
 
@@ -49,7 +50,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_buttonShowPendingVerificationRequests.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchPendingSubscriberVerifications(
 						data -> showPendingVerificationRequests(data),
-						errorMessage -> Notification.show(errorMessage)));
+						errorMessage -> m_parent.access(() -> Notification.show(errorMessage))));
 
 
 		m_buttonShowSubscribers.addClickListener(
@@ -65,6 +66,14 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_buttonProfileCreate.addClickListener(
 				(Button.ClickEvent event) -> createProfileAction());
 
+		m_buttonShowTemplates.addClickListener(
+				(Button.ClickEvent event) ->
+						m_parent.fetchTemplates(
+						data -> showTemplates(data),
+						errorMessage -> {
+							Notification.show(errorMessage);
+							showTemplates(null);
+						}));
 
 		this.addComponent(m_layoutHeaderBar);
 		m_layoutHeaderBar.addComponents(m_title, m_buttonQuitAccount, m_buttonLogout);
@@ -74,13 +83,16 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_tabsSubscriber.addTab(m_displayProfileCreation, "Profil erstellen");
 		m_displayProfileCreation.addComponents(m_panelProfileCreation1,
 		                                       m_panelProfileCreation2,
-		                                       m_panelProfileCreation3);
+		                                       m_panelProfileCreation3,
+		                                       m_panelProfileCreation4);
 		m_panelProfileCreation1.setContent(m_layoutProfileCreation1);
 		m_layoutProfileCreation1.addComponents(m_textProfileName, m_textKeywords, m_buttonProfileCreate);
 		m_panelProfileCreation2.setContent(m_layoutProfileCreation2);
 		m_layoutProfileCreation2.addComponents(m_selectSources);
 		m_panelProfileCreation3.setContent(m_layoutProfileCreation3);
 		m_layoutProfileCreation3.addComponents(m_dateTime, m_textTime);
+		m_panelProfileCreation4.setContent(m_layoutProfileCreation4);
+		m_layoutProfileCreation4.addComponents(m_listTemplates, m_buttonShowTemplates);
 		m_selectSources.setLeftColumnCaption("Verfügbare Quellen");
 		m_selectSources.setRightColumnCaption("Ausgewählte Quellen");
 
@@ -102,6 +114,7 @@ public class SubscriberDashboardView extends VerticalLayout
 
 		m_tabsSubscriber.addSelectedTabChangeListener(event -> updateGridSub());
 		m_tabsAdmin.addSelectedTabChangeListener(event -> updateGridAdmin());
+		m_listTemplates.addValueChangeListener(event -> applyTemplate());
 	}
 
 	public void showAdminLayout()
@@ -145,12 +158,12 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final TabSheet m_tabsAdmin      = new TabSheet();
 	private final TabSheet m_tabsSettings   = new TabSheet();
 
-	private final VerticalLayout              m_displayProfiles                       = new VerticalLayout();
-	private final Grid<Profile_GridHelper>    m_gridProfiles                          = new Grid<>("Profile");
-	private final Button                      m_buttonShowProfiles                    = new Button(
+	private final VerticalLayout                    m_displayProfiles                       = new VerticalLayout();
+	private final Grid<Profile_GridHelper>          m_gridProfiles                          = new Grid<>("Profile");
+	private final Button                            m_buttonShowProfiles                    = new Button(
 			"Profile aktualisieren");
-	private final HorizontalLayout            m_displayProfileCreation                = new HorizontalLayout();
-	private final Panel                       m_panelProfileCreation1                 = new Panel("Allgemeines");
+	private final HorizontalLayout                  m_displayProfileCreation                = new HorizontalLayout();
+	private final Panel                             m_panelProfileCreation1                 = new Panel("Allgemeines");
 	private final VerticalLayout                    m_layoutProfileCreation1                = new VerticalLayout();
 	private final TextField                         m_textProfileName                       = new TextField("Name:");
 	private final TextField                         m_textKeywords                          = new TextField(
@@ -166,23 +179,29 @@ public class SubscriberDashboardView extends VerticalLayout
 			"Zeitpunkt für erste Zustellung wählen");
 	private final TextField                         m_textTime                              = new TextField(
 			"Zustellungsntervall DD:HH:MM:SS");
+	private final Panel                             m_panelProfileCreation4                 = new Panel("Vorlagen");
+	private final VerticalLayout                    m_layoutProfileCreation4                = new VerticalLayout();
+	private final ListSelect<Profile_GridHelper>    m_listTemplates                         = new ListSelect<>(
+			"Vorlage aus Liste wählen:");
+	private final Button                            m_buttonShowTemplates                   = new Button(
+			"Vorlagen aktualisieren");
 	private final VerticalLayout                    m_displayVerifications                  = new VerticalLayout();
 	private final Grid<VerifySubscriber_GridHelper> m_gridSubscriberVerification            = new Grid<>(
 			"Ausstehende Verifikationen");
-	private final Button                      m_buttonShowPendingVerificationRequests = new Button(
+	private final Button                            m_buttonShowPendingVerificationRequests = new Button(
 			"Ausstehende Verifikationen aktualisieren");
-	private final VerticalLayout              m_displaySubscribers                    = new VerticalLayout();
-	private final Grid<Subscriber_GridHelper> m_gridSubscribers                       = new Grid<>();
-	private final Button                      m_buttonShowSubscribers                 = new Button(
+	private final VerticalLayout                    m_displaySubscribers                    = new VerticalLayout();
+	private final Grid<Subscriber_GridHelper>       m_gridSubscribers                       = new Grid<>();
+	private final Button                            m_buttonShowSubscribers                 = new Button(
 			"Abonnenten aktualisieren");
-	private final VerticalLayout              m_displayPWReset                        = new VerticalLayout();
-	private final TextField                   m_textCurrentPW                         = new TextField(
+	private final VerticalLayout                    m_displayPWReset                        = new VerticalLayout();
+	private final TextField                         m_textCurrentPW                         = new TextField(
 			"Aktuelles Passwort:");
-	private final TextField                   m_textNewPW1                            = new TextField(
+	private final TextField                         m_textNewPW1                            = new TextField(
 			"Neues Passwort:");
-	private final TextField                   m_textNewPW2                            = new TextField(
+	private final TextField                         m_textNewPW2                            = new TextField(
 			"Passwort wiederholen:");
-	private final Button                      m_buttonPWReset                         = new Button(
+	private final Button                            m_buttonPWReset                         = new Button(
 			"Passwort zurücksetzen");
 
 	private void createProfileAction()
@@ -231,9 +250,9 @@ public class SubscriberDashboardView extends VerticalLayout
 	{
 		m_gridProfiles.addColumn(Profile_GridHelper::getName)
 				.setCaption("Profilname");
-		m_gridProfiles.addComponentColumn(Profile_GridHelper::getKeywords)
+		m_gridProfiles.addComponentColumn(Profile_GridHelper::getKeywordsSelect)
 				.setCaption("Suchbegriffe");
-		m_gridProfiles.addComponentColumn(Profile_GridHelper::getSources)
+		m_gridProfiles.addComponentColumn(Profile_GridHelper::getSourcesSelect)
 				.setCaption("Quellen");
 		m_gridProfiles.addColumn(Profile_GridHelper::getNextTime)
 				.setCaption("Nächste Zustellung");
@@ -286,6 +305,12 @@ public class SubscriberDashboardView extends VerticalLayout
 			m_parent.fetchSources(
 					data -> showSources(data),
 					errorMessage -> Notification.show(errorMessage));
+			m_parent.fetchTemplates(
+					data -> showTemplates(data),
+					errorMessage -> {
+						Notification.show(errorMessage);
+						showTemplates(null);
+					});
 		}
 	}
 
@@ -320,6 +345,66 @@ public class SubscriberDashboardView extends VerticalLayout
 		}
 		m_gridProfiles.setItems(profiles);
 		m_gridProfiles.recalculateColumnWidths();
+	}
+
+	private void showTemplates(ProfileDataRepresentation[] data)
+	{
+		List<Profile_GridHelper> templates = new ArrayList<>();
+		if(data != null)
+		{
+			for(ProfileDataRepresentation template : data)
+			{
+				templates.add(new Profile_GridHelper(m_parent,
+				                                     template.getEmail(),
+				                                     template.getName(),
+				                                     template.getKeywords(),
+				                                     template.getSources(),
+				                                     template.getLastGenerationTime(),
+				                                     template.getInterval()));
+			}
+		}
+		if(templates.isEmpty())
+		{
+			templates.add(new Profile_GridHelper(m_parent,
+			                                     "no-reply@metlabnews.me",
+			                                     "keine Vorlage vorhanden",
+			                                     new ArrayList<>(),
+			                                     new ArrayList<>(),
+			                                     LocalDateTime.now(),
+			                                     Duration.ofDays(1)));
+		}
+		m_listTemplates.setItemCaptionGenerator(Profile_GridHelper::getName);
+		m_listTemplates.setItems(templates);
+	}
+
+	private void applyTemplate()
+	{
+		Object[] templates = m_listTemplates.getSelectedItems().toArray();
+		if(templates.length != 1)
+		{
+			Notification.show("Bitte wählen Sie genau eine Vorlage aus");
+			return;
+		}
+		Profile_GridHelper template = (Profile_GridHelper)templates[0];
+
+		StringBuilder keywords = new StringBuilder();
+		for(String keyword : template.getKeywords())
+		{
+			if(keywords.length() != 0)
+			{
+				keywords.append(",");
+			}
+			keywords.append(keyword);
+		}
+
+		m_textProfileName.setValue(template.getName());
+		m_textKeywords.setValue(keywords.toString());
+
+		m_selectSources.deselectAll();
+		for(String source : template.getSources())
+		{
+			m_selectSources.select(source);
+		}
 	}
 
 	private void showPendingVerificationRequests(UserDataRepresentation[] data)
