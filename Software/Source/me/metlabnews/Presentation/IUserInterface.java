@@ -167,6 +167,18 @@ public interface IUserInterface
 
 	void registerCallbackDeleteProfile(IDeleteProfileCallback callback); //TODO: implement in Presentation
 
+
+	interface IShareProfileCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String senderEmail,
+		             String profileName, // transmitting a complete profile here is no big effort. What is better?
+		             String receiverEmail);
+	}
+
+	void registerCallbackShareProfile(IShareProfileCallback callback); //TODO: implement in Presentation
+
 	// endregion Subscriber Interaction
 
 

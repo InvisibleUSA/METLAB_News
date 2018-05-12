@@ -64,6 +64,11 @@ public class SubscriberDashboardView extends VerticalLayout
 						data -> showProfiles(data),
 						errorMessage -> Notification.show(errorMessage)));
 
+		m_buttonShowShares.addClickListener(
+				(Button.ClickEvent event) -> m_parent.fetchSubscribers(
+						data -> showSubscribers(data),
+						errorMessage -> Notification.show(errorMessage)));
+
 		m_buttonProfileCreate.addClickListener(
 				(Button.ClickEvent event) -> createProfileAction());
 
@@ -97,11 +102,14 @@ public class SubscriberDashboardView extends VerticalLayout
 								data -> showSources(data),
 								errorMessage -> Notification.show(errorMessage)));
 
+		m_buttonShare.addClickListener((Button.ClickEvent event) -> shareAction());
+
 		this.addComponent(m_layoutHeaderBar);
 		m_layoutHeaderBar.addComponents(m_title, m_buttonQuitAccount, m_buttonLogout);
 
 		m_tabsSubscriber.addTab(m_displayProfiles, "Profile anzeigen");
-		m_displayProfiles.addComponents(m_gridProfiles, m_buttonShowProfiles);
+		m_displayProfiles.addComponents(m_gridProfiles, m_buttonShowProfiles,
+		                                m_gridShare, m_buttonShowShares, m_buttonShare);
 
 		m_tabsSubscriber.addTab(m_displayProfileCreation, "Profil erstellen");
 		m_displayProfileCreation.addComponents(m_panelProfileCreation1,
@@ -195,6 +203,11 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final Grid<Profile_GridHelper>          m_gridProfiles                          = new Grid<>("Profile");
 	private final Button                            m_buttonShowProfiles                    = new Button(
 			"Profile aktualisieren");
+	private final Grid<Subscriber_GridHelper>       m_gridShare                             = new Grid<>();
+	private final Button                            m_buttonShowShares                      = new Button(
+			"Abonnenten aktualisieren");
+	private final Button                            m_buttonShare                           = new Button(
+			"Teilen");
 	private final HorizontalLayout                  m_displayProfileCreation                = new HorizontalLayout();
 	private final Panel                             m_panelProfileCreation1                 = new Panel("Allgemeines");
 	private final VerticalLayout                    m_layoutProfileCreation1                = new VerticalLayout();
@@ -223,18 +236,18 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final VerticalLayout                    m_displayVerifications                  = new VerticalLayout();
 	private final Grid<VerifySubscriber_GridHelper> m_gridSubscriberVerification            = new Grid<>(
 			"Ausstehende Verifikationen");
-	private final Button                      m_buttonShowPendingVerificationRequests = new Button(
+	private final Button                            m_buttonShowPendingVerificationRequests = new Button(
 			"Ausstehende Verifikationen aktualisieren");
-	private final VerticalLayout              m_displaySubscribers                    = new VerticalLayout();
-	private final Grid<Subscriber_GridHelper> m_gridSubscribers                       = new Grid<>();
-	private final Button                      m_buttonShowSubscribers                 = new Button(
+	private final VerticalLayout                    m_displaySubscribers                    = new VerticalLayout();
+	private final Grid<Subscriber_GridHelper>       m_gridSubscribers                       = new Grid<>();
+	private final Button                            m_buttonShowSubscribers                 = new Button(
 			"Abonnenten aktualisieren");
-	private final VerticalLayout              m_displayTemplates                      = new VerticalLayout();
-	private final Grid<Template_GridHelper>   m_gridTemplates                         = new Grid<>("Vorlagen");
-	private final Button                      m_buttonShowTemplatesForAdmins          = new Button(
+	private final VerticalLayout                    m_displayTemplates                      = new VerticalLayout();
+	private final Grid<Template_GridHelper>         m_gridTemplates                         = new Grid<>("Vorlagen");
+	private final Button                            m_buttonShowTemplatesForAdmins          = new Button(
 			"Vorlagen aktualisieren");
-	private final HorizontalLayout            m_displayTemplateCreation               = new HorizontalLayout();
-	private final Panel                       m_panelTemplateCreation1                = new Panel("Allgemeins");
+	private final HorizontalLayout                  m_displayTemplateCreation               = new HorizontalLayout();
+	private final Panel                             m_panelTemplateCreation1                = new Panel("Allgemeins");
 	private final VerticalLayout                    m_layoutTemplateCreation1               = new VerticalLayout();
 	private final TextField                         m_textTemplateName                      = new TextField("Name:");
 	private final TextField                         m_textTemplateKeywords                  = new TextField(
@@ -327,6 +340,36 @@ public class SubscriberDashboardView extends VerticalLayout
 		}
 	}
 
+	private void shareAction()
+	{
+		Object[] profiles    = m_gridProfiles.getSelectedItems().toArray();
+		Object[] subscribers = m_gridSubscribers.getSelectedItems().toArray();
+		if(profiles.length != 1)
+		{
+			Notification.show("Bitte wählen Sie genau ein Profil zum Teilen aus!");
+			return;
+		}
+		if(subscribers.length != 1)
+		{
+			Notification.show("Bitte wählen Sie genau ein Abonnenten zum Teilen aus!");
+		}
+		Profile_GridHelper    profile    = (Profile_GridHelper)profiles[0];
+		Subscriber_GridHelper subscriber = (Subscriber_GridHelper)profiles[0];
+
+		String note = "Profil " +
+				profile.getName() + " an " +
+				subscriber.getFirstName() + " " +
+				subscriber.getLastName() + " gesendet";
+		m_parent.shareProfile(
+				() -> Notification.show(note),
+				errorMessage -> Notification.show(errorMessage),
+				profile.getName(),
+				subscriber.getEmail());
+
+		m_gridProfiles.deselectAll();
+		m_gridShare.deselectAll();
+	}
+
 	private void setupGrids()
 	{
 		m_gridProfiles.addColumn(Profile_GridHelper::getName)
@@ -343,6 +386,15 @@ public class SubscriberDashboardView extends VerticalLayout
 				.setCaption("Löschen");
 		m_gridProfiles.setBodyRowHeight(42.0);
 		m_gridProfiles.setSizeFull();
+
+		m_gridShare.addColumn(Subscriber_GridHelper::getFirstName)
+				.setCaption("Vorname");
+		m_gridShare.addColumn(Subscriber_GridHelper::getLastName)
+				.setCaption("Nachname");
+		m_gridShare.addColumn(Subscriber_GridHelper::getEmail)
+				.setCaption("Email");
+		m_gridShare.setBodyRowHeight(42.0);
+		m_gridShare.setSizeFull();
 
 		m_gridTemplates.addColumn(Template_GridHelper::getName)
 				.setCaption("Vorlagenname");
@@ -429,8 +481,8 @@ public class SubscriberDashboardView extends VerticalLayout
 		else if(m_tabsAdmin.getSelectedTab().equals(m_displayTemplateCreation))
 		{
 			m_parent.fetchTemplates(
-				data -> showTemplatesForAdmins(data),
-				errorMessage -> Notification.show(errorMessage));
+					data -> showTemplatesForAdmins(data),
+					errorMessage -> Notification.show(errorMessage));
 		}
 	}
 
@@ -554,6 +606,8 @@ public class SubscriberDashboardView extends VerticalLayout
 		}
 		m_gridSubscribers.setItems(subs);
 		m_gridSubscribers.recalculateColumnWidths();
+		m_gridShare.setItems(subs);
+		m_gridShare.recalculateColumnWidths();
 	}
 
 	private void showSources(SourceDataRepresentation[] data)

@@ -20,8 +20,8 @@ public class Subscriber_GridHelper
 
 		m_buttonRemove.addClickListener((Button.ClickEvent event) -> m_parent.removeSubscriber(
 				() -> {
-						m_buttonRemove.setEnabled(false);
-						Notification.show("Abonnent wurde entfernt");
+					m_buttonRemove.setEnabled(false);
+					Notification.show("Abonnent wurde entfernt");
 				},
 				errorMessage -> Notification.show(errorMessage),
 				m_email,

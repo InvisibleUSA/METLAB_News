@@ -1,8 +1,6 @@
 package me.metlabnews.UserInterface.Helpers;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.*;
 import me.metlabnews.UserInterface.MainUI;
 
 import java.util.List;
@@ -27,6 +25,7 @@ public class Profile_GridHelper
 		m_keywordsView.setData(m_keywords);
 		m_keywordsView.setSelectedItem("Suchbegriffe zeigen");
 		m_keywordsView.addValueChangeListener(event -> m_keywordsView.setSelectedItem("Suchbegriffe zeigen"));
+
 		m_sourcesView.setEmptySelectionAllowed(false);
 		m_sourcesView.setData(m_sources);
 		m_sourcesView.setSelectedItem("Quellen zeigen");

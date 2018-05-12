@@ -256,6 +256,14 @@ public class MainUI extends UI implements IUserInterface
 		m_deleteProfileCallback.execute(onSuccess, onFailure, ownerMail, profileName);
 	}
 
+	public void shareProfile(IGenericEvent onSuccess,
+	                         IGenericFailureEvent onFailure,
+	                         String profileName,
+	                         String receiverEmail)
+	{
+		m_shareProfileCallback.execute(onSuccess, onFailure, whoAmI().getEmail(), profileName, receiverEmail);
+	}
+
 	public void fetchSources(IFetchSourcesEvent onSuccess,
 	                         IGenericFailureEvent onFailure)
 	{
@@ -400,6 +408,12 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
+	public void registerCallbackShareProfile(IShareProfileCallback callback)
+	{
+		m_shareProfileCallback = callback;
+	}
+
+	@Override
 	public void registerCallbackFetchSources(IFetchSourcesCallback callback)
 	{
 		m_fetchSourcesCallback = callback;
@@ -436,6 +450,7 @@ public class MainUI extends UI implements IUserInterface
 	private IRemoveTemplateCallback                   m_removeTemplateCallback;
 	private IAddProfileCallback                       m_addProfileCallback;
 	private IDeleteProfileCallback                    m_deleteProfileCallback;
+	private IShareProfileCallback                     m_shareProfileCallback;
 	private IFetchSourcesCallback                     m_fetchSourcesCallback;
 	private IAddSourceCallback                        m_addSourceCallback;
 	private IRemoveSourceCallback                     m_removeSourceCallback;
