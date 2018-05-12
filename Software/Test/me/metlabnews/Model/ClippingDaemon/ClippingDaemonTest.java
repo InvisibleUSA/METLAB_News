@@ -31,14 +31,14 @@ class ClippingDaemonTest
 	void run()
 	{
 		QueryAddProfile qap = new QueryAddProfile();
-		qap.name = "abctest" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss"));
+		String name = "abctest" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss"));
 		ArrayList<String> keywords = new ArrayList<>();
 		ArrayList<String> sources  = new ArrayList<>();
 		keywords.add("USA");
 		sources.add("Spiegel");
-		qap.profile = new ObservationProfile(qap.name, "ede1998@arcor.de", keywords, sources, LocalDateTime.now(),
+		qap.profile = new ObservationProfile(name, "ede1998@arcor.de", keywords, sources, LocalDateTime.now(),
 		                                     Duration.ofSeconds(6));
-		qap.profile = new ObservationProfile(qap.name, "tobias.reis@gmx.de", keywords, sources,
+		qap.profile = new ObservationProfile(name, "tobias.reis@gmx.de", keywords, sources,
 		                                     LocalDateTime.now(), Duration.ofSeconds(6));
 		assert qap.execute();
 

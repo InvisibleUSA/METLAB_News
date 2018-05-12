@@ -42,12 +42,12 @@ class BaseXConnectorTest
 	void addProfile()
 	{
 		QueryAddProfile qap = new QueryAddProfile();
-		qap.name = "abctest" + LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss"));
+		String name = "abctest" + LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss"));
 		ArrayList<String> keywords = new ArrayList<>();
 		ArrayList<String> sources = new ArrayList<>();
 		keywords.add("USA");
 		sources.add("Spiegel");
-		qap.profile = new ObservationProfile(qap.name, "metlabnews@gmail.com", keywords, sources, LocalDateTime.now(),
+		qap.profile = new ObservationProfile(name, "metlabnews@gmail.com", keywords, sources, LocalDateTime.now(),
 		                                     Duration.ofSeconds(60));
 		assert qap.execute();
 	}

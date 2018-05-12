@@ -42,7 +42,7 @@ class ObservationProfileTest
 		assertEquals(xt.child("name").value(), "Peter Pan");
 		assertEquals(xt.child("owner").value(), "peter@pan.de");
 		assertEquals(xt.child("last-generation").value(),
-		             ldt.format(DateTimeFormatter.ofPattern("YYYY-MM-DD'T'HH:mm:ss")));
+		             ldt.format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss")));
 		assertEquals(xt.child("period").value(), "PT12M");
 
 		XMLTag xt1 = xt;
