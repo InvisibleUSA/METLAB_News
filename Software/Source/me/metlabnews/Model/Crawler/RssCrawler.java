@@ -54,7 +54,6 @@ public class RssCrawler implements Runnable
 					QueryGetSourceArticleCounter count = new QueryGetSourceArticleCounter(m_source);
 					count.execute();
 					String guid = m_source.getName() + count.getNumArticles();
-					System.out.println(guid);
 					a.setGuid(guid);
 					boolean exists = articleExists(a);
 					if(!exists)
