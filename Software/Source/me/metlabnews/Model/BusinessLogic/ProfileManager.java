@@ -272,7 +272,7 @@ public class ProfileManager
 		Subscriber subscriber = (Subscriber)session.getUser();
 
 		QueryGetProfileTemplatesByOrganisation fetchQuery = new QueryGetProfileTemplatesByOrganisation();
-		fetchQuery.organisationId = String.valueOf(subscriber.getOrganisationId());
+		fetchQuery.organisationId = subscriber.getOrganisationId().getName();
 		if(!fetchQuery.execute())
 		{
 			onFailure.execute(Messages.UnknownError);
