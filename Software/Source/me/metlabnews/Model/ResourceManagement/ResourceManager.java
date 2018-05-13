@@ -22,13 +22,9 @@ public class ResourceManager implements ServletContextListener
 		Logger.getInstance().register(ResourceManager.class, Logger.Channel.ResourceManager);
 	}
 
-	public ResourceManager()
-	{
-	}
-
-
 	/**
 	 * Entry point of the application
+	 *
 	 * @param sce ServletContextEvent
 	 */
 	@Override
@@ -36,16 +32,16 @@ public class ResourceManager implements ServletContextListener
 	{
 		Logger logger = Logger.getInstance();
 
-		logger.logActivity(this, "Initializing...");
-		logger.logActivity(this, "Server Info: " + sce.getServletContext().getServerInfo());
+		logger.logInfo(this, "Initializing...");
+		logger.logInfo(this, "Server Info: " + sce.getServletContext().getServerInfo());
 
 		// ConfigurationManager has to be initialized first!
 		ConfigurationManager.getInstance().initialize();
-		logger.logActivity(this, "ConfigurationManager initialized");
+		logger.logInfo(this, "ConfigurationManager initialized");
 
 		// Logger has to be initialized second!
 		Logger.getInstance().initialize();
-		logger.logActivity(this, "Logger initialized");
+		logger.logInfo(this, "Logger initialized");
 
 		// here you can disable single channels of the logger
 		/*
@@ -60,27 +56,27 @@ public class ResourceManager implements ServletContextListener
 		new QueryAddOrganisation();
 
 		// initialize ClippingDaemon
-		//ClippingDaemon cd = new ClippingDaemon();
-		//cd.initialize();
-		//logger.logDebug(this, "ClippingDaemon initialized");
+		new ClippingDaemon()
+		{{
+			initialize();
+		}};
+		logger.logInfo(this, "ClippingDaemon initialized");
 
-		//MariaConnector.getInstance().initialize();
-		//logger.logDebug(this, "MariaConnector initialized");
 
-		//BaseXConnector.getInstance().initialize();
-		//logger.logDebug(this,"BaseXConnector initialized");
+
+
 
 		CrawlerController.getInstance().initialize();
-		logger.logDebug(this, "Crawler initialized");
+		logger.logInfo(this, "Crawler initialized");
 
 
 
 		UserManager.Validator.getInstance().initialize();
 		//UserManager.getInstance().initialize();
-		logger.logDebug(this, "UserManager initialized");
+		logger.logInfo(this, "UserManager initialized");
 
 		Presenter.getInstance().initialize();
-		logger.logDebug(this, "Presenter initialized");
+		logger.logInfo(this, "Presenter initialized");
 
 		CrawlerController.getInstance().start();
 	}
