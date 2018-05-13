@@ -215,6 +215,12 @@ public class MainUI extends UI implements IUserInterface
 		m_fetchProfilesCallback.execute(onSuccess, onFailure);
 	}
 
+	public void fetchClippings(IFetchClippingsEvent onSuccess,
+	                           IGenericFailureEvent onFailure)
+	{
+		m_fetchClippingsCallback.execute(onSuccess, onFailure);
+	}
+
 	public void fetchTemplates(IFetchProfilesEvent onSuccess,
 	                           IGenericFailureEvent onFailure)
 	{
@@ -384,6 +390,12 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 	@Override
+	public void registerCallbackFetchClippings(IFetchClippingsCallback callback)
+	{
+		m_fetchClippingsCallback = callback;
+	}
+
+	@Override
 	public void registerCallbackFetchTemplates(IFetchTemplatesCallback callback)
 	{
 		m_fetchTemplatesCallback = callback;
@@ -457,6 +469,7 @@ public class MainUI extends UI implements IUserInterface
 	private IAddOrganisationCallback                  m_addOrganisationCallback;
 	private IRemoveOrganisationCallback               m_removeOrganisationCallback;
 	private IFetchProfilesCallback                    m_fetchProfilesCallback;
+	private IFetchClippingsCallback                   m_fetchClippingsCallback;
 	private IFetchTemplatesCallback                   m_fetchTemplatesCallback;
 	private IAddTemplateCallback                      m_addTemplateCallback;
 	private IRemoveTemplateCallback                   m_removeTemplateCallback;

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ObservationProfile extends ObservationProfileTemplate
 {
-	public ObservationProfile(String name, String userMail, String organisationID,
+	public       ObservationProfile(String name, String userMail, String organisationID,
 	                          @NotNull List<String> keywords, @NotNull List<String> sources, @NotNull Duration period)
 	{
 		super(name, organisationID, keywords, sources);

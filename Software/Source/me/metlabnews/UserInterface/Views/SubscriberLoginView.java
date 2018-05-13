@@ -40,7 +40,6 @@ public class SubscriberLoginView extends VerticalLayout
 			Notification.show("Bitte geben sie Ihre Email-Adresse ein!");
 			return;
 		}
-		//TODO: implement
 		QueryLoginUser qlu = new QueryLoginUser();
 		qlu.email = textFieldEmail.getValue();
 		qlu.checkPassword = false;

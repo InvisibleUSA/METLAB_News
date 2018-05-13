@@ -5,10 +5,13 @@ import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddClipping;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddYaCyArticle;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QuerySearchArticleRSS;
+import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryUpdateProfile;
 import me.metlabnews.Model.DataAccess.Queries.YaCy.QuerySearchArticle;
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.Clipping;
 import me.metlabnews.Model.Entities.ObservationProfile;
+
+import java.time.LocalDateTime;
 
 
 
@@ -34,9 +37,7 @@ class ClippingGenerator implements Runnable
 	}
 
 	/**
-	 * @inheritDoc
-	 *
-	 * generates a clipping by asking YaCy and BaseX for articles
+	 * @inheritDoc generates a clipping by asking YaCy and BaseX for articles
 	 * saves YaCy results to BaseX, so its available for future access
 	 * sends clipping via e-mail to its owner
 	 * stores clipping for website access in basex
@@ -53,13 +54,27 @@ class ClippingGenerator implements Runnable
 		sendMail();
 
 		storeClippingInBaseX();
+
+		updateGenerationTime();
+	}
+
+	private void updateGenerationTime()
+	{
+		m_profile.setLastGenerationTime(LocalDateTime.now());
+		QueryUpdateProfile query = new QueryUpdateProfile();
+		query.profile = m_profile;
+		if(!query.execute())
+		{
+			Logger.getInstance().logError(this,
+			                              "Unknown basex error: could not update generation time of profile" + m_profile.getID());
+		}
 	}
 
 	private void storeClippingInBaseX()
 	{
 		QueryAddClipping query = new QueryAddClipping();
 		query.clipping = m_clipping;
-		if (!query.execute())
+		if(!query.execute())
 		{
 			Logger.getInstance().logError(this, "Unknown Datebase Error: Clipping could not be saved.");
 		}
