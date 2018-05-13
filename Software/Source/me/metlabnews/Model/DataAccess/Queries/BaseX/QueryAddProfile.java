@@ -20,7 +20,7 @@ public class QueryAddProfile extends BaseXQueryBase
 	}
 
 	public ObservationProfile profile;
-	public String   result;
+	public String result;
 
 	@Override
 	protected Command createBaseXQuery()
