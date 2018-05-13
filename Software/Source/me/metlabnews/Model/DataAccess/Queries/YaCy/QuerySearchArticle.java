@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 /**
  * search an article with YaCy
- * the result is an rss feed with the first {@Link m_maximumRecords} results from rss
+ * the result is an rss feed with the first (defined in m_maximumRecords) results from rss
  */
 public class QuerySearchArticle extends YaCyQueryBase
 {
