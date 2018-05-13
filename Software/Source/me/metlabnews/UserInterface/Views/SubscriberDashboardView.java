@@ -306,7 +306,7 @@ public class SubscriberDashboardView extends VerticalLayout
 					m_textProfileName.getValue(),
 					(String[])m_selectProfileSources.getSelectedItems().toArray(),
 					m_textProfileKeywords.getValue().split(" "),
-					m_dateTime.getValue(),
+					/*m_dateTime.getValue(),*/
 					interval);
 		}
 	}
@@ -351,7 +351,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		}
 		if(subscribers.length != 1)
 		{
-			Notification.show("Bitte wählen Sie genau ein Abonnenten zum Teilen aus!");
+			Notification.show("Bitte wählen Sie genau einen Abonnenten zum Teilen aus!");
 		}
 		Profile_GridHelper    profile    = (Profile_GridHelper)profiles[0];
 		@SuppressWarnings("ConstantConditions")
@@ -364,12 +364,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_parent.shareProfile(
 				() -> Notification.show(note),
 				Notification::show,
-				profile.getName(),
-				(String[])profile.getKeywords().toArray(),
-				(String[])profile.getSources().toArray(),
-				profile.getIsActive(),
-				profile.getLastTime(),
-				profile.getInterval(),
+				profile.getID(),
 				subscriber.getEmail());
 
 		m_gridProfiles.deselectAll();
@@ -500,6 +495,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		for(ProfileDataRepresentation profile : data)
 		{
 			profiles.add(new Profile_GridHelper(m_parent,
+			                                    null,
 			                                    profile.getEmail(),
 			                                    profile.getName(),
 			                                    profile.getKeywords(),
@@ -520,6 +516,7 @@ public class SubscriberDashboardView extends VerticalLayout
 			for(ProfileDataRepresentation template : data)
 			{
 				templates.add(new Profile_GridHelper(m_parent,
+				                                     null,
 				                                     template.getEmail(),
 				                                     template.getName(),
 				                                     template.getKeywords(),
@@ -532,6 +529,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		if(templates.isEmpty())
 		{
 			templates.add(new Profile_GridHelper(m_parent,
+			                                     null,
 			                                     "no-reply@metlabnews.me",
 			                                     "keine Vorlage vorhanden",
 			                                     new ArrayList<>(),

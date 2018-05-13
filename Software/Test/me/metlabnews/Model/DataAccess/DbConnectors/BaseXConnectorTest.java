@@ -47,8 +47,8 @@ class BaseXConnectorTest
 		ArrayList<String> sources = new ArrayList<>();
 		keywords.add("USA");
 		sources.add("Spiegel");
-		qap.profile = new ObservationProfile(name, "metlabnews@gmail.com", keywords, sources, LocalDateTime.now(),
-		                                     Duration.ofSeconds(60));
+		qap.profile = new ObservationProfile(name, "metlabnews@gmail.com", "unemployed",
+		                                     keywords, sources, /*LocalDateTime.now(),*/ Duration.ofSeconds(60));
 		assert qap.execute();
 	}
 

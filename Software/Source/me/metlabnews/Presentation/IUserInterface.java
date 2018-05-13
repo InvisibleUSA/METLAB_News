@@ -163,7 +163,8 @@ public interface IUserInterface
 		             String profileName,
 		             String[] sources,
 		             String[] keywords,
-		             Duration interval);
+		             Duration interval,
+		             boolean isActive);
 	}
 	void registerCallbackUpdateProfile(IUpdateProfileCallback callback);
 

@@ -265,9 +265,9 @@ public class MainUI extends UI implements IUserInterface
 
 	public void updateProfileAction(IGenericEvent onSuccess,
 	                                IGenericFailureEvent onFailure, String profileName,
-	                                String[] keywords, String[] sources, Duration interval)
+	                                String[] keywords, String[] sources, Duration interval, boolean isActive)
 	{
-		m_updateProfileCallback.execute(onSuccess, onFailure, profileName, keywords, sources, interval);
+		m_updateProfileCallback.execute(onSuccess, onFailure, profileName, keywords, sources, interval, isActive);
 	}
 
 	public void fetchSources(IFetchSourcesEvent onSuccess,

@@ -11,17 +11,18 @@ import java.time.LocalDateTime;
 
 public class Profile_GridHelper
 {
-	public Profile_GridHelper(MainUI parent, String email, String name,
+	public Profile_GridHelper(MainUI parent, String id, String email, String name,
 	                          List<String> keywords, List<String> sources, Boolean isActive,
-	                          LocalDateTime lastGenerationTiem, Duration interval)
+	                          LocalDateTime lastGenerationTime, Duration interval)
 	{
 		m_parent = parent;
+		m_profileId = id;
 		m_email = email;
 		m_profileName = name;
 		m_keywords = keywords;
 		m_sources = sources;
 		m_isActive = isActive;
-		m_lastGenerationTime = lastGenerationTiem;
+		m_lastGenerationTime = lastGenerationTime;
 		m_interval = interval;
 
 		m_keywordsView.setEmptySelectionAllowed(false);
@@ -38,16 +39,15 @@ public class Profile_GridHelper
 		m_checkBoxIsActive.addValueChangeListener(
 				event -> m_parent.updateProfileAction(
 						() -> Notification.show("Profil aktualisiert"),
-						errorMessage -> Notification.show(errorMessage),
-						m_email, m_profileName,
+						Notification::show,
+						m_profileName,
 						(String[])m_keywords.toArray(),
 						(String[])m_sources.toArray(),
-						m_isActive,
-						m_lastGenerationTime, m_interval));
+						m_interval, m_isActive));
 
 		m_buttonDelete.addClickListener(event -> m_parent.deleteProfile(
 				() -> m_buttonDelete.setEnabled(false),
-				errorMessage -> Notification.show(errorMessage),
+				Notification::show,
 				m_email,
 				m_profileName));
 	}
@@ -56,6 +56,11 @@ public class Profile_GridHelper
 	public String toString()
 	{
 		return m_profileName;
+	}
+
+	public String getID()
+	{
+		return m_profileId;
 	}
 
 	public String getName()
@@ -135,6 +140,7 @@ public class Profile_GridHelper
 	}
 
 	private MainUI        m_parent;
+	private String        m_profileId;
 	private String        m_email;
 	private String        m_profileName;
 	private List<String>  m_keywords;
