@@ -7,6 +7,10 @@ import org.basex.core.cmd.Add;
 
 
 
+/**
+ * Adding a new profile with the same ID an an already existing one will overwrite that profile.
+ * This query can therefore be used to update existing profiles.
+ */
 public class QueryAddProfile extends BaseXQueryBase
 {
 	static

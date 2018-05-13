@@ -25,11 +25,12 @@ public class QueryGetProfileById extends BaseXQueryBase
 		return m_profile;
 	}
 
+
 	@Override
 	protected Command createBaseXQuery()
 	{
-		final String query = "for $profile in /ObrservationProfile\n" +
-				" where $profile/id = '" + profileID+ "'\n" +
+		final String query = "for $profile in /profiles\n" +
+				" where $profile/id = '" + profileID + "'\n" +
 				" return $profile";
 		return new XQuery(query);
 	}
