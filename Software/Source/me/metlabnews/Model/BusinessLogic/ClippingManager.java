@@ -67,7 +67,8 @@ public class ClippingManager
 		{
 			Clipping clipping = fetchQuery.getResults().get(idx);
 			resultSet[idx] = new ClippingDataRepresentation(clipping.getGenerationTime().toString(),
-			                                                clipping.prettyPrintHTML());
+			                                                clipping.prettyPrintHTML(),
+			                                                clipping.getGenerationTime().toString());
 		}
 		onSuccess.execute(resultSet);
 	}

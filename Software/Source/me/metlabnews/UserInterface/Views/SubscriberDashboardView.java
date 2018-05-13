@@ -175,7 +175,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_listTemplates.addValueChangeListener(event -> applyTemplate());
 		m_gridProfilesForClippings.addItemClickListener(event -> m_parent.fetchClippings(
 				this::showClippings,
-				errorMessage -> {
+				(String errorMessage) -> {
 					Notification.show(errorMessage);
 					m_gridClippings.setItems(
 							new ClippingDataRepresentation("",
