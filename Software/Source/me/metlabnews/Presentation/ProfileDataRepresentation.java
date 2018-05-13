@@ -10,6 +10,13 @@ import java.util.List;
 
 public class ProfileDataRepresentation
 {
+	public ProfileDataRepresentation(ObservationProfile profile)
+	{
+		m_id = profile.getID();
+		m_profileName = profile.getName();
+		m
+	}
+
 	public ProfileDataRepresentation(String ownerMail, String profileName,
 	                                 List<String> keywords, List<String> sources, Boolean isActive,
 	                                 LocalDateTime lastGenerationTime, Duration interval)
@@ -75,6 +82,9 @@ public class ProfileDataRepresentation
 		return m_interval;
 	}
 
+
+
+	private String        m_id = null;
 	private String        m_profileName;
 	private String        m_ownerEmail;
 	private List<String>  m_keywords;

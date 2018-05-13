@@ -4,6 +4,7 @@ import me.metlabnews.Model.DataAccess.Queries.BaseX.*;
 import me.metlabnews.Model.Entities.ObservationProfile;
 import me.metlabnews.Model.Entities.ObservationProfileTemplate;
 import me.metlabnews.Model.Entities.Subscriber;
+import me.metlabnews.Presentation.IUserInterface;
 import me.metlabnews.Presentation.IUserInterface.IGenericEvent;
 import me.metlabnews.Presentation.IUserInterface.IGenericFailureEvent;
 import me.metlabnews.Presentation.Messages;
@@ -121,7 +122,7 @@ public class ProfileManager
 	 * @param onSuccess
 	 * @param onFailure
 	 */
-	public void getOwnProfiles(Session session, IGenericEvent onSuccess,
+	public void getOwnProfiles(Session session, IUserInterface.IFetchProfilesEvent onSuccess,
 	                           IGenericFailureEvent onFailure)
 	{
 		if(!session.isLoggedIn())
@@ -137,6 +138,7 @@ public class ProfileManager
 			return;
 		}
 
+		onSuccess.execute();
 	}
 
 

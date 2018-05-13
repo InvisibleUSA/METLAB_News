@@ -2,6 +2,9 @@ package me.metlabnews.Presentation;
 
 import me.metlabnews.Model.BusinessLogic.*;
 import me.metlabnews.Model.ResourceManagement.IResource;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,7 +65,9 @@ public class Presenter implements IResource
 
 	private void registerCallbacks(IUserInterface ui, Session session)
 	{
-		UserManager userManager = new UserManager();
+		UserManager userManager = UserManager.getInstance();
+		ProfileManager profileManager = ProfileManager.getInstance();
+		ClippingManager clippingManager = ClippingManager.getInstance();
 
 		ui.registerCallbackSubscriberLogin(
 				(onSuccess, onVerificationPending, onFailure, email, password) ->
@@ -126,6 +131,17 @@ public class Presenter implements IResource
 						                     userManager.changePassword(session, onSuccess, onFailure, email, oldPW,
 						                                                newPW))));
 
+		ui.registerCallbackAddProfile(((onSuccess, onFailure, profileID, sources, keywords, interval) ->
+		                              m_threadPool.execute(() -> profileManager.createNewProfile(session,
+		                                                                                         onSuccess, onFailure,
+		                                                                                         profileID,
+		                                                                                         Arrays.asList(keywords),
+		                                                                                         Arrays.asList(sources),
+		                                                                                         interval))));
+		ui.registerCallbackDeleteProfile((onSuccess, onFailure, ownerEmail, profileID) -> profileManager.removeProfile(
+				session, onSuccess, onFailure, profileID));
+
+		ui.registerCallbackFetchProfiles((onSuccess, onFailure) -> profileManager.getOwnProfiles(session, onSuccess, onFailure));
 	}
 
 
