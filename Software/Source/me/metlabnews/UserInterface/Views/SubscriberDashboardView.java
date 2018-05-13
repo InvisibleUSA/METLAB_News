@@ -343,7 +343,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 						m_textProfileKeywords.setValue("");
 						m_selectProfileSources.deselectAll();
 					},
-					Notification::show,
+					errorMessage -> m_parent.access(() -> Notification.show(errorMessage)),
 					m_textProfileName.getValue(),
 					m_selectProfileSources.getSelectedItems().toArray(),
 					m_textProfileKeywords.getValue().split(" "),
