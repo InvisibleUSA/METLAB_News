@@ -3,10 +3,10 @@ package me.metlabnews.Model.Entities;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,15 +14,17 @@ import java.util.List;
 
 public class ObservationProfile extends ObservationProfileTemplate
 {
-	public ObservationProfile(String name, String userMail, ArrayList<String> keywords,
-	                          ArrayList<String> sources, LocalDateTime lastGenerationTime, Duration period)
+	public ObservationProfile(String name, String userMail, String organisationID,
+	                          @NotNull List<String> keywords, @NotNull List<String> sources, @NotNull Duration period)
 	{
-		m_profileName = name;
+		super(name, organisationID, keywords, sources);
 		m_userMail = userMail;
-		m_sources = sources;
-		m_keywords = keywords;
-		m_lastGeneration = lastGenerationTime;
 		m_period = period;
+	}
+
+	@SuppressWarnings("unused")
+	private ObservationProfile() {
+		super();
 	}
 
 	public ObservationProfile(XMLTag tag)
@@ -30,8 +32,10 @@ public class ObservationProfile extends ObservationProfileTemplate
 	{
 		try
 		{
+			m_id = tag.child("id").value();
 			m_profileName = tag.child("name").value();
 			m_userMail = tag.child("owner").value();
+			m_organisationID = tag.child("organisation").value();
 			m_lastGeneration = LocalDateTime.parse(tag.child("last-generation").value());
 			m_period = Duration.parse(tag.child("period").value());
 			for(XMLTag keyword : tag.children("keywords"))
@@ -51,10 +55,6 @@ public class ObservationProfile extends ObservationProfileTemplate
 		}
 	}
 
-	public ObservationProfile(String name)
-	{
-		m_profileName = name;
-	}
 
 	public void addKeyword(String keyword)
 	{
@@ -66,31 +66,19 @@ public class ObservationProfile extends ObservationProfileTemplate
 		m_sources.add(sourceLink);
 	}
 
-	public void setLastGenerationTime(LocalDateTime gt)
+	public void setLastGenerationTime(@NotNull LocalDateTime gt)
 	{
 		m_lastGeneration = gt;
 	}
 
-	public String getName()
-	{
-		return m_profileName;
-	}
 
 	public String getUserMail()
 	{
 		return m_userMail;
 	}
 
-	public List<String> getKeywords()
-	{
-		return Collections.unmodifiableList(m_keywords);
-	}
 
-	public List<String> getSources()
-	{
-		return Collections.unmodifiableList(m_sources);
-	}
-
+	@NotNull
 	public LocalDateTime getLastGenerationTime()
 	{
 		return m_lastGeneration;
@@ -102,23 +90,34 @@ public class ObservationProfile extends ObservationProfileTemplate
 		return m_isActive;
 	}
 
-	public void setActive(boolean state)
+	public boolean activate()
 	{
-		m_isActive = state;
+		m_isActive = !m_period.isZero() && !m_keywords.isEmpty() && !m_sources.isEmpty();
+		return m_isActive;
+	}
+
+	public void deactivate()
+	{
+		m_isActive = false;
 	}
 
 
+	@Override
 	public boolean equals(Object otherObject)
 	{
+		boolean result;
 		if(otherObject.getClass() != this.getClass())
 		{
-			return false;
+			result = false;
 		}
-		ObservationProfile otherProfile = (ObservationProfile)otherObject;
-		boolean result = m_profileName.equals(otherProfile.m_profileName)
-				&& m_userMail.equals(otherProfile.m_userMail)
-				&& m_keywords.equals(otherProfile.m_keywords)
-				&& m_sources.equals(otherProfile.m_sources);
+		else
+		{
+			ObservationProfile otherProfile = (ObservationProfile)otherObject;
+			result = m_profileName.equals(otherProfile.m_profileName)
+					&& m_userMail.equals(otherProfile.m_userMail)
+					&& m_keywords.equals(otherProfile.m_keywords)
+					&& m_sources.equals(otherProfile.m_sources);
+		}
 		return result;
 	}
 
@@ -139,7 +138,7 @@ public class ObservationProfile extends ObservationProfileTemplate
 		{
 			s.append("    ").append(src).append("\n");
 		}
-		for(char c : m_profileName.toCharArray())
+		for(char ignored : m_profileName.toCharArray())
 		{
 			s.append("-");
 		}
@@ -148,10 +147,12 @@ public class ObservationProfile extends ObservationProfileTemplate
 	}
 
 
+	@Override
 	public String toXML()
 	{
 		StringBuilder stringBuilder = new StringBuilder(
 				"<profile>\n" +
+						"    <id>" + m_id + "</id>\n" +
 						"    <name>" + m_profileName + "</name>\n" +
 						"    <owner>" + m_userMail + "</owner>\n" +
 						"    <last-generation>" + m_lastGeneration.format(m_dateTimePattern) + "</last-generation>\n" +
@@ -172,9 +173,9 @@ public class ObservationProfile extends ObservationProfileTemplate
 
 
 
-	private       LocalDateTime     m_lastGeneration;
+	private       String            m_userMail;
+	private       LocalDateTime     m_lastGeneration  = LocalDateTime.now();
 	private       Duration          m_period          = Duration.ofDays(1);
 	private       boolean           m_isActive        = false;
-
 	private       DateTimeFormatter m_dateTimePattern = DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss");
 }
