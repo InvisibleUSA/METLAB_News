@@ -326,7 +326,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		{
 			Notification.show("Bitte geben Sie Quellen ein!");
 		}
-		else if(!m_textTime.getValue().matches("[0-9]+:[0-9]+:[0-9]:[0-9]+"))
+		else if(!m_textTime.getValue().matches("[0-9]+:[0-9]+:[0-9]+:[0-9]+"))
 		{
 			Notification.show("Bitte geben Sie ein Intervall im Format DD:HH:MM:SS ein!");
 		}
