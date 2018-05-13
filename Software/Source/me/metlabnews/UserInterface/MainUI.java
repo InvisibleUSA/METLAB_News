@@ -47,6 +47,10 @@ public class MainUI extends UI implements IUserInterface
 	{
 	}
 
+	/**
+	 * Initialize the MainUI. This is done by vaadin
+	 * @param vaadinRequest ask vaadin what this is
+	 */
 	@Override
 	protected void init(VaadinRequest vaadinRequest)
 	{
@@ -63,6 +67,9 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 
+	/**
+	 * Opens the login view for subscribers and client administrators.
+	 */
 	// region GUI Methods
 	public void openSubscriberLoginView()
 	{
@@ -70,30 +77,45 @@ public class MainUI extends UI implements IUserInterface
 		access(() -> Page.getCurrent().setTitle("Anmelden"));
 	}
 
+	/**
+	 * Opens the login view for system administrators.
+	 */
 	public void openSystemAdminLoginView()
 	{
 		m_systemAdminLoginView.show();
 		access(() -> Page.getCurrent().setTitle("Anmelden"));
 	}
 
+	/**
+	 * Opens the registration view for subscribers and client administrators.
+	 */
 	public void openSubscriberRegisterView()
 	{
 		m_subscriberRegistrationView.show();
 		access(() -> Page.getCurrent().setTitle("Registrieren"));
 	}
 
+	/**
+	 * Opens the dashboard view for subscribers and client administrators.
+	 */
 	private void openSubscriberDashboardView()
 	{
 		m_subscriberDashboardView.show();
 		access(() -> Page.getCurrent().setTitle("Dashboard"));
 	}
 
+	/**
+	 * Opens the dashboard for system administrators.
+	 */
 	private void openSystemAdminDashboardView()
 	{
 		m_systemAdminDashboardView.show();
 		access(() -> Page.getCurrent().setTitle("Dashboard"));
 	}
 
+	/**
+	 * Opens the view displayed when any user logs out.
+	 */
 	public void openLogoutView()
 	{
 		m_logoutView.show();
@@ -102,6 +124,11 @@ public class MainUI extends UI implements IUserInterface
 
 
 
+	/**
+	 * Executes the action of trying to log in a subscriber or client administrator.
+	 * @param email the users email
+	 * @param pw the users password
+	 */
 	public void loginSubscriber(String email, String pw)
 	{
 		m_subscriberLoginCallback.execute(this::loginSuccessfulEvent,
@@ -110,6 +137,11 @@ public class MainUI extends UI implements IUserInterface
 		                                  email, pw);
 	}
 
+	/**
+	 * Executes the action of trying to log in a system administrator.
+	 * @param email the administrators email
+	 * @param pw the administrators password
+	 */
 	public void loginSysAdmin(String email, String pw)
 	{
 		m_sysAdminLoginCallback.execute(this::loginSuccessfulEvent,
@@ -117,6 +149,15 @@ public class MainUI extends UI implements IUserInterface
 		                                email, pw);
 	}
 
+	/**
+	 * Executes the action of registering a subscriber
+	 * @param firstName first name of the subscriber
+	 * @param lastName last name of the subscriber
+	 * @param company name of the subscribers company
+	 * @param email email of the subscriber
+	 * @param password password of the subscriber
+	 * @param clientAdmin boolean whether the subscriber applied for administrator rights
+	 */
 	public void registerSubscriber(String firstName, String lastName, String company,
 	                               String email, String password, boolean clientAdmin)
 	{
@@ -126,6 +167,16 @@ public class MainUI extends UI implements IUserInterface
 		                                         password, clientAdmin);
 	}
 
+	/**
+	 * Executes the action of registering a subscriber that does not not to be verified afterwards
+	 * @param onSuccess event to be executed on successful execution
+	 * @param firstName first name of the subscriber
+	 * @param lastName last name of the subscriber
+	 * @param company name of the subscribers company
+	 * @param email email of the subscriber
+	 * @param password password of the subscriber
+	 * @param clientAdmin boolean whether the subscriber applied for administrator rights
+	 */
 	public void registerVerifiedSubscriber(IGenericEvent onSuccess,
 	                                       String firstName, String lastName, String company,
 	                                       String email, String password, boolean clientAdmin)
@@ -139,11 +190,23 @@ public class MainUI extends UI implements IUserInterface
 				password, clientAdmin);
 	}
 
+	/**
+	 * Executes the action of logging out a user
+	 */
 	public void logout()
 	{
 		m_logoutCallback.execute(this::logoutEvent);
 	}
 
+	/**
+	 * Executes the action of changing a users password.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param email email of the subscriber
+	 * @param oldPW old password of the subscriber
+	 * @param newPW1 password of the subscriber
+	 * @param newPW2 password of the subscriber
+	 */
 	public void changePassword(IGenericEvent onSuccess, IGenericFailureEvent onFailure,
 	                           String email, String oldPW, String newPW1, String newPW2)
 	{
@@ -155,6 +218,13 @@ public class MainUI extends UI implements IUserInterface
 		m_changePasswordCallback.execute(onSuccess, onFailure, email, oldPW, newPW1);
 	}
 
+	/**
+	 * Executes the action of removing a subscriber
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param email email of the subscriber
+	 * @param date date of the action
+	 */
 	public void removeSubscriber(IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
 	                             String email,
@@ -163,6 +233,11 @@ public class MainUI extends UI implements IUserInterface
 		m_removeSubscriberCallback.execute(onSuccess, onFailure, email, date);
 	}
 
+	/**
+	 * Executes the action of fetching pending subscriber verifications.
+	 * @param onSuccess event to be executed on successful execution, contains the fetched items
+	 * @param onFailure event to be executed on unsuccessful execution
+	 */
 	public void fetchPendingSubscriberVerifications(
 			IFetchPendingVerificationRequestsEvent onSuccess,
 			IGenericFailureEvent onFailure)
@@ -170,6 +245,13 @@ public class MainUI extends UI implements IUserInterface
 		m_fetchPendingVerificationRequestsCallback.execute(onSuccess, onFailure);
 	}
 
+	/**
+	 * Executes the action of verifying a subscriber.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param subscriberEmail email of the subscriber
+	 * @param grantAdminStatus boolean whether the subscriber will have administrator rights
+	 */
 	public void verifySubscriber(IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
 	                             String subscriberEmail, boolean grantAdminStatus)
@@ -177,6 +259,13 @@ public class MainUI extends UI implements IUserInterface
 		m_verifySubscriberCallback.execute(onSuccess, onFailure, subscriberEmail, grantAdminStatus);
 	}
 
+	/**
+	 * Executes the action of denying a subscriber
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param email email of the subscriber
+	 * @param date date of the action
+	 */
 	public void denySubscriber(IGenericEvent onSuccess,
 	                           IGenericFailureEvent onFailure,
 	                           String email,
@@ -185,12 +274,27 @@ public class MainUI extends UI implements IUserInterface
 		access(() -> m_denySubscriberCallback.execute(onSuccess, onFailure, email, date));
 	}
 
+	/**
+	 * Executes the action of fetching subscribers.
+	 * @param onSuccess event to be executed on successful execution, contains the fetched items
+	 * @param onFailure event to be executed on unsuccessful execution
+	 */
 	public void fetchSubscribers(IFetchSubscribersEvent onSuccess,
 	                             IGenericFailureEvent onFailure)
 	{
 		m_fetchSubscribers.execute(onSuccess, onFailure);
 	}
 
+	/**
+	 * Executes the action of adding an organisation including an initial administrator.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param organisationName name of the organisation
+	 * @param adminFirstName first name of the administrator
+	 * @param adminLastName last name of the administrator
+	 * @param adminEmail email of the administrator
+	 * @param adminPassword password of the administrator
+	 */
 	public void addOrganisation(IGenericEvent onSuccess,
 	                            IGenericFailureEvent onFailure,
 	                            String organisationName,
@@ -204,6 +308,12 @@ public class MainUI extends UI implements IUserInterface
 		                                  adminPassword);
 	}
 
+	/**
+	 * Executes the action of removing an organisation.
+	 * @param onSuccess event to be executed on successful execution, contains the fetched items
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param organisationName name of the organisation
+	 */
 	public void removeOrganisation(IGenericEvent onSuccess,
 	                               IGenericFailureEvent onFailure,
 	                               String organisationName)
@@ -211,30 +321,58 @@ public class MainUI extends UI implements IUserInterface
 		m_removeOrganisationCallback.execute(onSuccess, onFailure, organisationName);
 	}
 
+	/**
+	 * Executes the action of fetching all organisations.
+	 * @param onSuccess event to be executed on successful execution, contains the fetched items
+	 * @param onFailure event to be executed on unsuccessful execution
+	 */
 	public void getAllOrganisations(IGetStringArrayEvent onSuccess,
 	                                IGenericFailureEvent onFailure)
 	{
 		m_fetchOrganisationsCallback.execute(onSuccess, onFailure);
 	}
 
+	/**
+	 * Executes the action of fetching all profiles of one subscriber.
+	 * @param onSuccess event to be executed on successful execution, contains the fetched items
+	 * @param onFailure event to be executed on unsuccessful execution
+	 */
 	public void fetchProfiles(IFetchProfilesEvent onSuccess,
 	                          IGenericFailureEvent onFailure)
 	{
 		m_fetchProfilesCallback.execute(onSuccess, onFailure);
 	}
 
+	/**
+	 * Executes the action of fetching all clippings of one profile.
+	 * @param onSuccess event to be executed on successful execution, contains the fetched items
+	 * @param onFailure event to be executed on unsuccessful execution
+	 */
 	public void fetchClippings(IFetchClippingsEvent onSuccess,
 	                           IGenericFailureEvent onFailure)
 	{
 		m_fetchClippingsCallback.execute(onSuccess, onFailure);
 	}
 
+	/**
+	 * Executes the action of fetching all templates of one organisation.
+	 * @param onSuccess event to be executed on successful execution, contains the fetched items
+	 * @param onFailure event to be executed on unsuccessful execution
+	 */
 	public void fetchTemplates(IFetchProfilesEvent onSuccess,
 	                           IGenericFailureEvent onFailure)
 	{
 		m_fetchTemplatesCallback.execute(onSuccess, onFailure);
 	}
 
+	/**
+	 * Executes the action of adding a template
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param templateName name of the template
+	 * @param keywords keywords to be searched for
+	 * @param sources sources to be searched in
+	 */
 	public void addTemplate(IGenericEvent onSuccess,
 	                        IGenericFailureEvent onFailure,
 	                        String templateName,
@@ -244,6 +382,12 @@ public class MainUI extends UI implements IUserInterface
 		m_addTemplateCallback.execute(onSuccess, onFailure, templateName, keywords, sources);
 	}
 
+	/**
+	 * Executes the action of removing a template.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param templateId ID of the template
+	 */
 	public void removeTemplate(IGenericEvent onSuccess,
 	                           IGenericFailureEvent onFailure,
 	                           String templateId)
@@ -251,6 +395,15 @@ public class MainUI extends UI implements IUserInterface
 		m_removeTemplateCallback.execute(onSuccess, onFailure, templateId);
 	}
 
+	/**
+	 * Executes the action of adding a profile.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param profileName name of the profile
+	 * @param keywords keywords to be searched for
+	 * @param sources sources to be searched in
+	 * @param interval time between clippings
+	 */
 	public void addProfile(IGenericEvent onSuccess,
 	                       IGenericFailureEvent onFailure,
 	                       String profileName,
@@ -261,6 +414,13 @@ public class MainUI extends UI implements IUserInterface
 		m_addProfileCallback.execute(onSuccess, onFailure, profileName, sources, keywords, interval);
 	}
 
+	/**
+	 * Executes the action of deleting a profile.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param ownerMail email of the owner
+	 * @param profileId ID of the profile
+	 */
 	public void deleteProfile(IGenericEvent onSuccess,
 	                          IGenericFailureEvent onFailure,
 	                          String ownerMail,
@@ -269,6 +429,13 @@ public class MainUI extends UI implements IUserInterface
 		m_deleteProfileCallback.execute(onSuccess, onFailure, ownerMail, profileId);
 	}
 
+	/**
+	 * Executes the action of sharing a profile.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param profileId ID of the profile
+	 * @param receiverEmail email of the receiver
+	 */
 	public void shareProfile(IGenericEvent onSuccess,
 	                         IGenericFailureEvent onFailure,
 	                         String profileId,
@@ -277,6 +444,16 @@ public class MainUI extends UI implements IUserInterface
 		m_shareProfileCallback.execute(onSuccess, onFailure, whoAmI().getEmail(), profileId, receiverEmail);
 	}
 
+	/**
+	 * Executes the action of updating a profile.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param profileName name of the profile
+	 * @param keywords keywords to be searched for
+	 * @param sources sources to be searched in
+	 * @param interval time between clippings
+	 * @param isActive boolean whether the profile is active
+	 */
 	public void updateProfileAction(IGenericEvent onSuccess,
 	                                IGenericFailureEvent onFailure, String profileName,
 	                                String[] keywords, String[] sources, Duration interval, boolean isActive)
@@ -284,12 +461,25 @@ public class MainUI extends UI implements IUserInterface
 		m_updateProfileCallback.execute(onSuccess, onFailure, profileName, keywords, sources, interval, isActive);
 	}
 
+	/**
+	 * Executes the action of fetch all sources.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 */
 	public void fetchSources(IFetchSourcesEvent onSuccess,
 	                         IGenericFailureEvent onFailure)
 	{
 		m_fetchSourcesCallback.execute(onSuccess, onFailure);
 	}
 
+	/**
+	 * Executes the action of adding a source.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param name name of the source
+	 * @param link web-link of the source
+	 * @param rssLink RSS-link of the source
+	 */
 	public void addSource(IGenericEvent onSuccess,
 	                      IGenericFailureEvent onFailure,
 	                      String name, String link, String rssLink)
@@ -297,6 +487,12 @@ public class MainUI extends UI implements IUserInterface
 		m_addSourceCallback.execute(onSuccess, onFailure, name, link, rssLink);
 	}
 
+	/**
+	 * Executes the action of removing a source.
+	 * @param onSuccess event to be executed on successful execution
+	 * @param onFailure event to be executed on unsuccessful execution
+	 * @param name name of the source
+	 */
 	public void removeSource(IGenericEvent onSuccess,
 	                         IGenericFailureEvent onFailure,
 	                         String name)
@@ -306,12 +502,20 @@ public class MainUI extends UI implements IUserInterface
 
 	// endregion GUI Methods
 
+	/**
+	 * Gets a the user currently logged in.
+	 * @return the user currently logged in
+	 */
 	public UserDataRepresentation whoAmI()
 	{
 		return Presenter.getInstance().whoAmI(this);
 	}
 
 
+	/**
+	 * registers the callback for logging in a subscriber or client administrator
+	 * @param callback callback to be registered
+	 */
 	// region Callbacks
 	@Override
 	public void registerCallbackSubscriberLogin(ISubscriberLoginCallback callback)
@@ -319,144 +523,240 @@ public class MainUI extends UI implements IUserInterface
 		m_subscriberLoginCallback = callback;
 	}
 
+	/**
+	 * registers the callback for registering a subscriber or administrator
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackSubscriberRegistration(ISubscriberRegisterCallback callback)
 	{
 		m_subscriberRegistrationCallback = callback;
 	}
 
+	/**
+	 * registers the callback for removing a subscriber or client administrator
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackSubscriberRemoval(IRemoveSubscriberCallback callback)
 	{
 		m_removeSubscriberCallback = callback;
 	}
 
+	/**
+	 * registers the callback for fetching pending verification requests
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackFetchPendingVerificationRequests(IFetchPendingVerificationRequestsCallback callback)
 	{
 		m_fetchPendingVerificationRequestsCallback = callback;
 	}
 
+	/**
+	 * registers the callback for verifying a subscriber or client administrator
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackVerifySubscriber(IVerifySubscriberCallback callback)
 	{
 		m_verifySubscriberCallback = callback;
 	}
 
+	/**
+	 * registers the callback for denying a subscriber or client administrator
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackDenySubscriber(IDenySubscriberCallback callback)
 	{
 		m_denySubscriberCallback = callback;
 	}
 
+	/**
+	 * registers the callback for fetching subscribers
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackFetchSubscribers(IFetchSubscribersCallback callback)
 	{
 		m_fetchSubscribers = callback;
 	}
 
+	/**
+	 * registers the callback for logging in a system administrator
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackSysAdminLogin(ISysAdminLoginCallback callback)
 	{
 		m_sysAdminLoginCallback = callback;
 	}
 
+	/**
+	 * registers the callback for adding an organisation
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackAddOrganisation(IAddOrganisationCallback callback)
 	{
 		m_addOrganisationCallback = callback;
 	}
 
+	/**
+	 * registers the callback for removing an organisation
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackRemoveOrganisation(IRemoveOrganisationCallback callback)
 	{
 		m_removeOrganisationCallback = callback;
 	}
 
+	/**
+	 * registers the callback for fetching all organisations
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackFetchOrganisations(IFetchOrganisationsCallback callback)
 	{
 		m_fetchOrganisationsCallback = callback;
 	}
 
+	/**
+	 * registers the callback for changing a password
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackChangePW(IChangePasswordCallback callback)
 	{
 		m_changePasswordCallback = callback;
 	}
 
+	/**
+	 * registers the callback for logging out any user
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackLogout(ILogoutCallback callback)
 	{
 		m_logoutCallback = callback;
 	}
 
+	/**
+	 * registers the callback for fetching all profiles of a subscriber
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackFetchProfiles(IFetchProfilesCallback callback)
 	{
 		m_fetchProfilesCallback = callback;
 	}
 
+	/**
+	 * registers the callback for fetching all clippings of a profile
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackFetchClippings(IFetchClippingsCallback callback)
 	{
 		m_fetchClippingsCallback = callback;
 	}
 
+	/**
+	 * registers the callback for fetching all templates of a organisation
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackFetchTemplates(IFetchTemplatesCallback callback)
 	{
 		m_fetchTemplatesCallback = callback;
 	}
 
+	/**
+	 * registers the callback for adding a template
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackAddTemplate(IAddTemplateCallback callback)
 	{
 		m_addTemplateCallback = callback;
 	}
 
+	/**
+	 * registers the callback for removing a template
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackRemoveTemplate(IRemoveTemplateCallback callback)
 	{
 		m_removeTemplateCallback = callback;
 	}
 
+	/**
+	 * registers the callback for adding a profile
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackAddProfile(IAddProfileCallback callback)
 	{
 		m_addProfileCallback = callback;
 	}
 
+	/**
+	 * registers the callback for deleting a profile
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackDeleteProfile(IDeleteProfileCallback callback)
 	{
 		m_deleteProfileCallback = callback;
 	}
 
+	/**
+	 * registers the callback for sharing a profile
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackShareProfile(IShareProfileCallback callback)
 	{
 		m_shareProfileCallback = callback;
 	}
 
+	/**
+	 * registers the callback for updating a profile
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackUpdateProfile(IUpdateProfileCallback callback)
 	{
 		m_updateProfileCallback = callback;
 	}
 
+	/**
+	 * registers the callback for fetching all sources
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackFetchSources(IFetchSourcesCallback callback)
 	{
 		m_fetchSourcesCallback = callback;
 	}
 
+	/**
+	 * registers the callback for adding a source
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackAddSource(IAddSourceCallback callback)
 	{
 		m_addSourceCallback = callback;
 	}
 
+	/**
+	 * registers the callback for removing a source
+	 * @param callback callback to be registered
+	 */
 	@Override
 	public void registerCallbackRemoveSource(IRemoveSourceCallback callback)
 	{
