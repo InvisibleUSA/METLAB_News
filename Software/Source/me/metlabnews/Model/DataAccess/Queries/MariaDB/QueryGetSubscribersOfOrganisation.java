@@ -5,19 +5,19 @@ import me.metlabnews.Model.Entities.Subscriber;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 
-public class QueryGetUser extends MariaDBQueryBase
+public class QueryGetSubscribersOfOrganisation extends MariaDBQueryBase
 {
-	public String     email;
-	public boolean    userExists;
-	public Subscriber subscriber;
+	public String organisationId;
+	private ArrayList<Subscriber> m_subscribers = new ArrayList<>();
 
 	@Override
 	protected Object[] createSQLQuery()
 	{
-		return new String[] {"SELECT * FROM Abonnent WHERE EMail = ?", email};
+		return new String[] {"SELECT * FROM Abonnent WHERE Firma = ?", organisationId };
 	}
 
 	@Override
@@ -44,8 +44,11 @@ public class QueryGetUser extends MariaDBQueryBase
 		}
 		if(!email.isEmpty() || firstName != null || lastName != null || password != null || organisation != null || isAdmin != null)
 		{
-			subscriber = new Subscriber(email, password, firstName, lastName, new Organisation(organisation), isAdmin);
-			userExists = true;
+			m_subscribers.add(new Subscriber(email, password, firstName, lastName, new Organisation(organisation), isAdmin));
 		}
+	}
+
+	public ArrayList<Subscriber> getResult() {
+		return m_subscribers;
 	}
 }
