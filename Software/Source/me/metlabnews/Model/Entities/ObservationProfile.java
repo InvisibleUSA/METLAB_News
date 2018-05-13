@@ -55,16 +55,6 @@ public class ObservationProfile extends ObservationProfileTemplate
 	}
 
 
-	public void addKeyword(String keyword)
-	{
-		m_keywords.add(keyword);
-	}
-
-	public void addSource(String sourceLink)
-	{
-		m_sources.add(sourceLink);
-	}
-
 	public void setLastGenerationTime(@NotNull LocalDateTime lastGenerationTime)
 	{
 		m_lastGeneration = lastGenerationTime;

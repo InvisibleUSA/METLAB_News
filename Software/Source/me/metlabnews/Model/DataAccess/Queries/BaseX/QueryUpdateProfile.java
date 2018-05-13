@@ -3,15 +3,15 @@ package me.metlabnews.Model.DataAccess.Queries.BaseX;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Entities.ObservationProfile;
 import org.basex.core.Command;
-import org.basex.core.cmd.Add;
+import org.basex.core.cmd.Replace;
 
 
 
-public class QueryAddProfile extends BaseXQueryBase
+public class QueryUpdateProfile extends BaseXQueryBase
 {
 	static
 	{
-		m_logger.register(QueryAddProfile.class, Logger.Channel.DocDBMS);
+		m_logger.register(QueryUpdateProfile.class, Logger.Channel.DocDBMS);
 	}
 
 	public ObservationProfile profile;
@@ -20,7 +20,7 @@ public class QueryAddProfile extends BaseXQueryBase
 	@Override
 	protected Command createBaseXQuery()
 	{
-		return new Add("/profiles/" + profile.getID(), profile.toXML());
+		return new Replace("/profiles/" + profile.getID(), profile.toXML());
 	}
 
 

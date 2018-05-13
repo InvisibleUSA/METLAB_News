@@ -24,6 +24,12 @@ public final class Messages
 	public static final String PasswordDoesNotMatchRequirements = "Das eingegebene Passwort" +
 			"erfüllt die Sicherheitsanforderungen nicht!";
 	public static final String InvalidEmailAddress              = "Die angegebene E-Mail-Adresse ist ungültig!";
+	public static final String OberservationProfileDoesNotExist = "Das angegebene Oberservationsprofil ist " +
+			"nicht vorhanden!";
+	public static final String InvalidOberservationProfile      = "Ungültiges Observationsprofil!";
+	public static final String ProfileTemplateDoesNotExist      = "Die angegebene Profilvorlage ist " +
+			"nicht vorhanden!";
+	public static final String IncompleteObservationProfile     = "Das Observationsprofil ist unvollständig!";
 
 
 

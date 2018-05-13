@@ -85,6 +85,27 @@ public class ObservationProfileTemplate
 	}
 
 
+	public void addKeywords(@NotNull List<String> newKeywords)
+	{
+		m_keywords.addAll(newKeywords);
+	}
+
+	public void addSources(@NotNull List<String> newSourceLinks)
+	{
+		m_sources.addAll(newSourceLinks);
+	}
+
+	public void removeKeywords(@NotNull List<String> keywordsToRemove)
+	{
+		m_keywords.removeAll(keywordsToRemove);
+	}
+
+	public void removeSources(@NotNull List<String> sourceLinksToRemove)
+	{
+		m_sources.removeAll(sourceLinksToRemove);
+	}
+
+
 	@Override
 	public boolean equals(Object otherObject)
 	{
