@@ -36,7 +36,7 @@ public class RSSFeed
 	/**
 	 * @param feed   the RSSFeed as a String
 	 * @param source the origin of the RSSFeed
-	 * @return the parsed {@Link RSSFeed}
+	 * @return the parsed {@link RSSFeed}
 	 */
 	public static RSSFeed parseFeed(String feed, NewsSource source) {
 		XMLTag RSSFeedTag = new XMLTag(feed);

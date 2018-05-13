@@ -37,7 +37,7 @@ public class CrawlerController implements Runnable
 	/**
 	 * Singleton call
 	 *
-	 * @return the instance of {@Link CrawlerController}
+	 * @return the instance of {@link CrawlerController}
 	 */
 	public static CrawlerController getInstance() {
 		if(m_cc == null) {
