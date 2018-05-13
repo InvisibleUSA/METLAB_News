@@ -8,9 +8,11 @@ import me.metlabnews.Presentation.IUserInterface;
 import me.metlabnews.Presentation.IUserInterface.IGenericEvent;
 import me.metlabnews.Presentation.IUserInterface.IGenericFailureEvent;
 import me.metlabnews.Presentation.Messages;
+import me.metlabnews.Presentation.ProfileDataRepresentation;
 import me.metlabnews.Presentation.Session;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -137,6 +139,7 @@ public class ProfileManager
 			onFailure.execute(Messages.UnknownError);
 			return;
 		}
+		
 
 		onSuccess.execute();
 	}
