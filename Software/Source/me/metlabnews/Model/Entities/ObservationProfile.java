@@ -2,7 +2,6 @@ package me.metlabnews.Model.Entities;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
-
 import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -13,6 +12,11 @@ import java.util.List;
 
 public class ObservationProfile extends ObservationProfileTemplate
 {
+	static
+	{
+		Logger.getInstance().register(ObservationProfile.class, Logger.Channel.Entities);
+	}
+
 	public ObservationProfile(String name, String userMail, String organisationID,
 	                          @NotNull List<String> keywords, @NotNull List<String> sources, @NotNull Duration period)
 	{
@@ -22,7 +26,8 @@ public class ObservationProfile extends ObservationProfileTemplate
 	}
 
 	@SuppressWarnings("unused")
-	private ObservationProfile() {
+	private ObservationProfile()
+	{
 		super();
 	}
 
@@ -182,9 +187,9 @@ public class ObservationProfile extends ObservationProfileTemplate
 
 
 
-	private       String            m_userMail;
-	private       LocalDateTime     m_lastGeneration  = LocalDateTime.now();
-	private       Duration          m_period          = Duration.ofDays(1);
-	private       boolean           m_isActive        = false;
-	private       DateTimeFormatter m_dateTimePattern = DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss");
+	private String            m_userMail;
+	private LocalDateTime     m_lastGeneration  = LocalDateTime.now();
+	private Duration          m_period          = Duration.ofDays(1);
+	private boolean           m_isActive        = false;
+	private DateTimeFormatter m_dateTimePattern = DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss");
 }
