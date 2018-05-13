@@ -1,5 +1,4 @@
 package me.metlabnews.Model.Crawler;
-import me.metlabnews.Model.Common.Helper;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 import me.metlabnews.Model.Entities.NewsSource;

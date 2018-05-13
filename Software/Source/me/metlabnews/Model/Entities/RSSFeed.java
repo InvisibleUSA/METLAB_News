@@ -1,6 +1,6 @@
 package me.metlabnews.Model.Entities;
 
-import me.metlabnews.Model.Common.CalendarParser;
+import me.metlabnews.Model.Crawler.CalendarParser;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 

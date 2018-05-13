@@ -1,4 +1,4 @@
-package me.metlabnews.Model.Common;
+package me.metlabnews.Model.Crawler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
