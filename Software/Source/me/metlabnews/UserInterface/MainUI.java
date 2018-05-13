@@ -24,7 +24,7 @@ import java.util.Collection;
 /**
  * This UI is the application entry point. A UI may either represent a browser window
  * (or tab) or some part of an HTML page where a Vaadin application is embedded.
- * 
+ * <p>
  * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be
  * overridden to add component to the user interface and initialize non-component functionality.
  *
@@ -66,32 +66,38 @@ public class MainUI extends UI implements IUserInterface
 	// region GUI Methods
 	public void openSubscriberLoginView()
 	{
-		setContent(m_subscriberLoginView);
+		m_subscriberLoginView.show();
+		access(() -> Page.getCurrent().setTitle("Anmelden"));
 	}
 
 	public void openSystemAdminLoginView()
 	{
-		setContent(m_systemAdminLoginView);
+		m_systemAdminLoginView.show();
+		access(() -> Page.getCurrent().setTitle("Anmelden"));
 	}
 
 	public void openSubscriberRegisterView()
 	{
-		setContent(m_subscriberRegistrationView);
+		m_subscriberRegistrationView.show();
+		access(() -> Page.getCurrent().setTitle("Registrieren"));
 	}
 
 	private void openSubscriberDashboardView()
 	{
-		setContent(m_subscriberDashboardView);
+		m_subscriberDashboardView.show();
+		access(() -> Page.getCurrent().setTitle("Dashboard"));
 	}
 
 	private void openSystemAdminDashboardView()
 	{
-		setContent(m_systemAdminDashboardView);
+		m_systemAdminDashboardView.show();
+		access(() -> Page.getCurrent().setTitle("Dashboard"));
 	}
 
 	public void openLogoutView()
 	{
-		setContent(m_logoutView);
+		m_logoutView.show();
+		access(() -> Page.getCurrent().setTitle("Abgemeldet"));
 	}
 
 
@@ -490,24 +496,14 @@ public class MainUI extends UI implements IUserInterface
 	// region Events
 	private void loginSuccessfulEvent()
 	{
-		UserDataRepresentation myself = Presenter.getInstance().whoAmI(this);
-		if(myself.isSystemAdministrator())
+		access(m_systemAdminLoginView::clearFields);
+		if(whoAmI().isSystemAdministrator())
 		{
-			access(this::openSystemAdminDashboardView);
-			access(m_systemAdminLoginView::clearFields);
+			openSystemAdminDashboardView();
 		}
 		else
 		{
-			if(myself.isOrganisationAdministrator())
-			{
-				m_subscriberDashboardView.showAdminLayout();
-			}
-			else
-			{
-				m_subscriberDashboardView.showSubscriberLayout();
-			}
-			access(this::openSubscriberDashboardView);
-			access(m_subscriberLoginView::clearFields);
+			openSubscriberDashboardView();
 		}
 	}
 

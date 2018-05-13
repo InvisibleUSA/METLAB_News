@@ -39,6 +39,5 @@ public class LogoutView extends VerticalLayout implements IView
 	public void show()
 	{
 		m_parent.setContent(this);
-		Page.getCurrent().setTitle("Abgemeldet");
 	}
 }

@@ -86,7 +86,6 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 	public void show()
 	{
 		m_parent.setContent(this);
-		Page.getCurrent().setTitle("Registrieren");
 	}
 
 	private String company = "";

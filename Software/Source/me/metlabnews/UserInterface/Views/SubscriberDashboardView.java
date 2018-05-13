@@ -25,12 +25,11 @@ import java.util.Locale;
  * SubscriberDashboard contains clippings and profiles
  * AdministratorDashboard contains
  */
-public class SubscriberDashboardView extends VerticalLayout
+public class SubscriberDashboardView extends VerticalLayout implements IView
 {
 	public SubscriberDashboardView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Dashboard");
 
 		setupGrids();
 		m_dateTime.setValue(LocalDateTime.now());
@@ -185,33 +184,19 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_gridClippings.addItemClickListener(event -> showClipping());
 	}
 
-	public void showAdminLayout()
+	@Override
+	public void show()
 	{
-		this.addComponent(m_tabLayout);
-		m_tabLayout.removeAllComponents();
-		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
-		m_tabLayout.addTab(m_tabsAdmin, "Administrator - Dashboard");
-		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
-		/*
-		m_parent.fetchProfiles(
-				data -> showProfiles(data),
-				errorMessage -> Notification.show(errorMessage));
-		*/
+		m_parent.setContent(this);
+		if(m_parent.whoAmI().isOrganisationAdministrator())
+		{
+			showAdminLayout();
+		}
+		else
+		{
+			showAdminLayout();
+		}
 	}
-
-	public void showSubscriberLayout()
-	{
-		this.addComponent(m_tabLayout);
-		m_tabLayout.removeAllComponents();
-		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
-		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
-		/*
-		m_parent.fetchProfiles(
-				data -> showProfiles(data),
-				errorMessage -> Notification.show(errorMessage));
-		*/
-	}
-
 
 
 	private MainUI m_parent;
@@ -310,6 +295,33 @@ public class SubscriberDashboardView extends VerticalLayout
 			"Passwort wiederholen:");
 	private final Button                            m_buttonPWReset                         = new Button(
 			"Passwort zurücksetzen");
+
+	private void showAdminLayout()
+	{
+		this.addComponent(m_tabLayout);
+		m_tabLayout.removeAllComponents();
+		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
+		m_tabLayout.addTab(m_tabsAdmin, "Administrator - Dashboard");
+		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
+		/*
+		m_parent.fetchProfiles(
+				data -> showProfiles(data),
+				errorMessage -> Notification.show(errorMessage));
+		*/
+	}
+
+	private void showSubscriberLayout()
+	{
+		this.addComponent(m_tabLayout);
+		m_tabLayout.removeAllComponents();
+		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
+		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
+		/*
+		m_parent.fetchProfiles(
+				data -> showProfiles(data),
+				errorMessage -> Notification.show(errorMessage));
+		*/
+	}
 
 	private void createProfileAction()
 	{

@@ -6,12 +6,11 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SystemAdminLoginView extends VerticalLayout
+public class SystemAdminLoginView extends VerticalLayout implements IView
 {
 	public SystemAdminLoginView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Anmelden");
 
 		buttonLogin.addClickListener((Button.ClickEvent event) -> loginAction());
 
@@ -30,6 +29,11 @@ public class SystemAdminLoginView extends VerticalLayout
 		textFieldPassword.setValue("");
 	}
 
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+	}
 
 	private MainUI m_parent;
 
