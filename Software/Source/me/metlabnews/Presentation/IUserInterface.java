@@ -5,6 +5,7 @@ package me.metlabnews.Presentation;
 import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 
@@ -150,11 +151,21 @@ public interface IUserInterface
 		             String profileName,
 		             String[] sources,
 		             String[] keywords,
-		             LocalDateTime time,
 		             Duration interval);
 	}
 
 	void registerCallbackAddProfile(IAddProfileCallback callback); //TODO: implement in Presentation
+
+	interface IUpdateProfileCallback
+	{
+		void execute(IGenericEvent onSuccess,
+		             IGenericFailureEvent onFailure,
+		             String profileName,
+		             String[] sources,
+		             String[] keywords,
+		             Duration interval);
+	}
+	void registerCallbackUpdateProfile(IUpdateProfileCallback callback);
 
 
 	interface IDeleteProfileCallback
@@ -172,25 +183,11 @@ public interface IUserInterface
 	{
 		void execute(IGenericEvent onSuccess,
 		             IGenericFailureEvent onFailure,
-		             String senderEmail, String profileName,
-		             String[] keywords, String[] sources, Boolean isActive,
-		             LocalDateTime lastGenerationTime, Duration interval,
-		             String receiverEmail);
+		             String senderEmail, String profileId, String receiverEmail);
 	}
 
 	void registerCallbackShareProfile(IShareProfileCallback callback); //TODO: implement in Presentation
 
-
-	interface IUpdateProfileCallback
-	{
-		void execute(IGenericEvent onSuccess,
-		             IGenericFailureEvent onFailure,
-		             String email, String profileName,
-		             String[] keywords, String[] sources, Boolean isActive,
-		             LocalDateTime lastGenerationTime, Duration interval);
-	}
-
-	void registerCallbackUpdateProfile(IUpdateProfileCallback callback); //TODO: implement in Presentation
 
 	// endregion Subscriber Interaction
 
@@ -286,7 +283,7 @@ public interface IUserInterface
 
 	interface IFetchSourcesCallback
 	{
-		void execute(IFetchSourcesEvent onSuccss,
+		void execute(IFetchSourcesEvent onSuccess,
 		             IGenericFailureEvent onFailure);
 	}
 

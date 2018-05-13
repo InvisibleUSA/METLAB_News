@@ -154,9 +154,7 @@ public class SystemAdminDashboardView extends VerticalLayout
 		}
 		else if(m_tabLayout.getSelectedTab().equals(m_displaySources) && false) //TODO
 		{
-			m_parent.fetchSources(
-					data -> showSources(data),
-					errorMessage -> Notification.show(errorMessage));
+			m_parent.fetchSources(this::showSources, Notification::show);
 		}
 	}
 

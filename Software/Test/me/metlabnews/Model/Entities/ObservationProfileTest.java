@@ -30,19 +30,17 @@ class ObservationProfileTest
 		ArrayList<String> keywords = new ArrayList<>();
 		keywords.add("Kinderbuch");
 		keywords.add("Zeichentrick");
-		ArrayList<String> src = new ArrayList<>();
-		src.add("kika");
-		src.add("dunno");
-		src.add("dinno");
-		LocalDateTime ldt = LocalDateTime.now();
-		ObservationProfile ob = new ObservationProfile("Peter Pan", "peter@pan.de", keywords, src, ldt,
+		ArrayList<String> sources = new ArrayList<>();
+		sources.add("kika");
+		sources.add("dunno");
+		sources.add("dinno");
+		ObservationProfile ob = new ObservationProfile("Peter Pan", "peter@pan.de",
+		                                               "unemployed", keywords, sources,
 		                                               Duration.ofMinutes(12));
 		System.out.println(ob.toXML());
 		XMLTag xt = new XMLTag(ob.toXML());
 		assertEquals(xt.child("name").value(), "Peter Pan");
 		assertEquals(xt.child("owner").value(), "peter@pan.de");
-		assertEquals(xt.child("last-generation").value(),
-		             ldt.format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss")));
 		assertEquals(xt.child("period").value(), "PT12M");
 
 		XMLTag xt1 = xt;

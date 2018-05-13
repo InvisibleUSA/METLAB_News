@@ -17,7 +17,6 @@ import me.metlabnews.UserInterface.Views.*;
 
 import java.sql.Date;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 
@@ -203,6 +202,7 @@ public class MainUI extends UI implements IUserInterface
 		m_removeOrganisationCallback.execute(onSuccess, onFailure, organisationName);
 	}
 
+	// TODO: this should be called from SystemAdminDashboardView!
 	public void getAllOrganisations(IGetStringArrayEvent onSuccess,
 	                                IGenericFailureEvent onFailure)
 	{
@@ -232,9 +232,9 @@ public class MainUI extends UI implements IUserInterface
 
 	public void removeTemplate(IGenericEvent onSuccess,
 	                           IGenericFailureEvent onFailure,
-	                           String templateName)
+	                           String templateId)
 	{
-		m_removeTemplateCallback.execute(onSuccess, onFailure, templateName);
+		m_removeTemplateCallback.execute(onSuccess, onFailure, templateId);
 	}
 
 	public void addProfile(IGenericEvent onSuccess,
@@ -242,42 +242,32 @@ public class MainUI extends UI implements IUserInterface
 	                       String profileName,
 	                       String[] sources,
 	                       String[] keywords,
-	                       LocalDateTime time,
 	                       Duration interval)
 	{
-		m_addProfileCallback.execute(onSuccess, onFailure, profileName, sources, keywords, time, interval);
+		m_addProfileCallback.execute(onSuccess, onFailure, profileName, sources, keywords, interval);
 	}
 
 	public void deleteProfile(IGenericEvent onSuccess,
 	                          IGenericFailureEvent onFailure,
 	                          String ownerMail,
-	                          String profileName)
+	                          String profileId)
 	{
-		m_deleteProfileCallback.execute(onSuccess, onFailure, ownerMail, profileName);
+		m_deleteProfileCallback.execute(onSuccess, onFailure, ownerMail, profileId);
 	}
 
 	public void shareProfile(IGenericEvent onSuccess,
 	                         IGenericFailureEvent onFailure,
-	                         String profileName,
-	                         String[] keywords, String[] sources, Boolean isActive,
-	                         LocalDateTime lastGenerationTime, Duration interval,
+	                         String profileId,
 	                         String receiverEmail)
 	{
-		m_shareProfileCallback.execute(onSuccess, onFailure, whoAmI().getEmail(), profileName,
-		                               keywords, sources, isActive,
-		                               lastGenerationTime, interval, receiverEmail);
+		m_shareProfileCallback.execute(onSuccess, onFailure, whoAmI().getEmail(), profileId, receiverEmail);
 	}
 
 	public void updateProfileAction(IGenericEvent onSuccess,
-	                                IGenericFailureEvent onFailure,
-	                                String email, String profileName,
-	                                String[] keywords, String[] sources, Boolean isActive,
-	                                LocalDateTime lastGenerationTime, Duration interval)
+	                                IGenericFailureEvent onFailure, String profileName,
+	                                String[] keywords, String[] sources, Duration interval)
 	{
-		m_updateProfileCallback.execute(onSuccess, onFailure,
-		                                email, profileName,
-		                                keywords, sources, isActive,
-		                                lastGenerationTime, interval);
+		m_updateProfileCallback.execute(onSuccess, onFailure, profileName, keywords, sources, interval);
 	}
 
 	public void fetchSources(IFetchSourcesEvent onSuccess,
