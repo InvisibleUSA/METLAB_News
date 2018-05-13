@@ -64,9 +64,7 @@ public class ResourceManager implements ServletContextListener
 
 
 
-
-
-		CrawlerController.getInstance().initialize();
+		CrawlerController.initialize();
 		logger.logInfo(this, "Crawler initialized");
 
 

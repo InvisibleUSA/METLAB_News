@@ -33,6 +33,5 @@ public class QueryAddProfile extends BaseXQueryBase
 	protected void processResults(String str)
 	{
 		result = str;
-		Logger.getInstance().logDebug(this, result);
 	}
 }
