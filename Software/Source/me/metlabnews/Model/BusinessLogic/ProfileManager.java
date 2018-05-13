@@ -10,7 +10,6 @@ import me.metlabnews.Presentation.Messages;
 import me.metlabnews.Presentation.Session;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -186,6 +185,12 @@ public class ProfileManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
 		QueryGetProfileById fetchQuery = new QueryGetProfileById();
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
@@ -219,6 +224,12 @@ public class ProfileManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
 		QueryGetProfileById fetchQuery = new QueryGetProfileById();
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
@@ -248,6 +259,12 @@ public class ProfileManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
 		QueryGetProfileById fetchQuery = new QueryGetProfileById();
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
@@ -277,6 +294,12 @@ public class ProfileManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
 		QueryGetProfileById fetchQuery = new QueryGetProfileById();
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
@@ -306,6 +329,12 @@ public class ProfileManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
 		QueryGetProfileById fetchQuery = new QueryGetProfileById();
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
@@ -334,6 +363,12 @@ public class ProfileManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
 		QueryRemoveProfile removalQuery = new QueryRemoveProfile();
 		removalQuery.profileID = profileID;
 		if(!removalQuery.execute())

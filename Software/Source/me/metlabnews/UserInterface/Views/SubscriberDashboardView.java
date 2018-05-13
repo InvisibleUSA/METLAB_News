@@ -44,30 +44,30 @@ public class SubscriberDashboardView extends VerticalLayout
 
 		m_buttonQuitAccount.addClickListener((Button.ClickEvent event) -> m_parent.removeSubscriber(
 				m_parent::openLogoutView,
-				errorMessage -> Notification.show(errorMessage),
+				Notification::show,
 				m_parent.whoAmI().getEmail(),
 				java.sql.Date.valueOf(LocalDate.now())));
 
 		m_buttonShowPendingVerificationRequests.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchPendingSubscriberVerifications(
-						data -> showPendingVerificationRequests(data),
+						this::showPendingVerificationRequests,
 						errorMessage -> m_parent.access(() -> Notification.show(errorMessage))));
 
 
 		m_buttonShowSubscribers.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchSubscribers(
-						data -> showSubscribers(data),
-						errorMessage -> Notification.show(errorMessage)));
+						this::showSubscribers,
+						Notification::show));
 
 		m_buttonShowProfiles.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchProfiles(
-						data -> showProfiles(data),
-						errorMessage -> Notification.show(errorMessage)));
+						this::showProfiles,
+						Notification::show));
 
 		m_buttonShowShares.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchSubscribers(
-						data -> showSubscribers(data),
-						errorMessage -> Notification.show(errorMessage)));
+						this::showSubscribers,
+						Notification::show));
 
 		m_buttonProfileCreate.addClickListener(
 				(Button.ClickEvent event) -> createProfileAction());
@@ -75,13 +75,13 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_buttonShowProfileSources.addClickListener(
 				(Button.ClickEvent event) ->
 						m_parent.fetchSources(
-								data -> showSources(data),
-								errorMessage -> Notification.show(errorMessage)));
+								this::showSources,
+								Notification::show));
 
 		m_buttonShowTemplatesForSubscribers.addClickListener(
 				(Button.ClickEvent event) ->
 						m_parent.fetchTemplates(
-								data -> showTemplatesForSubscribers(data),
+								this::showTemplatesForSubscribers,
 								errorMessage -> {
 									Notification.show(errorMessage);
 									showTemplatesForSubscribers(null);
@@ -90,8 +90,8 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_buttonShowTemplatesForAdmins.addClickListener(
 				(Button.ClickEvent event) ->
 						m_parent.fetchTemplates(
-								data -> showTemplatesForAdmins(data),
-								errorMessage -> Notification.show(errorMessage)));
+								this::showTemplatesForAdmins,
+								Notification::show));
 
 		m_buttonTemplateCreate.addClickListener(
 				(Button.ClickEvent event) -> createTemplateAction());
@@ -99,8 +99,8 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_buttonShowTemplateSources.addClickListener(
 				(Button.ClickEvent event) ->
 						m_parent.fetchSources(
-								data -> showSources(data),
-								errorMessage -> Notification.show(errorMessage)));
+								this::showSources,
+								Notification::show));
 
 		m_buttonShare.addClickListener((Button.ClickEvent event) -> shareAction());
 
@@ -302,7 +302,7 @@ public class SubscriberDashboardView extends VerticalLayout
 						m_textProfileKeywords.setValue("");
 						m_selectProfileSources.deselectAll();
 					},
-					errorMessage -> Notification.show(errorMessage),
+					Notification::show,
 					m_textProfileName.getValue(),
 					(String[])m_selectProfileSources.getSelectedItems().toArray(),
 					m_textProfileKeywords.getValue().split(" "),
@@ -333,7 +333,7 @@ public class SubscriberDashboardView extends VerticalLayout
 						m_textTemplateKeywords.setValue("");
 						m_selectTemplateSources.deselectAll();
 					},
-					errorMessage -> Notification.show(errorMessage),
+					Notification::show,
 					m_textTemplateName.getValue(),
 					m_textTemplateKeywords.getValue().split(" "),
 					(String[])m_selectTemplateSources.getSelectedItems().toArray());
@@ -354,6 +354,7 @@ public class SubscriberDashboardView extends VerticalLayout
 			Notification.show("Bitte wählen Sie genau ein Abonnenten zum Teilen aus!");
 		}
 		Profile_GridHelper    profile    = (Profile_GridHelper)profiles[0];
+		@SuppressWarnings("ConstantConditions")
 		Subscriber_GridHelper subscriber = (Subscriber_GridHelper)profiles[0];
 
 		String note = "Profil " +
@@ -362,7 +363,7 @@ public class SubscriberDashboardView extends VerticalLayout
 				subscriber.getLastName() + " gesendet";
 		m_parent.shareProfile(
 				() -> Notification.show(note),
-				errorMessage -> Notification.show(errorMessage),
+				Notification::show,
 				profile.getName(),
 				(String[])profile.getKeywords().toArray(),
 				(String[])profile.getSources().toArray(),
@@ -448,16 +449,16 @@ public class SubscriberDashboardView extends VerticalLayout
 		if(m_tabsSubscriber.getSelectedTab().equals(m_displayProfiles))
 		{
 			m_parent.fetchProfiles(
-					data -> showProfiles(data),
-					errorMessage -> Notification.show(errorMessage));
+					this::showProfiles,
+					Notification::show);
 		}
 		if(m_tabsSubscriber.getSelectedTab().equals(m_displayProfileCreation))
 		{
 			m_parent.fetchSources(
-					data -> showSources(data),
-					errorMessage -> Notification.show(errorMessage));
+					this::showSources,
+					Notification::show);
 			m_parent.fetchTemplates(
-					data -> showTemplatesForSubscribers(data),
+					this::showTemplatesForSubscribers,
 					errorMessage -> {
 						Notification.show(errorMessage);
 						showTemplatesForSubscribers(null);
@@ -470,26 +471,26 @@ public class SubscriberDashboardView extends VerticalLayout
 		if(m_tabsAdmin.getSelectedTab().equals(m_displayVerifications))
 		{
 			m_parent.fetchPendingSubscriberVerifications(
-					data -> showPendingVerificationRequests(data),
-					errorMessage -> Notification.show(errorMessage));
+					this::showPendingVerificationRequests,
+					Notification::show);
 		}
 		else if(m_tabsAdmin.getSelectedTab().equals(m_displaySubscribers))
 		{
 			m_parent.fetchSubscribers(
-					data -> showSubscribers(data),
-					errorMessage -> Notification.show(errorMessage));
+					this::showSubscribers,
+					Notification::show);
 		}
 		else if(m_tabsAdmin.getSelectedTab().equals(m_displayTemplates))
 		{
 			m_parent.fetchTemplates(
-					data -> showTemplatesForAdmins(data),
-					errorMessage -> Notification.show(errorMessage));
+					this::showTemplatesForAdmins,
+					Notification::show);
 		}
 		else if(m_tabsAdmin.getSelectedTab().equals(m_displayTemplateCreation))
 		{
 			m_parent.fetchTemplates(
-					data -> showTemplatesForAdmins(data),
-					errorMessage -> Notification.show(errorMessage));
+					this::showTemplatesForAdmins,
+					Notification::show);
 		}
 	}
 
