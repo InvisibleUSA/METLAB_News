@@ -33,6 +33,11 @@ public interface IUserInterface
 		void execute(ProfileDataRepresentation[] data);
 	}
 
+	interface IFetchClippingsEvent
+	{
+		void execute(ClippingDataRepresentation[] data);
+	}
+
 	interface IFetchPendingVerificationRequestsEvent
 	{
 		void execute(UserDataRepresentation[] data);
@@ -113,6 +118,15 @@ public interface IUserInterface
 	void registerCallbackFetchProfiles(IFetchProfilesCallback callback); //TODO implement in Presentation
 
 
+	interface IFetchClippingsCallback
+	{
+		void execute(IFetchClippingsEvent onSuccess,
+		             IGenericFailureEvent onFailure);
+	}
+
+	void registerCallbackFetchClippings(IFetchClippingsCallback callback); //TODO implement in Presentation
+
+
 	interface IFetchTemplatesCallback
 	{
 		void execute(IFetchProfilesEvent onSuccess,
@@ -166,7 +180,7 @@ public interface IUserInterface
 		             Duration interval,
 		             boolean isActive);
 	}
-	void registerCallbackUpdateProfile(IUpdateProfileCallback callback);
+	void registerCallbackUpdateProfile(IUpdateProfileCallback callback); //TODO: implement in Presentation
 
 
 	interface IDeleteProfileCallback

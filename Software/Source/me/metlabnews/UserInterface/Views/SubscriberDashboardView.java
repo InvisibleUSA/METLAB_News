@@ -3,19 +3,18 @@ package me.metlabnews.UserInterface.Views;
 import com.vaadin.server.Page;
 import com.vaadin.shared.ui.datefield.DateTimeResolution;
 import com.vaadin.ui.*;
+import me.metlabnews.Presentation.ClippingDataRepresentation;
 import me.metlabnews.Presentation.ProfileDataRepresentation;
 import me.metlabnews.Presentation.SourceDataRepresentation;
 import me.metlabnews.Presentation.UserDataRepresentation;
-import me.metlabnews.UserInterface.Helpers.Profile_GridHelper;
-import me.metlabnews.UserInterface.Helpers.Subscriber_GridHelper;
-import me.metlabnews.UserInterface.Helpers.Template_GridHelper;
-import me.metlabnews.UserInterface.Helpers.VerifySubscriber_GridHelper;
+import me.metlabnews.UserInterface.Helpers.*;
 import me.metlabnews.UserInterface.MainUI;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,15 +52,24 @@ public class SubscriberDashboardView extends VerticalLayout
 						this::showPendingVerificationRequests,
 						errorMessage -> m_parent.access(() -> Notification.show(errorMessage))));
 
+		m_buttonShowProfiles.addClickListener(
+				(Button.ClickEvent event) -> m_parent.fetchProfiles(
+						this::showProfiles,
+						Notification::show));
 
 		m_buttonShowSubscribers.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchSubscribers(
 						this::showSubscribers,
 						Notification::show));
 
-		m_buttonShowProfiles.addClickListener(
+		m_buttonShowProfilesForClippings.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchProfiles(
 						this::showProfiles,
+						Notification::show));
+
+		m_buttonShowClippings.addClickListener(
+				(Button.ClickEvent event) -> m_parent.fetchClippings(
+						this::showClippings,
 						Notification::show));
 
 		m_buttonShowShares.addClickListener(
@@ -106,6 +114,13 @@ public class SubscriberDashboardView extends VerticalLayout
 
 		this.addComponents(m_title, m_layoutHeaderBar);
 		m_layoutHeaderBar.addComponents(m_buttonQuitAccount, m_buttonLogout);
+
+		m_tabsSubscriber.addTab(m_displayClippings, "Pressespiegel anzeigen");
+		m_displayClippings.addComponents(m_layoutClippings, m_panelClipping);
+		m_layoutClippings.addComponents(m_layoutClippings1, m_layoutClippings2);
+		m_layoutClippings1.addComponents(m_gridProfilesForClippings, m_buttonShowProfilesForClippings);
+		m_layoutClippings2.addComponents(m_gridClippings, m_buttonShowClippings);
+		m_panelClipping.setContent(m_textClipping);
 
 		m_tabsSubscriber.addTab(m_displayProfiles, "Profile anzeigen");
 		m_displayProfiles.addComponents(m_gridProfiles, m_buttonShowProfiles,
@@ -156,6 +171,15 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_tabsSubscriber.addSelectedTabChangeListener(event -> updateGridSub());
 		m_tabsAdmin.addSelectedTabChangeListener(event -> updateGridAdmin());
 		m_listTemplates.addValueChangeListener(event -> applyTemplate());
+		m_gridProfilesForClippings.addItemClickListener(event -> m_parent.fetchClippings(
+				this::showClippings,
+				errorMessage -> {
+					Notification.show(errorMessage);
+					m_gridClippings.setItems(
+							new ClippingDataRepresentation("",
+							                               "keine Pressespiegel vorhanden"));
+				}));
+		m_gridClippings.addItemClickListener(event -> showClipping());
 	}
 
 	public void showAdminLayout()
@@ -199,6 +223,20 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final TabSheet m_tabsAdmin      = new TabSheet();
 	private final TabSheet m_tabsSettings   = new TabSheet();
 
+	private final VerticalLayout                    m_displayClippings                      = new VerticalLayout();
+	private final HorizontalLayout                  m_layoutClippings                       = new HorizontalLayout();
+	private final VerticalLayout                    m_layoutClippings1                      = new VerticalLayout();
+	private final Grid<Profile_GridHelper>          m_gridProfilesForClippings              = new Grid<>("Profile");
+	private final Button                            m_buttonShowProfilesForClippings        = new Button(
+			"Profile aktualisieren");
+	private final VerticalLayout                    m_layoutClippings2                      = new VerticalLayout();
+	private final Grid<ClippingDataRepresentation>  m_gridClippings                         = new Grid<>(
+			"Pressespiegel");
+	private final Button                            m_buttonShowClippings                   = new Button(
+			"Pressespiegel aktualisieren");
+	private final Panel                             m_panelClipping                         = new Panel(
+			"Pressespiegel");
+	private final Label                             m_textClipping                          = new Label("");
 	private final VerticalLayout                    m_displayProfiles                       = new VerticalLayout();
 	private final Grid<Profile_GridHelper>          m_gridProfiles                          = new Grid<>("Profile");
 	private final Button                            m_buttonShowProfiles                    = new Button(
@@ -353,7 +391,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		{
 			Notification.show("Bitte wählen Sie genau einen Abonnenten zum Teilen aus!");
 		}
-		Profile_GridHelper    profile    = (Profile_GridHelper)profiles[0];
+		Profile_GridHelper profile = (Profile_GridHelper)profiles[0];
 		@SuppressWarnings("ConstantConditions")
 		Subscriber_GridHelper subscriber = (Subscriber_GridHelper)profiles[0];
 
@@ -373,6 +411,22 @@ public class SubscriberDashboardView extends VerticalLayout
 
 	private void setupGrids()
 	{
+		m_gridProfilesForClippings.addColumn(Profile_GridHelper::getName)
+				.setCaption("Profilname");
+		m_gridProfilesForClippings.addComponentColumn(Profile_GridHelper::getKeywordsSelect)
+				.setCaption("Suchbegriffe");
+		m_gridProfilesForClippings.addComponentColumn(Profile_GridHelper::getSourcesSelect)
+				.setCaption("Quellen");
+		m_gridProfilesForClippings.addColumn(Profile_GridHelper::getInterval)
+				.setCaption("Zustellungsintervall");
+		m_gridProfilesForClippings.setBodyRowHeight(42.0);
+		m_gridProfilesForClippings.setSizeUndefined();
+
+		m_gridClippings.addColumn(ClippingDataRepresentation::getDate)
+				.setCaption("Erstellt am");
+		m_gridClippings.setBodyRowHeight(42.0);
+		m_gridClippings.setSizeUndefined();
+
 		m_gridProfiles.addColumn(Profile_GridHelper::getName)
 				.setCaption("Profilname");
 		m_gridProfiles.addComponentColumn(Profile_GridHelper::getKeywordsSelect)
@@ -506,6 +560,28 @@ public class SubscriberDashboardView extends VerticalLayout
 		}
 		m_gridProfiles.setItems(profiles);
 		m_gridProfiles.recalculateColumnWidths();
+		m_gridProfilesForClippings.setItems(profiles);
+		m_gridProfilesForClippings.recalculateColumnWidths();
+	}
+
+	private void showClippings(ClippingDataRepresentation[] data)
+	{
+		List<ClippingDataRepresentation> clippings = new ArrayList<>();
+		Collections.addAll(clippings, data);
+		m_gridClippings.setItems(clippings);
+		m_gridClippings.recalculateColumnWidths();
+	}
+
+	private void showClipping()
+	{
+		Object[] clippings = m_gridClippings.getSelectedItems().toArray();
+		if(clippings.length != 1)
+		{
+			Notification.show("Wählen Sie genau einen Pressespiegel aus!");
+			m_textClipping.setValue("");
+			return;
+		}
+		m_textClipping.setValue(((ClippingDataRepresentation)clippings[0]).getContent());
 	}
 
 	private void showTemplatesForSubscribers(ProfileDataRepresentation[] data)
