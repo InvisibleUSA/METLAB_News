@@ -17,7 +17,7 @@ abstract class MariaDBQueryBase extends QueryBase
 	}
 
 	/**
-	 * @InheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
