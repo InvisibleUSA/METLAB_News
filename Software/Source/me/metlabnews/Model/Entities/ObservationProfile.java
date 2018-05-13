@@ -169,6 +169,7 @@ public class ObservationProfile extends ObservationProfileTemplate
 						"    <id>" + m_id + "</id>\n" +
 						"    <name>" + m_profileName + "</name>\n" +
 						"    <owner>" + m_userMail + "</owner>\n" +
+						"    <organisation>" + m_organisationID + "</organisation>\n" +
 						"    <last-generation>" + m_lastGeneration.format(m_dateTimePattern) + "</last-generation>\n" +
 						"    <period>" + m_period + "</period>\n" +
 						"    <keywords>\n");
