@@ -14,7 +14,7 @@ import java.util.List;
 
 
 /**
- *
+ * Manages Observation Profiles and Sources
  */
 public class ProfileManager
 {
@@ -34,13 +34,13 @@ public class ProfileManager
 
 
 	/**
-	 * @param session
-	 * @param onSuccess
-	 * @param onFailure
-	 * @param name
-	 * @param keywords
-	 * @param sources
-	 * @param clippingPeriod
+	 * @param session Session
+	 * @param onSuccess event to call in case of success
+	 * @param onFailure event to call in case of failure
+	 * @param name non-unique name of the profile
+	 * @param keywords non-null list of keywords to search for
+	 * @param sources non-null list of sources to acquire news from
+	 * @param clippingPeriod period of clipping generation
 	 */
 	public void createNewProfile(Session session, IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
@@ -80,6 +80,17 @@ public class ProfileManager
 	}
 
 
+	/**
+	 * @param session Session
+	 * @param onSuccess event to call in case of success
+	 * @param onFailure event to call in case of failure
+	 * @param id unique ID to identify the observation profile
+	 * @param name (new) name of the profile
+	 * @param keywords (new) list of keywords
+	 * @param sources (new) list of sources
+	 * @param clippingPeriod (new) period of clipping generation
+	 * @param isActive (new) state
+	 */
 	public void updateProfile(Session session, IGenericEvent onSuccess,
 	                          IGenericFailureEvent onFailure,
 	                          String id, String name, List<String> keywords,
@@ -97,7 +108,6 @@ public class ProfileManager
 			return;
 		}
 
-		Subscriber subscriber = (Subscriber)session.getUser();
 		QueryGetProfileById fetchQuery = new QueryGetProfileById();
 		fetchQuery.profileID = id;
 		if(!fetchQuery.execute())
@@ -109,6 +119,7 @@ public class ProfileManager
 		profile.changeName(name);
 		profile.replaceKeywords(keywords);
 		profile.replaceSources(sources);
+		profile.setGenerationPeriod(clippingPeriod);
 		if(isActive)
 		{
 			profile.activate();
@@ -128,9 +139,16 @@ public class ProfileManager
 	}
 
 
+	/**
+	 * @param session Session
+	 * @param onSuccess event to call in case of success
+	 * @param onFailure event to call in case of failure
+	 * @param profileID unique ID to identify the observation profile
+	 * @param recipientEmail email address of the recipient
+	 */
 	public void shareProfile(Session session, IGenericEvent onSuccess,
 	                         IGenericFailureEvent onFailure,
-	                         String profileID, String receiverEmail)
+	                         String profileID, String recipientEmail)
 	{
 		if(!session.isLoggedIn())
 		{
@@ -150,7 +168,7 @@ public class ProfileManager
 			onFailure.execute(Messages.ObservationProfileDoesNotExist);
 			return;
 		}
-		ObservationProfile sharedProfile = new ObservationProfile(receiverEmail, fetchQuery.getProfile());
+		ObservationProfile sharedProfile = new ObservationProfile(recipientEmail, fetchQuery.getProfile());
 		QueryAddProfile addQuery = new QueryAddProfile();
 		addQuery.profile = sharedProfile;
 		if(!addQuery.execute())
@@ -198,9 +216,9 @@ public class ProfileManager
 
 
 	/**
-	 * @param session
-	 * @param onSuccess
-	 * @param onFailure
+	 * @param session Session
+	 * @param onSuccess event to call in case of success, takes an array of ProfileDataRepresentation
+	 * @param onFailure event to call in case of failure
 	 */
 	public void getOwnProfiles(Session session, IUserInterface.IFetchProfilesEvent onSuccess,
 	                           IGenericFailureEvent onFailure)
@@ -234,9 +252,9 @@ public class ProfileManager
 
 
 	/**
-	 * @param session
-	 * @param onSuccess
-	 * @param onFailure
+	 * @param session Session
+	 * @param onSuccess event to call in case of success, takes an array of ProfileTemplateDataRepresentation
+	 * @param onFailure event to call in case of failure
 	 */
 	public void getAvailableTemplates(Session session, IUserInterface.IFetchTemplatesEvent onSuccess,
 	                                  IGenericFailureEvent onFailure)
