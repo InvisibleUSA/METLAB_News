@@ -24,9 +24,16 @@ import java.sql.SQLException;
 
 public class UserManager
 {
+	public static UserManager getInstance()
+	{
+		if(m_instance == null)
+		{
+			m_instance = new UserManager();
+		}
+		return m_instance;
+	}
 
-
-	public UserManager()
+	private UserManager()
 	{
 		Logger.getInstance().register(UserManager.class, Logger.Channel.UserManager);
 	}
@@ -566,13 +573,13 @@ public class UserManager
 			return valid;
 		}
 
+
+
 		@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 		private static boolean validateEmailAddress(String address)
 		{
 			return EmailValidator.getInstance().isValid(address);
 		}
-
-
 
 		private static Validator m_instance = null;
 
@@ -586,4 +593,7 @@ public class UserManager
 		// endregion password requirements
 	}
 
+
+
+	private static UserManager m_instance;
 }

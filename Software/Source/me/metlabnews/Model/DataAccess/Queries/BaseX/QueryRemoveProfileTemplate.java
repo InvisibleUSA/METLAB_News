@@ -5,6 +5,13 @@ import org.basex.core.cmd.Delete;
 
 
 
+/**
+ *   deletes profile template based on its ID
+ *
+ *   returns: nothing
+ *
+ * @author Marco Rempfer
+ */
 public class QueryRemoveProfileTemplate extends BaseXQueryBase
 {
 	public String templateID = "";

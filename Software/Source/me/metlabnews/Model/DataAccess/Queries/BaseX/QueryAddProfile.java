@@ -7,6 +7,11 @@ import org.basex.core.cmd.Add;
 
 
 
+/**
+ * Adds a new profile to basex
+ * returns: nothing
+ * @author Erik Hennig
+ */
 public class QueryAddProfile extends BaseXQueryBase
 {
 	static

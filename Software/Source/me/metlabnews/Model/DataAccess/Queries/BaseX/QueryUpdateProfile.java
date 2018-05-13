@@ -7,6 +7,11 @@ import org.basex.core.cmd.Replace;
 
 
 
+/**
+ *  changes a profile that is already in basex
+ *  returns: nothing
+ * @author Marco Rempfer
+ */
 public class QueryUpdateProfile extends BaseXQueryBase
 {
 	static

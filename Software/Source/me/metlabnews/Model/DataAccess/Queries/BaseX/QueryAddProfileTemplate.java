@@ -9,6 +9,11 @@ import org.basex.core.cmd.Add;
 
 
 
+/**
+ * adds  a profile template to basex
+ * returns: nothing
+ * @author Marco Rempfer
+ */
 public class QueryAddProfileTemplate extends BaseXQueryBase
 {
 	static

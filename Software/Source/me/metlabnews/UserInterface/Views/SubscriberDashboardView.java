@@ -113,7 +113,7 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_buttonShare.addClickListener((Button.ClickEvent event) -> shareAction());
 
 		this.addComponents(m_title, m_layoutHeaderBar);
-		m_layoutHeaderBar.addComponents(m_buttonQuitAccount, m_buttonLogout);
+		m_layoutHeaderBar.addComponents(m_buttonLogout);
 
 		m_tabsSubscriber.addTab(m_displayClippings, "Pressespiegel anzeigen");
 		m_displayClippings.addComponents(m_layoutClippings, m_panelClipping);
@@ -159,7 +159,9 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_layoutTemplateCreation2.addComponents(m_selectTemplateSources, m_buttonShowTemplateSources);
 
 		m_tabsSettings.addTab(m_displayPWReset, "Passwort zurücksetzen");
+		m_tabsSettings.addTab(m_displayQuitAccount, "Gefahrenzone");
 		m_displayPWReset.addComponents(m_textCurrentPW, m_textNewPW1, m_textNewPW2, m_buttonPWReset);
+		m_displayQuitAccount.addComponent(m_buttonQuitAccount);
 		m_buttonPWReset.addClickListener((Button.ClickEvent event) -> m_parent.changePassword(null,
 		                                                                                      errorMessage -> Notification.show(
 				                                                                                      "test"),
@@ -223,6 +225,7 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final TabSheet m_tabsAdmin      = new TabSheet();
 	private final TabSheet m_tabsSettings   = new TabSheet();
 
+	private final VerticalLayout              m_displayQuitAccount = new VerticalLayout();
 	private final VerticalLayout                    m_displayClippings                      = new VerticalLayout();
 	private final HorizontalLayout                  m_layoutClippings                       = new HorizontalLayout();
 	private final VerticalLayout                    m_layoutClippings1                      = new VerticalLayout();

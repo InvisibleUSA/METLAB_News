@@ -8,6 +8,13 @@ import org.basex.core.cmd.XQuery;
 
 
 
+/**
+ * query to retrieve a template from basex via its ID
+ *
+ * returns: template instance
+ *
+ * @author Marco Rempfer
+ */
 public class QueryGetProfileTemplateById extends BaseXQueryBase
 {
 	static
