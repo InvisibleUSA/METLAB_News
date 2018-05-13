@@ -6,6 +6,14 @@ import org.basex.core.cmd.XQuery;
 
 
 
+/**
+ * This query checks if an RSS article with this title already exists
+ * used by crawler to check if article should be added to basex
+ *
+ * returns: m_result - title exists
+ *
+ * @author Benny Gerlach
+ */
 public class QueryTitleExists extends BaseXQueryBase
 {
 	static

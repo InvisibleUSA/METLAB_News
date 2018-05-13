@@ -11,7 +11,13 @@ import java.util.Collections;
 import java.util.List;
 
 
-
+/**
+ * query to retrieve a template from basex by their associated organisations
+ *
+ * returns: list of template instances
+ *
+ * @author Marco Rempfer
+ */
 public class QueryGetProfileTemplatesByOrganisation extends BaseXQueryBase
 {
 	static

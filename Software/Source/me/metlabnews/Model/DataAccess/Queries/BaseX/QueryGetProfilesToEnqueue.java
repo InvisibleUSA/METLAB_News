@@ -14,6 +14,13 @@ import java.util.List;
 
 
 
+/**
+ * query used by clipping daemon to find profiles that need to be generated
+ * input: start and ending time
+ * returns: profile that should be generated between start and end time
+ *
+ * @author Erik Hennig
+ */
 public class QueryGetProfilesToEnqueue extends BaseXQueryBase
 {
 	static

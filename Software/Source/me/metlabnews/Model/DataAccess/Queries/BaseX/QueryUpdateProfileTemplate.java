@@ -6,7 +6,11 @@ import org.basex.core.Command;
 import org.basex.core.cmd.Replace;
 
 
-
+/**
+ *  changes a profile template that is already in basex
+ *  returns: nothing
+ * @author Marco Rempfer
+ */
 public class QueryUpdateProfileTemplate extends BaseXQueryBase
 {
 	static
