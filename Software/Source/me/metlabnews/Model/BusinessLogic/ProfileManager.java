@@ -63,14 +63,15 @@ public class ProfileManager
 		addQuery.profile = new ObservationProfile(name, subscriber.getEmail(),
 		                                          String.valueOf(subscriber.getOrganisationId()),
 		                                          keywords, sources, clippingPeriod);
-		if(!addQuery.execute())
-		{
-			onFailure.execute(Messages.UnknownError);
-			return;
-		}
 
 		// Lets assume the subscriber wants to use his newly created profile right away
 		if(!addQuery.profile.activate())
+		{
+			onFailure.execute(Messages.InvalidOberservationProfile);
+			return;
+		}
+
+		if(!addQuery.execute())
 		{
 			onFailure.execute(Messages.UnknownError);
 			return;
