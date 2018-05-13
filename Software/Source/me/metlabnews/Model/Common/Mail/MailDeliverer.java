@@ -102,7 +102,7 @@ public class MailDeliverer
 		StringBuilder stringBuilder = new StringBuilder();
 		String        sep           = File.separator;
 		String HTMLPath = System.getProperty(
-				"user.dir") + sep + "Software" + sep + "Resources" + sep + "HTMLClippingMail.html";
+				"user.dir") + sep + "Resources" + sep + "HTMLClippingMail.html";
 
 		try(BufferedReader reader = new BufferedReader(new FileReader(HTMLPath)))
 		{
