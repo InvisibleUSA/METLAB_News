@@ -1,8 +1,9 @@
 package me.metlabnews.Model.BusinessLogic;
 
-
-
+import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetClippings;
+import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Presentation.IUserInterface;
+import me.metlabnews.Presentation.Messages;
 import me.metlabnews.Presentation.Session;
 
 
@@ -34,14 +35,33 @@ public class ClippingManager
 	 */
 	public void getAllClippingsForObservationProfile(Session session, IUserInterface.IGenericEvent onSuccess,
 	                                                 IUserInterface.IGenericFailureEvent onFailure,
-	                                                 String profileName)
+	                                                 String profileID)
 	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
 
+		QueryGetClippings fetchQuery = new QueryGetClippings();
+		fetchQuery.profileID = profileID;
+		if(!fetchQuery.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+
+		onSuccess.execute();
 	}
 
 
 	public void addSource(Session session, IUserInterface.IGenericEvent onSuccess,
-	                      IUserInterface.IGenericFailureEvent onFailure, String name, String link, boolean isRss)
+	                      IUserInterface.IGenericFailureEvent onFailure, String name, String link, String rssLink)
 	{
 
 	}

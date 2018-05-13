@@ -38,9 +38,10 @@ public class ProfileDataRepresentation
 	@Override
 	public String toString()
 	{
-		//TODO
+
 	}
 	*/
+
 	public String getEmail()
 	{
 		return m_ownerEmail;

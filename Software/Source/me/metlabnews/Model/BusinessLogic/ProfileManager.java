@@ -131,6 +131,12 @@ public class ProfileManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
 		QueryGetProfilesByEmail fetchQuery = new QueryGetProfilesByEmail();
 		fetchQuery.subscriberEmail = session.getUser().getEmail();
 		if(!fetchQuery.execute())
