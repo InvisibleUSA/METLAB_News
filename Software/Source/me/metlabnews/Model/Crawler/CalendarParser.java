@@ -1,4 +1,4 @@
-package me.metlabnews.Model.Common;
+package me.metlabnews.Model.Crawler;
 
 import java.util.Calendar;
 import java.util.TimeZone;

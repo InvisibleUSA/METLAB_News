@@ -1,6 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries.BaseX;
 
-import me.metlabnews.Model.Common.Helper;
+import me.metlabnews.Model.Crawler.Helper;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Entities.Article;
 import org.basex.core.Command;
