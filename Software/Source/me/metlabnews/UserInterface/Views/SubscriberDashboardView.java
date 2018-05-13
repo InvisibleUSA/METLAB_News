@@ -498,6 +498,13 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 
 	private void updateGridSub()
 	{
+		if(m_tabsSubscriber.getSelectedTab().equals(m_displayClippings))
+		{
+			m_parent.fetchProfiles(
+					this::showProfiles,
+					Notification::show);
+			m_gridClippings.setItems(new ClippingDataRepresentation("", "", "keine Pressespiegel vorhanden"));
+		}
 		if(m_tabsSubscriber.getSelectedTab().equals(m_displayProfiles))
 		{
 			m_parent.fetchProfiles(
@@ -573,7 +580,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		if(profiles.length != 1)
 		{
 			Notification.show("Wählen Sie genau ein Profil aus!");
-			m_gridClippings.setItems(new ClippingDataRepresentation("", "keine Pressespiegel vorhanden", ""));
+			m_gridClippings.setItems(new ClippingDataRepresentation("", "", "keine Pressespiegel vorhanden"));
 			return;
 		}
 		Profile_GridHelper profile = (Profile_GridHelper)profiles[0];
