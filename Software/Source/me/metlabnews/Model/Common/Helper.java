@@ -15,6 +15,7 @@ public class Helper
 	/**
 	 * @param url the url from which to get an document
 	 * @return the extracted document as a String
+	 * @throws IOException if connection to url not possible
 	 */
 	public static String getHTTPResponse(String url) throws IOException
 	{

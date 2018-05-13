@@ -9,8 +9,7 @@ import java.util.Calendar;
 
 
 /**
- * <p>Java representation of an RssItem (article)</p>
- * <p>
+ * Java representation of an RssItem (article)
  * Fields are:
  * <ul>
  * <li>Title</li>
@@ -20,7 +19,6 @@ import java.util.Calendar;
  * <li>pubDate</li>
  * <li>Source</li>
  * </ul>
- * </p>
  *
  * @author Benjamin Gerlach
  */
@@ -48,7 +46,7 @@ public class Article
 	}
 
 	/**
-	 * Constructs an Article from an {@Link XMLTag}
+	 * Constructs an Article from an {@link XMLTag}
 	 *
 	 * @param tag XML representation of this article
 	 * @throws IllegalArgumentException if the XMLTag is not a representation of an article

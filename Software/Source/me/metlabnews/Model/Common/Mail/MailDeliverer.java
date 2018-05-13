@@ -15,14 +15,14 @@ import java.util.Properties;
 
 
 /**
- * <p>This class sends Email in MIME Type. You can send Email in HTML with it.
- * The HTML-File is stored in the 'Resources' folder of the project.</p>
- * <p>Example:</p>
- * <p>
+ * This class sends Email in MIME Type. You can send Email in HTML with it.
+ * The HTML-File is stored in the 'Resources' folder of the project.
+ * Example:
+ * 
  * {@code}
- * <p>MailDeliverer m = new MailDeliverer();</p>
- * <p>m.send("test@test.de, "Subject Title");</p>
- * </p>
+ * MailDeliverer m = new MailDeliverer();
+ * m.send("test@test.de, "Subject Title");
+ * 
  *
  * @author Tobias
  * @version 1.0
