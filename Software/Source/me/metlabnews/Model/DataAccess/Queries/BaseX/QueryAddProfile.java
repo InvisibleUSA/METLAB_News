@@ -15,16 +15,18 @@ public class QueryAddProfile extends BaseXQueryBase
 	}
 
 	public ObservationProfile profile;
+	public String   result;
 
 	@Override
 	protected Command createBaseXQuery()
 	{
-		return new Add("/profiles/" + profile.getName() + profile.getUserMail(), profile.toXML());
+		return new Add("/profiles/" + profile.getID(), profile.toXML());
 	}
+
 
 	@Override
 	protected void processResults(String str)
 	{
-
+		result = str;
 	}
 }

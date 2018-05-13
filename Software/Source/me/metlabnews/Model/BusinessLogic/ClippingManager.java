@@ -21,7 +21,6 @@ public class ClippingManager
 		return m_instance;
 	}
 
-
 	private ClippingManager()
 	{
 	}

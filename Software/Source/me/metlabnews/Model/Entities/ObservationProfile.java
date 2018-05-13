@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -66,9 +65,9 @@ public class ObservationProfile extends ObservationProfileTemplate
 		m_sources.add(sourceLink);
 	}
 
-	public void setLastGenerationTime(@NotNull LocalDateTime gt)
+	public void setLastGenerationTime(@NotNull LocalDateTime lastGenerationTime)
 	{
-		m_lastGeneration = gt;
+		m_lastGeneration = lastGenerationTime;
 	}
 
 
