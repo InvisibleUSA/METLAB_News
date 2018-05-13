@@ -26,17 +26,6 @@ class BaseXConnectorTest
 		ConfigurationManager.getInstance().initialize();
 		Logger.getInstance().initialize();
 	}
-	@Test
-	void query()
-	{
-		QueryGetClippings q = new QueryGetClippings();
-		//TODO write test
-		//ConfigurationManager cm = mock(ConfigurationManager.class);
-		//when(cm.getBaseXPassword()).thenReturn("mepmep");
-		//when(cm.getBaseXUsername()).thenReturn("mepmep");
-		//when(cm.getBaseXPath()).thenReturn("mepmep");
-		//ClientSession
-	}
 
 	@Test
 	void addProfile()

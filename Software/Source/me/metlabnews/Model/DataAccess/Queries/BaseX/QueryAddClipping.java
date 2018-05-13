@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * writes the given clipping in instance.clipping to BaseX when the query is executed
+ * returns: nothing
  * @author Erik Hennig
  */
 public class QueryAddClipping extends BaseXQueryBase

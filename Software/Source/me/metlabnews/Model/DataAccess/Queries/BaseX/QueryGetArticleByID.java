@@ -8,6 +8,11 @@ import org.basex.core.cmd.XQuery;
 
 
 
+/**
+ * finds an article in basex by its ID
+ * returns: m_article instance
+ * @author Erik Hennig
+ */
 public class QueryGetArticleByID extends BaseXQueryBase
 {
 	static

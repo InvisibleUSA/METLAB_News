@@ -10,6 +10,11 @@ import java.util.Calendar;
 
 
 
+/**
+ * Adds a yacy result to basex
+ * returns: nothing
+ * @author Erik Hennig
+ */
 public class QueryAddYaCyArticle extends BaseXQueryBase
 {
 	static

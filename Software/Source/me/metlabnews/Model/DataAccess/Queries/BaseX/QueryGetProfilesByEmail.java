@@ -15,6 +15,12 @@ import java.util.List;
 
 
 
+/**
+ *  retrieves profiles from basex that have the e-mail address subscriberEmail
+ *  returns: list of all profiles matching the e-mail
+ *
+ * @author Marco Rempfer
+ */
 public class QueryGetProfilesByEmail extends BaseXQueryBase
 {
 	static

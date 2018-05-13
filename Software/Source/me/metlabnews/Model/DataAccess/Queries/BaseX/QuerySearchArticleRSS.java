@@ -16,6 +16,8 @@ import java.util.List;
 /**
  * This query takes a profile and searches for new articles matching the profile.
  *
+ * returns: all matching articles from RSS data
+ *
  * @author Erik Hennig
  */
 public class QuerySearchArticleRSS extends BaseXQueryBase

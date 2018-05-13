@@ -10,6 +10,10 @@ import org.basex.core.cmd.XQuery;
 
 
 
+/**
+ * get profile from basex using the id of the profile
+ * returns: instance of the m_profile
+ */
 public class QueryGetProfileById extends BaseXQueryBase
 {
 	static
