@@ -67,7 +67,7 @@ public class ProfileManager
 		// Lets assume the subscriber wants to use his newly created profile right away
 		if(!addQuery.profile.activate())
 		{
-			onFailure.execute(Messages.UnknownError);
+			onFailure.execute(Messages.InvalidOberservationProfile);
 			return;
 		}
 
