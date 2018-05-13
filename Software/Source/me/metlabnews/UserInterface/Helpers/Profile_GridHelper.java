@@ -42,8 +42,8 @@ public class Profile_GridHelper
 						Notification::show,
 						m_profileId,
 						m_profileName,
-						(String[])m_keywords.toArray(),
-						(String[])m_sources.toArray(),
+						m_keywords.toArray(),
+						m_sources.toArray(),
 						m_interval, m_isActive));
 
 		m_buttonDelete.addClickListener(event -> m_parent.deleteProfile(

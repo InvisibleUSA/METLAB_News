@@ -17,7 +17,9 @@ import me.metlabnews.UserInterface.Views.*;
 
 import java.sql.Date;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 
@@ -402,16 +404,23 @@ public class MainUI extends UI implements IUserInterface
 	 * @param onFailure event to be executed on unsuccessful execution
 	 * @param profileName name of the profile
 	 * @param keywords keywords to be searched for
-	 * @param sources sources to be searched in
+	 * @param sourcesAsObjects sources to be searched in
 	 * @param interval time between clippings
 	 */
 	public void addProfile(IGenericEvent onSuccess,
 	                       IGenericFailureEvent onFailure,
 	                       String profileName,
-	                       String[] sources,
+	                       Object[] sourcesAsObjects,
 	                       String[] keywords,
 	                       Duration interval)
 	{
+		String[] sources = new String[sourcesAsObjects.length];
+		int i = 0;
+		while(i < sources.length)
+		{
+			sources[i] = sourcesAsObjects[i].toString();
+			i++;
+		}
 		m_addProfileCallback.execute(onSuccess, onFailure, profileName, sources, keywords, interval);
 	}
 
@@ -450,15 +459,29 @@ public class MainUI extends UI implements IUserInterface
 	 * @param onSuccess event to be executed on successful execution
 	 * @param onFailure event to be executed on unsuccessful execution
 	 * @param profileName name of the profile
-	 * @param keywords keywords to be searched for
-	 * @param sources sources to be searched in
+	 * @param keywordsAsObjects keywords to be searched for
+	 * @param sourcesAsObjects sources to be searched in
 	 * @param interval time between clippings
 	 * @param isActive boolean whether the profile is active
 	 */
 	public void updateProfileAction(IGenericEvent onSuccess,
 	                                IGenericFailureEvent onFailure, String profileID, String profileName,
-	                                String[] keywords, String[] sources, Duration interval, boolean isActive)
+	                                Object[] keywordsAsObjects, Object[] sourcesAsObjects, Duration interval, boolean isActive)
 	{
+		String[] sources = new String[sourcesAsObjects.length];
+		int i = 0;
+		while(i < sources.length)
+		{
+			sources[i] = sourcesAsObjects[i].toString();
+			i++;
+		}
+		String[] keywords = new String[keywordsAsObjects.length];
+		i = 0;
+		while(i < keywords.length)
+		{
+			keywords[i] = keywordsAsObjects[i].toString();
+			i++;
+		}
 		m_updateProfileCallback.execute(onSuccess, onFailure, profileID, profileName, keywords, sources, interval, isActive);
 	}
 

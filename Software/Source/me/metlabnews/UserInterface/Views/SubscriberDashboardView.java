@@ -345,7 +345,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 					},
 					Notification::show,
 					m_textProfileName.getValue(),
-					(String[])m_selectProfileSources.getSelectedItems().toArray(),
+					m_selectProfileSources.getSelectedItems().toArray(),
 					m_textProfileKeywords.getValue().split(" "),
 					/*m_dateTime.getValue(),*/
 					interval);
