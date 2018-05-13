@@ -37,7 +37,7 @@ class ClippingGenerator implements Runnable
 	}
 
 	/**
-	 * @inheritDoc generates a clipping by asking YaCy and BaseX for articles
+	 *{@inheritDoc} generates a clipping by asking YaCy and BaseX for articles
 	 * saves YaCy results to BaseX, so its available for future access
 	 * sends clipping via e-mail to its owner
 	 * stores clipping for website access in basex

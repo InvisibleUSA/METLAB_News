@@ -21,8 +21,9 @@ import java.util.Locale;
 
 
 /**
- * The dashboard for subscribers
- * Contains clippings and profiles options
+ * The dashboard for subscribers and client administrators
+ * SubscriberDashboard contains clippings and profiles
+ * AdministratorDashboard contains
  */
 public class SubscriberDashboardView extends VerticalLayout
 {

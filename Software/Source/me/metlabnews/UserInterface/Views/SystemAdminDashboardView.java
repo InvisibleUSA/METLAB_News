@@ -22,13 +22,14 @@ public class SystemAdminDashboardView extends VerticalLayout
 		Page.getCurrent().setTitle("Dashboard");
 
 		setupGrids();
-		showOrganizations();
 
-		m_tabLayout.addSelectedTabChangeListener(event -> updateGrid());
 
 		m_buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
 
-		m_buttonShowOrganizations.addClickListener((Button.ClickEvent event) -> showOrganizations());
+		m_buttonShowOrganizations.addClickListener(
+				(Button.ClickEvent event) -> m_parent.getAllOrganisations(
+						this::showOrganizations,
+						Notification::show));
 
 		m_buttonShowSources.addClickListener(
 				(Button.ClickEvent event) -> updateGrid());
@@ -83,6 +84,9 @@ public class SystemAdminDashboardView extends VerticalLayout
 		m_layoutAddSource.addComponents(m_panelSource);
 		m_panelSource.setContent(m_layoutSource);
 		m_layoutSource.addComponents(m_textSourceName, m_textSourceLink, m_textSourceRssLink, m_buttonAddSource);
+
+
+		m_tabLayout.addSelectedTabChangeListener(event -> updateGrid());
 	}
 
 
@@ -150,23 +154,17 @@ public class SystemAdminDashboardView extends VerticalLayout
 	{
 		if(m_tabLayout.getSelectedTab().equals(m_displayOrganizations))
 		{
-			showOrganizations();
+			m_parent.getAllOrganisations(this::showOrganizations,
+			                             Notification::show);
 		}
-		else if(m_tabLayout.getSelectedTab().equals(m_displaySources) && false) //TODO
+		else if(m_tabLayout.getSelectedTab().equals(m_displaySources))
 		{
 			m_parent.fetchSources(this::showSources, Notification::show);
 		}
 	}
 
-	private void showOrganizations()
+	private void showOrganizations(String[] data)
 	{
-		QueryGetOrganisation qgo = new QueryGetOrganisation();
-		if(!qgo.execute())
-		{
-			return;
-		}
-		List<String> data = Arrays.asList(qgo.organisations);
-
 		List<Organization_GridHelper> organizations = new ArrayList<>();
 		for(String organization : data)
 		{

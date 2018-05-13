@@ -45,7 +45,7 @@ public class ClippingDaemon implements IResource
 	}
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * settings are read from configuration manager and class is initialized
      */
@@ -58,7 +58,7 @@ public class ClippingDaemon implements IResource
 	}
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * @throws Exception
      */
 	@Override
@@ -71,7 +71,7 @@ public class ClippingDaemon implements IResource
 	private class ClippingGenerationManager extends TimerTask
 	{
         /**
-         * @inheritDoc
+         * {@inheritDoc}
          *
          * enqueues new profiles and starts generation of clippings
          */

@@ -22,18 +22,18 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 {
 	private MainUI m_parent;
 
-	private final Label          title               = new Label("Willkommen bei METLAB-News");
-	private final Panel          panelLayout         = new Panel("Registrierung");
-	private final VerticalLayout layout              = new VerticalLayout();
-	private final TextField      textFieldFirstName  = new TextField("Vorname:");
-	private final TextField      textFieldLastName   = new TextField("Nachname:");
-	private final TextField      textFieldEmail      = new TextField("E-Mail:");
-	private final PasswordField  textFieldPassword   = new PasswordField("Passwort:");
-	private final CheckBox       checkBoxClientAdmin = new CheckBox("Administrator Status beantragen");
-	private final Button         buttonRegister      = new Button("Registrieren");
-	private final Button         buttonLogin         = new Button("Zurück zur Anmeldung");
-	private NativeSelect textFieldCompany;
-	private final HorizontalLayout buttonBar = new HorizontalLayout();
+	private final Label                title               = new Label("Willkommen bei METLAB-News");
+	private final Panel                panelLayout         = new Panel("Registrierung");
+	private final VerticalLayout       layout              = new VerticalLayout();
+	private final TextField            textFieldFirstName  = new TextField("Vorname:");
+	private final TextField            textFieldLastName   = new TextField("Nachname:");
+	private final TextField            textFieldEmail      = new TextField("E-Mail:");
+	private final PasswordField        textFieldPassword   = new PasswordField("Passwort:");
+	private final CheckBox             checkBoxClientAdmin = new CheckBox("Administrator Status beantragen");
+	private final Button               buttonRegister      = new Button("Registrieren");
+	private final Button               buttonLogin         = new Button("Zurück zur Anmeldung");
+	private final NativeSelect<String> textFieldCompany    = new NativeSelect<>("Organisation:");
+	private final HorizontalLayout     buttonBar           = new HorizontalLayout();
 
 	/**
 	 * Initializes the view and sets all of its components to their default values
@@ -52,16 +52,8 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 		textFieldEmail.setIcon(VaadinIcons.ENVELOPE);
 		textFieldPassword.setIcon(VaadinIcons.KEY);
 
-		QueryGetOrganisation qgo = new QueryGetOrganisation();
-		if(!qgo.execute())
-		{
-			return;
-		}
-		List<String> data = Arrays.asList(qgo.organisations);
-		textFieldCompany = new NativeSelect<>("Organisation:", data);
 		textFieldCompany.setEmptySelectionAllowed(false);
 
-		textFieldCompany.addValueChangeListener(event -> getDropDownvalue(event.getValue().toString()));
 
 		buttonRegister.addClickListener((Button.ClickEvent event) -> register());
 
@@ -74,6 +66,14 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 		panelLayout.setWidthUndefined();
 		layout.addComponents(textFieldFirstName, textFieldLastName, textFieldCompany,
 		                     textFieldEmail, textFieldPassword, checkBoxClientAdmin, buttonBar);
+
+
+		textFieldCompany.addValueChangeListener(event ->
+		                                        {
+			                                        getDropDownvalue(event.getValue().toString());
+			                                        m_parent.getAllOrganisations(textFieldCompany::setItems,
+			                                                                     Notification::show);
+		                                        });
 	}
 
 	private void getDropDownvalue(String temp)

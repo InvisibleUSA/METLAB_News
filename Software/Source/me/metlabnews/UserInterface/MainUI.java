@@ -27,6 +27,8 @@ import java.util.Collection;
  * <p>
  * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be
  * overridden to add component to the user interface and initialize non-component functionality.
+ *
+ * @author Achim Groß
  */
 @Theme("maintheme")
 @PreserveOnRefresh
@@ -136,7 +138,8 @@ public class MainUI extends UI implements IUserInterface
 		m_logoutCallback.execute(this::logoutEvent);
 	}
 
-	public void changePassword(IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String oldPW, String newPW1, String newPW2)
+	public void changePassword(IGenericEvent onSuccess, IGenericFailureEvent onFailure,
+	                           String email, String oldPW, String newPW1, String newPW2)
 	{
 		if(!newPW1.equals(newPW2))
 		{
@@ -202,7 +205,6 @@ public class MainUI extends UI implements IUserInterface
 		m_removeOrganisationCallback.execute(onSuccess, onFailure, organisationName);
 	}
 
-	// TODO: this should be called from SystemAdminDashboardView!
 	public void getAllOrganisations(IGetStringArrayEvent onSuccess,
 	                                IGenericFailureEvent onFailure)
 	{

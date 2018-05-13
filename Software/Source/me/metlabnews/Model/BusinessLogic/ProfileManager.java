@@ -139,9 +139,13 @@ public class ProfileManager
 			onFailure.execute(Messages.UnknownError);
 			return;
 		}
-		
-
-		onSuccess.execute();
+		int resultCount = fetchQuery.getResults().size();
+		ProfileDataRepresentation[] resultSet = new ProfileDataRepresentation[resultCount];
+		for(int idx = 0; idx < resultCount; ++idx)
+		{
+			resultSet[idx] = new ProfileDataRepresentation(fetchQuery.getResults().get(idx));
+		}
+		onSuccess.execute(resultSet);
 	}
 
 
