@@ -49,6 +49,7 @@ public class ObservationProfile extends ObservationProfileTemplate
 			m_profileName = tag.child("name").value();
 			m_userMail = tag.child("owner").value();
 			m_organisationID = tag.child("organisation").value();
+			m_isActive = Boolean.valueOf(tag.child("active").value());
 			m_lastGeneration = LocalDateTime.parse(tag.child("last-generation").value());
 			m_period = Duration.parse(tag.child("period").value());
 			for(XMLTag keyword : tag.children("keywords"))
@@ -169,8 +170,10 @@ public class ObservationProfile extends ObservationProfileTemplate
 						"    <id>" + m_id + "</id>\n" +
 						"    <name>" + m_profileName + "</name>\n" +
 						"    <owner>" + m_userMail + "</owner>\n" +
+						"    <organisation>" + m_organisationID + "</organisation>\n" +
 						"    <last-generation>" + m_lastGeneration.format(m_dateTimePattern) + "</last-generation>\n" +
 						"    <period>" + m_period + "</period>\n" +
+						"    <active>" + String.valueOf(m_isActive) + "</active>\n" +
 						"    <keywords>\n");
 		for(String keyword : m_keywords)
 		{
