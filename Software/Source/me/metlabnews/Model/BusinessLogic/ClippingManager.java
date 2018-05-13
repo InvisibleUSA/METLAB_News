@@ -40,6 +40,20 @@ public class ClippingManager
 	}
 
 
+	public void addSource(Session session, IUserInterface.IGenericEvent onSuccess,
+	                      IUserInterface.IGenericFailureEvent onFailure, String name, String link, boolean isRss)
+	{
+
+	}
+
+
+	public void removeSource(Session session, IUserInterface.IGenericEvent onSuccess,
+	                         IUserInterface.IGenericFailureEvent onFailure, String name)
+	{
+
+	}
+
+
 
 	private static ClippingManager m_instance = null;
 }

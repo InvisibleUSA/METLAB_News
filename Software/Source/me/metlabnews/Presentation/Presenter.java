@@ -147,7 +147,7 @@ public class Presenter implements IResource
 
 
 
-		ui.registerCallbackAddSource((onSuccess, onFailure, name, link, rssLink) -> );
+		ui.registerCallbackAddSource((onSuccess, onFailure, name, link, rssLink) -> {});
 	}
 
 
