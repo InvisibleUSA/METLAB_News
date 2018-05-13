@@ -11,6 +11,7 @@ import org.basex.core.cmd.Open;
 import org.basex.server.ClientSession;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 
@@ -140,8 +141,11 @@ class BaseXConnector
 		ClientSession session = m_sessions[sessionnum];
 
 		String result = session.execute(cmd);
-
 		m_sessionInUse[sessionnum] = false;
+
+		Logger.getInstance().logDebug(this, "new query: " + cmd.toString());
+		Logger.getInstance().logDebug(this, "result: " + result);
+
 		return result;
 	}
 
