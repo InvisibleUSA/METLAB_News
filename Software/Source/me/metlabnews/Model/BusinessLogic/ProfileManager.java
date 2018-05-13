@@ -12,7 +12,6 @@ import me.metlabnews.Presentation.ProfileDataRepresentation;
 import me.metlabnews.Presentation.Session;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 
