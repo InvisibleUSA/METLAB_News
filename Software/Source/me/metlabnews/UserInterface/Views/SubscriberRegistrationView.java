@@ -16,29 +16,12 @@ import java.util.List;
 
 /**
  * The registration form for new subscribers
- * Contains text fields for information about the new subscriber
  */
 public class SubscriberRegistrationView extends VerticalLayout implements IView
 {
-	private MainUI m_parent;
-
-	private final Label                title               = new Label("Willkommen bei METLAB-News");
-	private final Panel                panelLayout         = new Panel("Registrierung");
-	private final VerticalLayout       layout              = new VerticalLayout();
-	private final TextField            textFieldFirstName  = new TextField("Vorname:");
-	private final TextField            textFieldLastName   = new TextField("Nachname:");
-	private final TextField            textFieldEmail      = new TextField("E-Mail:");
-	private final PasswordField        textFieldPassword   = new PasswordField("Passwort:");
-	private final CheckBox             checkBoxClientAdmin = new CheckBox("Administrator Status beantragen");
-	private final Button               buttonRegister      = new Button("Registrieren");
-	private final Button               buttonLogin         = new Button("Zurück zur Anmeldung");
-	private final NativeSelect<String> textFieldCompany    = new NativeSelect<>("Organisation:");
-	private final HorizontalLayout     buttonBar           = new HorizontalLayout();
-
 	/**
-	 * Initializes the view and sets all of its components to their default values
-	 *
-	 * @param parent the parent object of this view
+	 * Constructs the registration form for new subscribers
+	 * @param parent the object owning this view
 	 */
 	public SubscriberRegistrationView(MainUI parent)
 	{
@@ -70,7 +53,7 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 
 		textFieldCompany.addValueChangeListener(event ->
 		                                        {
-			                                        getDropDownvalue(event.getValue().toString());
+			                                        getDropDownvalue(event.getValue());
 			                                        m_parent.getAllOrganisations(textFieldCompany::setItems,
 			                                                                     Notification::show);
 		                                        });
@@ -87,6 +70,21 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 	{
 		m_parent.setContent(this);
 	}
+
+	private MainUI m_parent;
+
+	private final Label                title               = new Label("Willkommen bei METLAB-News");
+	private final Panel                panelLayout         = new Panel("Registrierung");
+	private final VerticalLayout       layout              = new VerticalLayout();
+	private final TextField            textFieldFirstName  = new TextField("Vorname:");
+	private final TextField            textFieldLastName   = new TextField("Nachname:");
+	private final TextField            textFieldEmail      = new TextField("E-Mail:");
+	private final PasswordField        textFieldPassword   = new PasswordField("Passwort:");
+	private final CheckBox             checkBoxClientAdmin = new CheckBox("Administrator Status beantragen");
+	private final Button               buttonRegister      = new Button("Registrieren");
+	private final Button               buttonLogin         = new Button("Zurück zur Anmeldung");
+	private final NativeSelect<String> textFieldCompany    = new NativeSelect<>("Organisation:");
+	private final HorizontalLayout     buttonBar           = new HorizontalLayout();
 
 	private String company = "";
 

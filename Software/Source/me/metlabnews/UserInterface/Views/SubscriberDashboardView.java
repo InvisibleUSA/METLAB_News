@@ -22,11 +22,13 @@ import java.util.Locale;
 
 /**
  * The dashboard for subscribers and client administrators
- * SubscriberDashboard contains clippings and profiles
- * AdministratorDashboard contains
  */
 public class SubscriberDashboardView extends VerticalLayout implements IView
 {
+	/**
+	 * Constructs the dashboard for subscribers and client administrators
+	 * @param parent the object owning this view
+	 */
 	public SubscriberDashboardView(MainUI parent)
 	{
 		m_parent = parent;

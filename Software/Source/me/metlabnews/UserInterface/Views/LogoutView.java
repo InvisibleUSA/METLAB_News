@@ -9,20 +9,13 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 /**
- * The good bye view after logout
- * Contains nothing important
+ * The form displayed after logout
  */
 public class LogoutView extends VerticalLayout implements IView
 {
-	private MainUI m_parent;
-
-	private final Label  title       = new Label("Auf Wiedersehen!");
-	private final Button buttonLogin = new Button("Erneut anmelden");
-
 	/**
-	 * Initializes the view and sets all of its components to their default values
-	 *
-	 * @param parent the parent object of this view
+	 * Constructs the form displayed after logout
+	 * @param parent the object owning this view
 	 */
 	public LogoutView(MainUI parent)
 	{
@@ -40,4 +33,9 @@ public class LogoutView extends VerticalLayout implements IView
 	{
 		m_parent.setContent(this);
 	}
+
+	private MainUI m_parent;
+
+	private final Label  title       = new Label("Auf Wiedersehen!");
+	private final Button buttonLogin = new Button("Erneut anmelden");
 }

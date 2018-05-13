@@ -9,8 +9,15 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
+/**
+ * The login form for subscribers and client administrators
+ */
 public class SubscriberLoginView extends VerticalLayout implements IView
 {
+	/**
+	 * Constructs the login form for subscribers and client administrators
+	 * @param parent the object owning this view
+	 */
 	public SubscriberLoginView(MainUI parent)
 	{
 		m_parent = parent;
@@ -32,6 +39,9 @@ public class SubscriberLoginView extends VerticalLayout implements IView
 		layoutOptions.addComponents(buttonRegister, buttonToSysAdminLogin, buttonForgotPassword);
 	}
 
+	/**
+	 * Executes the action of changing a password
+	 */
 	private void passwordForgotAction()
 	{
 		if(textFieldEmail.getValue().isEmpty())
@@ -58,6 +68,9 @@ public class SubscriberLoginView extends VerticalLayout implements IView
 		Notification.show("Email zur Passwortwiederherstellung wurde versendet");
 	}
 
+	/**
+	 * resets the text fields in the view
+	 */
 	public void clearFields()
 	{
 		textFieldEmail.setValue("");

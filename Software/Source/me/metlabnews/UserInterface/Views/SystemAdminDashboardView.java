@@ -14,8 +14,15 @@ import java.util.List;
 
 
 
+/**
+ * The dashboard for system administrators
+ */
 public class SystemAdminDashboardView extends VerticalLayout implements IView
 {
+	/**
+	 * Constructs the dashboard for system administrators
+	 * @param parent the object owning this view
+	 */
 	public SystemAdminDashboardView(MainUI parent)
 	{
 		m_parent = parent;

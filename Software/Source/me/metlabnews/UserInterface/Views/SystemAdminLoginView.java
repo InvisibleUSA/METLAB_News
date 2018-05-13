@@ -6,8 +6,15 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
+/**
+ * The login form for system administrators
+ */
 public class SystemAdminLoginView extends VerticalLayout implements IView
 {
+	/**
+	 * Constructs the login form for system administrators
+	 * @param parent the object owning this view
+	 */
 	public SystemAdminLoginView(MainUI parent)
 	{
 		m_parent = parent;
@@ -23,6 +30,9 @@ public class SystemAdminLoginView extends VerticalLayout implements IView
 		layout.addComponents(textFieldEmail, textFieldPassword, buttonLogin, buttonToSubscriberLogin);
 	}
 
+	/**
+	 * resets the text fields in the view
+	 */
 	public void clearFields()
 	{
 		textFieldEmail.setValue("");
