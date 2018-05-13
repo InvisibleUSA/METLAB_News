@@ -86,6 +86,9 @@ public class Presenter implements IResource
 		ui.registerCallbackLogout(session::logout);
 
 
+		ui.registerCallbackFetchSubscribers((onSuccess, onFailure) -> userManager.getSubscribersOfOrganisation(
+				session, onSuccess, onFailure));
+
 		ui.registerCallbackFetchPendingVerificationRequests((onSuccess, onFailure) ->
 			m_threadPool.execute(() -> userManager.getPendingVerificationRequests(session, onSuccess, onFailure)));
 
