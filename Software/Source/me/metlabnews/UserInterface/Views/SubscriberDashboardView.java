@@ -17,6 +17,7 @@ import java.util.*;
 /**
  * The dashboard for subscribers and client administrators
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class SubscriberDashboardView extends VerticalLayout implements IView
 {
 	/**

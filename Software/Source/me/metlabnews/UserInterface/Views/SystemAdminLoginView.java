@@ -9,6 +9,7 @@ import me.metlabnews.UserInterface.MainUI;
 /**
  * The login form for system administrators
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class SystemAdminLoginView extends VerticalLayout implements IView
 {
 	/**

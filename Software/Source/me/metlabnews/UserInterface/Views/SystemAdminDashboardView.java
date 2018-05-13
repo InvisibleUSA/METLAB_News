@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * The dashboard for system administrators
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class SystemAdminDashboardView extends VerticalLayout implements IView
 {
 	/**

@@ -12,6 +12,7 @@ import me.metlabnews.UserInterface.MainUI;
 /**
  * The login form for subscribers and client administrators
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class SubscriberLoginView extends VerticalLayout implements IView
 {
 	/**

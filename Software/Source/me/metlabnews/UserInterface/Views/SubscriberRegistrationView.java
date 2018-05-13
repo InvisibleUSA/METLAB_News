@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * The registration form for new subscribers
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class SubscriberRegistrationView extends VerticalLayout implements IView
 {
 	/**
