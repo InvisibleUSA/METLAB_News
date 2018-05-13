@@ -22,6 +22,7 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 {
 	/**
 	 * Constructs the dashboard for system administrators
+	 *
 	 * @param parent the object owning this view
 	 */
 	public SystemAdminDashboardView(MainUI parent)
@@ -35,7 +36,7 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 		m_buttonShowOrganizations.addClickListener(
 				(Button.ClickEvent event) -> m_parent.getAllOrganisations(
 						this::showOrganizations,
-						errorMessage -> m_parent.access(() -> Notification.show(errorMessage))));
+						Notification::show));
 
 		m_buttonShowSources.addClickListener(
 				(Button.ClickEvent event) -> updateGrid());
@@ -43,12 +44,19 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 		m_buttonAddOrganisation.addClickListener(event -> m_parent.addOrganisation(
 				() -> m_parent.access(
 						() -> {
+							m_parent.verifySubscriber(
+									() -> {
+										m_textOrganization.clear();
+										m_textAdminFirstName.clear();
+										m_textAdminLastName.clear();
+										m_textAdminEmail.clear();
+										m_textAdminPassword.clear();
+									},
+									errorMessage -> m_parent.access(
+											() -> Notification.show(
+													"Administrator konnte nicht hinzugefügt werden\n" + errorMessage)),
+									m_textAdminEmail.getValue(), true);
 							Notification.show("Organisation hinzugefügt");
-							m_textOrganization.clear();
-							m_textAdminFirstName.clear();
-							m_textAdminLastName.clear();
-							m_textAdminEmail.clear();
-							m_textAdminPassword.clear();
 						}),
 				errorMessage -> m_parent.access(
 						() -> Notification.show("Organisation konnte nicht hinzugefügt werden\n" + errorMessage)),

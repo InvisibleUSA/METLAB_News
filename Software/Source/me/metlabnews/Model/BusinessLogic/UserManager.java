@@ -562,7 +562,7 @@ public class UserManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return null;
 		}
-		if(session.getUser().getClass() != Subscriber.class)
+		if(session.getUser().getClass() != SystemAdministrator.class)
 		{
 			onFailure.execute(Messages.NotSystemAdmin);
 			return null;

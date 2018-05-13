@@ -30,15 +30,14 @@ public class Organization_GridHelper
 							m_textAdminPassword.setValue("");
 						},
 						m_textAdminFirstName.getValue(), m_textAdminLastName.getValue(), m_name,
-						m_textAdminEmail.getValue(), m_textAdminPassword.getValue(), true)
-		                                );
+						m_textAdminEmail.getValue(), m_textAdminPassword.getValue(), true));
 
 		m_buttonRemoveOrganization.addClickListener(event -> m_parent.removeOrganisation(
 				() -> {
 					m_buttonRemoveOrganization.setEnabled(false);
-					Notification.show("Organisation entfernt");
+					m_parent.access(() -> Notification.show("Organisation entfernt"));
 				},
-				errorMessage -> Notification.show("Organisation konnte nicht entfernt werden!\n" + errorMessage),
+				errorMessage -> m_parent.access(() -> Notification.show("Organisation konnte nicht entfernt werden!\n" + errorMessage)),
 				m_name));
 	}
 
