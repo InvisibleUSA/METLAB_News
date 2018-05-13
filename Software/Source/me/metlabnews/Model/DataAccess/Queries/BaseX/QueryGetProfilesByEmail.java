@@ -5,6 +5,7 @@ package me.metlabnews.Model.DataAccess.Queries.BaseX;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 import me.metlabnews.Model.Entities.Clipping;
+import me.metlabnews.Model.Entities.ObservationProfile;
 import org.basex.core.Command;
 import org.basex.core.cmd.XQuery;
 
@@ -23,9 +24,9 @@ public class QueryGetProfilesByEmail extends BaseXQueryBase
 
 	public String subscriberEmail = "";
 
-	private ArrayList<Clipping> m_results = new ArrayList<>();
+	private ArrayList<ObservationProfile> m_results = new ArrayList<>();
 
-	public List<Clipping> getResults()
+	public List<ObservationProfile> getResults()
 	{
 		return Collections.unmodifiableList(m_results);
 	}
@@ -43,13 +44,13 @@ public class QueryGetProfilesByEmail extends BaseXQueryBase
 	@Override
 	protected void processResults(String str)
 	{
-		XMLTag res = new XMLTag("<profiles>" + str + "</profiles>");
-		for(XMLTag tmp : res.children("profile"))
+		XMLTag result = new XMLTag("<profiles>" + str + "</profiles>");
+		for(XMLTag tag : result.children("profile"))
 		{
 			try
 			{
-				Clipping c = new Clipping(tmp);
-				m_results.add(c);
+				ObservationProfile profile = new ObservationProfile(tag);
+				m_results.add(profile);
 			}
 			catch(IllegalArgumentException e)
 			{
