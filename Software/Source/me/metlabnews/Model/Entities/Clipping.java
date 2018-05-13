@@ -80,7 +80,7 @@ public class Clipping
 	public String toString()
 	{
 		StringBuilder s = new StringBuilder("<clipping>\n");
-		s.append("\t<profileID>").append(m_profile.getName()).append("</profileID>\n"); //FIXME only add profileID
+		s.append("\t<profileID>").append(m_profile.getID()).append("</profileID>\n");
 		s.append("\t<generationtime>");
 		s.append(m_generationTime.format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss")));
 		s.append("</generationtime>\n");

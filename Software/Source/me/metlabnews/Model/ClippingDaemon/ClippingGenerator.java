@@ -63,7 +63,7 @@ class ClippingGenerator implements Runnable
 		{
 			Logger.getInstance().logError(this, "Unknown Datebase Error: Clipping could not be saved.");
 		}
-		Logger.getInstance().logDebug(this, "Stored clipping for profile " + "in BaseX"); //FIXME add profile ID
+		Logger.getInstance().logDebug(this, "Stored clipping for profile " + m_profile.getID() + "in BaseX");
 	}
 
 	private void getYaCyArticles()

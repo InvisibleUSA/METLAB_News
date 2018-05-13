@@ -26,7 +26,7 @@ public class QueryAddClipping extends BaseXQueryBase
 	@Override
 	protected Command createBaseXQuery()
 	{
-		String filename = "/Clippings/" + clipping.getProfile().getName() + "/" + clipping.getGenerationTime().format( //FIXME use ID instead of profilename
+		String filename = "/Clippings/" + clipping.getProfile().getID() + "/" + clipping.getGenerationTime().format(
 				DateTimeFormatter.ofPattern("YYYY-MM-DD"));
 		return new Add(filename, clipping.toString());
 	}
