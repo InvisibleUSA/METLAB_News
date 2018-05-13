@@ -121,7 +121,8 @@ public interface IUserInterface
 	interface IFetchClippingsCallback
 	{
 		void execute(IFetchClippingsEvent onSuccess,
-		             IGenericFailureEvent onFailure);
+		             IGenericFailureEvent onFailure,
+		             String profileID);
 	}
 
 	void registerCallbackFetchClippings(IFetchClippingsCallback callback); //TODO implement in Presentation
@@ -174,13 +175,14 @@ public interface IUserInterface
 	{
 		void execute(IGenericEvent onSuccess,
 		             IGenericFailureEvent onFailure,
+		             String profileID,
 		             String profileName,
 		             String[] sources,
 		             String[] keywords,
 		             Duration interval,
 		             boolean isActive);
 	}
-	void registerCallbackUpdateProfile(IUpdateProfileCallback callback); //TODO: implement in Presentation
+	void registerCallbackUpdateProfile(IUpdateProfileCallback callback);
 
 
 	interface IDeleteProfileCallback
@@ -191,7 +193,7 @@ public interface IUserInterface
 		             String profileName);
 	}
 
-	void registerCallbackDeleteProfile(IDeleteProfileCallback callback); //TODO: implement in Presentation
+	void registerCallbackDeleteProfile(IDeleteProfileCallback callback);
 
 
 	interface IShareProfileCallback

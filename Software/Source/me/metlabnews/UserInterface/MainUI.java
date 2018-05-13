@@ -349,9 +349,10 @@ public class MainUI extends UI implements IUserInterface
 	 * @param onFailure event to be executed on unsuccessful execution
 	 */
 	public void fetchClippings(IFetchClippingsEvent onSuccess,
-	                           IGenericFailureEvent onFailure)
+	                           IGenericFailureEvent onFailure,
+	                           String profileID)
 	{
-		m_fetchClippingsCallback.execute(onSuccess, onFailure);
+		m_fetchClippingsCallback.execute(onSuccess, onFailure, profileID);
 	}
 
 	/**
@@ -455,10 +456,10 @@ public class MainUI extends UI implements IUserInterface
 	 * @param isActive boolean whether the profile is active
 	 */
 	public void updateProfileAction(IGenericEvent onSuccess,
-	                                IGenericFailureEvent onFailure, String profileName,
+	                                IGenericFailureEvent onFailure, String profileID, String profileName,
 	                                String[] keywords, String[] sources, Duration interval, boolean isActive)
 	{
-		m_updateProfileCallback.execute(onSuccess, onFailure, profileName, keywords, sources, interval, isActive);
+		m_updateProfileCallback.execute(onSuccess, onFailure, profileID, profileName, keywords, sources, interval, isActive);
 	}
 
 	/**

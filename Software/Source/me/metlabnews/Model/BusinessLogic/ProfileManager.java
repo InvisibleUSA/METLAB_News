@@ -83,6 +83,88 @@ public class ProfileManager
 	}
 
 
+	public void updateProfile(Session session, IGenericEvent onSuccess,
+	                          IGenericFailureEvent onFailure,
+	                          String id, String name, List<String> keywords,
+	                          List<String> sources, Duration clippingPeriod,
+	                          boolean isActive)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
+		Subscriber subscriber = (Subscriber)session.getUser();
+		QueryGetProfileById fetchQuery = new QueryGetProfileById();
+		fetchQuery.profileID = id;
+		if(!fetchQuery.execute())
+		{
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
+			return;
+		}
+		ObservationProfile profile = fetchQuery.getProfile();
+		profile.changeName(name);
+		profile.replaceKeywords(keywords);
+		profile.replaceSources(sources);
+		if(isActive)
+		{
+			profile.activate();
+		}
+		else
+		{
+			profile.deactivate();
+		}
+		QueryUpdateProfile updateQuery = new QueryUpdateProfile();
+		updateQuery.profile = profile;
+		if(!updateQuery.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+		onSuccess.execute();
+	}
+
+
+	public void shareProfile(Session session, IGenericEvent onSuccess,
+	                         IGenericFailureEvent onFailure,
+	                         String profileID, String receiverEmail)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
+		QueryGetProfileById fetchQuery = new QueryGetProfileById();
+		fetchQuery.profileID = profileID;
+		if(!fetchQuery.execute())
+		{
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
+			return;
+		}
+		ObservationProfile sharedProfile = new ObservationProfile(receiverEmail, fetchQuery.getProfile());
+		QueryAddProfile addQuery = new QueryAddProfile();
+		addQuery.profile = sharedProfile;
+		if(!addQuery.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+		onSuccess.execute();
+	}
+
+
 	public void createNewProfileTemplate(Session session, IGenericEvent onSuccess,
 	                                IGenericFailureEvent onFailure,
 	                                String name, List<String> keywords,
@@ -209,7 +291,7 @@ public class ProfileManager
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
 		{
-			onFailure.execute(Messages.OberservationProfileDoesNotExist);
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
 			return;
 		}
 		ObservationProfile profile = fetchQuery.getProfile();
@@ -248,7 +330,7 @@ public class ProfileManager
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
 		{
-			onFailure.execute(Messages.OberservationProfileDoesNotExist);
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
 			return;
 		}
 		ObservationProfile profile = fetchQuery.getProfile();
@@ -283,7 +365,7 @@ public class ProfileManager
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
 		{
-			onFailure.execute(Messages.OberservationProfileDoesNotExist);
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
 			return;
 		}
 		ObservationProfile profile = fetchQuery.getProfile();
@@ -318,7 +400,7 @@ public class ProfileManager
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
 		{
-			onFailure.execute(Messages.OberservationProfileDoesNotExist);
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
 			return;
 		}
 		ObservationProfile profile = fetchQuery.getProfile();
@@ -353,7 +435,7 @@ public class ProfileManager
 		fetchQuery.profileID = profileID;
 		if(!fetchQuery.execute())
 		{
-			onFailure.execute(Messages.OberservationProfileDoesNotExist);
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
 			return;
 		}
 		ObservationProfile profile = fetchQuery.getProfile();
@@ -419,7 +501,7 @@ public class ProfileManager
 		fetchQuery.templateID = templateID;
 		if(!fetchQuery.execute())
 		{
-			onFailure.execute(Messages.OberservationProfileDoesNotExist);
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
 			return;
 		}
 		ObservationProfileTemplate template = fetchQuery.getTemplate();
@@ -460,7 +542,7 @@ public class ProfileManager
 		fetchQuery.templateID = templateID;
 		if(!fetchQuery.execute())
 		{
-			onFailure.execute(Messages.OberservationProfileDoesNotExist);
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
 			return;
 		}
 		ObservationProfileTemplate template = fetchQuery.getTemplate();
@@ -501,7 +583,7 @@ public class ProfileManager
 		fetchQuery.templateID = templateID;
 		if(!fetchQuery.execute())
 		{
-			onFailure.execute(Messages.OberservationProfileDoesNotExist);
+			onFailure.execute(Messages.ObservationProfileDoesNotExist);
 			return;
 		}
 		ObservationProfileTemplate template = fetchQuery.getTemplate();

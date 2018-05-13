@@ -67,10 +67,16 @@ public class ObservationProfileTemplate
 		return m_profileName;
 	}
 
+	public void changeName(String newName)
+	{
+		m_profileName = newName;
+	}
+
 	public String getOrganisationID()
 	{
 		return m_organisationID;
 	}
+
 
 	@NotNull
 	public List<String> getKeywords()
@@ -105,6 +111,15 @@ public class ObservationProfileTemplate
 		m_sources.removeAll(sourceLinksToRemove);
 	}
 
+	public void replaceKeywords(@NotNull List<String> newKeywords)
+	{
+		m_keywords = newKeywords;
+	}
+
+	public void replaceSources(@NotNull List<String> newSources)
+	{
+		m_sources = newSources;
+	}
 
 	@Override
 	public boolean equals(Object otherObject)

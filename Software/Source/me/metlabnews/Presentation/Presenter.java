@@ -124,11 +124,23 @@ public class Presenter implements IResource
 		                              		session, onSuccess, onFailure, profileID, Arrays.asList(keywords),
 			                                Arrays.asList(sources), interval))));
 
+		ui.registerCallbackUpdateProfile((onSuccess, onFailure, profileID, profileName, sources, keywords, interval, isActive)
+				                                 -> profileManager.updateProfile(session, onSuccess, onFailure,
+				                                                                 profileID, profileName,
+				                                                                 Arrays.asList(keywords),
+				                                                                 Arrays.asList(sources),
+				                                                                 interval, isActive));
+
 		ui.registerCallbackDeleteProfile((onSuccess, onFailure, ownerEmail, profileID) -> profileManager.removeProfile(
 				session, onSuccess, onFailure, profileID));
 
 		ui.registerCallbackFetchProfiles((onSuccess, onFailure) -> profileManager.getOwnProfiles(
 				session, onSuccess, onFailure));
+
+
+		ui.registerCallbackFetchClippings((onSuccess, onFailure, profileID) ->
+				                                  clippingManager.getAllClippingsForObservationProfile(
+				                                  		session, onSuccess, onFailure, profileID));
 
 
 

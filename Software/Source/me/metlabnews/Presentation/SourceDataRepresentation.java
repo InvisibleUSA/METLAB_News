@@ -24,9 +24,10 @@ public class SourceDataRepresentation
 	@Override
 	public String toString()
 	{
-		//TODO
 	}
 	*/
+
+
 	public String getName()
 	{
 		return m_name;

@@ -42,6 +42,11 @@ public class ProfileDataRepresentation
 	}
 	*/
 
+	public String getID()
+	{
+		return m_id;
+	}
+
 	public String getEmail()
 	{
 		return m_ownerEmail;

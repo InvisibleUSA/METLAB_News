@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ObservationProfile extends ObservationProfileTemplate
 {
-	public       ObservationProfile(String name, String userMail, String organisationID,
+	public ObservationProfile(String name, String userMail, String organisationID,
 	                          @NotNull List<String> keywords, @NotNull List<String> sources, @NotNull Duration period)
 	{
 		super(name, organisationID, keywords, sources);
@@ -24,6 +24,15 @@ public class ObservationProfile extends ObservationProfileTemplate
 	@SuppressWarnings("unused")
 	private ObservationProfile() {
 		super();
+	}
+
+	public ObservationProfile(String userMail, ObservationProfile otherProfile)
+	{
+		super(otherProfile.m_profileName, otherProfile.m_organisationID,
+		      otherProfile.m_keywords, otherProfile.m_sources);
+		this.m_userMail = userMail;
+		this.m_period = otherProfile.m_period;
+		this.m_isActive = false;
 	}
 
 	public ObservationProfile(XMLTag tag)
@@ -54,6 +63,11 @@ public class ObservationProfile extends ObservationProfileTemplate
 		}
 	}
 
+
+	public void setGenerationPeriod(@NotNull Duration period)
+	{
+		m_period = period;
+	}
 
 	public void setLastGenerationTime(@NotNull LocalDateTime lastGenerationTime)
 	{

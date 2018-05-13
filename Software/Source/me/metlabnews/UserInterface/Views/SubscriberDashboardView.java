@@ -13,10 +13,7 @@ import me.metlabnews.UserInterface.MainUI;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 
 
@@ -72,7 +69,8 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_buttonShowClippings.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchClippings(
 						this::showClippings,
-						Notification::show));
+						Notification::show,
+						profileID));
 
 		m_buttonShowShares.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchSubscribers(
@@ -181,8 +179,9 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 					Notification.show(errorMessage);
 					m_gridClippings.setItems(
 							new ClippingDataRepresentation("",
-							                               "keine Pressespiegel vorhanden"));
-				}));
+							                               "keine Pressespiegel vorhanden", ""));
+				},
+				profileID));
 		m_gridClippings.addItemClickListener(event -> showClipping());
 	}
 
