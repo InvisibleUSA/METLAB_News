@@ -25,7 +25,7 @@ public class QueryGetProfilesByEmail extends BaseXQueryBase
 {
 	static
 	{
-		m_logger.register(QueryGetClippings.class, Logger.Channel.DocDBMS);
+		m_logger.register(QueryGetProfilesByEmail.class, Logger.Channel.DocDBMS);
 	}
 
 	public String subscriberEmail = "";

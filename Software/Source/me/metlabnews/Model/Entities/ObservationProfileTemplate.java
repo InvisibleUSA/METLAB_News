@@ -13,6 +13,10 @@ import java.util.UUID;
 
 public class ObservationProfileTemplate
 {
+	static
+	{
+		Logger.getInstance().register(ObservationProfileTemplate.class, Logger.Channel.Entities);
+	}
 	public ObservationProfileTemplate(String name, String organisationID, @NotNull List<String> keywords,
 	                                  @NotNull List<String> sources)
 	{

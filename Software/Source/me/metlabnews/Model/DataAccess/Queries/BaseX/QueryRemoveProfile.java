@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries.BaseX;
 
+import me.metlabnews.Model.Common.Logger;
 import org.basex.core.Command;
 import org.basex.core.cmd.Delete;
 
@@ -14,6 +15,10 @@ import org.basex.core.cmd.Delete;
  */
 public class QueryRemoveProfile extends BaseXQueryBase
 {
+	static
+	{
+		Logger.getInstance().register(QueryRemoveProfile.class, Logger.Channel.DocDBMS);
+	}
 	public String profileID = "";
 	public String result = "";
 

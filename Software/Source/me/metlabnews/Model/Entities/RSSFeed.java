@@ -16,6 +16,10 @@ import java.util.Collection;
  */
 public class RSSFeed
 {
+	static
+	{
+		Logger.getInstance().register(RSSFeed.class, Logger.Channel.Entities);
+	}
 	private NewsSource         source;
 	private ArrayList<Article> articles = new ArrayList<>();
 

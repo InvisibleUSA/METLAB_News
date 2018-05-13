@@ -496,7 +496,7 @@ public class UserManager
 		}
 		if(session.getUser().getClass() != Subscriber.class)
 		{
-			onFailure.execute(Messages.NotSystemAdmin);
+			onFailure.execute(Messages.IllegalOperation);
 			return;
 		}
 		QueryRemoveSubscriber qrs = new QueryRemoveSubscriber();
@@ -509,6 +509,43 @@ public class UserManager
 		}
 		onSuccess.execute();
 	}
+
+
+	public void getSubscribersOfOrganisation(Session session, IUserInterface.IFetchSubscribersEvent onSuccess, IGenericFailureEvent onFailure)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+		Subscriber admin = (Subscriber)session.getUser();
+		if(!admin.isOrganisationAdministrator())
+		{
+			onFailure.execute(Messages.NotClientAdmin);
+			return;
+		}
+		QueryGetSubscribersOfOrganisation query = new QueryGetSubscribersOfOrganisation();
+		query.organisationId = admin.getOrganisationId().getName();
+		if(!query.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+
+		int resultCount = query.getResult().size();
+		UserDataRepresentation[] resultSet = new UserDataRepresentation[resultCount];
+		for(int idx = 0; idx < resultCount; ++idx)
+		{
+			resultSet[idx] = new UserDataRepresentation(query.getResult().get(idx));
+		}
+		onSuccess.execute(resultSet);
+	}
+
 
 	/**
 	 * gets all Organisations

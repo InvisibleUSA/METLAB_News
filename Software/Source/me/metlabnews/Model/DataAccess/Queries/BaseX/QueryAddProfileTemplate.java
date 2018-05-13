@@ -18,7 +18,7 @@ public class QueryAddProfileTemplate extends BaseXQueryBase
 {
 	static
 	{
-		m_logger.register(QueryAddProfile.class, Logger.Channel.DocDBMS);
+		m_logger.register(QueryAddProfileTemplate.class, Logger.Channel.DocDBMS);
 	}
 
 	public ObservationProfileTemplate template;
