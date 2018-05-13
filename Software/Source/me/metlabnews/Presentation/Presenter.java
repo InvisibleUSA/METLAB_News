@@ -131,6 +131,10 @@ public class Presenter implements IResource
 				                                                                 Arrays.asList(sources),
 				                                                                 interval, isActive));
 
+		ui.registerCallbackShareProfile((onSuccess, onFailure, senderEmail, profileId, receiverEmail) ->
+				                                profileManager.shareProfile(session, onSuccess, onFailure,
+				                                                            profileId, receiverEmail));
+
 		ui.registerCallbackDeleteProfile((onSuccess, onFailure, ownerEmail, profileID) -> profileManager.removeProfile(
 				session, onSuccess, onFailure, profileID));
 
@@ -142,10 +146,24 @@ public class Presenter implements IResource
 				                                  clippingManager.getAllClippingsForObservationProfile(
 				                                  		session, onSuccess, onFailure, profileID));
 
+		ui.registerCallbackFetchTemplates((onSuccess, onFailure) -> profileManager.getAvailableTemplates(
+				session, onSuccess, onFailure));
 
+		ui.registerCallbackAddTemplate((onSuccess, onFailure, templateName, keywords, sources) ->
+				                               profileManager.createNewProfileTemplate(session, onSuccess, onFailure,
+				                                                                       templateName,
+				                                                                       Arrays.asList(keywords),
+				                                                                       Arrays.asList(sources)));
+
+		ui.registerCallbackRemoveTemplate((onSuccess, onFailure, templateName) ->
+				                                  profileManager.removeProfileTemplate(
+				                                  		session, onSuccess, onFailure, templateName));
 
 		ui.registerCallbackAddSource((onSuccess, onFailure, name, link, rssLink) -> clippingManager.addSource(
 				session, onSuccess, onFailure, name, link, rssLink));
+
+		ui.registerCallbackFetchSources((onSuccess, onFailure) -> clippingManager.getAvailableSources(
+				session, onSuccess, onFailure));
 
 		ui.registerCallbackRemoveSource((onSuccess, onFailure, name) -> clippingManager.removeSource(
 				session, onSuccess, onFailure, name));

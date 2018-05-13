@@ -3,10 +3,7 @@ package me.metlabnews.UserInterface.Views;
 import com.vaadin.server.Page;
 import com.vaadin.shared.ui.datefield.DateTimeResolution;
 import com.vaadin.ui.*;
-import me.metlabnews.Presentation.ClippingDataRepresentation;
-import me.metlabnews.Presentation.ProfileDataRepresentation;
-import me.metlabnews.Presentation.SourceDataRepresentation;
-import me.metlabnews.Presentation.UserDataRepresentation;
+import me.metlabnews.Presentation.*;
 import me.metlabnews.UserInterface.Helpers.*;
 import me.metlabnews.UserInterface.MainUI;
 
@@ -90,7 +87,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 				(Button.ClickEvent event) ->
 						m_parent.fetchTemplates(
 								this::showTemplatesForSubscribers,
-								errorMessage -> {
+								(String errorMessage) -> {
 									Notification.show(errorMessage);
 									showTemplatesForSubscribers(null);
 								}));
@@ -601,12 +598,12 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_textClipping.setValue(((ClippingDataRepresentation)clippings[0]).getContent());
 	}
 
-	private void showTemplatesForSubscribers(ProfileDataRepresentation[] data)
+	private void showTemplatesForSubscribers(ProfileTemplateDataRepresentation[] data)
 	{
 		List<Profile_GridHelper> templates = new ArrayList<>();
 		if(data != null)
 		{
-			for(ProfileDataRepresentation template : data)
+			for(ProfileTemplateDataRepresentation template : data)
 			{
 				templates.add(new Profile_GridHelper(m_parent,
 				                                     null,
@@ -614,9 +611,8 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 				                                     template.getName(),
 				                                     template.getKeywords(),
 				                                     template.getSources(),
-				                                     template.getIsActive(),
-				                                     template.getLastGenerationTime(),
-				                                     template.getInterval()));
+				                                     false,
+				                                     null, null));
 			}
 		}
 		if(templates.isEmpty())
@@ -635,10 +631,10 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_listTemplates.setItems(templates);
 	}
 
-	private void showTemplatesForAdmins(ProfileDataRepresentation[] data)
+	private void showTemplatesForAdmins(ProfileTemplateDataRepresentation[] data)
 	{
 		List<Template_GridHelper> templates = new ArrayList<>();
-		for(ProfileDataRepresentation template : data)
+		for(ProfileTemplateDataRepresentation template : data)
 		{
 			templates.add(new Template_GridHelper(m_parent,
 			                                      template.getEmail(),

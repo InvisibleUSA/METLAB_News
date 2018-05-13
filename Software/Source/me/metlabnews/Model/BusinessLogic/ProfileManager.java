@@ -4,12 +4,9 @@ import me.metlabnews.Model.DataAccess.Queries.BaseX.*;
 import me.metlabnews.Model.Entities.ObservationProfile;
 import me.metlabnews.Model.Entities.ObservationProfileTemplate;
 import me.metlabnews.Model.Entities.Subscriber;
-import me.metlabnews.Presentation.IUserInterface;
+import me.metlabnews.Presentation.*;
 import me.metlabnews.Presentation.IUserInterface.IGenericEvent;
 import me.metlabnews.Presentation.IUserInterface.IGenericFailureEvent;
-import me.metlabnews.Presentation.Messages;
-import me.metlabnews.Presentation.ProfileDataRepresentation;
-import me.metlabnews.Presentation.Session;
 
 import java.time.Duration;
 import java.util.List;
@@ -241,7 +238,7 @@ public class ProfileManager
 	 * @param onSuccess
 	 * @param onFailure
 	 */
-	public void getAvailableTemplates(Session session, IGenericEvent onSuccess,
+	public void getAvailableTemplates(Session session, IUserInterface.IFetchTemplatesEvent onSuccess,
 	                                  IGenericFailureEvent onFailure)
 	{
 		if(!session.isLoggedIn())
@@ -264,6 +261,13 @@ public class ProfileManager
 			return;
 		}
 
+		int resultCount = fetchQuery.getResults().size();
+		ProfileTemplateDataRepresentation[] resultSet = new ProfileTemplateDataRepresentation[resultCount];
+		for(int idx = 0; idx < resultCount; ++idx)
+		{
+			resultSet[idx] = new ProfileTemplateDataRepresentation(fetchQuery.getResults().get(idx));
+		}
+		onSuccess.execute(resultSet);
 	}
 
 

@@ -360,7 +360,7 @@ public class MainUI extends UI implements IUserInterface
 	 * @param onSuccess event to be executed on successful execution, contains the fetched items
 	 * @param onFailure event to be executed on unsuccessful execution
 	 */
-	public void fetchTemplates(IFetchProfilesEvent onSuccess,
+	public void fetchTemplates(IFetchTemplatesEvent onSuccess,
 	                           IGenericFailureEvent onFailure)
 	{
 		m_fetchTemplatesCallback.execute(onSuccess, onFailure);

@@ -2,14 +2,12 @@ package me.metlabnews.Model.BusinessLogic;
 
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetClippings;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryAddSource;
+import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryGetSources;
 import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryRemoveSource;
 import me.metlabnews.Model.Entities.Clipping;
 import me.metlabnews.Model.Entities.NewsSource;
 import me.metlabnews.Model.Entities.Subscriber;
-import me.metlabnews.Presentation.ClippingDataRepresentation;
-import me.metlabnews.Presentation.IUserInterface;
-import me.metlabnews.Presentation.Messages;
-import me.metlabnews.Presentation.Session;
+import me.metlabnews.Presentation.*;
 
 
 
@@ -138,6 +136,38 @@ public class ClippingManager
 		else
 		{
 			onSuccess.execute();
+		}
+	}
+
+
+	public void getAvailableSources(Session session, IUserInterface.IFetchSourcesEvent onSuccess,
+	                                IUserInterface.IGenericFailureEvent onFailure)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != Subscriber.class)
+		{
+			onFailure.execute(Messages.IllegalOperation);
+			return;
+		}
+
+		QueryGetSources query = new QueryGetSources();
+		if(!query.execute())
+		{
+			onFailure.execute(Messages.UnknownError);
+		}
+		else
+		{
+			int resultCount = query.getSources().size();
+			SourceDataRepresentation[] resultSet = new SourceDataRepresentation[resultCount];
+			for(int idx = 0; idx < resultCount; ++idx)
+			{
+				resultSet[idx] = new SourceDataRepresentation(query.getSources().get(idx));
+			}
+			onSuccess.execute(resultSet);
 		}
 	}
 

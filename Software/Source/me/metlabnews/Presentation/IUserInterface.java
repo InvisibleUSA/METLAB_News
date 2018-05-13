@@ -33,6 +33,11 @@ public interface IUserInterface
 		void execute(ProfileDataRepresentation[] data);
 	}
 
+	interface IFetchTemplatesEvent
+	{
+		void execute(ProfileTemplateDataRepresentation[] data);
+	}
+
 	interface IFetchClippingsEvent
 	{
 		void execute(ClippingDataRepresentation[] data);
@@ -130,7 +135,7 @@ public interface IUserInterface
 
 	interface IFetchTemplatesCallback
 	{
-		void execute(IFetchProfilesEvent onSuccess,
+		void execute(IFetchTemplatesEvent onSuccess,
 		             IGenericFailureEvent onFailure);
 	}
 
