@@ -9,23 +9,24 @@ import java.util.ArrayList;
 
 
 
+/**
+ * Get the sources from SQL
+ *
+ * @author Benjamin Gerlach
+ */
 public class QueryGetSources extends MariaDBQueryBase
 {
 	private ArrayList<NewsSource> m_sources = new ArrayList<>();
 
 	@Override
-	protected Object[] createSQLQuery()
-	{
+	protected Object[] createSQLQuery() {
 		return new String[] {"SELECT * FROM Quellen"};
 	}
 
 	@Override
-	protected void processResults(ResultSet rs)
-	{
-		try
-		{
-			while(rs.next())
-			{
+	protected void processResults(ResultSet rs) {
+		try {
+			while(rs.next()) {
 				String     name     = rs.getString("Name");
 				String     link     = rs.getString("Link");
 				String     rss_link = rs.getString("RSS_FEED");
@@ -33,14 +34,12 @@ public class QueryGetSources extends MariaDBQueryBase
 				m_sources.add(source);
 			}
 		}
-		catch(SQLException e)
-		{
+		catch(SQLException e) {
 			Logger.getInstance().logError(this, e.getMessage());
 		}
 	}
 
-	public ArrayList<NewsSource> getSources()
-	{
+	public ArrayList<NewsSource> getSources() {
 		return m_sources;
 	}
 }

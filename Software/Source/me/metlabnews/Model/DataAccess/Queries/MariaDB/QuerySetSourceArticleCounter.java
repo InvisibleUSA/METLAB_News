@@ -6,6 +6,11 @@ import java.sql.ResultSet;
 
 
 
+/**
+ * sets the article counter for a given source
+ *
+ * @author Benjamin Gerlach
+ */
 public class QuerySetSourceArticleCounter extends MariaDBQueryBase {
 
 	private int        m_numArticles;

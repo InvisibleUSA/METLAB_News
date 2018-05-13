@@ -6,10 +6,27 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+
+
+/**
+ * <p>Java representation of an RssItem (article)</p>
+ * <p>
+ * Fields are:
+ * <ul>
+ * <li>Title</li>
+ * <li>Link</li>
+ * <li>Description</li>
+ * <li>GUID</li>
+ * <li>pubDate</li>
+ * <li>Source</li>
+ * </ul>
+ * </p>
+ *
+ * @author Benjamin Gerlach
+ */
 public class Article
 {
-	static
-	{
+	static {
 		Logger.getInstance().register(Article.class, Logger.Channel.Entities);
 	}
 
@@ -21,8 +38,7 @@ public class Article
 	private Calendar   m_pubDate;
 	private boolean    m_isRSS = true;
 
-	public Article(String title, NewsSource source, String link, String description, String guid, Calendar pubDate)
-	{
+	public Article(String title, NewsSource source, String link, String description, String guid, Calendar pubDate) {
 		this.m_title = format(removeAllTags(title));
 		this.m_source = source;
 		this.m_link = format(link);
@@ -31,11 +47,15 @@ public class Article
 		this.m_pubDate = pubDate;
 	}
 
-	public Article(XMLTag tag) throws IllegalArgumentException
-	{
-		SimpleDateFormat sdf      = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
-		try
-		{
+	/**
+	 * Constructs an Article from an {@Link XMLTag}
+	 *
+	 * @param tag XML representation of this article
+	 * @throws IllegalArgumentException if the XMLTag is not a representation of an article
+	 */
+	public Article(XMLTag tag) throws IllegalArgumentException {
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+		try {
 			m_title = tag.child("title").value();
 			m_link = tag.child("link").value();
 			m_description = tag.child("description").value();
@@ -44,32 +64,33 @@ public class Article
 			m_pubDate = Calendar.getInstance();
 			m_pubDate.setTime(sdf.parse(tag.child("pubDate").value()));
 		}
-		catch(NullPointerException e)
-		{
+		catch(NullPointerException e) {
 			Logger.getInstance().logError(this, "Not a valid article. " + e.toString());
 			throw new IllegalArgumentException("Parameter tag does not accurately represent a article.");
 		}
-		catch(ParseException e)
-		{
+		catch(ParseException e) {
 			Logger.getInstance().logError(this, "Invalid Date format: " + e.toString());
 		}
 	}
 
-	private String removeAllTags(String s)
-	{
+	/**
+	 * Removes all XML-Tags
+	 *
+	 * @param s String from which to remove the XML-Tags
+	 * @return the modified string
+	 */
+	private String removeAllTags(String s) {
 		return s.replaceAll("<.*>", "");
 	}
 
-	private String format(String s)
-	{
+	private String format(String s) {
 		s = s.replace("&", "und");
 		s = s.trim();
 		s = s.replace("\"", "'");
 		return s;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 		@SuppressWarnings("UnnecessaryLocalVariable")
 		final String erg =
@@ -86,23 +107,19 @@ public class Article
 		return erg;
 	}
 
-	public NewsSource getSource()
-	{
+	public NewsSource getSource() {
 		return m_source;
 	}
 
-	public Calendar getPubDate()
-	{
+	public Calendar getPubDate() {
 		return m_pubDate;
 	}
 
-	public String getguid()
-	{
+	public String getguid() {
 		return m_guid;
 	}
 
-	public String getTitle()
-	{
+	public String getTitle() {
 		return m_title;
 	}
 
@@ -114,8 +131,7 @@ public class Article
 	 * check if article is from RSS feed (true)
 	 * or from YaCy search result (false)
 	 */
-	public boolean isRSS()
-	{
+	public boolean isRSS() {
 		return m_isRSS;
 	}
 
@@ -123,8 +139,7 @@ public class Article
 	 * set whether article is from RSS feed (true)
 	 * or from YaCy search result (false)
 	 */
-	public void setisRSS(boolean m_isRSS)
-	{
+	public void setisRSS(boolean m_isRSS) {
 		this.m_isRSS = m_isRSS;
 	}
 }

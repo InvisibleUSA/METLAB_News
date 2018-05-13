@@ -9,10 +9,13 @@ import java.util.ArrayList;
 
 
 
+/**
+ * search an article with YaCy
+ * the result is an rss feed with the first {@Link m_maximumRecords} results from rss
+ */
 public class QuerySearchArticle extends YaCyQueryBase
 {
-	static
-	{
+	static {
 		Logger.getInstance().register(QuerySearchArticle.class, Logger.Channel.YaCy);
 	}
 
@@ -28,52 +31,42 @@ public class QuerySearchArticle extends YaCyQueryBase
 	private String[]           m_searchTerms    = {};
 	private ArrayList<Article> m_articles;
 
-	public QuerySearchArticle(NewsSource source, String... searchTerms)
-	{
+	public QuerySearchArticle(NewsSource source, String... searchTerms) {
 		m_searchTerms = searchTerms;
 		m_source = source;
 	}
 
-	public QuerySearchArticle(String... searchTerms)
-	{
+	public QuerySearchArticle(String... searchTerms) {
 		m_searchTerms = searchTerms;
 	}
 
-	public void setMaximumRecords(int maximumRecords)
-	{
+	public void setMaximumRecords(int maximumRecords) {
 		m_maximumRecords = maximumRecords;
 	}
 
-	public void setSortByDate(boolean sortByDate)
-	{
+	public void setSortByDate(boolean sortByDate) {
 		m_sortByDate = sortByDate;
 	}
 
-	public ArrayList<Article> getArticles()
-	{
+	public ArrayList<Article> getArticles() {
 		return m_articles;
 	}
 
 	@Override
-	protected String createYaCyQuery()
-	{
+	protected String createYaCyQuery() {
 		String query = "";
-		for(int i = 0; i < m_searchTerms.length; i++)
-		{
-			if(i > 1 && m_rankNearHigher)
-			{
+		for(int i = 0; i < m_searchTerms.length; i++) {
+			if(i > 1 && m_rankNearHigher) {
 				//the search results where the terms are nearer together will be ranked higher
 				query += "%20/near%20";
 			}
 			query += m_searchTerms[i] + "%20";
 		}
-		if(m_sortByDate)
-		{
+		if(m_sortByDate) {
 			//sort search results by date
 			query += "/date%20";
 		}
-		if(m_source != null)
-		{
+		if(m_source != null) {
 			query += "site:" + m_source.getLink();
 		}
 		String url = "http://localhost:8090/yacysearch.rss?query=" + query + "&maximumRecords=" + m_maximumRecords;
@@ -82,13 +75,11 @@ public class QuerySearchArticle extends YaCyQueryBase
 	}
 
 	@Override
-	protected void processResults(String result)
-	{
+	protected void processResults(String result) {
 		m_logger.logDebug(this, result);
 		RSSFeed search_res = RSSFeed.parseFeed(result,
 		                                       new NewsSource("YaCy", "localhost:8090", "localhost:8090"));
-		if(search_res != null)
-		{
+		if(search_res != null) {
 			m_articles = search_res.getArticles();
 			m_articles.forEach((a) -> a.setisRSS(false));
 		}

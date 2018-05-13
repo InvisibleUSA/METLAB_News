@@ -535,7 +535,7 @@ public class ConfigurationManager implements IResource
 	/**
 	 * Preferred Type to Crawl
 	 */
-	private enum TypePreferred
+	public enum TypePreferred
 	{
 		RSSFeed,
 		Website

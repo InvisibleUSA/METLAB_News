@@ -11,121 +11,106 @@ import java.util.Collection;
 
 
 
+/**
+ * @author Benjamin Gerlach
+ */
 public class RSSFeed
 {
-	private NewsSource source;
+	private NewsSource         source;
 	private ArrayList<Article> articles = new ArrayList<>();
 
-	public RSSFeed()
-	{
+	public RSSFeed() {
 
 	}
 
-	public RSSFeed(NewsSource s, Article... articles)
-	{
+	public RSSFeed(NewsSource s, Article... articles) {
 		source = s;
 		this.articles.addAll(Arrays.asList(articles));
 	}
 
-	public RSSFeed(NewsSource s, ArrayList<Article> articles)
-	{
+	public RSSFeed(NewsSource s, ArrayList<Article> articles) {
 		source = s;
 		this.articles = articles;
 	}
 
-	public static RSSFeed parseFeed(String feed, NewsSource source)
-	{
+	/**
+	 * @param feed   the RSSFeed as a String
+	 * @param source the origin of the RSSFeed
+	 * @return the parsed {@Link RSSFeed}
+	 */
+	public static RSSFeed parseFeed(String feed, NewsSource source) {
 		XMLTag RSSFeedTag = new XMLTag(feed);
 		XMLTag channel    = RSSFeedTag.child("channel");
-		if(channel != null)
-		{
+		if(channel != null) {
 			ArrayList<XMLTag>  rss_articles = channel.children("item");
 			ArrayList<Article> articles     = new ArrayList<>();
-			for(XMLTag curr_article : rss_articles)
-			{
+			for(XMLTag curr_article : rss_articles) {
 				String title = curr_article.child("title").value();
-				if(title != null)
-				{
+				if(title != null) {
 					title = title.replace("\"", "'");
 				}
-				else
-				{
+				else {
 					title = "";
 				}
 				String description = curr_article.child("description").value();
-				if(description != null)
-				{
+				if(description != null) {
 					description = description.replace("\"", "'");
 				}
-				else
-				{
+				else {
 					description = "";
 				}
 				String link = curr_article.child("link").value();
-				if(link != null)
-				{
+				if(link != null) {
 					link = link.replace("\"", "'");
 				}
-				else
-				{
+				else {
 					link = "";
 				}
 				String guid = curr_article.child("guid").value();
-				if(guid != null)
-				{
+				if(guid != null) {
 					guid = guid.replace("\"", "'");
 				}
-				else
-				{
+				else {
 					guid = "";
 				}
 				Calendar pubDate;
-				try
-				{
+				try {
 					pubDate = CalendarParser.parseCalendar(curr_article.child("pubDate").value());
 				}
-				catch(NumberFormatException e)
-				{
+				catch(NumberFormatException e) {
 					pubDate = Calendar.getInstance();
 				}
-				if(!guid.equals("") && !title.equals(""))
-				{
+				if(!guid.equals("") && !title.equals("")) {
 					Article a = new Article(title, source, link, description, guid, pubDate);
 					articles.add(a);
 				}
 			}
 			return new RSSFeed(source, articles);
 		}
-		else
-		{
+		else {
 			Logger.getInstance().logError(RSSFeed.class, "NullPointerException on source:" + source.getName());
 			return null;
 		}
 	}
 
-	public void setSource(NewsSource s)
-	{
+	public void setSource(NewsSource s) {
 		this.source = s;
 	}
 
-	public void addArticle(Article a)
-	{
+	public void addArticle(Article a) {
 		this.articles.add(a);
 	}
 
-	public void setArticles(Collection<Article> articles)
-	{
+	public void setArticles(Collection<Article> articles) {
 		this.articles.clear();
 		this.articles.addAll(articles);
 	}
 
-	public ArrayList<Article> getArticles()
-	{
+	public ArrayList<Article> getArticles() {
 		return articles;
 	}
 
-	public NewsSource getSource()
-	{
+	public NewsSource getSource() {
 		return source;
 	}
 }

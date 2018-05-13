@@ -15,6 +15,11 @@ import java.util.ArrayList;
 
 
 
+/**
+ * This class crawls RssFeeds and saves them in the BaseX-Database
+ *
+ * @author Benjamin Gerlach
+ */
 public class RssCrawler implements Runnable
 {
 
@@ -23,84 +28,100 @@ public class RssCrawler implements Runnable
 
 	private Thread m_t;
 
-	RssCrawler(NewsSource source)
-	{
+	/**
+	 * RssCrawler crawls RssFeeds in its own thread
+	 * to start with the crawl call start()
+	 *
+	 * @param source has to be a source with valid RSSLink
+	 */
+	RssCrawler(NewsSource source) {
 		this.m_source = source;
 	}
 
-	void start()
-	{
-		if(!m_running)
-		{
+	void start() {
+		if(!m_running) {
 			m_running = true;
 			m_t = new Thread(this);
 			m_t.start();
 		}
 	}
 
+	/**
+	 * executes one crawl and sleeps for the Crawler.Timeout setting
+	 */
 	@Override
-	public void run()
-	{
+	public void run() {
 		Logger.getInstance().logInfo(this, "started crawler for \"" + m_source.getName() + "\"");
-		while(m_running)
-		{
+		while(m_running) {
 			Logger.getInstance().logDebug(this, "crawling " + m_source.getName() + " --> " + m_source.getRss_link());
-			try
-			{
+			try {
 				String             doc      = Helper.getHTTPResponse(m_source.getRss_link());
 				ArrayList<Article> articles = RSSFeed.parseFeed(doc, this.m_source).getArticles();
-				for(Article a : articles)
-				{
+				for(Article a : articles) {
 					QueryGetSourceArticleCounter count = new QueryGetSourceArticleCounter(m_source);
-					count.execute();
-					String guid = m_source.getName() + count.getNumArticles();
-					a.setGuid(guid);
-					boolean exists = articleExists(a);
-					if(!exists)
-					{
-						writeToBaseX(a);
-						new QuerySetSourceArticleCounter(count.getNumArticles() + 1, m_source).execute();
+					if(count.execute()) {
+						String guid = m_source.getName() + count.getNumArticles();
+						a.setGuid(guid);
+						boolean exists = articleExists(a);
+						if(!exists) {
+							writeToBaseX(a);
+							new QuerySetSourceArticleCounter(count.getNumArticles() + 1, m_source).execute();
+						}
+					}
+					else {
+						Logger.getInstance().logError(this,
+						                              "failed to add article :\"" + a.getTitle() + "\" because sql query failed");
 					}
 				}
-				try
-				{
+				try {
 					Thread.sleep(ConfigurationManager.getInstance().getCrawlerTimeout());
 				}
-				catch(InterruptedException ignored)
-				{
+				catch(InterruptedException ignored) {
 				}
 			}
-			catch(IOException | NullPointerException e)
-			{
-				Logger.getInstance().logWarning(this, m_source.getName() + "is not reachable!");
+			catch(IOException | NullPointerException e) {
+				Logger.getInstance().logWarning(this, m_source.getName() + " is not reachable!");
 			}
 		}
 		Logger.getInstance().logInfo(this, "stopped crawler on \"" + m_source.getName() + "\"");
 	}
 
-	private void writeToBaseX(Article a)
-	{
+	/**
+	 * writes the given article to BaseX
+	 *
+	 * @param a the given article
+	 */
+	private void writeToBaseX(Article a) {
 		QueryAddArticle addArticle = new QueryAddArticle(a);
 		addArticle.execute();
 		Logger.getInstance().logDebug(this, addArticle.getResult());
 	}
 
-	private boolean articleExists(Article a)
-	{
+	/**
+	 * @param a the article to check existence for
+	 * @return true if the article exists, false if not
+	 */
+	private boolean articleExists(Article a) {
 		QueryTitleExists qte = new QueryTitleExists(a.getTitle());
-		qte.execute();
-		Logger.getInstance().logDebug(this, "exists \"" + a.getTitle() + "\"? --> " + qte.getResult());
-		return qte.getResult();
+		if(qte.execute()) {
+			Logger.getInstance().logDebug(this, "exists \"" + a.getTitle() + "\"? --> " + qte.getResult());
+			return qte.getResult();
+		}
+		else {
+			//if not sure because query failed return true
+			return true;
+		}
 	}
 
-	void stop()
-	{
+	/**
+	 * stops the RssCrawler, but not immediately
+	 */
+	void stop() {
 		Logger.getInstance().logInfo(this, "stopping crawler on \"" + m_source.getName() + "\"");
 		m_running = false;
 	}
 
-	public NewsSource getSource()
-	{
+	public NewsSource getSource() {
 		return m_source;
 	}
 }

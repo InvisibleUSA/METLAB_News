@@ -7,6 +7,12 @@ import java.sql.SQLException;
 
 
 
+/**
+ * Returns the number of articles saved in BaseX + 1
+ * so basically the number for the next article
+ *
+ * @author Benjamin Gerlach
+ */
 public class QueryGetSourceArticleCounter extends MariaDBQueryBase {
 
 	private int        m_numArticles;

@@ -13,7 +13,7 @@
 	<!-- Crawler -->
 	<entry key="Crawler.Timeout">12345</entry>
 	<entry key="Crawler.MaxDocsPerDomain">12345</entry>
-	<entry key="Crawler.TypePreferred">RSSFeed</entry>
+	<entry key="Crawler.TypePreferred">RSSFeed</entry> <!-- {RSSFeed, Website} -->
 
 
 	<!-- ClippingDaemon -->
