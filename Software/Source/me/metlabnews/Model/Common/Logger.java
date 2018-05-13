@@ -202,6 +202,7 @@ public class Logger implements IResource
 	 * #6 [23:28:31] [ACTIVITY - Logger @ UNREGISTERED_CHANNEL]: Logger has been DISABLED for Channel: 'UNREGISTERED_CHANNEL'
 	 * }
 	 *
+	 * @param sender  The source of the log
 	 * @param level   The priority of the logs
 	 * @param channel The specific log type
 	 * @param msg     The Message you want to log
