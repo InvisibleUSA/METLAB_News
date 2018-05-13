@@ -1,6 +1,5 @@
 package me.metlabnews.UserInterface.Views;
 
-import com.vaadin.server.Page;
 import com.vaadin.shared.ui.datefield.DateTimeResolution;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.*;
@@ -22,6 +21,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 {
 	/**
 	 * Constructs the dashboard for subscribers and client administrators
+	 *
 	 * @param parent the object owning this view
 	 */
 	public SubscriberDashboardView(MainUI parent)
@@ -64,11 +64,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 						this::showProfiles,
 						Notification::show));
 
-		m_buttonShowClippings.addClickListener(
-				(Button.ClickEvent event) -> m_parent.fetchClippings(
-						this::showClippings,
-						Notification::show,
-						profileID));
+		m_buttonShowClippings.addClickListener(event -> showClippingsPart1());
 
 		m_buttonShowShares.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchSubscribers(
@@ -171,15 +167,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_tabsSubscriber.addSelectedTabChangeListener(event -> updateGridSub());
 		m_tabsAdmin.addSelectedTabChangeListener(event -> updateGridAdmin());
 		m_listTemplates.addValueChangeListener(event -> applyTemplate());
-		m_gridProfilesForClippings.addItemClickListener(event -> m_parent.fetchClippings(
-				this::showClippings,
-				(String errorMessage) -> {
-					Notification.show(errorMessage);
-					m_gridClippings.setItems(
-							new ClippingDataRepresentation("",
-							                               "keine Pressespiegel vorhanden", ""));
-				},
-				profileID));
+		m_gridProfilesForClippings.addItemClickListener(event -> showClippingsPart1());
 		m_gridClippings.addItemClickListener(event -> showClipping());
 	}
 
@@ -210,7 +198,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 	private final TabSheet m_tabsAdmin      = new TabSheet();
 	private final TabSheet m_tabsSettings   = new TabSheet();
 
-	private final VerticalLayout              m_displayQuitAccount = new VerticalLayout();
+	private final VerticalLayout                    m_displayQuitAccount                    = new VerticalLayout();
 	private final VerticalLayout                    m_displayClippings                      = new VerticalLayout();
 	private final HorizontalLayout                  m_layoutClippings                       = new HorizontalLayout();
 	private final VerticalLayout                    m_layoutClippings1                      = new VerticalLayout();
@@ -579,12 +567,29 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_gridProfilesForClippings.recalculateColumnWidths();
 	}
 
-	private void showClippings(ClippingDataRepresentation[] data)
+	private void showClippingsPart1()
+	{
+		Object[] profiles = m_gridProfilesForClippings.getSelectedItems().toArray();
+		if(profiles.length != 1)
+		{
+			Notification.show("Wählen Sie genau ein Profil aus!");
+			m_gridClippings.setItems(new ClippingDataRepresentation("", "keine Pressespiegel vorhanden", ""));
+			return;
+		}
+		Profile_GridHelper profile = (Profile_GridHelper)profiles[0];
+		m_parent.fetchClippings(
+				this::showClippingsPart2,
+				Notification::show,
+				profile.getID());
+	}
+
+	private void showClippingsPart2(ClippingDataRepresentation[] data)
 	{
 		List<ClippingDataRepresentation> clippings = new ArrayList<>();
 		Collections.addAll(clippings, data);
 		m_gridClippings.setItems(clippings);
 		m_gridClippings.recalculateColumnWidths();
+		m_gridClippings.select((ClippingDataRepresentation)m_gridClippings.getSelectedItems().toArray()[0]);
 	}
 
 	private void showClipping()
