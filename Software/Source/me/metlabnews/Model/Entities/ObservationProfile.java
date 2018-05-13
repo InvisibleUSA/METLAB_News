@@ -68,6 +68,12 @@ public class ObservationProfile extends ObservationProfileTemplate
 
 
 	@NotNull
+	public Duration getGenerationPeriod()
+	{
+		return m_period;
+	}
+
+	@NotNull
 	public LocalDateTime getLastGenerationTime()
 	{
 		return m_lastGeneration;
