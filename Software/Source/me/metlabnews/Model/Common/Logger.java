@@ -14,30 +14,30 @@ import java.util.Hashtable;
 
 
 /**
- * <p>
+ * 
  * This Class is for logging the whole error's and debug outputs of the application.
- * </p>
- * <p>
+ * 
+ * 
  * You can also log user controls and registers to the destination. The log-files are stored
  * in the application folder in ...\Logs\
- * <p>
+ * 
  * The File and the subfolder are created automatically.
- * </p>
- * <p>
+ * 
+ * 
  * Careful: You need first to register the logger with the following Code:
- * <p>
+ * 
  * {@code
  * Logger.getInstance.register(CLASSNAME.class, Logger.Channel.ChannelName)
  * }
- * </p>
- * </p>
- * </p>
+ * 
+ * 
+ * 
  * Example of logging-usage:
- * <p>
+ * 
  * {@code
  * Logger.getInstance.logError(this, "enter your log-msg here...");
  * }
- * </p>
+ * 
  *
  * @author Tobias Reis
  * @version 2.1
@@ -97,11 +97,11 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>
+	 * 
 	 * This Enum is for the channels to log the output message to the specific channel.
 	 * Every class or module will have it's own Channel where you can log from.
 	 * The channels will help to separate the log files into different folders.
-	 * </p>
+	 * 
 	 */
 	public enum Channel
 	{
@@ -128,9 +128,9 @@ public class Logger implements IResource
 	/**
 	 * This enum represents the status of the Channel. You can enable and disable
 	 * each single Channels by a HashMap.
-	 * <p>
+	 * 
 	 * Unregistered = Channel by default disabled
-	 * </p>
+	 * 
 	 */
 	public enum ChannelFlag
 	{
@@ -142,9 +142,9 @@ public class Logger implements IResource
 	/**
 	 * This enum represents the status of the LogLevel. You can enable and disable
 	 * each single LogLevel by a HashMap.
-	 * <p>
+	 * 
 	 * Unregistered = Level by default disabled
-	 * </p>
+	 * 
 	 */
 	public enum LevelFlag
 	{
@@ -154,12 +154,12 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>
+	 * 
 	 * This Enum represents the priority of the logged message. It will be possible to set the
 	 * internal Priority higher than the called Priority. This allows the user to filter some logs.
 	 * If e.g. the Priority of the internal logger is higher than the called Priority, than the message
 	 * will NOT be logged.
-	 * </p>
+	 * 
 	 */
 	public enum LogLevel
 	{
@@ -197,11 +197,12 @@ public class Logger implements IResource
 
 	/**
 	 * This method will return the final string which is logged to the target.
-	 * <p>Example:</p>
+	 * Example:
 	 * {@code
 	 * #6 [23:28:31] [ACTIVITY - Logger @ UNREGISTERED_CHANNEL]: Logger has been DISABLED for Channel: 'UNREGISTERED_CHANNEL'
 	 * }
 	 *
+	 * @param sender  The source of the log
 	 * @param level   The priority of the logs
 	 * @param channel The specific log type
 	 * @param msg     The Message you want to log
@@ -273,12 +274,12 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>
+	 * 
 	 * This method disables pairs of Channels and Levels.
 	 * If you want to disable DEBUG-logging for Crawler-Channel,
-	 * then you can call this method like this:</p>
-	 * <p>{@code Logger.getInstance().disable(Channel.Crawler, LogLevel.DEBUG)}</p>
-	 * <p>You can also disable single Channels or Level if you use the .NONE - Type of the Enum.</p>
+	 * then you can call this method like this:
+	 * {@code Logger.getInstance().disable(Channel.Crawler, LogLevel.DEBUG)}
+	 * You can also disable single Channels or Level if you use the .NONE - Type of the Enum.
 	 *
 	 * @param channel The specific channel you want to disable logging
 	 * @param level   The specific level you want to disable logging
@@ -305,7 +306,7 @@ public class Logger implements IResource
 
 	/**
 	 * In this Method you can DISABLE a single Level to force it NOT to log.
-	 * <p>Attention: ERROR-level is ALWAYS enabled!</p>
+	 * Attention: ERROR-level is ALWAYS enabled!
 	 *
 	 * @param level the Level, e.g. DEBUG, WARNING, ...
 	 */
@@ -411,8 +412,8 @@ public class Logger implements IResource
 
 	/**
 	 * This method returns a String for a FileName, based on the Channel name.
-	 * <p>Example</p>
-	 * <p>{@code 20-04-2018-Crawler-log.txt}</p>
+	 * Example
+	 * {@code 20-04-2018-Crawler-log.txt}
 	 *
 	 * @param channel The specific Channel
 	 * @return A String of FileName, e.g.: 20-04-2018-Crawler-log.txt
@@ -427,8 +428,8 @@ public class Logger implements IResource
 
 	/**
 	 * This method returns a FilePath-String, based on the Channel name.
-	 * <p>Example</p>
-	 * <p>{@code /home/ln/IdeaProjects/METLAB_News}</p>
+	 * Example
+	 * {@code /home/ln/IdeaProjects/METLAB_News}
 	 *
 	 * @param channel The specific Channel
 	 * @return A String of FilePath, e.g.: /home/ln/IdeaProjects/METLAB_News
@@ -453,14 +454,14 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>This Message will write an error message to a file.</p>
-	 * <p>
+	 * This Message will write an error message to a file.
+	 * 
 	 * If the file and/or the directory is NOT found, then the method will
 	 * automatically create this for you. The default directory is in METLAB_News/Logs/...
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * Filenames are e.g.: 04-05-2018-WebCrawler-log.txt
-	 * </p>
+	 * 
 	 *
 	 * @param sender  The source of the log
 	 * @param level   The log-priority
@@ -504,19 +505,19 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>
+	 * 
 	 * This method will log with the level 'Debug'.
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * You only need to call the following code:
 	 * {@code}
-	 * <p>
+	 * 
 	 * Logger.getInstance.logDebug(this, "your message here...");
-	 * </p>
-	 * </p>
+	 * 
+	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -529,19 +530,19 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>
+	 * 
 	 * This method will log with the level 'Error'.
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * You only need to call the following code:
 	 * {@code}
-	 * <p>
+	 * 
 	 * Logger.getInstance.logDebug(this, "your message here...");
-	 * </p>
-	 * </p>
+	 * 
+	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -554,19 +555,19 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>
+	 * 
 	 * This method will log with the level 'Warning'.
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * You only need to call the following code:
 	 * {@code}
-	 * <p>
+	 * 
 	 * Logger.getInstance.logDebug(this, "your message here...");
-	 * </p>
-	 * </p>
+	 * 
+	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -579,19 +580,19 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>
+	 * 
 	 * This method will log with the level 'Activity'.
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * You only need to call the following code:
 	 * {@code}
-	 * <p>
+	 * 
 	 * Logger.getInstance.logDebug(this, "your message here...");
-	 * </p>
-	 * </p>
+	 * 
+	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -604,19 +605,19 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>
+	 * 
 	 * This method will log with the level 'Info'.
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * You only need to call the following code:
 	 * {@code}
-	 * <p>
+	 * 
 	 * Logger.getInstance.logInfo(this, "your message here...");
-	 * </p>
-	 * </p>
+	 * 
+	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -629,18 +630,18 @@ public class Logger implements IResource
 
 
 	/**
-	 * <p>
+	 * 
 	 * This method will register the Class from where you call it.
 	 * It uses a HashTable to put the different Classes to categories.
-	 * </p>
-	 * <p>
+	 * 
+	 * 
 	 * The categories are e.g. 'Logger', 'Crawler', 'UI', 'ConfigurationManager', etc.
-	 * </p>
+	 * 
 	 * For more categories check the documentation of Channel: {@link Channel}
-	 * <p>ALWAYS call the register method with the keyword 'this'.</p>
+	 * ALWAYS call the register method with the keyword 'this'.
 	 * Example:
 	 * {@code}
-	 * <p>Logger.getInstance().register(Logger.Channel.Crawler, this);</p>
+	 * Logger.getInstance().register(Logger.Channel.Crawler, this);
 	 *
 	 * @param sender  ALWAYS use 'CLASSNAME.class' in calls. It is the source of the called class.
 	 * @param channel The Channel you want to put this class into
@@ -680,9 +681,9 @@ public class Logger implements IResource
 	 * The file is found in the specific channel-folder with the name of the
 	 * current date (e.g. 05-04-2018-Crawler-log.txt)
 	 * Newline is automatically appended when logging toFile and toConsole
-	 * </p>
+	 * 
 	 * Example:
-	 * <p>
+	 * 
 	 * {@code
 	 * Logger.getInstance.log(Logger.Channel.WebCrawler,
 	 * Logger.Priority.DEBUG,

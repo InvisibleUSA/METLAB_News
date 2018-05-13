@@ -16,7 +16,6 @@ import me.metlabnews.Presentation.IUserInterface.IGetStringArrayEvent;
 import me.metlabnews.Presentation.UserDataRepresentation;
 import org.apache.commons.validator.routines.EmailValidator;
 
-// TODO: FOR FUCKS SAKE! Why the heck is anything SQL specific used here?
 import java.sql.Date;
 import java.sql.SQLException;
 
@@ -40,6 +39,20 @@ public class UserManager
 
 
 	// region Subscriber Interaction
+
+	/**
+	 * called when new user registers
+	 *
+	 * @param session          Takes the current Session
+	 * @param onSuccess        Generic success Event
+	 * @param onFailure        Generic failure Event
+	 * @param email            mail address the user uses to register
+	 * @param password         password chosen by the user
+	 * @param firstName        first name of the user
+	 * @param lastName         last name of the user
+	 * @param organisationName name of the organization the user belongs to
+	 * @param clientAdmin      true if user requests admin status
+	 */
 	public void registerNewSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String password,
 	                                  String firstName, String lastName,
 	                                  String organisationName, boolean clientAdmin)
@@ -108,30 +121,52 @@ public class UserManager
 				+ "[Organisation]: " + organisationName + System.lineSeparator());
 	}
 
+	/**
+	 * returns whether an organization exists or not
+	 *
+	 * @param organisationName name of the organization that is to be checked
+	 * @return true if the given organization is existing
+	 * @throws SQLException must be catched where called
+	 */
 	private boolean organisationExists(String organisationName) throws SQLException
 	{
 		QueryGetOrganisation qgo = new QueryGetOrganisation();
 		qgo.organisationName = organisationName;
 		if(!qgo.execute())
 		{
-			// TODO: WHAT THE FUCKING FUCK?!
 			throw new SQLException();
 		}
 		return qgo.organisationExists;
 	}
 
+	/**
+	 * returns whether a user exists or not
+	 *
+	 * @param email email of the user that is to be checked
+	 * @return true if the given user is existing
+	 * @throws SQLException must be catched where called
+	 */
 	private boolean userExists(String email) throws SQLException
 	{
 		QueryGetUser qgu = new QueryGetUser();
 		qgu.email = email;
 		if(!qgu.execute())
 		{
-			// TODO: WHAT THE FUCKING FUCK?!
 			throw new SQLException();
 		}
 		return qgu.userExists;
 	}
 
+	/**
+	 * called when User is logging in
+	 *
+	 * @param session takes the current Session
+	 * @param onSuccess Generic success Event
+	 * @param onVerificationPending Generic verification pending Event
+	 * @param onFailure Generic failure Event
+	 * @param email mail address provided by user
+	 * @param password password provided by user
+	 */
 	public void subscriberLogin(Session session, IUserInterface.IGenericEvent onSuccess, IGenericEvent onVerificationPending, IGenericFailureEvent onFailure, String email, String password)
 	{
 		QueryLoginUser qlu = new QueryLoginUser();
@@ -173,6 +208,13 @@ public class UserManager
 
 	// endregion Subscriber Interaction
 
+	/**
+	 * returns whether the current user is an Administrator or not
+	 *
+	 * @param session takes current Session
+	 * @param onFailure Generic failure Event
+	 * @return true if User from current Session is an Administrator, false if not
+	 */
 	private boolean adminCheck(Session session, IGenericFailureEvent onFailure)
 	{
 		if(!session.isLoggedIn())
@@ -195,6 +237,13 @@ public class UserManager
 
 	// region Client Admin Interaction
 
+	/**
+	 * gets the current verification requests
+	 *
+	 * @param session takes current Session
+	 * @param onSuccess Generic success Event
+	 * @param onFailure Generic failure Event
+	 */
 	public void getPendingVerificationRequests(Session session, IUserInterface.IFetchPendingVerificationRequestsEvent onSuccess, IGenericFailureEvent onFailure)
 	{
 		if(!adminCheck(session, onFailure)) //Error handling in adminCheck
@@ -213,7 +262,16 @@ public class UserManager
 		onSuccess.execute(users);
 	}
 
-	public void verifySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String subscriberEmail, Boolean grantAdmin)
+	/**
+	 * called when Subscriber is being verified
+	 *
+	 * @param session         takes the current Session
+	 * @param onSuccess       Generic success Event
+	 * @param onFailure       Generic failure Event
+	 * @param subscriberEmail mail address of user to be verified
+	 * @param grantAdmin      true if the user should be provided Administrator status
+	 */
+	public void verifySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String subscriberEmail, boolean grantAdmin)
 	{
 		if(!adminCheck(session, onFailure)) //Error handling done in adminCheck method
 		{
@@ -264,7 +322,6 @@ public class UserManager
 			return;
 		}
 		onFailure.execute(Messages.UserIsAlreadyVerified);
-
 	}
 
 	// endregion Client Admin Interaction
@@ -272,6 +329,15 @@ public class UserManager
 
 	// region System Admin Interaction
 
+	/**
+	 * called when System Administrator logs in
+	 *
+	 * @param session takes the current Session
+	 * @param onSuccess Generic success Event
+	 * @param onFailure Generic failure Event
+	 * @param email mail address provided by User
+	 * @param password password provided by User
+	 */
 	public void systemAdministratorLogin(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String password)
 	{
 		QueryLoginSysadmin qls = new QueryLoginSysadmin();
@@ -303,6 +369,18 @@ public class UserManager
 				+ "[Password]: " + password + System.lineSeparator());
 	}
 
+	/**
+	 * called when new Organisation is added
+	 *
+	 * @param session takes the current Session
+	 * @param onSuccess Generic success Event
+	 * @param onFailure Generic failure Event
+	 * @param organisationName name of Organisation to be added
+	 * @param adminFirstName first name of initial Organisation Administrator
+	 * @param adminLastName last name of initial Organisation Administrator
+	 * @param adminEmail mail address of initial Organisation Administrator
+	 * @param adminPassword password of initial Organisation Administrator
+	 */
 	public void addOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName, String adminFirstName, String adminLastName, String adminEmail, String adminPassword)
 	{
 		if(!session.isLoggedIn())
@@ -354,11 +432,29 @@ public class UserManager
 				+ "[Organisation]: " + organisationName + System.lineSeparator());
 	}
 
+	/**
+	 * calls removeSubscriber
+	 *
+	 * @param session takes current Session
+	 * @param onSuccess Generic success Event
+	 * @param onFailure Generic failure Event
+	 * @param email email of User to be removed/denied
+	 * @param date not used
+	 */
 	public void denySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, Date date)
 	{
 		removeSubscriber(session, onSuccess, onFailure, email);
 	}
 
+	/**
+	 * called when User deactivates their Account
+	 *
+	 * @param session takes current Session
+	 * @param onSuccess Generic success Event
+	 * @param onFailure Generic failure Event
+	 * @param email email of User to be deactivated
+	 * @param date current date
+	 */
 	public void deactivateSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, Date date)
 	{
 		if(!session.isLoggedIn())
@@ -383,6 +479,14 @@ public class UserManager
 		onSuccess.execute();
 	}
 
+	/**
+	 * removes Subscriber
+	 *
+	 * @param session takes current Session
+	 * @param onSuccess Generic success Event
+	 * @param onFailure Generic failure Event
+	 * @param email email of User to be removed
+	 */
 	public void removeSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
 	{
 		if(!session.isLoggedIn())
@@ -406,6 +510,14 @@ public class UserManager
 		onSuccess.execute();
 	}
 
+	/**
+	 * gets all Organisations
+	 *
+	 * @param session takes current Session
+	 * @param onSuccess Generic success Event
+	 * @param onFailure Generic failure Event
+	 * @return String array of Organisation, null if failed
+	 */
 	public String[] getAllOrganisations(Session session, IGetStringArrayEvent onSuccess, IGenericFailureEvent onFailure)
 	{
 		if(!session.isLoggedIn())
@@ -428,6 +540,14 @@ public class UserManager
 		return qgo.organisations;
 	}
 
+	/**
+	 * removes an Organisation
+	 *
+	 * @param session takes the current Session
+	 * @param onSuccess Generic success Event
+	 * @param onFailure Generic failure Event
+	 * @param organisationName Name of the Organisation to be removed
+	 */
 	public void removeOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName)
 	{
 		if(!session.isLoggedIn())
@@ -451,6 +571,16 @@ public class UserManager
 		onSuccess.execute();
 	}
 
+	/**
+	 * called on password change
+	 *
+	 * @param session takes the current Session
+	 * @param onSuccess Generic success Event
+	 * @param onFailure Generic failure Event
+	 * @param email mail of user
+	 * @param oldPW old password
+	 * @param newPW new password
+	 */
 	public void changePassword(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String oldPW, String newPW)
 	{
 		if(!session.isLoggedIn())

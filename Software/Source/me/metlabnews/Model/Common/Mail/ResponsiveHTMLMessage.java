@@ -1,8 +1,8 @@
 package me.metlabnews.Model.Common.Mail;
 
 /**
- * <p>This Class contains the Message for the ClippingGenerator.</p>
- * <p>It holds the Message as a String variable and uses Singleton call to get the Message.</p>
+ * This Class contains the Message for the ClippingGenerator.
+ * It holds the Message as a String variable and uses Singleton call to get the Message.
  */
 @SuppressWarnings({"SpellCheckingInspection", "FieldCanBeLocal"})
 public class ResponsiveHTMLMessage

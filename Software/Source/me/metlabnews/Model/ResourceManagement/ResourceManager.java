@@ -75,8 +75,8 @@ public class ResourceManager implements ServletContextListener
 
 
 
-		//UserManager.Validator.getInstance().initialize();
-		UserManager.getInstance();
+		UserManager.Validator.getInstance().initialize();
+		//UserManager.getInstance().initialize();
 		logger.logDebug(this, "UserManager initialized");
 
 		Presenter.getInstance().initialize();

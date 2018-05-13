@@ -141,7 +141,13 @@ public class Presenter implements IResource
 		ui.registerCallbackDeleteProfile((onSuccess, onFailure, ownerEmail, profileID) -> profileManager.removeProfile(
 				session, onSuccess, onFailure, profileID));
 
-		ui.registerCallbackFetchProfiles((onSuccess, onFailure) -> profileManager.getOwnProfiles(session, onSuccess, onFailure));
+		ui.registerCallbackFetchProfiles((onSuccess, onFailure) -> profileManager.getOwnProfiles(session,
+		                                                                                         onSuccess,
+		                                                                                         onFailure));
+
+
+
+		ui.registerCallbackAddSource((onSuccess, onFailure, name, link, rssLink) -> );
 	}
 
 
