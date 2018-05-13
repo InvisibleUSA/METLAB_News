@@ -35,7 +35,7 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 		m_buttonShowOrganizations.addClickListener(
 				(Button.ClickEvent event) -> m_parent.getAllOrganisations(
 						this::showOrganizations,
-						Notification::show));
+						errorMessage -> m_parent.access(() -> Notification.show(errorMessage))));
 
 		m_buttonShowSources.addClickListener(
 				(Button.ClickEvent event) -> updateGrid());
