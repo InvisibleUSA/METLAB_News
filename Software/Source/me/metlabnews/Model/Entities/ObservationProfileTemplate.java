@@ -4,8 +4,6 @@ import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 
 import javax.validation.constraints.NotNull;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -67,10 +65,16 @@ public class ObservationProfileTemplate
 		return m_profileName;
 	}
 
+	public void changeName(String newName)
+	{
+		m_profileName = newName;
+	}
+
 	public String getOrganisationID()
 	{
 		return m_organisationID;
 	}
+
 
 	@NotNull
 	public List<String> getKeywords()
@@ -105,6 +109,15 @@ public class ObservationProfileTemplate
 		m_sources.removeAll(sourceLinksToRemove);
 	}
 
+	public void replaceKeywords(@NotNull List<String> newKeywords)
+	{
+		m_keywords = newKeywords;
+	}
+
+	public void replaceSources(@NotNull List<String> newSources)
+	{
+		m_sources = newSources;
+	}
 
 	@Override
 	public boolean equals(Object otherObject)

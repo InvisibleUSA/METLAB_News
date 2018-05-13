@@ -1,6 +1,9 @@
 package me.metlabnews.Presentation;
 
 
+/**
+ * Contains default messages for the front end
+ */
 // TODO: group and order messages
 public final class Messages
 {
@@ -24,12 +27,14 @@ public final class Messages
 	public static final String PasswordDoesNotMatchRequirements = "Das eingegebene Passwort" +
 			"erfüllt die Sicherheitsanforderungen nicht!";
 	public static final String InvalidEmailAddress              = "Die angegebene E-Mail-Adresse ist ungültig!";
-	public static final String OberservationProfileDoesNotExist = "Das angegebene Oberservationsprofil ist " +
+	public static final String ObservationProfileDoesNotExist   = "Das angegebene Oberservationsprofil ist " +
 			"nicht vorhanden!";
 	public static final String InvalidOberservationProfile      = "Ungültiges Observationsprofil!";
 	public static final String ProfileTemplateDoesNotExist      = "Die angegebene Profilvorlage ist " +
 			"nicht vorhanden!";
 	public static final String IncompleteObservationProfile     = "Das Observationsprofil ist unvollständig!";
+	public static final String InvalidSource                    = "Ungültige Nachrichtenquelle!";
+	public static final String SourceNotFound                   = "Die Nachrichtenquelle konnte nicht gefunden werden!";
 
 
 

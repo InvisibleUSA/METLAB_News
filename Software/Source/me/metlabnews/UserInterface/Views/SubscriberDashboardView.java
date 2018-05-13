@@ -1,36 +1,32 @@
 package me.metlabnews.UserInterface.Views;
 
-import com.vaadin.server.Page;
 import com.vaadin.shared.ui.datefield.DateTimeResolution;
 import com.vaadin.ui.*;
-import me.metlabnews.Presentation.ClippingDataRepresentation;
-import me.metlabnews.Presentation.ProfileDataRepresentation;
-import me.metlabnews.Presentation.SourceDataRepresentation;
-import me.metlabnews.Presentation.UserDataRepresentation;
+import me.metlabnews.Presentation.*;
 import me.metlabnews.UserInterface.Helpers.*;
 import me.metlabnews.UserInterface.MainUI;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 
 
 /**
  * The dashboard for subscribers and client administrators
- * SubscriberDashboard contains clippings and profiles
- * AdministratorDashboard contains
  */
-public class SubscriberDashboardView extends VerticalLayout
+@SuppressWarnings("FieldCanBeLocal")
+public class SubscriberDashboardView extends VerticalLayout implements IView
 {
+	/**
+	 * Constructs the dashboard for subscribers and client administrators
+	 *
+	 * @param parent the object owning this view
+	 */
 	public SubscriberDashboardView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Dashboard");
 
 		setupGrids();
 		m_dateTime.setValue(LocalDateTime.now());
@@ -68,10 +64,7 @@ public class SubscriberDashboardView extends VerticalLayout
 						this::showProfiles,
 						Notification::show));
 
-		m_buttonShowClippings.addClickListener(
-				(Button.ClickEvent event) -> m_parent.fetchClippings(
-						this::showClippings,
-						Notification::show));
+		m_buttonShowClippings.addClickListener(event -> showClippingsPart1());
 
 		m_buttonShowShares.addClickListener(
 				(Button.ClickEvent event) -> m_parent.fetchSubscribers(
@@ -91,7 +84,7 @@ public class SubscriberDashboardView extends VerticalLayout
 				(Button.ClickEvent event) ->
 						m_parent.fetchTemplates(
 								this::showTemplatesForSubscribers,
-								errorMessage -> {
+								(String errorMessage) -> {
 									Notification.show(errorMessage);
 									showTemplatesForSubscribers(null);
 								}));
@@ -174,44 +167,23 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_tabsSubscriber.addSelectedTabChangeListener(event -> updateGridSub());
 		m_tabsAdmin.addSelectedTabChangeListener(event -> updateGridAdmin());
 		m_listTemplates.addValueChangeListener(event -> applyTemplate());
-		m_gridProfilesForClippings.addItemClickListener(event -> m_parent.fetchClippings(
-				this::showClippings,
-				errorMessage -> {
-					Notification.show(errorMessage);
-					m_gridClippings.setItems(
-							new ClippingDataRepresentation("",
-							                               "keine Pressespiegel vorhanden"));
-				}));
+		m_gridProfilesForClippings.addItemClickListener(event -> showClippingsPart1());
 		m_gridClippings.addItemClickListener(event -> showClipping());
 	}
 
-	public void showAdminLayout()
+	@Override
+	public void show()
 	{
-		this.addComponent(m_tabLayout);
-		m_tabLayout.removeAllComponents();
-		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
-		m_tabLayout.addTab(m_tabsAdmin, "Administrator - Dashboard");
-		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
-		/*
-		m_parent.fetchProfiles(
-				data -> showProfiles(data),
-				errorMessage -> Notification.show(errorMessage));
-		*/
+		m_parent.setContent(this);
+		if(m_parent.whoAmI().isOrganisationAdministrator())
+		{
+			showAdminLayout();
+		}
+		else
+		{
+			showAdminLayout();
+		}
 	}
-
-	public void showSubscriberLayout()
-	{
-		this.addComponent(m_tabLayout);
-		m_tabLayout.removeAllComponents();
-		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
-		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
-		/*
-		m_parent.fetchProfiles(
-				data -> showProfiles(data),
-				errorMessage -> Notification.show(errorMessage));
-		*/
-	}
-
 
 
 	private MainUI m_parent;
@@ -226,7 +198,7 @@ public class SubscriberDashboardView extends VerticalLayout
 	private final TabSheet m_tabsAdmin      = new TabSheet();
 	private final TabSheet m_tabsSettings   = new TabSheet();
 
-	private final VerticalLayout              m_displayQuitAccount = new VerticalLayout();
+	private final VerticalLayout                    m_displayQuitAccount                    = new VerticalLayout();
 	private final VerticalLayout                    m_displayClippings                      = new VerticalLayout();
 	private final HorizontalLayout                  m_layoutClippings                       = new HorizontalLayout();
 	private final VerticalLayout                    m_layoutClippings1                      = new VerticalLayout();
@@ -310,6 +282,33 @@ public class SubscriberDashboardView extends VerticalLayout
 			"Passwort wiederholen:");
 	private final Button                            m_buttonPWReset                         = new Button(
 			"Passwort zurücksetzen");
+
+	private void showAdminLayout()
+	{
+		this.addComponent(m_tabLayout);
+		m_tabLayout.removeAllComponents();
+		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
+		m_tabLayout.addTab(m_tabsAdmin, "Administrator - Dashboard");
+		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
+		/*
+		m_parent.fetchProfiles(
+				data -> showProfiles(data),
+				errorMessage -> Notification.show(errorMessage));
+		*/
+	}
+
+	private void showSubscriberLayout()
+	{
+		this.addComponent(m_tabLayout);
+		m_tabLayout.removeAllComponents();
+		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
+		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
+		/*
+		m_parent.fetchProfiles(
+				data -> showProfiles(data),
+				errorMessage -> Notification.show(errorMessage));
+		*/
+	}
 
 	private void createProfileAction()
 	{
@@ -568,12 +567,29 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_gridProfilesForClippings.recalculateColumnWidths();
 	}
 
-	private void showClippings(ClippingDataRepresentation[] data)
+	private void showClippingsPart1()
+	{
+		Object[] profiles = m_gridProfilesForClippings.getSelectedItems().toArray();
+		if(profiles.length != 1)
+		{
+			Notification.show("Wählen Sie genau ein Profil aus!");
+			m_gridClippings.setItems(new ClippingDataRepresentation("", "keine Pressespiegel vorhanden", ""));
+			return;
+		}
+		Profile_GridHelper profile = (Profile_GridHelper)profiles[0];
+		m_parent.fetchClippings(
+				this::showClippingsPart2,
+				Notification::show,
+				profile.getID());
+	}
+
+	private void showClippingsPart2(ClippingDataRepresentation[] data)
 	{
 		List<ClippingDataRepresentation> clippings = new ArrayList<>();
 		Collections.addAll(clippings, data);
 		m_gridClippings.setItems(clippings);
 		m_gridClippings.recalculateColumnWidths();
+		m_gridClippings.select((ClippingDataRepresentation)m_gridClippings.getSelectedItems().toArray()[0]);
 	}
 
 	private void showClipping()
@@ -588,12 +604,12 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_textClipping.setValue(((ClippingDataRepresentation)clippings[0]).getContent());
 	}
 
-	private void showTemplatesForSubscribers(ProfileDataRepresentation[] data)
+	private void showTemplatesForSubscribers(ProfileTemplateDataRepresentation[] data)
 	{
 		List<Profile_GridHelper> templates = new ArrayList<>();
 		if(data != null)
 		{
-			for(ProfileDataRepresentation template : data)
+			for(ProfileTemplateDataRepresentation template : data)
 			{
 				templates.add(new Profile_GridHelper(m_parent,
 				                                     null,
@@ -601,9 +617,8 @@ public class SubscriberDashboardView extends VerticalLayout
 				                                     template.getName(),
 				                                     template.getKeywords(),
 				                                     template.getSources(),
-				                                     template.getIsActive(),
-				                                     template.getLastGenerationTime(),
-				                                     template.getInterval()));
+				                                     false,
+				                                     null, null));
 			}
 		}
 		if(templates.isEmpty())
@@ -622,10 +637,10 @@ public class SubscriberDashboardView extends VerticalLayout
 		m_listTemplates.setItems(templates);
 	}
 
-	private void showTemplatesForAdmins(ProfileDataRepresentation[] data)
+	private void showTemplatesForAdmins(ProfileTemplateDataRepresentation[] data)
 	{
 		List<Template_GridHelper> templates = new ArrayList<>();
-		for(ProfileDataRepresentation template : data)
+		for(ProfileTemplateDataRepresentation template : data)
 		{
 			templates.add(new Template_GridHelper(m_parent,
 			                                      template.getEmail(),

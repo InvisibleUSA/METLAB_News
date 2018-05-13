@@ -3,7 +3,6 @@ package me.metlabnews.Presentation;
 import me.metlabnews.Model.BusinessLogic.*;
 import me.metlabnews.Model.ResourceManagement.IResource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -71,15 +70,12 @@ public class Presenter implements IResource
 
 		ui.registerCallbackSubscriberLogin(
 				(onSuccess, onVerificationPending, onFailure, email, password) ->
-						m_threadPool.execute(() ->
-							userManager.subscriberLogin(session, onSuccess,
-							                            onVerificationPending,
-							                            onFailure, email, password)));
+						m_threadPool.execute(() -> userManager.subscriberLogin(
+								session, onSuccess, onVerificationPending, onFailure, email, password)));
 
 		ui.registerCallbackSubscriberRegistration((onSuccess, onFailure, fName, lName, org,
 		                                           email, pw, admin) ->
-			m_threadPool.execute(() -> userManager.registerNewSubscriber(session, onSuccess,
-			                                                             onFailure, email, pw,
+			m_threadPool.execute(() -> userManager.registerNewSubscriber(session, onSuccess, onFailure, email, pw,
 			                                                             fName, lName, org, admin)));
 
 		ui.registerCallbackSysAdminLogin((onSuccess, onFailure, email, pw) ->
@@ -91,63 +87,86 @@ public class Presenter implements IResource
 
 
 		ui.registerCallbackFetchPendingVerificationRequests((onSuccess, onFailure) ->
-			m_threadPool.execute(() ->
-				userManager.getPendingVerificationRequests(session, onSuccess, onFailure)));
+			m_threadPool.execute(() -> userManager.getPendingVerificationRequests(session, onSuccess, onFailure)));
 
 		ui.registerCallbackVerifySubscriber((onSuccess, onFailure, subscriberEmail, grantAdminStatus) ->
-			m_threadPool.execute(() ->
-					                     userManager.verifySubscriber(session, onSuccess, onFailure, subscriberEmail,
-					                                                  grantAdminStatus)));
+			m_threadPool.execute(() -> userManager.verifySubscriber(session, onSuccess, onFailure, subscriberEmail,
+			                                                        grantAdminStatus)));
 
 
 		ui.registerCallbackDenySubscriber((onSuccess, onFailure, email, date) ->
-			m_threadPool.execute(() ->
-					                     userManager.denySubscriber(session, onSuccess, onFailure, email, date)));
+			m_threadPool.execute(() -> userManager.denySubscriber(session, onSuccess, onFailure, email, date)));
 
 
 		ui.registerCallbackSubscriberRemoval((onSuccess, onFailure, email, date) ->
-			m_threadPool.execute(() ->
-					                     userManager.deactivateSubscriber(session, onSuccess, onFailure, email, date)));
+			m_threadPool.execute(() -> userManager.deactivateSubscriber(session, onSuccess, onFailure, email, date)));
 
 
 		ui.registerCallbackAddOrganisation((onSuccess, onFailure, organisationName,
 		                                    adminFirstName, adminLastName, adminEmail,
 		                                    adminPassword) ->
-			m_threadPool.execute(() ->
-				userManager.addOrganisation(session, onSuccess, onFailure,
-			                                organisationName, adminFirstName, adminLastName,
-			                                adminEmail, adminPassword)));
+			m_threadPool.execute(() -> userManager.addOrganisation(session, onSuccess, onFailure, organisationName,
+			                                                       adminFirstName, adminLastName, adminEmail,
+			                                                       adminPassword)));
 
 		ui.registerCallbackRemoveOrganisation((onSuccess, onFailure, organisationName) ->
-			m_threadPool.execute(() ->
-			    userManager.removeOrganisation(session, onSuccess, onFailure, organisationName)));
+			m_threadPool.execute(() -> userManager.removeOrganisation(session, onSuccess, onFailure, organisationName)));
 
 		ui.registerCallbackFetchOrganisations((onSuccess, onFailure) ->
-			m_threadPool.execute(() ->
-				userManager.getAllOrganisations(session, onSuccess, onFailure)));
+			m_threadPool.execute(() -> userManager.getAllOrganisations(session, onSuccess, onFailure)));
 
 		ui.registerCallbackChangePW(((onSuccess, onFailure, email, oldPW, newPW) ->
-				m_threadPool.execute(() ->
-						                     userManager.changePassword(session, onSuccess, onFailure, email, oldPW,
+				m_threadPool.execute(() -> userManager.changePassword(session, onSuccess, onFailure, email, oldPW,
 						                                                newPW))));
 
 		ui.registerCallbackAddProfile(((onSuccess, onFailure, profileID, sources, keywords, interval) ->
-		                              m_threadPool.execute(() -> profileManager.createNewProfile(session,
-		                                                                                         onSuccess, onFailure,
-		                                                                                         profileID,
-		                                                                                         Arrays.asList(keywords),
-		                                                                                         Arrays.asList(sources),
-		                                                                                         interval))));
+		                              m_threadPool.execute(() -> profileManager.createNewProfile(
+		                              		session, onSuccess, onFailure, profileID, Arrays.asList(keywords),
+			                                Arrays.asList(sources), interval))));
+
+		ui.registerCallbackUpdateProfile((onSuccess, onFailure, profileID, profileName, sources, keywords, interval, isActive)
+				                                 -> profileManager.updateProfile(session, onSuccess, onFailure,
+				                                                                 profileID, profileName,
+				                                                                 Arrays.asList(keywords),
+				                                                                 Arrays.asList(sources),
+				                                                                 interval, isActive));
+
+		ui.registerCallbackShareProfile((onSuccess, onFailure, senderEmail, profileId, receiverEmail) ->
+				                                profileManager.shareProfile(session, onSuccess, onFailure,
+				                                                            profileId, receiverEmail));
+
 		ui.registerCallbackDeleteProfile((onSuccess, onFailure, ownerEmail, profileID) -> profileManager.removeProfile(
 				session, onSuccess, onFailure, profileID));
 
-		ui.registerCallbackFetchProfiles((onSuccess, onFailure) -> profileManager.getOwnProfiles(session,
-		                                                                                         onSuccess,
-		                                                                                         onFailure));
+		ui.registerCallbackFetchProfiles((onSuccess, onFailure) -> profileManager.getOwnProfiles(
+				session, onSuccess, onFailure));
 
 
+		ui.registerCallbackFetchClippings((onSuccess, onFailure, profileID) ->
+				                                  clippingManager.getAllClippingsForObservationProfile(
+				                                  		session, onSuccess, onFailure, profileID));
 
-		ui.registerCallbackAddSource((onSuccess, onFailure, name, link, rssLink) -> );
+		ui.registerCallbackFetchTemplates((onSuccess, onFailure) -> profileManager.getAvailableTemplates(
+				session, onSuccess, onFailure));
+
+		ui.registerCallbackAddTemplate((onSuccess, onFailure, templateName, keywords, sources) ->
+				                               profileManager.createNewProfileTemplate(session, onSuccess, onFailure,
+				                                                                       templateName,
+				                                                                       Arrays.asList(keywords),
+				                                                                       Arrays.asList(sources)));
+
+		ui.registerCallbackRemoveTemplate((onSuccess, onFailure, templateName) ->
+				                                  profileManager.removeProfileTemplate(
+				                                  		session, onSuccess, onFailure, templateName));
+
+		ui.registerCallbackAddSource((onSuccess, onFailure, name, link, rssLink) -> clippingManager.addSource(
+				session, onSuccess, onFailure, name, link, rssLink));
+
+		ui.registerCallbackFetchSources((onSuccess, onFailure) -> clippingManager.getAvailableSources(
+				session, onSuccess, onFailure));
+
+		ui.registerCallbackRemoveSource((onSuccess, onFailure, name) -> clippingManager.removeSource(
+				session, onSuccess, onFailure, name));
 	}
 
 

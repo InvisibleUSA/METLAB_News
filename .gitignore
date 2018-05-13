@@ -1,5 +1,8 @@
 *.tmp
 
+#logfiles
+*log.txt
+
 # Word temporary
 ~$*.doc*
 

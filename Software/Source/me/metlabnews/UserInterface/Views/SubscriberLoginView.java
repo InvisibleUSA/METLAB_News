@@ -9,12 +9,19 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SubscriberLoginView extends VerticalLayout
+/**
+ * The login form for subscribers and client administrators
+ */
+@SuppressWarnings("FieldCanBeLocal")
+public class SubscriberLoginView extends VerticalLayout implements IView
 {
+	/**
+	 * Constructs the login form for subscribers and client administrators
+	 * @param parent the object owning this view
+	 */
 	public SubscriberLoginView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Anmelden");
 
 		buttonLogin.addClickListener((Button.ClickEvent event) -> loginAction());
 
@@ -33,6 +40,9 @@ public class SubscriberLoginView extends VerticalLayout
 		layoutOptions.addComponents(buttonRegister, buttonToSysAdminLogin, buttonForgotPassword);
 	}
 
+	/**
+	 * Executes the action of changing a password
+	 */
 	private void passwordForgotAction()
 	{
 		if(textFieldEmail.getValue().isEmpty())
@@ -59,12 +69,20 @@ public class SubscriberLoginView extends VerticalLayout
 		Notification.show("Email zur Passwortwiederherstellung wurde versendet");
 	}
 
+	/**
+	 * resets the text fields in the view
+	 */
 	public void clearFields()
 	{
 		textFieldEmail.setValue("");
 		textFieldPassword.setValue("");
 	}
 
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+	}
 
 	private MainUI m_parent;
 

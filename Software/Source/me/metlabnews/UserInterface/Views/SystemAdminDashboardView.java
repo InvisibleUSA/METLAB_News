@@ -14,15 +14,21 @@ import java.util.List;
 
 
 
-public class SystemAdminDashboardView extends VerticalLayout
+/**
+ * The dashboard for system administrators
+ */
+@SuppressWarnings("FieldCanBeLocal")
+public class SystemAdminDashboardView extends VerticalLayout implements IView
 {
+	/**
+	 * Constructs the dashboard for system administrators
+	 * @param parent the object owning this view
+	 */
 	public SystemAdminDashboardView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Dashboard");
 
 		setupGrids();
-
 
 		m_buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
 
@@ -89,7 +95,11 @@ public class SystemAdminDashboardView extends VerticalLayout
 		m_tabLayout.addSelectedTabChangeListener(event -> updateGrid());
 	}
 
-
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+	}
 
 	private MainUI m_parent;
 

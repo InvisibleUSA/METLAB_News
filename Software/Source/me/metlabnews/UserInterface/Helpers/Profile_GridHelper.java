@@ -40,6 +40,7 @@ public class Profile_GridHelper
 				event -> m_parent.updateProfileAction(
 						() -> Notification.show("Profil aktualisiert"),
 						Notification::show,
+						m_profileId,
 						m_profileName,
 						(String[])m_keywords.toArray(),
 						(String[])m_sources.toArray(),

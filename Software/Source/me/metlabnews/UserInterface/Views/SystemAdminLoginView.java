@@ -6,12 +6,19 @@ import me.metlabnews.UserInterface.MainUI;
 
 
 
-public class SystemAdminLoginView extends VerticalLayout
+/**
+ * The login form for system administrators
+ */
+@SuppressWarnings("FieldCanBeLocal")
+public class SystemAdminLoginView extends VerticalLayout implements IView
 {
+	/**
+	 * Constructs the login form for system administrators
+	 * @param parent the object owning this view
+	 */
 	public SystemAdminLoginView(MainUI parent)
 	{
 		m_parent = parent;
-		Page.getCurrent().setTitle("Anmelden");
 
 		buttonLogin.addClickListener((Button.ClickEvent event) -> loginAction());
 
@@ -24,12 +31,20 @@ public class SystemAdminLoginView extends VerticalLayout
 		layout.addComponents(textFieldEmail, textFieldPassword, buttonLogin, buttonToSubscriberLogin);
 	}
 
+	/**
+	 * resets the text fields in the view
+	 */
 	public void clearFields()
 	{
 		textFieldEmail.setValue("");
 		textFieldPassword.setValue("");
 	}
 
+	@Override
+	public void show()
+	{
+		m_parent.setContent(this);
+	}
 
 	private MainUI m_parent;
 
