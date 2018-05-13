@@ -9,7 +9,7 @@ import java.util.Calendar;
 
 
 /**
- * <p>Java representation of an RssItem (article)</p>
+ * Java representation of an RssItem (article)
  * Fields are:
  * <ul>
  * <li>Title</li>

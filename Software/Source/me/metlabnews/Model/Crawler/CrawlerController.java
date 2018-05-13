@@ -11,12 +11,12 @@ import java.util.List;
 
 
 /**
- * <p>controls and manages all crawler instances</p>
- * <p>
+ * controls and manages all crawler instances
+ * 
  * it takes the sources from an sql database and starts a
  * crawler for each source. The crawler type depends on the preferred type
  * set in the settings.xml
- * </p>
+ * 
  *
  * @author Benjamin Gerlach
  */

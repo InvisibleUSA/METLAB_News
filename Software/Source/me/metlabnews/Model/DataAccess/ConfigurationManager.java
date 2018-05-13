@@ -205,10 +205,10 @@ public class ConfigurationManager implements IResource
 
 	/**
 	 * Returns the preferred Type of the Crawler. It can return:
-	 * <p>
+	 * 
 	 * {@code}
 	 * RSSFeed or Website
-	 * </p>
+	 * 
 	 *
 	 * @return RSSFeed or Website as TypePrefered ENUM.
 	 */

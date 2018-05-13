@@ -10,12 +10,12 @@ import java.util.ArrayList;
 
 
 /**
- * <p>this class is the representation of a WebCrawler</p>
- * <p>
+ * this class is the representation of a WebCrawler
+ * 
  * it is only a bridge to the YaCy web-interface and
  * does not do any of the work, therefore it does
  * not implement the runnable interface
- * </p>
+ * 
  *
  * @author Benjamin Gerlach
  */
