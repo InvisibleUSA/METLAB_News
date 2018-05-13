@@ -2,7 +2,6 @@ package me.metlabnews.Model.DataAccess.Queries.BaseX;
 
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
-import me.metlabnews.Model.Entities.ObservationProfile;
 import me.metlabnews.Model.Entities.ObservationProfileTemplate;
 import org.basex.core.Command;
 import org.basex.core.cmd.XQuery;
