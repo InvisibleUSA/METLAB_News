@@ -374,14 +374,20 @@ public class MainUI extends UI implements IUserInterface
 	 * @param onFailure event to be executed on unsuccessful execution
 	 * @param templateName name of the template
 	 * @param keywords keywords to be searched for
-	 * @param sources sources to be searched in
+	 * @param sourcesAsObjects sources to be searched in
 	 */
 	public void addTemplate(IGenericEvent onSuccess,
 	                        IGenericFailureEvent onFailure,
 	                        String templateName,
 	                        String[] keywords,
-	                        String[] sources)
+	                        Object[] sourcesAsObjects)
 	{
+		String[] sources = new String[sourcesAsObjects.length];
+		int i;
+		for(i = 0; i < sources.length; i++)
+		{
+			sources[i] = sourcesAsObjects[i].toString();
+		}
 		m_addTemplateCallback.execute(onSuccess, onFailure, templateName, keywords, sources);
 	}
 

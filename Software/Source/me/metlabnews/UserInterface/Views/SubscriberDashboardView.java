@@ -339,8 +339,8 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 			Duration interval = days.plus(hours).plus(minutes).plus(seconds);
 			m_parent.addProfile(
 					() -> {
-						m_textProfileName.setValue("");
-						m_textProfileKeywords.setValue("");
+						m_textProfileName.clear();
+						m_textProfileKeywords.clear();
 						m_selectProfileSources.deselectAll();
 					},
 					errorMessage -> m_parent.access(() -> Notification.show(errorMessage)),
@@ -373,11 +373,12 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 						m_textTemplateName.setValue("");
 						m_textTemplateKeywords.setValue("");
 						m_selectTemplateSources.deselectAll();
+						Notification.show("Vorlage wurde erstellt");
 					},
 					Notification::show,
 					m_textTemplateName.getValue(),
 					m_textTemplateKeywords.getValue().split(" "),
-					(String[])m_selectTemplateSources.getSelectedItems().toArray());
+					m_selectTemplateSources.getSelectedItems().toArray());
 		}
 	}
 
