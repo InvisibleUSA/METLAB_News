@@ -636,7 +636,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 			                                     "keine Vorlage vorhanden",
 			                                     new ArrayList<>(),
 			                                     new ArrayList<>(),
-			                                     Boolean.FALSE,
+			                                     false,
 			                                     LocalDateTime.now(),
 			                                     Duration.ofDays(1)));
 		}

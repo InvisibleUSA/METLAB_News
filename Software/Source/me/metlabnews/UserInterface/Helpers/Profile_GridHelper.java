@@ -35,7 +35,7 @@ public class Profile_GridHelper
 		m_sourcesView.setSelectedItem("Quellen zeigen");
 		m_sourcesView.addValueChangeListener(event -> m_sourcesView.setSelectedItem("Quellen zeigen"));
 
-		m_checkBoxIsActive.setValue(m_isActive);
+		m_checkBoxIsActive.setValue(true);
 		m_checkBoxIsActive.addValueChangeListener(
 				event -> m_parent.updateProfileAction(
 						() -> Notification.show("Profil aktualisiert"),
