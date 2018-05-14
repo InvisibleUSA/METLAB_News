@@ -92,7 +92,7 @@ public class RSSFeed
 			return new RSSFeed(source, articles);
 		}
 		else {
-			Logger.getInstance().logError(RSSFeed.class, "NullPointerException on source:" + source.getName());
+			Logger.getInstance().logError(new RSSFeed(), "NullPointerException on source:" + source.getName());
 			return null;
 		}
 	}
