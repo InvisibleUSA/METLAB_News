@@ -119,20 +119,20 @@ public class Profile_GridHelper
 		long seconds = m_interval.getSeconds();
 		if(seconds < 120)
 		{
-			return seconds + "Sekunden";
+			return seconds + " Sekunden";
 		}
 		long minutes = seconds / 60;
 		if(minutes < 120)
 		{
-			return "etwa" + minutes + "Minuten";
+			return "etwa " + minutes + " Minuten";
 		}
 		long hours = minutes / 60;
 		if(hours < 48)
 		{
-			return "etwa" + hours + "Stunden";
+			return "etwa " + hours + " Stunden";
 		}
 		long days = hours / 24;
-		return "etwa" + days + "Tage";
+		return "etwa " + days + " Tage";
 	}
 
 	public Button getDeleteButton()
