@@ -30,6 +30,7 @@ public class ProfileDataRepresentation
 		m_profileName = profile.getName();
 		m_keywords = profile.getKeywords();
 		m_sources = profile.getSources();
+		m_isActive = profile.isActive();
 		m_lastGenerationTime = profile.getLastGenerationTime();
 		m_interval = profile.getGenerationPeriod();
 	}

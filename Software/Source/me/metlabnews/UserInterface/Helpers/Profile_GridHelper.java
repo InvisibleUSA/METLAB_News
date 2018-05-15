@@ -3,6 +3,7 @@ package me.metlabnews.UserInterface.Helpers;
 import com.vaadin.ui.*;
 import me.metlabnews.UserInterface.MainUI;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -25,32 +26,26 @@ public class Profile_GridHelper
 		m_lastGenerationTime = lastGenerationTime;
 		m_interval = interval;
 
-		m_keywordsView.setEmptySelectionAllowed(false);
-		m_keywordsView.setData(m_keywords);
-		m_keywordsView.setSelectedItem("Suchbegriffe zeigen");
-		m_keywordsView.addValueChangeListener(event -> m_keywordsView.setSelectedItem("Suchbegriffe zeigen"));
-
-		m_sourcesView.setEmptySelectionAllowed(false);
-		m_sourcesView.setData(m_sources);
-		m_sourcesView.setSelectedItem("Quellen zeigen");
-		m_sourcesView.addValueChangeListener(event -> m_sourcesView.setSelectedItem("Quellen zeigen"));
+		setupListSelects(keywords, sources);
 
 		m_checkBoxIsActive.setValue(true);
 		m_checkBoxIsActive.addValueChangeListener(
-				event -> m_parent.updateProfileAction(
-						() -> Notification.show("Profil aktualisiert"),
-						Notification::show,
-						m_profileId,
-						m_profileName,
-						m_keywords.toArray(),
-						m_sources.toArray(),
-						m_interval, m_isActive));
+				event -> {
+					m_isActive = m_checkBoxIsActive.getValue();
+					m_parent.updateProfileAction(
+							() -> Notification.show("Profil aktualisiert"),
+							Notification::show,
+							m_profileId, m_profileName,
+							m_keywords.toArray(), m_sources.toArray(),
+							m_interval, m_isActive);
+				});
 
-		m_buttonDelete.addClickListener(event -> m_parent.deleteProfile(
-				() -> m_buttonDelete.setEnabled(false),
-				Notification::show,
-				m_email,
-				m_profileName));
+		m_buttonDelete.addClickListener(
+				event -> m_parent.deleteProfile(
+						() -> m_buttonDelete.setEnabled(false),
+						Notification::show,
+						m_email,
+						m_profileId));
 	}
 
 	@Override
@@ -116,23 +111,15 @@ public class Profile_GridHelper
 
 	public String getIntervalString()
 	{
-		long seconds = m_interval.getSeconds();
-		if(seconds < 120)
-		{
-			return seconds + " Sekunden";
-		}
-		long minutes = seconds / 60;
-		if(minutes < 120)
-		{
-			return "etwa " + minutes + " Minuten";
-		}
-		long hours = minutes / 60;
-		if(hours < 48)
-		{
-			return "etwa " + hours + " Stunden";
-		}
-		long days = hours / 24;
-		return "etwa " + days + " Tage";
+		long   time    = m_interval.getSeconds();
+		long seconds = time % 60;
+		time = time / 60;
+		long minutes = time % 60;
+		time = time / 60;
+		long hours = time % 24;
+		time = time / 24;
+		long days = time;
+		return String.format("%03d:%02d:%02d:%02d", days,hours ,minutes ,seconds);
 	}
 
 	public Button getDeleteButton()
@@ -153,4 +140,24 @@ public class Profile_GridHelper
 	private final NativeSelect<String> m_sourcesView      = new NativeSelect<>();
 	private final CheckBox             m_checkBoxIsActive = new CheckBox("aktiv");
 	private final Button               m_buttonDelete     = new Button("Löschen");
+
+	private void setupListSelects(List<String> keywords, List<String> sources)
+	{
+		String       displayKeywords = "Suchbegriffe zeigen";
+		String       displaySources  = "Quellen zeigen";
+		List<String> selectKeywords  = new ArrayList<>();
+		List<String> selectSources   = new ArrayList<>();
+		selectKeywords.add(displayKeywords);
+		selectSources.add(displaySources);
+		selectKeywords.addAll(keywords);
+		selectSources.addAll(sources);
+		m_keywordsView.setEmptySelectionAllowed(false);
+		m_sourcesView.setEmptySelectionAllowed(false);
+		m_keywordsView.setItems(selectKeywords);
+		m_sourcesView.setItems(selectSources);
+		m_keywordsView.setSelectedItem(displayKeywords);
+		m_sourcesView.setSelectedItem(displaySources);
+		m_keywordsView.addValueChangeListener(event -> m_keywordsView.setSelectedItem(displayKeywords));
+		m_sourcesView.addValueChangeListener(event -> m_sourcesView.setSelectedItem(displaySources));
+	}
 }

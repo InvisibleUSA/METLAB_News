@@ -51,6 +51,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Initialize the MainUI. This is done by vaadin
+	 *
 	 * @param vaadinRequest ask vaadin what this is
 	 */
 	@Override
@@ -128,8 +129,9 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of trying to log in a subscriber or client administrator.
+	 *
 	 * @param email the users email
-	 * @param pw the users password
+	 * @param pw    the users password
 	 */
 	public void loginSubscriber(String email, String pw)
 	{
@@ -141,8 +143,9 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of trying to log in a system administrator.
+	 *
 	 * @param email the administrators email
-	 * @param pw the administrators password
+	 * @param pw    the administrators password
 	 */
 	public void loginSysAdmin(String email, String pw)
 	{
@@ -153,11 +156,12 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of registering a subscriber
-	 * @param firstName first name of the subscriber
-	 * @param lastName last name of the subscriber
-	 * @param company name of the subscribers company
-	 * @param email email of the subscriber
-	 * @param password password of the subscriber
+	 *
+	 * @param firstName   first name of the subscriber
+	 * @param lastName    last name of the subscriber
+	 * @param company     name of the subscribers company
+	 * @param email       email of the subscriber
+	 * @param password    password of the subscriber
 	 * @param clientAdmin boolean whether the subscriber applied for administrator rights
 	 */
 	public void registerSubscriber(String firstName, String lastName, String company,
@@ -171,12 +175,13 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of registering a subscriber that does not not to be verified afterwards
-	 * @param onSuccess event to be executed on successful execution
-	 * @param firstName first name of the subscriber
-	 * @param lastName last name of the subscriber
-	 * @param company name of the subscribers company
-	 * @param email email of the subscriber
-	 * @param password password of the subscriber
+	 *
+	 * @param onSuccess   event to be executed on successful execution
+	 * @param firstName   first name of the subscriber
+	 * @param lastName    last name of the subscriber
+	 * @param company     name of the subscribers company
+	 * @param email       email of the subscriber
+	 * @param password    password of the subscriber
 	 * @param clientAdmin boolean whether the subscriber applied for administrator rights
 	 */
 	public void registerVerifiedSubscriber(IGenericEvent onSuccess,
@@ -202,12 +207,13 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of changing a users password.
+	 *
 	 * @param onSuccess event to be executed on successful execution
 	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param email email of the subscriber
-	 * @param oldPW old password of the subscriber
-	 * @param newPW1 password of the subscriber
-	 * @param newPW2 password of the subscriber
+	 * @param email     email of the subscriber
+	 * @param oldPW     old password of the subscriber
+	 * @param newPW1    password of the subscriber
+	 * @param newPW2    password of the subscriber
 	 */
 	public void changePassword(IGenericEvent onSuccess, IGenericFailureEvent onFailure,
 	                           String email, String oldPW, String newPW1, String newPW2)
@@ -222,10 +228,11 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of removing a subscriber
+	 *
 	 * @param onSuccess event to be executed on successful execution
 	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param email email of the subscriber
-	 * @param date date of the action
+	 * @param email     email of the subscriber
+	 * @param date      date of the action
 	 */
 	public void removeSubscriber(IGenericEvent onSuccess,
 	                             IGenericFailureEvent onFailure,
@@ -237,6 +244,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of fetching pending subscriber verifications.
+	 *
 	 * @param onSuccess event to be executed on successful execution, contains the fetched items
 	 * @param onFailure event to be executed on unsuccessful execution
 	 */
@@ -249,9 +257,10 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of verifying a subscriber.
-	 * @param onSuccess event to be executed on successful execution
-	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param subscriberEmail email of the subscriber
+	 *
+	 * @param onSuccess        event to be executed on successful execution
+	 * @param onFailure        event to be executed on unsuccessful execution
+	 * @param subscriberEmail  email of the subscriber
 	 * @param grantAdminStatus boolean whether the subscriber will have administrator rights
 	 */
 	public void verifySubscriber(IGenericEvent onSuccess,
@@ -263,10 +272,11 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of denying a subscriber
+	 *
 	 * @param onSuccess event to be executed on successful execution
 	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param email email of the subscriber
-	 * @param date date of the action
+	 * @param email     email of the subscriber
+	 * @param date      date of the action
 	 */
 	public void denySubscriber(IGenericEvent onSuccess,
 	                           IGenericFailureEvent onFailure,
@@ -278,6 +288,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of fetching subscribers.
+	 *
 	 * @param onSuccess event to be executed on successful execution, contains the fetched items
 	 * @param onFailure event to be executed on unsuccessful execution
 	 */
@@ -289,13 +300,14 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of adding an organisation including an initial administrator.
-	 * @param onSuccess event to be executed on successful execution
-	 * @param onFailure event to be executed on unsuccessful execution
+	 *
+	 * @param onSuccess        event to be executed on successful execution
+	 * @param onFailure        event to be executed on unsuccessful execution
 	 * @param organisationName name of the organisation
-	 * @param adminFirstName first name of the administrator
-	 * @param adminLastName last name of the administrator
-	 * @param adminEmail email of the administrator
-	 * @param adminPassword password of the administrator
+	 * @param adminFirstName   first name of the administrator
+	 * @param adminLastName    last name of the administrator
+	 * @param adminEmail       email of the administrator
+	 * @param adminPassword    password of the administrator
 	 */
 	public void addOrganisation(IGenericEvent onSuccess,
 	                            IGenericFailureEvent onFailure,
@@ -312,8 +324,9 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of removing an organisation.
-	 * @param onSuccess event to be executed on successful execution, contains the fetched items
-	 * @param onFailure event to be executed on unsuccessful execution
+	 *
+	 * @param onSuccess        event to be executed on successful execution, contains the fetched items
+	 * @param onFailure        event to be executed on unsuccessful execution
 	 * @param organisationName name of the organisation
 	 */
 	public void removeOrganisation(IGenericEvent onSuccess,
@@ -325,6 +338,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of fetching all organisations.
+	 *
 	 * @param onSuccess event to be executed on successful execution, contains the fetched items
 	 * @param onFailure event to be executed on unsuccessful execution
 	 */
@@ -336,6 +350,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of fetching all profiles of one subscriber.
+	 *
 	 * @param onSuccess event to be executed on successful execution, contains the fetched items
 	 * @param onFailure event to be executed on unsuccessful execution
 	 */
@@ -347,6 +362,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of fetching all clippings of one profile.
+	 *
 	 * @param onSuccess event to be executed on successful execution, contains the fetched items
 	 * @param onFailure event to be executed on unsuccessful execution
 	 */
@@ -359,6 +375,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of fetching all templates of one organisation.
+	 *
 	 * @param onSuccess event to be executed on successful execution, contains the fetched items
 	 * @param onFailure event to be executed on unsuccessful execution
 	 */
@@ -370,10 +387,11 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of adding a template
-	 * @param onSuccess event to be executed on successful execution
-	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param templateName name of the template
-	 * @param keywords keywords to be searched for
+	 *
+	 * @param onSuccess        event to be executed on successful execution
+	 * @param onFailure        event to be executed on unsuccessful execution
+	 * @param templateName     name of the template
+	 * @param keywords         keywords to be searched for
 	 * @param sourcesAsObjects sources to be searched in
 	 */
 	public void addTemplate(IGenericEvent onSuccess,
@@ -383,7 +401,7 @@ public class MainUI extends UI implements IUserInterface
 	                        Object[] sourcesAsObjects)
 	{
 		String[] sources = new String[sourcesAsObjects.length];
-		int i;
+		int      i;
 		for(i = 0; i < sources.length; i++)
 		{
 			sources[i] = sourcesAsObjects[i].toString();
@@ -393,8 +411,9 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of removing a template.
-	 * @param onSuccess event to be executed on successful execution
-	 * @param onFailure event to be executed on unsuccessful execution
+	 *
+	 * @param onSuccess  event to be executed on successful execution
+	 * @param onFailure  event to be executed on unsuccessful execution
 	 * @param templateId ID of the template
 	 */
 	public void removeTemplate(IGenericEvent onSuccess,
@@ -406,12 +425,13 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of adding a profile.
-	 * @param onSuccess event to be executed on successful execution
-	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param profileName name of the profile
-	 * @param keywords keywords to be searched for
+	 *
+	 * @param onSuccess        event to be executed on successful execution
+	 * @param onFailure        event to be executed on unsuccessful execution
+	 * @param profileName      name of the profile
+	 * @param keywords         keywords to be searched for
 	 * @param sourcesAsObjects sources to be searched in
-	 * @param interval time between clippings
+	 * @param interval         time between clippings
 	 */
 	public void addProfile(IGenericEvent onSuccess,
 	                       IGenericFailureEvent onFailure,
@@ -421,7 +441,7 @@ public class MainUI extends UI implements IUserInterface
 	                       Duration interval)
 	{
 		String[] sources = new String[sourcesAsObjects.length];
-		int i = 0;
+		int      i       = 0;
 		while(i < sources.length)
 		{
 			sources[i] = sourcesAsObjects[i].toString();
@@ -432,6 +452,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of deleting a profile.
+	 *
 	 * @param onSuccess event to be executed on successful execution
 	 * @param onFailure event to be executed on unsuccessful execution
 	 * @param ownerMail email of the owner
@@ -447,9 +468,10 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of sharing a profile.
-	 * @param onSuccess event to be executed on successful execution
-	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param profileId ID of the profile
+	 *
+	 * @param onSuccess     event to be executed on successful execution
+	 * @param onFailure     event to be executed on unsuccessful execution
+	 * @param profileId     ID of the profile
 	 * @param receiverEmail email of the receiver
 	 */
 	public void shareProfile(IGenericEvent onSuccess,
@@ -462,37 +484,42 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of updating a profile.
-	 * @param onSuccess event to be executed on successful execution
-	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param profileName name of the profile
+	 *
+	 * @param onSuccess         event to be executed on successful execution
+	 * @param onFailure         event to be executed on unsuccessful execution
+	 * @param profileName       name of the profile
 	 * @param keywordsAsObjects keywords to be searched for
-	 * @param sourcesAsObjects sources to be searched in
-	 * @param interval time between clippings
-	 * @param isActive boolean whether the profile is active
+	 * @param sourcesAsObjects  sources to be searched in
+	 * @param interval          time between clippings
+	 * @param isActive          boolean whether the profile is active
 	 */
 	public void updateProfileAction(IGenericEvent onSuccess,
-	                                IGenericFailureEvent onFailure, String profileID, String profileName,
-	                                Object[] keywordsAsObjects, Object[] sourcesAsObjects, Duration interval, boolean isActive)
+	                                IGenericFailureEvent onFailure,
+	                                String profileID, String profileName,
+	                                Object[] keywordsAsObjects, Object[] sourcesAsObjects,
+	                                Duration interval, boolean isActive)
 	{
-		String[] sources = new String[sourcesAsObjects.length];
-		int i = 0;
-		while(i < sources.length)
+		int      i;
+		String[] sources  = new String[sourcesAsObjects.length];
+		String[] keywords = new String[keywordsAsObjects.length];
+		for(i = 0; i < sources.length; i++)
 		{
 			sources[i] = sourcesAsObjects[i].toString();
-			i++;
 		}
-		String[] keywords = new String[keywordsAsObjects.length];
-		i = 0;
-		while(i < keywords.length)
+		for(i = 0; i < keywords.length; i++)
 		{
 			keywords[i] = keywordsAsObjects[i].toString();
 			i++;
 		}
-		m_updateProfileCallback.execute(onSuccess, onFailure, profileID, profileName, keywords, sources, interval, isActive);
+		m_updateProfileCallback.execute(onSuccess, onFailure,
+		                                profileID, profileName,
+		                                keywords, sources,
+		                                interval, isActive);
 	}
 
 	/**
 	 * Executes the action of fetch all sources.
+	 *
 	 * @param onSuccess event to be executed on successful execution
 	 * @param onFailure event to be executed on unsuccessful execution
 	 */
@@ -504,11 +531,12 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of adding a source.
+	 *
 	 * @param onSuccess event to be executed on successful execution
 	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param name name of the source
-	 * @param link web-link of the source
-	 * @param rssLink RSS-link of the source
+	 * @param name      name of the source
+	 * @param link      web-link of the source
+	 * @param rssLink   RSS-link of the source
 	 */
 	public void addSource(IGenericEvent onSuccess,
 	                      IGenericFailureEvent onFailure,
@@ -519,9 +547,10 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Executes the action of removing a source.
+	 *
 	 * @param onSuccess event to be executed on successful execution
 	 * @param onFailure event to be executed on unsuccessful execution
-	 * @param name name of the source
+	 * @param name      name of the source
 	 */
 	public void removeSource(IGenericEvent onSuccess,
 	                         IGenericFailureEvent onFailure,
@@ -534,6 +563,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * Gets a the user currently logged in.
+	 *
 	 * @return the user currently logged in
 	 */
 	public UserDataRepresentation whoAmI()
@@ -544,6 +574,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for logging in a subscriber or client administrator
+	 *
 	 * @param callback callback to be registered
 	 */
 	// region Callbacks
@@ -555,6 +586,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for registering a subscriber or administrator
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -565,6 +597,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for removing a subscriber or client administrator
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -575,6 +608,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for fetching pending verification requests
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -585,6 +619,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for verifying a subscriber or client administrator
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -595,6 +630,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for denying a subscriber or client administrator
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -605,6 +641,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for fetching subscribers
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -615,6 +652,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for logging in a system administrator
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -625,6 +663,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for adding an organisation
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -635,6 +674,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for removing an organisation
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -645,6 +685,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for fetching all organisations
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -655,6 +696,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for changing a password
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -665,6 +707,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for logging out any user
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -675,6 +718,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for fetching all profiles of a subscriber
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -685,6 +729,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for fetching all clippings of a profile
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -695,6 +740,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for fetching all templates of a organisation
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -705,6 +751,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for adding a template
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -715,6 +762,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for removing a template
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -725,6 +773,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for adding a profile
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -735,6 +784,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for deleting a profile
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -745,6 +795,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for sharing a profile
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -755,6 +806,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for updating a profile
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -765,6 +817,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for fetching all sources
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -775,6 +828,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for adding a source
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
@@ -785,6 +839,7 @@ public class MainUI extends UI implements IUserInterface
 
 	/**
 	 * registers the callback for removing a source
+	 *
 	 * @param callback callback to be registered
 	 */
 	@Override
