@@ -64,7 +64,6 @@ public class QueryGetProfilesToEnqueue extends BaseXQueryBase
 				" and $profile/activated = 'true'\n" +
 				" order by (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
 				" return $profile";
-		Logger.getInstance().logDebug(this, query);
 		return new XQuery(query);
 	}
 

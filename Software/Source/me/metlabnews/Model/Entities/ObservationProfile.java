@@ -52,14 +52,14 @@ public class ObservationProfile extends ObservationProfileTemplate
 			m_isActive = Boolean.parseBoolean(tag.child("active").value());
 			m_lastGeneration = LocalDateTime.parse(tag.child("last-generation").value());
 			m_period = Duration.parse(tag.child("period").value());
-			for(XMLTag keyword : tag.children("keywords"))
+			for(XMLTag keyword : tag.child("keywords").children("keyword"))
 			{
-				m_keywords.add(keyword.child("keyword").value());
+				m_keywords.add(keyword.value());
 			}
 
-			for(XMLTag src : tag.children("sources"))
+			for(XMLTag src : tag.child("sources").children("source"))
 			{
-				m_sources.add(src.child("source").value());
+				m_sources.add(src.value());
 			}
 		}
 		catch(NullPointerException e)

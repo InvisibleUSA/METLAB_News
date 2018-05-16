@@ -33,7 +33,7 @@ public class QueryGetProfileById extends BaseXQueryBase
 	@Override
 	protected Command createBaseXQuery()
 	{
-		final String query = "for $profile in /profiles\n" +
+		final String query = "for $profile in /profile\n" +
 				" where $profile/id = '" + profileID + "'\n" +
 				" return $profile";
 		return new XQuery(query);

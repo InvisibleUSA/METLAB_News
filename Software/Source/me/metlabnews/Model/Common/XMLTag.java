@@ -12,16 +12,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+
 /**
  * This class provides an easy to use interface to access XML-Data.
  * In the constructor you can can specify XML-Data as string. After
  * construction it is accessible by the method {@link #child(String)}.
  * These calls can be chained to get to the desired subtag. If the path is not found,
  * a nullptr-exception is thrown (as of version 1.0).
- * 
+ * <p>
  * To extract the information from the input string, this class uses the Java XML-API
  * under the hood.
- * 
+ * <p>
  * Usage example:
  * Suppose you have an XML-String and want to print out the action.
  * You can do this with the following code:
@@ -45,6 +47,7 @@ public class XMLTag
 		Logger.getInstance().register(Key.class, Logger.Channel.XMLTag);
 		Logger.getInstance().register(XMLTag.class, Logger.Channel.XMLTag);
 	}
+
 	/**
 	 * Alternate constructor. Use only if you need the Java XML-API anyway.
 	 *
@@ -105,7 +108,7 @@ public class XMLTag
 	 * alternative method to access any child of the current {@link XMLTag}
 	 * As a second parameter the position of the tag element is entered counting only
 	 * tag elements with the name tagName. position starts at 0.
-	 * 
+	 * <p>
 	 * If you need all children with name x call {@link #children(String)}. This can be used
 	 * if you want to iterate over all children having this name.
 	 * If you need only the first (0th) child with name x consider calling {@link #child(String)} instead.
@@ -129,7 +132,7 @@ public class XMLTag
 	 * with the same name x. Useful if you want to iterate over all children
 	 * of a tag that have the same name.
 	 * If no child is found, the returned List is empty.
-	 * 
+	 * <p>
 	 * If you need only one child, call {@link #child(String)} or {@link #child(String, int)} instead.
 	 *
 	 * @param tagName the name of the tag
@@ -164,7 +167,7 @@ public class XMLTag
 
 	/**
 	 * method to get the name of the current tag.
-	 * 
+	 * <p>
 	 * Example:
 	 * {@code
 	 * XMLTag t = new XMLTag("<profile>
@@ -185,7 +188,7 @@ public class XMLTag
 	 * method to get the value of the current tag.
 	 * Only useful, if current tag has no subtags.
 	 * Otherwise an empty string is returned.
-	 * 
+	 * <p>
 	 * Example:
 	 * {@code
 	 * XMLTag t = new XMLTag("<profile>
@@ -273,6 +276,10 @@ public class XMLTag
 		for(HashMap.Entry<Key, XMLTag> entry : m_children.entrySet())
 		{
 			s.append(entry.getValue().print(indentlevel + 2));
+		}
+		if(m_value != null && !m_value.isEmpty())
+		{
+			s.append(indent).append(m_value).append("\n");
 		}
 		s.append(indent).append("</").append(m_name).append(">\n");
 		Logger.getInstance().logDebug(this, "done printing level " + indentlevel + ".");
