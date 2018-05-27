@@ -61,7 +61,7 @@ public class ProfileManager
 		Subscriber subscriber = (Subscriber)session.getUser();
 		QueryAddProfile addQuery = new QueryAddProfile();
 		addQuery.profile = new ObservationProfile(name, subscriber.getEmail(),
-		                                          String.valueOf(subscriber.getOrganisationId()),
+		                                          subscriber.getOrganisationId().getName(),
 		                                          keywords, sources, clippingPeriod);
 
 		// Lets assume the subscriber wants to use his newly created profile right away
