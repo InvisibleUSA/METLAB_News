@@ -177,6 +177,9 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 	public void show()
 	{
 		m_parent.setContent(this);
+		m_parent.fetchProfiles(
+				this::showProfiles,
+				Notification::show);
 		if(m_parent.whoAmI().isOrganisationAdministrator())
 		{
 			showAdminLayout();
@@ -501,8 +504,8 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		}
 		else if(m_tabsAdmin.getSelectedTab().equals(m_displayTemplateCreation))
 		{
-			m_parent.fetchTemplates(
-					this::showTemplatesForAdmins,
+			m_parent.fetchSources(
+					this::showSources,
 					Notification::show);
 		}
 	}
@@ -557,13 +560,9 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		{
 			Notification.show("Bitte geben Sie einen Vorlagenamen ein!");
 		}
-		else if(m_textTemplateKeywords.isEmpty())
+		else if(m_textTemplateKeywords.isEmpty() && m_selectTemplateSources.isEmpty())
 		{
-			Notification.show("Bitte geben Sie Suchbegriffe ein!");
-		}
-		else if(m_selectTemplateSources.isEmpty())
-		{
-			Notification.show("Bitte geben Sie Quellen ein!");
+			Notification.show("Bitte geben Sie mindestens einen Suchbegriff oder eine Quelle ein!");
 		}
 		else
 		{
