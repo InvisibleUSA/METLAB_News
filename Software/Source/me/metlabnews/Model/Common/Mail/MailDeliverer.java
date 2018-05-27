@@ -128,7 +128,7 @@ public class MailDeliverer
 	 * @param subject Subject
 	 * @return true: send was successful  false: an exception occurred
 	 */
-	public boolean send(String to, String subject, String message)
+	public synchronized boolean send(String to, String subject, String message)
 	{
 		if(to != null)
 		{

@@ -3,13 +3,13 @@ package me.metlabnews.Model.Entities;
 
 
 import me.metlabnews.Model.Common.Logger;
-import me.metlabnews.Model.Common.Mail.ResponsiveHTMLMessage;
+import me.metlabnews.Model.Common.Mail.MailBuilder;
 import me.metlabnews.Model.Common.XMLTag;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetArticleByID;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 
 
 
@@ -95,31 +95,20 @@ public class Clipping
 		return s.toString();
 	}
 
-	public String prettyPrint()
-	{
-		StringBuilder s = new StringBuilder();
-		s.append("*************************************************************************Clipping" +
-				         "*************************************************************************\n");
-		s.append(m_generationTime).append("\n");
-		s.append(m_profile);
-		for(Article a : m_articles)
-		{
-			s.append(a).append("\n");
-		}
-		s.append("*********************************************************************************" +
-				         "*************************************************************************\n");
-		return s.toString();
-	}
 
+	/**
+	 * This method will take all articles to return a responsive HTML String.
+	 *
+	 * @return HTML String
+	 */
 	public String prettyPrintHTML()
 	{
-		StringBuilder s = new StringBuilder();
-		s.append(m_generationTime).append("\n");
-		s.append(m_profile);
-		for(Article a : m_articles)
-		{
-			s.append(a).append("\n");
-		}
-		return ResponsiveHTMLMessage.getInstance().createHTMLMail(s.toString());
+		List<String>  content  = new ArrayList<>();
+		List<Article> articles = new ArrayList<>(m_articles);
+
+		content.add(m_generationTime.toString() + "\n");
+		content.add(m_profile.toString());
+
+		return MailBuilder.getFinalHTMLString(content, articles);
 	}
 }

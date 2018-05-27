@@ -1,5 +1,6 @@
 package me.metlabnews.Model.ClippingDaemon;
 
+import me.metlabnews.Model.Common.Mail.MailBuilder;
 import me.metlabnews.Model.Common.Mail.MailDeliverer;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddClipping;

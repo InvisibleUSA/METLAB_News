@@ -1,47 +1,59 @@
 package me.metlabnews.Model.Common.Mail;
 
-/**
- * This Class contains the Message for the ClippingGenerator.
- * It holds the Message as a String variable and uses Singleton call to get the Message.
+import me.metlabnews.Model.Entities.Article;
+
+import java.util.List;
+
+
+
+/***
+ * This class is needed to build a responsive HTML Mail.
+ * You can only call the getFinalHTMLString - method.
  */
-@SuppressWarnings({"SpellCheckingInspection", "FieldCanBeLocal"})
-public class ResponsiveHTMLMessage
+public class MailBuilder
 {
 
 
-	private static ResponsiveHTMLMessage m_instance;
-
-
-	/**
-	 * Singleton call of this Instance.
-	 *
-	 * @return The {@link ResponsiveHTMLMessage} application instance.
-	 */
-	public static ResponsiveHTMLMessage getInstance()
+	private static String createClippingContent(String c)
 	{
-		if(m_instance == null)
+		return
+				"<table>\n" +
+						"   <tr>\n" +
+						"       <td valign=\"middle\" style=\"padding:0 10px 10px 0\"><p href=\"#\" style=\"text-decoration: none; color: #272727; font-size: 12px; color: #272727; font-weight: bold; font-family:Arial, sans-serif \">" + c + "</p></td>\n" +
+						"   </tr>\n" +
+						"</table>";
+	}
+
+
+	private static String createSalutationContent(String c)
+	{
+		return
+				"<table>\n" +
+						"   <tr>\n" +
+						"       <td valign=\"middle\" style=\"padding:0 10px 10px 0\"><p href=\"#\" style=\"text-decoration: none; color: #272727; font-size: 16px; color: #272727; font-weight: bold; font-family:Arial, sans-serif \">" + c + "</p></td>\n" +
+						"   </tr>\n" +
+						"</table>";
+	}
+
+	public static String getFinalHTMLString(List<String> content, List<Article> articles)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(HTML_header);
+		sb.append(createSalutationContent("Sehr geehrter Abonnent, " + "\n"));
+		for(String s : content)
 		{
-			m_instance = new ResponsiveHTMLMessage();
+			sb.append(createClippingContent(s.toString())).append("\n");
 		}
-		return m_instance;
+		for(Article a : articles)
+		{
+			sb.append(createClippingContent(a.toString())).append("\n");
+		}
+		sb.append(HTML_footer);
+		return sb.toString();
 	}
 
 
-	/**
-	 * This method returns the HTML String as Message.
-	 *
-	 * @return The Message as HTML-String to send an E-Mail
-	 */
-	public String createHTMLMail(String content)
-	{
-		m_content = content;
-		return m_HTMLMessage;
-	}
-
-	private       String m_content      = null;
-	private final String m_receiverName = "Sehr geehrter Abonnent,";
-
-	private final String m_HTMLMessage =
+	private static String HTML_header =
 			"<!doctype html>\n" +
 					"<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
 					"<head>\n" +
@@ -79,24 +91,18 @@ public class ResponsiveHTMLMessage
 					"\n" +
 					"\n" +
 					"\t\t\t<!-- One Column -->\n" +
-					"\t\t\t<table width=\"580\"  class=\"deviceWidth\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" bgcolor=\"#eeeeed\" style=\"margin:0 auto;\">\n" +
+					"\t\t\t<table width=\"580\" border=\"0\" class=\"deviceWidth\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" bgcolor=\"#eeeeed\" style=\"margin:0 auto;\">\n" +
 					"\t\t\t\t<tr>\n" +
 					"\t\t\t\t\t<td valign=\"top\" style=\"padding:0\" bgcolor=\"#ffffff\">\n" +
-					"\t\t\t\t\t\t<p href=\"#\"><img  class=\"deviceWidth\" src=\"file:///C:/Users/Tobi/Desktop/pexels-photo-518543.jpeg\" alt=\"\" border=\"0\" style=\"display: block; border-radius: 4px;\" /></a>\n" +
+					"\t\t\t\t\t\t<p href=\"#\"><img  class=\"deviceWidth\" src=\"file:///C:/Users/Tobi/Desktop/header_img.jpeg\" alt=\"\" border=\"0\" style=\"display: block; border-radius: 4px;\" /></p>\n" +
 					"\t\t\t\t\t</td>\n" +
 					"\t\t\t\t</tr>\n" +
 					"                <tr>\n" +
-					"                    <td style=\"font-size: 13px; color: #959595; font-weight: normal; text-align: left; font-family: Georgia, Times, serif; line-height: 24px; vertical-align: top; padding:10px 8px 10px 8px\" bgcolor=\"#eeeeed\">\n" +
-					"\n" +
-					"                        <table>\n" +
-					"                            <tr>\n" +
-					"                                <td valign=\"middle\" style=\"padding:0 10px 10px 0\"><p href=\"#\" style=\"text-decoration: none; color: #272727; font-size: 16px; color: #272727; font-weight: bold; font-family:Arial, sans-serif \"> " + m_receiverName + "</a>\n" +
-					"                                </td>\n" +
-					"                            </tr>\n" +
-					"                        </table>\n" +
-					"\n" +
-					"\t\t\t\t\t\t " + m_content + "  \n" +
-					"                    </td>\n" +
+					"                    <td style=\"font-size: 13px; color: #959595; font-weight: normal; text-align: left; font-family: Georgia, Times, serif; line-height: 24px; vertical-align: top; padding:10px 8px 10px 8px\" bgcolor=\"#eeeeed\">";
+
+
+	private static String HTML_footer =
+			"</td>\n" +
 					"                </tr>\n" +
 					"\t\t\t</table><!-- End One Column -->\n" +
 					"\n" +
@@ -149,5 +155,5 @@ public class ResponsiveHTMLMessage
 					"- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n" +
 					"</div>\n" +
 					"</body>\n" +
-					"</html>\n";
+					"</html>";
 }

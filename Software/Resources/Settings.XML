@@ -45,7 +45,7 @@
 
 
 	<!-- Logger -->
-	<entry key="Logger.LogDestination">ToFile</entry> <!-- {ToFile, ToConsole -->
+	<entry key="Logger.LogDestination">ToConsole</entry> <!-- {ToFile, ToConsole -->
 	<entry key="Logger.LogFilePath">\Logs\</entry> <!-- The subfolder of the logfiles -->
 	<entry key="Logger.isDisabled_ERROR">false</entry> <!-- {false, true} -->
 	<entry key="Logger.isDisabled_WARNING">false</entry> <!-- {false, true} -->
