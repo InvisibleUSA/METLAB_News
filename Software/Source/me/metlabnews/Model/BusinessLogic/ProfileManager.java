@@ -204,7 +204,7 @@ public class ProfileManager
 		}
 
 		QueryAddProfileTemplate addQuery = new QueryAddProfileTemplate();
-		addQuery.template = new ObservationProfileTemplate(name, String.valueOf(subscriber.getOrganisationId()),
+		addQuery.template = new ObservationProfileTemplate(name, subscriber.getOrganisationId().getName(),
 		                                                   keywords, sources);
 		if(!addQuery.execute())
 		{

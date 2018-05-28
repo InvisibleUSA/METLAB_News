@@ -87,7 +87,7 @@ public class Clipping
 		s.append("\t<articles>\n");
 		for(Article a : m_articles)
 		{
-			s.append("\t\t<articleID>\n");
+			s.append("\t\t<articleID>");
 			s.append(a.getguid());
 			s.append("</articleID>\n");
 		}
