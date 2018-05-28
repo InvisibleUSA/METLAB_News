@@ -13,11 +13,21 @@ import java.util.List;
 public class MailBuilder
 {
 
+	private static String createNormalContent(String c)
+	{
+		return
+				"<table>\n" +
+						"   <tr>\n" +
+						"       <td valign=\"middle\" style=\"padding:0 10px 10px 0\"><p href=\"#\" style=\"text-decoration: none; color: #272727; font-size: 12px; color: #272727; font-weight: bold; font-family:Arial, sans-serif \">" + c + "</p></td>\n" +
+						"   </tr>\n" +
+						"</table>";
+	}
+
 
 	private static String createClippingContent(String c)
 	{
 		return
-				"<table>\n" +
+				"<table border=\"1\">\n" +
 						"   <tr>\n" +
 						"       <td valign=\"middle\" style=\"padding:0 10px 10px 0\"><p href=\"#\" style=\"text-decoration: none; color: #272727; font-size: 12px; color: #272727; font-weight: bold; font-family:Arial, sans-serif \">" + c + "</p></td>\n" +
 						"   </tr>\n" +
@@ -40,13 +50,15 @@ public class MailBuilder
 		StringBuilder sb = new StringBuilder();
 		sb.append(HTML_header);
 		sb.append(createSalutationContent("Sehr geehrter Abonnent, " + "\n"));
+		sb.append(createNormalContent("nachfolgend erhalten Sie " + articles.size() + " " +
+				                              "Artikel, die Sie mit Ihrem Profil erstellt haben"));
 		for(String s : content)
 		{
-			sb.append(createClippingContent(s.toString())).append("\n");
+			sb.append(createNormalContent(s)).append("\n");
 		}
 		for(Article a : articles)
 		{
-			sb.append(createClippingContent(a.toString())).append("\n");
+			sb.append(createClippingContent(a.toHTMLString())).append("\n");
 		}
 		sb.append(HTML_footer);
 		return sb.toString();
