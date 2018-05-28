@@ -17,16 +17,27 @@ import java.sql.SQLException;
 public class DatabaseConnector
 {
 
-	private MariaConnector mariaConnector = new MariaConnector();
-	private BaseXConnector baseXConnector = new BaseXConnector();
+	private MariaConnector m_mariaConnector = new MariaConnector();
+	private BaseXConnector m_baseXConnector = new BaseXConnector();
 
 	public String baseXQuery(Command query) throws IOException
 	{
-		return baseXConnector.query(query);
+		return m_baseXConnector.query(query);
 	}
 
 	public ResultSet mariaQuery(Object[] query) throws SQLException
 	{
-		return mariaConnector.query(query);
+		return m_mariaConnector.query(query);
+	}
+
+	/**
+	 * This method changes the connector used to execute request for baseX,
+	 * so you can use a mocked connector.
+	 * ONLY USED FOR UNIT TESTING!
+	 * @param bxc the mocked instance
+	 */
+	public void replaceBaseXConnector(BaseXConnector bxc)
+	{
+		m_baseXConnector = bxc;
 	}
 }

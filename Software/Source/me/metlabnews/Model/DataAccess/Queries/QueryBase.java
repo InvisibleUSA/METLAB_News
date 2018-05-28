@@ -20,4 +20,9 @@ public abstract class QueryBase
 	 * @return Query could / could not be executed
 	 */
 	public abstract boolean execute();
+
+	public static DatabaseConnector getDBConnector()
+	{
+		return m_dbConnector;
+	}
 }

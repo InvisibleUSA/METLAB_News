@@ -34,7 +34,7 @@ public class QueryGetProfileTemplateById extends BaseXQueryBase
 	@Override
 	protected Command createBaseXQuery()
 	{
-		final String query = "for $template in /templates\n" +
+		final String query = "for $template in /template\n" +
 				" where $template/id = '" + templateID + "'\n" +
 				" return $template";
 		return new XQuery(query);

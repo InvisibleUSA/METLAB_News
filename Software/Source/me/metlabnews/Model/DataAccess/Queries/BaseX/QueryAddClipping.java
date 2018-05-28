@@ -28,7 +28,7 @@ public class QueryAddClipping extends BaseXQueryBase
 	protected Command createBaseXQuery()
 	{
 		String filename = "/Clippings/" + clipping.getProfile().getID() + "/" + clipping.getGenerationTime().format(
-				DateTimeFormatter.ofPattern("YYYY-MM-DD"));
+				DateTimeFormatter.ofPattern("YYYY-MM-dd"));
 		return new Add(filename, clipping.toString());
 	}
 

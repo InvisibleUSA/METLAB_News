@@ -23,7 +23,7 @@ import java.util.Properties;
  * @author Erik
  * @version 1.0
  */
-class BaseXConnector
+public class BaseXConnector
 {
 	static
 	{
@@ -127,7 +127,7 @@ class BaseXConnector
 	 * @return XML-Data the query returned
 	 * @throws IOException happens e.g. when DB is down or no client session is available
 	 */
-	String query(Command cmd) throws IOException
+	public String query(Command cmd) throws IOException
 	{
 		if(!m_isServerRunning)
 		{

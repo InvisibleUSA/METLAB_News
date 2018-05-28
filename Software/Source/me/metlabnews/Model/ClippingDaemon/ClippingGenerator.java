@@ -1,6 +1,5 @@
 package me.metlabnews.Model.ClippingDaemon;
 
-import me.metlabnews.Model.Common.Mail.MailBuilder;
 import me.metlabnews.Model.Common.Mail.MailDeliverer;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddClipping;
@@ -31,6 +30,7 @@ class ClippingGenerator implements Runnable
 
 	private ObservationProfile m_profile;
 	private Clipping           m_clipping;
+	boolean m_sendMail = true; //used in unittests
 
 	ClippingGenerator(ObservationProfile op)
 	{
@@ -38,7 +38,7 @@ class ClippingGenerator implements Runnable
 	}
 
 	/**
-	 *{@inheritDoc} generates a clipping by asking YaCy and BaseX for articles
+	 * {@inheritDoc} generates a clipping by asking YaCy and BaseX for articles
 	 * saves YaCy results to BaseX, so its available for future access
 	 * sends clipping via e-mail to its owner
 	 * stores clipping for website access in basex
@@ -59,6 +59,10 @@ class ClippingGenerator implements Runnable
 		updateGenerationTime();
 	}
 
+	Clipping getClipping()
+	{
+		return m_clipping;
+	}
 	private void updateGenerationTime()
 	{
 		m_profile.setLastGenerationTime(LocalDateTime.now());
@@ -127,6 +131,7 @@ class ClippingGenerator implements Runnable
 
 	private void sendMail()
 	{
+		if (!m_sendMail) return;
 		MailDeliverer m = new MailDeliverer();
 		m.send(m_profile.getUserMail(), "New clipping", m_clipping.prettyPrintHTML());
 	}

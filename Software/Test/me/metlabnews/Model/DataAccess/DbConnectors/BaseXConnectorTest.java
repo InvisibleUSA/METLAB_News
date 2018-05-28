@@ -17,6 +17,9 @@ import java.util.ArrayList;
 
 
 
+/**
+ * not really working
+ */
 class BaseXConnectorTest
 {
 
@@ -40,7 +43,6 @@ class BaseXConnectorTest
 		                                     keywords, sources, /*LocalDateTime.now(),*/ Duration.ofSeconds(60));
 		assert qap.execute();
 	}
-
 	@Test
 	void queryParallel()
 	{
