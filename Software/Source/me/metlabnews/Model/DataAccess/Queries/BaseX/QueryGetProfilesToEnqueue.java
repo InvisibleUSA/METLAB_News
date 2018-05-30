@@ -59,8 +59,8 @@ public class QueryGetProfilesToEnqueue extends BaseXQueryBase
 		final String      start = m_startingTime.format(dtf);
 		final String      end   = m_endingTime.format(dtf);
 		final String query = "for $profile in /profile \n" +
-				" where xs:dateTime('" + start + "') <= (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
-				//" and xs:dateTime('" + end + "') > (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
+				" where xs:dateTime('" + end + "') > (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
+				//" and xs:dateTime('" + start + "') <= (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
 				" and $profile/active = 'true'\n" +
 				" order by (xs:dateTime($profile/last-generation) + xs:dayTimeDuration($profile/period))\n" +
 				" return $profile";

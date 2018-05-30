@@ -42,6 +42,8 @@ public class BaseXConnector
 	private       BaseXServer     m_server;
 	private       boolean         m_isServerRunning = true;
 
+	private static final int CONNECTIONS = 10;
+
 	/**
 	 * Starts the DocDBMS Server in a separate process and initializes ClientSessions as well as settings
 	 * Errors are logged to DataBase channel
@@ -81,9 +83,9 @@ public class BaseXConnector
 
 	private synchronized int getSession()
 	{
-		for(int iteration = 0; iteration < 10; iteration++)
+		for(int iteration = 0; iteration < CONNECTIONS; iteration++)
 		{
-			m_currSessionNum = (m_currSessionNum + 1) % 10;
+			m_currSessionNum = (m_currSessionNum + 1) % CONNECTIONS;
 			if(!m_sessionInUse[m_currSessionNum])
 			{
 				m_sessionInUse[m_currSessionNum] = true;
@@ -140,20 +142,25 @@ public class BaseXConnector
 		}
 		ClientSession session = m_sessions[sessionnum];
 
-		String result = session.execute(cmd);
-		m_sessionInUse[sessionnum] = false;
+		try
+		{
+			String result = session.execute(cmd);
+			Logger.getInstance().logDebug(this, "new query: " + cmd.toString());
+			Logger.getInstance().logDebug(this, "result: " + result);
 
-		Logger.getInstance().logDebug(this, "new query: " + cmd.toString());
-		Logger.getInstance().logDebug(this, "result: " + result);
-
-		return result;
+			return result;
+		}
+		finally
+		{
+			m_sessionInUse[sessionnum] = false;
+		}
 	}
 
 	private void connectClients() throws IOException
 	{
-		m_sessions = new ClientSession[10];
-		m_sessionInUse = new boolean[10];
-		for(int i = 0; i < 10; i++)
+		m_sessions = new ClientSession[CONNECTIONS];
+		m_sessionInUse = new boolean[CONNECTIONS];
+		for(int i = 0; i < CONNECTIONS; i++)
 		{
 			m_sessions[i] = new ClientSession(m_host, m_port, m_username, m_password);
 			m_sessions[i].execute(new Open(m_dbName));
@@ -184,7 +191,7 @@ public class BaseXConnector
 		try
 		{
 			disconnect();
-			for(int i = 0; i < 10; i++)
+			for(int i = 0; i < CONNECTIONS; i++)
 			{
 				m_sessions[i].close();
 			}
