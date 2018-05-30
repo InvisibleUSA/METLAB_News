@@ -62,7 +62,8 @@ public class QuerySearchArticleRSS extends BaseXQueryBase
 				" order by $clipping/generationtime\n" +
 				" return $clipping/generationtime)[1]\n" +
 				" for $article in /article\n" +
-				" where (($article/title|$article/description) contains text {" + keywords + "} all) and ($article/source=(" + src + "))\n" +
+				" where ((title|description) contains text {" + keywords + "} all) and (source=(" + src + "))\n" +
+				//" where (($article/title|$article/description) contains text {" + keywords + "} all) and ($article/source=(" + src + "))\n" +
 				" and ($newest < xs:dateTime($article/pubDate) or fn:empty($newest))\n" +
 				" and ($article/isRSS = 'true')\n" +
 				" return $article";
