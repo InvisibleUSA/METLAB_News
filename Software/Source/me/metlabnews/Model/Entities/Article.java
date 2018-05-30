@@ -61,6 +61,7 @@ public class Article
 			m_source = new NewsSource(tag.child("source").value(), "", "");
 			m_pubDate = Calendar.getInstance();
 			m_pubDate.setTime(sdf.parse(tag.child("pubDate").value()));
+			Logger.getInstance().logDebug(this, "CREATED XML ARTICLE");
 		}
 		catch(NullPointerException e) {
 			Logger.getInstance().logError(this, "Not a valid article. " + e.toString());
@@ -102,6 +103,18 @@ public class Article
 						+ "\t<isRSS>" + m_isRSS + "</isRSS>\n"
 						+ "\t<pubDate>" + sdf.format(m_pubDate.getTime()) + "</pubDate>\n"
 						+ "</article>";
+		return erg;
+	}
+
+
+	public String toHTMLString()
+	{
+		@SuppressWarnings("UnnecessaryLocalVariable")
+		final String erg =
+				"<p>" + m_source.getName() + " : " + m_title + "</p><br>"
+						+ "<p> " + m_link + "</p><br>"
+						+ "<p>" + m_description + "</p>"
+						+ "<p>" + m_guid + "</p>";
 		return erg;
 	}
 
