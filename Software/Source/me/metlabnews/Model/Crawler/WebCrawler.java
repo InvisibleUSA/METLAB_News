@@ -36,7 +36,10 @@ public class WebCrawler
 	 * <a href='http://www.yacy-websuche.de/wiki/index.php/Dev:APICrawler'>YaCy Dev API for Crawler_p.html</a>
 	 */
 	void start() {
-		if(!isRunning()) {
+		boolean isRunning = isRunning();
+		Logger.getInstance().logInfo(this, "YaCy current status: is running? -> " + isRunning);
+		if(!isRunning)
+		{
 			String startURL = m_yacy_address + "/Crawler_p.html?" +
 					"crawlingDomMaxPages=100000&" +
 					"range=subpath&" +

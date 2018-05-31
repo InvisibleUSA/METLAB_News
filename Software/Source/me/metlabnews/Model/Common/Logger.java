@@ -703,9 +703,14 @@ public class Logger implements IResource
 			channel = Channel.UNREGISTERED_CHANNEL;
 		}
 
-		boolean loggerLogic = ((level.equals(LogLevel.ERROR))
-				|| ((!isLevelForbidden(level) && !m_localLevelFlag.contains(level))
-				&& !isChannelForbidden(channel)));
+		boolean isLevelError          = level.equals(LogLevel.ERROR);
+		boolean isLevelForbidden      = isLevelForbidden(level);
+		boolean isLocalLevelForbidden = m_localLevelFlag.contains(level);
+		boolean isChannelForbidden    = isChannelForbidden(channel);
+
+		boolean loggerLogic =
+				(isLevelError)
+						|| ((!isLevelForbidden && !isLocalLevelForbidden) && isChannelForbidden);
 
 		if(loggerLogic)
 		{
