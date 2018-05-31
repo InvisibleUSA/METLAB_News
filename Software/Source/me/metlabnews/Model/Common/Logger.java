@@ -14,30 +14,28 @@ import java.util.Hashtable;
 
 
 /**
- * 
  * This Class is for logging the whole error's and debug outputs of the application.
- * 
- * 
+ * <p>
+ * <p>
  * You can also log user controls and registers to the destination. The log-files are stored
  * in the application folder in ...\Logs\
- * 
+ * <p>
  * The File and the subfolder are created automatically.
- * 
- * 
+ * <p>
+ * <p>
  * Careful: You need first to register the logger with the following Code:
- * 
+ * <p>
  * {@code
  * Logger.getInstance.register(CLASSNAME.class, Logger.Channel.ChannelName)
  * }
- * 
- * 
- * 
+ * <p>
+ * <p>
+ * <p>
  * Example of logging-usage:
- * 
+ * <p>
  * {@code
  * Logger.getInstance.logError(this, "enter your log-msg here...");
  * }
- * 
  *
  * @author Tobias Reis
  * @version 2.1
@@ -97,11 +95,9 @@ public class Logger implements IResource
 
 
 	/**
-	 * 
 	 * This Enum is for the channels to log the output message to the specific channel.
 	 * Every class or module will have it's own Channel where you can log from.
 	 * The channels will help to separate the log files into different folders.
-	 * 
 	 */
 	public enum Channel
 	{
@@ -128,9 +124,8 @@ public class Logger implements IResource
 	/**
 	 * This enum represents the status of the Channel. You can enable and disable
 	 * each single Channels by a HashMap.
-	 * 
+	 * <p>
 	 * Unregistered = Channel by default disabled
-	 * 
 	 */
 	public enum ChannelFlag
 	{
@@ -142,9 +137,8 @@ public class Logger implements IResource
 	/**
 	 * This enum represents the status of the LogLevel. You can enable and disable
 	 * each single LogLevel by a HashMap.
-	 * 
+	 * <p>
 	 * Unregistered = Level by default disabled
-	 * 
 	 */
 	public enum LevelFlag
 	{
@@ -154,12 +148,10 @@ public class Logger implements IResource
 
 
 	/**
-	 * 
 	 * This Enum represents the priority of the logged message. It will be possible to set the
 	 * internal Priority higher than the called Priority. This allows the user to filter some logs.
 	 * If e.g. the Priority of the internal logger is higher than the called Priority, than the message
 	 * will NOT be logged.
-	 * 
 	 */
 	public enum LogLevel
 	{
@@ -274,7 +266,6 @@ public class Logger implements IResource
 
 
 	/**
-	 * 
 	 * This method disables pairs of Channels and Levels.
 	 * If you want to disable DEBUG-logging for Crawler-Channel,
 	 * then you can call this method like this:
@@ -455,13 +446,12 @@ public class Logger implements IResource
 
 	/**
 	 * This Message will write an error message to a file.
-	 * 
+	 * <p>
 	 * If the file and/or the directory is NOT found, then the method will
 	 * automatically create this for you. The default directory is in METLAB_News/Logs/...
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * Filenames are e.g.: 04-05-2018-WebCrawler-log.txt
-	 * 
 	 *
 	 * @param sender  The source of the log
 	 * @param level   The log-priority
@@ -505,19 +495,16 @@ public class Logger implements IResource
 
 
 	/**
-	 * 
 	 * This method will log with the level 'Debug'.
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * You only need to call the following code:
 	 * {@code}
-	 * 
+	 * <p>
 	 * Logger.getInstance.logDebug(this, "your message here...");
-	 * 
-	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -530,19 +517,16 @@ public class Logger implements IResource
 
 
 	/**
-	 * 
 	 * This method will log with the level 'Error'.
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * You only need to call the following code:
 	 * {@code}
-	 * 
+	 * <p>
 	 * Logger.getInstance.logDebug(this, "your message here...");
-	 * 
-	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -555,19 +539,16 @@ public class Logger implements IResource
 
 
 	/**
-	 * 
 	 * This method will log with the level 'Warning'.
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * You only need to call the following code:
 	 * {@code}
-	 * 
+	 * <p>
 	 * Logger.getInstance.logDebug(this, "your message here...");
-	 * 
-	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -580,19 +561,16 @@ public class Logger implements IResource
 
 
 	/**
-	 * 
 	 * This method will log with the level 'Activity'.
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * You only need to call the following code:
 	 * {@code}
-	 * 
+	 * <p>
 	 * Logger.getInstance.logDebug(this, "your message here...");
-	 * 
-	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -605,19 +583,16 @@ public class Logger implements IResource
 
 
 	/**
-	 * 
 	 * This method will log with the level 'Info'.
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * It calls the private function log(Object sender, LogLevel level, Channel channel, String msg)
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * You only need to call the following code:
 	 * {@code}
-	 * 
+	 * <p>
 	 * Logger.getInstance.logInfo(this, "your message here...");
-	 * 
-	 * 
 	 *
 	 * @param sender The source. ALWAYS call it with 'this'
 	 * @param msg    The log-message
@@ -630,13 +605,12 @@ public class Logger implements IResource
 
 
 	/**
-	 * 
 	 * This method will register the Class from where you call it.
 	 * It uses a HashTable to put the different Classes to categories.
-	 * 
-	 * 
+	 * <p>
+	 * <p>
 	 * The categories are e.g. 'Logger', 'Crawler', 'UI', 'ConfigurationManager', etc.
-	 * 
+	 * <p>
 	 * For more categories check the documentation of Channel: {@link Channel}
 	 * ALWAYS call the register method with the keyword 'this'.
 	 * Example:
@@ -681,9 +655,9 @@ public class Logger implements IResource
 	 * The file is found in the specific channel-folder with the name of the
 	 * current date (e.g. 05-04-2018-Crawler-log.txt)
 	 * Newline is automatically appended when logging toFile and toConsole
-	 * 
+	 * <p>
 	 * Example:
-	 * 
+	 * <p>
 	 * {@code
 	 * Logger.getInstance.log(Logger.Channel.WebCrawler,
 	 * Logger.Priority.DEBUG,
@@ -708,9 +682,9 @@ public class Logger implements IResource
 		boolean isLocalLevelForbidden = m_localLevelFlag.contains(level);
 		boolean isChannelForbidden    = isChannelForbidden(channel);
 
-		boolean loggerLogic =
-				(isLevelError)
-						|| ((!isLevelForbidden && !isLocalLevelForbidden) && isChannelForbidden);
+		boolean loggerLogic = isLevelError
+				|| ((!isLevelForbidden && !isLocalLevelForbidden) && !isChannelForbidden)
+				|| (isChannelForbidden && (!isLevelForbidden && !isLocalLevelForbidden));
 
 		if(loggerLogic)
 		{
