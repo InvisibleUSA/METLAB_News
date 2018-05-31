@@ -106,7 +106,7 @@ public class MailBuilder
 					"\t\t\t<table width=\"580\" border=\"0\" class=\"deviceWidth\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" bgcolor=\"#eeeeed\" style=\"margin:0 auto;\">\n" +
 					"\t\t\t\t<tr>\n" +
 					"\t\t\t\t\t<td valign=\"top\" style=\"padding:0\" bgcolor=\"#ffffff\">\n" +
-					"\t\t\t\t\t\t<p href=\"#\"><img  class=\"deviceWidth\" src=\"file:///C:/Users/Tobi/Desktop/header_img.jpeg\" alt=\"\" border=\"0\" style=\"display: block; border-radius: 4px;\" /></p>\n" +
+					"\t\t\t\t\t\t<p href=\"#\"><img  class=\"deviceWidth\" src=\"file:/// http://metlabnews.me:8080/images/header.jpeg\" alt=\"\" border=\"0\" style=\"display: block; border-radius: 4px;\" /></p>\n" +
 					"\t\t\t\t\t</td>\n" +
 					"\t\t\t\t</tr>\n" +
 					"                <tr>\n" +
