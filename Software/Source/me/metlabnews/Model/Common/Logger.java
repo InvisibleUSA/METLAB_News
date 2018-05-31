@@ -684,7 +684,8 @@ public class Logger implements IResource
 
 		boolean loggerLogic = isLevelError
 				|| ((!isLevelForbidden && !isLocalLevelForbidden) && !isChannelForbidden)
-				|| (isChannelForbidden && (!isLevelForbidden && !isLocalLevelForbidden));
+				|| (isChannelForbidden && (!isLevelForbidden && !isLocalLevelForbidden))
+				|| (isLevelForbidden(level) && !isChannelForbidden(channel));
 
 		if(loggerLogic)
 		{

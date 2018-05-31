@@ -15,6 +15,7 @@ import java.util.Base64;
 
 public class Helper
 {
+
 	/**
 	 * @param url the url from which to get an document
 	 * @return the extracted document as a String
@@ -57,7 +58,7 @@ public class Helper
 
 	public static String getHTTPResponse(String address, String user, String pw) throws IOException
 	{
-		Logger.getInstance().logDebug(Helper.class, "url: " + address);
+		Logger.getInstance().logDebug(Helper.class, "Helper Class --> url: " + address);
 		URL               url        = new URL(address);
 		String            encoding   = Base64.getEncoder().encodeToString(
 				(user + ":" + pw).getBytes(Charset.forName("UTF-8")));

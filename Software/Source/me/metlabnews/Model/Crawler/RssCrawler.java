@@ -58,7 +58,7 @@ public class RssCrawler implements Runnable
 		Logger.getInstance().logInfo(this, "started crawler for \"" + m_source.getName() + "\"");
 		while(m_running)
 		{
-			Logger.getInstance().logDebug(this, "crawling " + m_source.getName() + " --> " + m_source.getRss_link());
+			Logger.getInstance().logInfo(this, "crawling " + m_source.getName() + " --> " + m_source.getRss_link());
 			try
 			{
 				String             doc      = Helper.getHTTPResponse(m_source.getRss_link());

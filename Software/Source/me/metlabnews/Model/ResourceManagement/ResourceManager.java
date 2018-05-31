@@ -53,6 +53,8 @@ public class ResourceManager implements ServletContextListener
 		*/
 		//Logger.getInstance().disable(Logger.Channel.XMLTag, Logger.LogLevel.DEBUG);
 		Logger.getInstance().disable(Logger.Channel.Crawler, Logger.LogLevel.DEBUG);
+		Logger.getInstance().disable(Logger.Channel.DocDBMS, Logger.LogLevel.DEBUG);
+		Logger.getInstance().disable(Logger.Channel.XMLTag, Logger.LogLevel.DEBUG);
 		Logger.getInstance().disable(Logger.Channel.NONE, Logger.LogLevel.REGISTRATION);
 		// initialize DatabaseAccess
 		new QueryAddOrganisation();
