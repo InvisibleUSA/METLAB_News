@@ -233,6 +233,31 @@ public class ConfigurationManager implements IResource
 			return null;
 		}
 	}
+
+	public String getCrawlerYaCyPassword()
+	{
+		String key = "Crawler.YaCy.Password";
+		return returnProperty(key);
+	}
+
+	public String getCrawlerYaCyUser()
+	{
+		String key = "Crawler.YaCy.User";
+		return returnProperty(key);
+	}
+
+	public String getCrawlerYaCyAddress()
+	{
+		String key = "Crawler.YaCy.Address";
+		return returnProperty(key);
+	}
+
+	public boolean getCrawlerYaCyIsProtected()
+	{
+		String key = "Crawler.YaCy.IsProtected";
+		return Boolean.parseBoolean(returnProperty(key));
+	}
+
 	// endregion Crawler
 
 

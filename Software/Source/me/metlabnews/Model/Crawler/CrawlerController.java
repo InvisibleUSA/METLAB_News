@@ -53,7 +53,7 @@ public class CrawlerController implements Runnable
 		Logger.getInstance().register(CrawlerController.class, Logger.Channel.Crawler);
 		Logger.getInstance().register(RssCrawler.class, Logger.Channel.Crawler);
 		Logger.getInstance().register(WebCrawler.class, Logger.Channel.Crawler);
-		CrawlerController.getInstance();
+		Logger.getInstance().register(Helper.class, Logger.Channel.Crawler);
 	}
 
 	/**

@@ -14,6 +14,10 @@
 	<entry key="Crawler.Timeout">12345</entry>
 	<entry key="Crawler.MaxDocsPerDomain">12345</entry>
 	<entry key="Crawler.TypePreferred">RSSFeed</entry> <!-- {RSSFeed, Website} -->
+	<entry key="Crawler.YaCy.Address">http://metlabnews.me:8090</entry>
+	<entry key="Crawler.YaCy.User">admin</entry>
+	<entry key="Crawler.YaCy.Password">123metlab123</entry>
+	<entry key="Crawler.YaCy.IsProtected">true</entry> <!-- {true, false} -->
 
 
 	<!-- ClippingDaemon -->
@@ -45,7 +49,7 @@
 
 
 	<!-- Logger -->
-	<entry key="Logger.LogDestination">ToConsole</entry> <!-- {ToFile, ToConsole -->
+	<entry key="Logger.LogDestination">ToFile</entry> <!-- {ToFile, ToConsole -->
 	<entry key="Logger.LogFilePath">\Logs\</entry> <!-- The subfolder of the logfiles -->
 	<entry key="Logger.isDisabled_ERROR">false</entry> <!-- {false, true} -->
 	<entry key="Logger.isDisabled_WARNING">false</entry> <!-- {false, true} -->

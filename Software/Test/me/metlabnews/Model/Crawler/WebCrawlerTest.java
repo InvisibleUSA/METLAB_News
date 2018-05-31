@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 public class WebCrawlerTest
 {
 	@BeforeAll
-	public static void init()
+	static void init()
 	{
 		ConfigurationManager.getInstance().initialize();
 		Logger.getInstance().initialize();
@@ -21,6 +21,7 @@ public class WebCrawlerTest
 	@Test
 	public void test() throws InterruptedException
 	{
+		init();
 		WebCrawler test = new WebCrawler(new NewsSource("Gamestar", "gamestar.de", ""));
 		test.start();
 		Thread.sleep(10000);

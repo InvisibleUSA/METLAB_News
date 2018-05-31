@@ -1,6 +1,7 @@
 package me.metlabnews.Model.Crawler;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
+import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.Entities.NewsSource;
 
 import java.io.IOException;
@@ -22,13 +23,17 @@ public class WebCrawler
 {
 	private NewsSource m_source;
 
-	//TODO has to be replaced with config options
-	private static String m_yacy_pw      = "123metlab123";
-	private static String m_yacy_user    = "admin";
-	private static String m_yacy_address = "http://metlabnews.me:8090";
+	private final String  m_yacy_pw;
+	private final String  m_yacy_user;
+	private final String  m_yacy_address;
+	private final boolean m_yacy_is_protected;
 
 	WebCrawler(NewsSource source) {
 		this.m_source = source;
+		this.m_yacy_pw = ConfigurationManager.getInstance().getCrawlerYaCyPassword();
+		this.m_yacy_user = ConfigurationManager.getInstance().getCrawlerYaCyUser();
+		this.m_yacy_address = ConfigurationManager.getInstance().getCrawlerYaCyAddress();
+		this.m_yacy_is_protected = ConfigurationManager.getInstance().getCrawlerYaCyIsProtected();
 	}
 
 	/**
@@ -60,7 +65,14 @@ public class WebCrawler
 					"crawlingDepth=4" +
 					"&crawlingURL=" + m_source.getLink();
 			try {
-				Helper.getHTTPResponse(startURL, m_yacy_user, m_yacy_pw);
+				if(m_yacy_is_protected)
+				{
+					Helper.getHTTPResponse(startURL, m_yacy_user, m_yacy_pw);
+				}
+				else
+				{
+					Helper.getHTTPResponse(startURL);
+				}
 				Logger.getInstance().logInfo(this, "Started new YaCy crawler for " + m_source.getName());
 			}
 			catch(IOException e) {
@@ -79,7 +91,14 @@ public class WebCrawler
 			String handle = getHandle();
 			String url    = m_yacy_address + "/Crawler_p.html?terminate=Terminate&handle=" + handle;
 			try {
-				Helper.getHTTPResponse(url, m_yacy_user, m_yacy_pw);
+				if(m_yacy_is_protected)
+				{
+					Helper.getHTTPResponse(url, m_yacy_user, m_yacy_pw);
+				}
+				else
+				{
+					Helper.getHTTPResponse(url);
+				}
 			}
 			catch(IOException e) {
 				Logger.getInstance().logWarning(this, "YaCy isn't running... or: " + e.getMessage());
@@ -95,9 +114,16 @@ public class WebCrawler
 	 */
 	public boolean isRunning() {
 		try {
-			XMLTag profileSummary = new XMLTag(
-					Helper.getHTTPResponse(m_yacy_address + "/CrawlProfileEditor_p.xml", m_yacy_user, m_yacy_pw)
-			);
+			String response;
+			if(m_yacy_is_protected)
+			{
+				response = Helper.getHTTPResponse(m_yacy_address + "/CrawlProfileEditor_p.xml", m_yacy_user, m_yacy_pw);
+			}
+			else
+			{
+				response = Helper.getHTTPResponse(m_yacy_address + "/CrawlProfileEditor_p.xml");
+			}
+			XMLTag            profileSummary = new XMLTag(response);
 			ArrayList<XMLTag> profiles = profileSummary.children("crawlProfile");
 			for(XMLTag tag : profiles) {
 				if(tag.child("name").value().equals(m_source.getLink())) {
@@ -119,9 +145,16 @@ public class WebCrawler
 	 */
 	public String getHandle() {
 		try {
-			XMLTag profileSummary = new XMLTag(
-					Helper.getHTTPResponse(m_yacy_address + "/CrawlProfileEditor_p.xml", m_yacy_user, m_yacy_pw)
-			);
+			String response;
+			if(m_yacy_is_protected)
+			{
+				response = Helper.getHTTPResponse(m_yacy_address + "/CrawlProfileEditor_p.xml", m_yacy_user, m_yacy_pw);
+			}
+			else
+			{
+				response = Helper.getHTTPResponse(m_yacy_address + "/CrawlProfileEditor_p.xml");
+			}
+			XMLTag            profileSummary = new XMLTag(response);
 			ArrayList<XMLTag> profiles = profileSummary.children("crawlProfile");
 			for(XMLTag tag : profiles) {
 				if(tag.child("name").value().equals(m_source.getLink())) {
