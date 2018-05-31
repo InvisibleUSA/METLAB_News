@@ -1,17 +1,20 @@
 package me.metlabnews.Model.Crawler;
 
+import me.metlabnews.Model.Common.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Base64;
 
 
 
 public class Helper
 {
-
 	/**
 	 * @param url the url from which to get an document
 	 * @return the extracted document as a String
@@ -50,5 +53,26 @@ public class Helper
 			result = result.substring(0, 200);
 		}
 		return result;
+	}
+
+	public static String getHTTPResponse(String address, String user, String pw) throws IOException
+	{
+		Logger.getInstance().logDebug(Helper.class, "url: " + address);
+		URL               url        = new URL(address);
+		String            encoding   = Base64.getEncoder().encodeToString(
+				(user + ":" + pw).getBytes(Charset.forName("UTF-8")));
+		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+		connection.setRequestMethod("POST");
+		connection.setDoOutput(true);
+		connection.setRequestProperty("Authorization", "Basic " + encoding);
+		InputStream    content = connection.getInputStream();
+		BufferedReader in      = new BufferedReader(new InputStreamReader(content));
+		StringBuilder  sb      = new StringBuilder();
+		String         line;
+		while((line = in.readLine()) != null)
+		{
+			sb.append(line);
+		}
+		return sb.toString();
 	}
 }

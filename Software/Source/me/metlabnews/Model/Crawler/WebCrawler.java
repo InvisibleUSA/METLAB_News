@@ -22,6 +22,11 @@ public class WebCrawler
 {
 	private NewsSource m_source;
 
+	//TODO has to be replaced with config options
+	private static String m_yacy_pw      = "123metlab123";
+	private static String m_yacy_user    = "admin";
+	private static String m_yacy_address = "http://metlabnews.me:8090";
+
 	WebCrawler(NewsSource source) {
 		this.m_source = source;
 	}
@@ -32,7 +37,7 @@ public class WebCrawler
 	 */
 	void start() {
 		if(!isRunning()) {
-			String startURL = "http://localhost:8090/Crawler_p.html?" +
+			String startURL = m_yacy_address + "/Crawler_p.html?" +
 					"crawlingDomMaxPages=100000&" +
 					"range=subpath&" +
 					"intention=&" +
@@ -55,11 +60,11 @@ public class WebCrawler
 					"crawlingDepth=4" +
 					"&crawlingURL=" + m_source.getLink();
 			try {
-				Helper.getHTTPResponse(startURL);
+				Helper.getHTTPResponse(startURL, m_yacy_user, m_yacy_pw);
 				Logger.getInstance().logInfo(this, "Started new YaCy crawler for " + m_source.getName());
 			}
 			catch(IOException e) {
-				Logger.getInstance().logError(this, e.getMessage());
+				Logger.getInstance().logWarning(this, "YaCy isn't running... or: " + e.getMessage());
 			}
 		}
 	}
@@ -72,12 +77,12 @@ public class WebCrawler
 
 		if(isRunning()) {
 			String handle = getHandle();
-			String url    = "http://localhost:8090/Crawler_p.html?terminate=Terminate&handle=" + handle;
+			String url    = m_yacy_address + "/Crawler_p.html?terminate=Terminate&handle=" + handle;
 			try {
-				Helper.getHTTPResponse(url);
+				Helper.getHTTPResponse(url, m_yacy_user, m_yacy_pw);
 			}
 			catch(IOException e) {
-				e.printStackTrace();
+				Logger.getInstance().logWarning(this, "YaCy isn't running... or: " + e.getMessage());
 			}
 		}
 	}
@@ -91,7 +96,7 @@ public class WebCrawler
 	public boolean isRunning() {
 		try {
 			XMLTag profileSummary = new XMLTag(
-					Helper.getHTTPResponse("http://localhost:8090/CrawlProfileEditor_p.xml")
+					Helper.getHTTPResponse(m_yacy_address + "/CrawlProfileEditor_p.xml", m_yacy_user, m_yacy_pw)
 			);
 			ArrayList<XMLTag> profiles = profileSummary.children("crawlProfile");
 			for(XMLTag tag : profiles) {
@@ -101,7 +106,7 @@ public class WebCrawler
 			}
 		}
 		catch(IOException e) {
-			Logger.getInstance().logWarning(this, "YaCy isn't running");
+			Logger.getInstance().logWarning(this, "YaCy isn't running... or: " + e.getMessage());
 		}
 		return false;
 	}
@@ -115,7 +120,7 @@ public class WebCrawler
 	public String getHandle() {
 		try {
 			XMLTag profileSummary = new XMLTag(
-					Helper.getHTTPResponse("http://localhost:8090/CrawlProfileEditor_p.xml")
+					Helper.getHTTPResponse(m_yacy_address + "/CrawlProfileEditor_p.xml", m_yacy_user, m_yacy_pw)
 			);
 			ArrayList<XMLTag> profiles = profileSummary.children("crawlProfile");
 			for(XMLTag tag : profiles) {
@@ -125,7 +130,7 @@ public class WebCrawler
 			}
 		}
 		catch(IOException e) {
-			Logger.getInstance().logWarning(this, "YaCy isn't running");
+			Logger.getInstance().logWarning(this, "YaCy isn't running... or: " + e.getMessage());
 		}
 		return null;
 	}
