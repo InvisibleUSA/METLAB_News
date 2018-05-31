@@ -140,10 +140,10 @@ public class ObservationProfile extends ObservationProfileTemplate
 	@Override
 	public String toString()
 	{
-		StringBuilder s = new StringBuilder(m_profileName + ":\n");
-		s.append("Last generation time: ").append(m_lastGeneration).append("<br>");
-		s.append("Period: ").append(m_period).append("<br>");
-		s.append("Keywords: <br>");
+		StringBuilder s = new StringBuilder("Profilname: " + m_profileName + "<br>");
+		//s.append("Last generation time: ").append(m_lastGeneration).append("<br>");
+		//s.append("Period: ").append(m_period).append("<br>");
+		s.append("Keywords:");
 		for(String key : m_keywords)
 		{
 			s.append("    ").append(key).append("\n");
