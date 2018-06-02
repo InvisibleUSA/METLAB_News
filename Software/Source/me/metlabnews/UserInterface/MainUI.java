@@ -436,8 +436,8 @@ public class MainUI extends UI implements IUserInterface
 	public void addProfile(IGenericEvent onSuccess,
 	                       IGenericFailureEvent onFailure,
 	                       String profileName,
-	                       Object[] sourcesAsObjects,
 	                       String[] keywords,
+	                       Object[] sourcesAsObjects,
 	                       Duration interval)
 	{
 		String[] sources = new String[sourcesAsObjects.length];
@@ -881,7 +881,6 @@ public class MainUI extends UI implements IUserInterface
 	// region Events
 	private void loginSuccessfulEvent()
 	{
-		access(m_systemAdminLoginView::clearFields);
 		if(whoAmI().isSystemAdministrator())
 		{
 			openSystemAdminDashboardView();

@@ -72,6 +72,8 @@ public class SystemAdminLoginView extends VerticalLayout implements IView
 		else
 		{
 			m_parent.loginSysAdmin(email, password);
+			textFieldEmail.setValue("");
+			textFieldPassword.setValue("");
 		}
 	}
 }

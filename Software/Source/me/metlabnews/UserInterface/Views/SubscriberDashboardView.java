@@ -106,7 +106,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 
 		m_buttonShare.addClickListener((Button.ClickEvent event) -> shareAction());
 
-		this.addComponents(m_title, m_layoutHeaderBar);
+		this.addComponents(m_title, m_layoutHeaderBar, m_tabLayout);
 		m_layoutHeaderBar.addComponents(m_buttonLogout);
 
 		m_tabsSubscriber.addTab(m_displayClippings, "Pressespiegel anzeigen");
@@ -299,7 +299,6 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 
 	private void showAdminLayout()
 	{
-		this.addComponent(m_tabLayout);
 		m_tabLayout.removeAllComponents();
 		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
 		m_tabLayout.addTab(m_tabsAdmin, "Administrator - Dashboard");
@@ -313,7 +312,6 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 
 	private void showSubscriberLayout()
 	{
-		this.addComponent(m_tabLayout);
 		m_tabLayout.removeAllComponents();
 		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
 		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
@@ -541,15 +539,15 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 			Duration interval = days.plus(hours).plus(minutes).plus(seconds);
 			m_parent.addProfile(
 					() -> {
-						m_textProfileName.clear();
-						m_textProfileKeywords.clear();
+						m_textProfileName.setValue("");
+						m_textProfileKeywords.setValue("");
 						m_selectProfileSources.deselectAll();
+						Notification.show("Profil wurde erstellt");
 					},
 					errorMessage -> m_parent.access(() -> Notification.show(errorMessage)),
 					m_textProfileName.getValue(),
-					m_selectProfileSources.getSelectedItems().toArray(),
 					m_textProfileKeywords.getValue().split(" "),
-					/*m_dateTime.getValue(),*/
+					m_selectProfileSources.getSelectedItems().toArray(),
 					interval);
 		}
 	}
@@ -573,7 +571,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 						m_selectTemplateSources.deselectAll();
 						Notification.show("Vorlage wurde erstellt");
 					},
-					Notification::show,
+					errorMessage -> m_parent.access(() -> Notification.show(errorMessage)),
 					m_textTemplateName.getValue(),
 					m_textTemplateKeywords.getValue().split(" "),
 					m_selectTemplateSources.getSelectedItems().toArray());
