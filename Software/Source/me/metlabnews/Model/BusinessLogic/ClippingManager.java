@@ -7,6 +7,7 @@ import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryRemoveSource;
 import me.metlabnews.Model.Entities.Clipping;
 import me.metlabnews.Model.Entities.NewsSource;
 import me.metlabnews.Model.Entities.Subscriber;
+import me.metlabnews.Model.Entities.SystemAdministrator;
 import me.metlabnews.Presentation.*;
 
 
@@ -88,7 +89,7 @@ public class ClippingManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
-		if(session.getUser().getClass() != Subscriber.class)
+		if(session.getUser().getClass() != SystemAdministrator.class)
 		{
 			onFailure.execute(Messages.IllegalOperation);
 			return;
@@ -121,7 +122,7 @@ public class ClippingManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
-		if(session.getUser().getClass() != Subscriber.class)
+		if(session.getUser().getClass() != SystemAdministrator.class)
 		{
 			onFailure.execute(Messages.IllegalOperation);
 			return;
@@ -148,7 +149,7 @@ public class ClippingManager
 			onFailure.execute(Messages.NotLoggedIn);
 			return;
 		}
-		if(session.getUser().getClass() != Subscriber.class)
+		if(session.getUser().getClass() != Subscriber.class && session.getUser().getClass() != SystemAdministrator.class)
 		{
 			onFailure.execute(Messages.IllegalOperation);
 			return;

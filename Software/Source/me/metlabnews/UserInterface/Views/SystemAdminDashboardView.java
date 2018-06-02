@@ -41,38 +41,15 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 		m_buttonShowSources.addClickListener(
 				(Button.ClickEvent event) -> updateGrid());
 
-		m_buttonAddOrganisation.addClickListener(event -> m_parent.addOrganisation(
-				() -> m_parent.access(
-						() -> {
-							m_parent.verifySubscriber(
-									() -> {
-										m_textOrganization.clear();
-										m_textAdminFirstName.clear();
-										m_textAdminLastName.clear();
-										m_textAdminEmail.clear();
-										m_textAdminPassword.clear();
-									},
-									errorMessage -> m_parent.access(
-											() -> Notification.show(
-													"Administrator konnte nicht hinzugefügt werden\n" + errorMessage)),
-									m_textAdminEmail.getValue(), true);
-							Notification.show("Organisation hinzugefügt");
-						}),
-				errorMessage -> m_parent.access(
-						() -> Notification.show("Organisation konnte nicht hinzugefügt werden\n" + errorMessage)),
-				m_textOrganization.getValue(),
-				m_textAdminFirstName.getValue(),
-				m_textAdminLastName.getValue(),
-				m_textAdminEmail.getValue(),
-				m_textAdminPassword.getValue()));
+		m_buttonAddOrganisation.addClickListener(event -> createOrganizationAction());
 
 		m_buttonAddSource.addClickListener(event -> m_parent.addSource(
 				() -> m_parent.access(
 						() -> {
 							Notification.show("Quelle hinzugefügt");
-							m_textSourceName.clear();
-							m_textSourceLink.clear();
-							m_textSourceRssLink.clear();
+							m_textSourceName.setValue("");
+							m_textSourceLink.setValue("");
+							m_textSourceRssLink.setValue("");
 						}),
 				errorMessage -> m_parent.access(
 						() -> Notification.show("Quelle konnte nicht hinzugefügt werden\n" + errorMessage)),
@@ -107,6 +84,9 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 	public void show()
 	{
 		m_parent.setContent(this);
+		m_parent.getAllOrganisations(
+				this::showOrganizations,
+				Notification::show);
 	}
 
 	private MainUI m_parent;
@@ -162,7 +142,7 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 				.setCaption("Link");
 		m_gridSources.addColumn(Source_GridHelper::getRssLink)
 				.setCaption("RSS-Link");
-		m_gridSources.addColumn(Source_GridHelper::getRemoveButton)
+		m_gridSources.addComponentColumn(Source_GridHelper::getRemoveButton)
 				.setCaption("Quelle entfernen");
 		m_gridSources.setBodyRowHeight(42.0);
 		m_gridSources.setSizeFull();
@@ -204,5 +184,33 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 		}
 		m_gridSources.setItems(sources);
 		m_gridSources.recalculateColumnWidths();
+	}
+
+	private void createOrganizationAction()
+	{
+		m_parent.addOrganisation(
+				() -> m_parent.access(
+						() -> {
+							m_parent.verifySubscriber(
+									() -> {
+										m_textOrganization.setValue("");
+										m_textAdminFirstName.setValue("");
+										m_textAdminLastName.setValue("");
+										m_textAdminEmail.setValue("");
+										m_textAdminPassword.setValue("");
+									},
+									errorMessage -> m_parent.access(
+											() -> Notification.show(
+													"Administrator konnte nicht hinzugefügt werden\n" + errorMessage)),
+									m_textAdminEmail.getValue(), true);
+							Notification.show("Organisation hinzugefügt");
+						}),
+				errorMessage -> m_parent.access(
+						() -> Notification.show("Organisation konnte nicht hinzugefügt werden\n" + errorMessage)),
+				m_textOrganization.getValue(),
+				m_textAdminFirstName.getValue(),
+				m_textAdminLastName.getValue(),
+				m_textAdminEmail.getValue(),
+				m_textAdminPassword.getValue());
 	}
 }

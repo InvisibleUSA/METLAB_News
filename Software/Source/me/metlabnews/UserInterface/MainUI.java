@@ -317,9 +317,9 @@ public class MainUI extends UI implements IUserInterface
 	                            String adminEmail,
 	                            String adminPassword)
 	{
-		m_addOrganisationCallback.execute(onSuccess, onFailure, organisationName,
-		                                  adminFirstName, adminLastName, adminEmail,
-		                                  adminPassword);
+		m_addOrganisationCallback.execute(onSuccess, onFailure,
+		                                  organisationName, adminFirstName, adminLastName,
+		                                  adminEmail, adminPassword);
 	}
 
 	/**

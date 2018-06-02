@@ -35,6 +35,15 @@ public class Organization_GridHelper
 		m_buttonRemoveOrganization.addClickListener(event -> m_parent.removeOrganisation(
 				() -> {
 					m_buttonRemoveOrganization.setEnabled(false);
+					m_textAdminFirstName.setEnabled(false);
+					m_textAdminFirstName.setValue("");
+					m_textAdminLastName.setEnabled(false);
+					m_textAdminLastName.setValue("");
+					m_textAdminEmail.setEnabled(false);
+					m_textAdminEmail.setValue("");
+					m_textAdminPassword.setEnabled(false);
+					m_textAdminPassword.setValue("");
+					m_buttonAddUser.setEnabled(false);
 					m_parent.access(() -> Notification.show("Organisation entfernt"));
 				},
 				errorMessage -> m_parent.access(() -> Notification.show("Organisation konnte nicht entfernt werden!\n" + errorMessage)),

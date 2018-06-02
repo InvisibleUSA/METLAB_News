@@ -160,12 +160,12 @@ public class UserManager
 	/**
 	 * called when User is logging in
 	 *
-	 * @param session takes the current Session
-	 * @param onSuccess Generic success Event
+	 * @param session               takes the current Session
+	 * @param onSuccess             Generic success Event
 	 * @param onVerificationPending Generic verification pending Event
-	 * @param onFailure Generic failure Event
-	 * @param email mail address provided by user
-	 * @param password password provided by user
+	 * @param onFailure             Generic failure Event
+	 * @param email                 mail address provided by user
+	 * @param password              password provided by user
 	 */
 	public void subscriberLogin(Session session, IUserInterface.IGenericEvent onSuccess, IGenericEvent onVerificationPending, IGenericFailureEvent onFailure, String email, String password)
 	{
@@ -211,7 +211,7 @@ public class UserManager
 	/**
 	 * returns whether the current user is an Administrator or not
 	 *
-	 * @param session takes current Session
+	 * @param session   takes current Session
 	 * @param onFailure Generic failure Event
 	 * @return true if User from current Session is an Administrator, false if not
 	 */
@@ -221,6 +221,10 @@ public class UserManager
 		{
 			onFailure.execute(Messages.NotLoggedIn);
 			return false;
+		}
+		if(session.getUser().getClass() == SystemAdministrator.class)
+		{
+			return true;
 		}
 		if(session.getUser().getClass() != Subscriber.class)
 		{
@@ -240,7 +244,7 @@ public class UserManager
 	/**
 	 * gets the current verification requests
 	 *
-	 * @param session takes current Session
+	 * @param session   takes current Session
 	 * @param onSuccess Generic success Event
 	 * @param onFailure Generic failure Event
 	 */
@@ -293,13 +297,76 @@ public class UserManager
 
 		Subscriber subscriber = qgu.subscriber;
 
-		String subscriberOrgName = subscriber.getOrganisationId().getName();
-
-		if(!subscriberOrgName.equals(((Subscriber)session.getUser()).getOrganisationId().getName()))
+		if(session.getUser().getClass() == Subscriber.class)
 		{
-			onFailure.execute(Messages.IllegalOperation);
+			String subscriberOrgName = subscriber.getOrganisationId().getName();
+			if(!subscriberOrgName.equals(((Subscriber)session.getUser()).getOrganisationId().getName()))
+			{
+				onFailure.execute(Messages.IllegalOperation);
+				return;
+			}
+		}
+		if(subscriber.isVerificationPending())
+		{
+			QueryVerifyUser qvu = new QueryVerifyUser();
+			qvu.email = subscriberEmail;
+			qvu.status = 1;
+			if(!qvu.execute())
+			{
+				onFailure.execute(Messages.UnknownError);
+				return;
+			}
+			if(!qvu.userExists)
+			{
+				onFailure.execute(Messages.UnknownEmail);
+				return;
+			}
+
+			subscriber.setVerificationPending(false);
+			subscriber.setOrganisationAdministrator(grantAdmin);
+			onSuccess.execute();
 			return;
 		}
+		onFailure.execute(Messages.UserIsAlreadyVerified);
+	}
+
+	/**
+	 * called when Subscriber is being verified
+	 *
+	 * @param session         takes the current Session
+	 * @param onSuccess       Generic success Event
+	 * @param onFailure       Generic failure Event
+	 * @param subscriberEmail mail address of user to be verified
+	 * @param grantAdmin      true if the user should be provided Administrator status
+	 */
+	public void verifySubscriberForSystemAdmin(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String subscriberEmail, boolean grantAdmin)
+	{
+		if(!session.isLoggedIn())
+		{
+			onFailure.execute(Messages.NotLoggedIn);
+			return;
+		}
+		if(session.getUser().getClass() != SystemAdministrator.class)
+		{
+			onFailure.execute(Messages.NotSystemAdmin);
+			return;
+		}
+
+		QueryGetUser qgu = new QueryGetUser();
+		qgu.email = subscriberEmail;
+		if(!qgu.execute())
+		{
+			onFailure.execute(Messages.UnknownEmail);
+			return;
+		}
+		if(!qgu.userExists)
+		{
+			onFailure.execute(Messages.UnknownError);
+			return;
+		}
+
+		Subscriber subscriber = qgu.subscriber;
+
 		if(subscriber.isVerificationPending())
 		{
 			QueryVerifyUser qvu = new QueryVerifyUser();
@@ -332,11 +399,11 @@ public class UserManager
 	/**
 	 * called when System Administrator logs in
 	 *
-	 * @param session takes the current Session
+	 * @param session   takes the current Session
 	 * @param onSuccess Generic success Event
 	 * @param onFailure Generic failure Event
-	 * @param email mail address provided by User
-	 * @param password password provided by User
+	 * @param email     mail address provided by User
+	 * @param password  password provided by User
 	 */
 	public void systemAdministratorLogin(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String password)
 	{
@@ -372,14 +439,14 @@ public class UserManager
 	/**
 	 * called when new Organisation is added
 	 *
-	 * @param session takes the current Session
-	 * @param onSuccess Generic success Event
-	 * @param onFailure Generic failure Event
+	 * @param session          takes the current Session
+	 * @param onSuccess        Generic success Event
+	 * @param onFailure        Generic failure Event
 	 * @param organisationName name of Organisation to be added
-	 * @param adminFirstName first name of initial Organisation Administrator
-	 * @param adminLastName last name of initial Organisation Administrator
-	 * @param adminEmail mail address of initial Organisation Administrator
-	 * @param adminPassword password of initial Organisation Administrator
+	 * @param adminFirstName   first name of initial Organisation Administrator
+	 * @param adminLastName    last name of initial Organisation Administrator
+	 * @param adminEmail       mail address of initial Organisation Administrator
+	 * @param adminPassword    password of initial Organisation Administrator
 	 */
 	public void addOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName, String adminFirstName, String adminLastName, String adminEmail, String adminPassword)
 	{
@@ -435,11 +502,11 @@ public class UserManager
 	/**
 	 * calls removeSubscriber
 	 *
-	 * @param session takes current Session
+	 * @param session   takes current Session
 	 * @param onSuccess Generic success Event
 	 * @param onFailure Generic failure Event
-	 * @param email email of User to be removed/denied
-	 * @param date not used
+	 * @param email     email of User to be removed/denied
+	 * @param date      not used
 	 */
 	public void denySubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, Date date)
 	{
@@ -449,11 +516,11 @@ public class UserManager
 	/**
 	 * called when User deactivates their Account
 	 *
-	 * @param session takes current Session
+	 * @param session   takes current Session
 	 * @param onSuccess Generic success Event
 	 * @param onFailure Generic failure Event
-	 * @param email email of User to be deactivated
-	 * @param date current date
+	 * @param email     email of User to be deactivated
+	 * @param date      current date
 	 */
 	public void deactivateSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, Date date)
 	{
@@ -482,10 +549,10 @@ public class UserManager
 	/**
 	 * removes Subscriber
 	 *
-	 * @param session takes current Session
+	 * @param session   takes current Session
 	 * @param onSuccess Generic success Event
 	 * @param onFailure Generic failure Event
-	 * @param email email of User to be removed
+	 * @param email     email of User to be removed
 	 */
 	public void removeSubscriber(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email)
 	{
@@ -538,8 +605,8 @@ public class UserManager
 			return;
 		}
 
-		int resultCount = query.getResult().size();
-		UserDataRepresentation[] resultSet = new UserDataRepresentation[resultCount];
+		int                      resultCount = query.getResult().size();
+		UserDataRepresentation[] resultSet   = new UserDataRepresentation[resultCount];
 		for(int idx = 0; idx < resultCount; ++idx)
 		{
 			resultSet[idx] = new UserDataRepresentation(query.getResult().get(idx));
@@ -551,7 +618,7 @@ public class UserManager
 	/**
 	 * gets all Organisations
 	 *
-	 * @param session takes current Session
+	 * @param session   takes current Session
 	 * @param onSuccess Generic success Event
 	 * @param onFailure Generic failure Event
 	 * @return String array of Organisation, null if failed
@@ -581,9 +648,9 @@ public class UserManager
 	/**
 	 * removes an Organisation
 	 *
-	 * @param session takes the current Session
-	 * @param onSuccess Generic success Event
-	 * @param onFailure Generic failure Event
+	 * @param session          takes the current Session
+	 * @param onSuccess        Generic success Event
+	 * @param onFailure        Generic failure Event
 	 * @param organisationName Name of the Organisation to be removed
 	 */
 	public void removeOrganisation(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String organisationName)
@@ -612,12 +679,12 @@ public class UserManager
 	/**
 	 * called on password change
 	 *
-	 * @param session takes the current Session
+	 * @param session   takes the current Session
 	 * @param onSuccess Generic success Event
 	 * @param onFailure Generic failure Event
-	 * @param email mail of user
-	 * @param oldPW old password
-	 * @param newPW new password
+	 * @param email     mail of user
+	 * @param oldPW     old password
+	 * @param newPW     new password
 	 */
 	public void changePassword(Session session, IGenericEvent onSuccess, IGenericFailureEvent onFailure, String email, String oldPW, String newPW)
 	{
