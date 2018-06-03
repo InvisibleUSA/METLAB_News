@@ -591,12 +591,7 @@ public class UserManager
 			return;
 		}
 		Subscriber admin = (Subscriber)session.getUser();
-		/*to share, ordinary subs need this function
-		if(!admin.isOrganisationAdministrator())
-		{
-			onFailure.execute(Messages.NotClientAdmin);
-			return;
-		}*/
+
 		QueryGetSubscribersOfOrganisation query = new QueryGetSubscribersOfOrganisation();
 		query.organisationId = admin.getOrganisationId().getName();
 		if(!query.execute())

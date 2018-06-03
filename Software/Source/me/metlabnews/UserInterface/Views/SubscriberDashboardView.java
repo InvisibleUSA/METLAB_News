@@ -166,6 +166,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		                                                                                      m_textNewPW1.getValue(),
 		                                                                                      m_textNewPW2.getValue()));
 
+		m_tabLayout.addSelectedTabChangeListener(event -> updateGrid());
 		m_tabsSubscriber.addSelectedTabChangeListener(event -> updateGridSub());
 		m_tabsAdmin.addSelectedTabChangeListener(event -> updateGridAdmin());
 		m_listTemplates.addValueChangeListener(event -> applyTemplate());
@@ -303,11 +304,9 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
 		m_tabLayout.addTab(m_tabsAdmin, "Administrator - Dashboard");
 		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
-		/*
 		m_parent.fetchProfiles(
-				data -> showProfiles(data),
-				errorMessage -> Notification.show(errorMessage));
-		*/
+				this::showProfiles,
+				Notification::show);
 	}
 
 	private void showSubscriberLayout()
@@ -315,11 +314,9 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_tabLayout.removeAllComponents();
 		m_tabLayout.addTab(m_tabsSubscriber, "Abonnenten - Dashboard");
 		m_tabLayout.addTab(m_tabsSettings, "Einstellungen");
-		/*
 		m_parent.fetchProfiles(
-				data -> showProfiles(data),
-				errorMessage -> Notification.show(errorMessage));
-		*/
+				this::showProfiles,
+				Notification::show);
 	}
 
 	private void setupGrids()
@@ -448,6 +445,18 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_selectDurationSeconds.setEmptySelectionAllowed(false);
 	}
 
+	private void updateGrid()
+	{
+		if(m_tabLayout.getSelectedTab().equals(m_tabsSubscriber))
+		{
+			updateGridSub();
+		}
+		if(m_tabLayout.getSelectedTab().equals(m_tabsAdmin))
+		{
+			updateGridAdmin();
+		}
+	}
+
 	private void updateGridSub()
 	{
 		if(m_tabsSubscriber.getSelectedTab().equals(m_displayClippings))
@@ -477,6 +486,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 						Notification.show(errorMessage);
 						showTemplatesForSubscribers(null);
 					});
+			m_dateTime.setValue(LocalDateTime.now());
 		}
 	}
 

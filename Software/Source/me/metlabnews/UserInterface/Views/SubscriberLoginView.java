@@ -115,8 +115,8 @@ public class SubscriberLoginView extends VerticalLayout implements IView
 		else
 		{
 			m_parent.loginSubscriber(email, password);
-			textFieldEmail.clear();
-			textFieldPassword.clear();
+			textFieldEmail.setValue("");
+			textFieldPassword.setValue("");
 		}
 	}
 }

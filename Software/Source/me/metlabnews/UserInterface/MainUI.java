@@ -920,6 +920,7 @@ public class MainUI extends UI implements IUserInterface
 		notification.setDelayMsec(3000);
 		access(() -> notification.show(Page.getCurrent()));
 		access(m_subscriberLoginView::clearFields);
+		access(m_subscriberRegistrationView::clearFields);
 	}
 	// endregion Events
 

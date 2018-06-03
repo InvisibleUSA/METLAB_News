@@ -56,6 +56,16 @@ public class SubscriberRegistrationView extends VerticalLayout implements IView
 		m_parent.setContent(this);
 	}
 
+	public void clearFields()
+	{
+		textFieldFirstName.setValue("");
+		textFieldLastName.setValue("");
+		textFieldEmail.setValue("");
+		textFieldPassword.setValue("");
+		checkBoxClientAdmin.setValue(false);
+		textFieldCompany.setValue("");
+	}
+
 	private MainUI m_parent;
 
 	private final Label            title               = new Label("Willkommen bei METLAB-News");
