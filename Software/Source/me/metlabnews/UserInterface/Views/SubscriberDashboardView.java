@@ -1,5 +1,6 @@
 package me.metlabnews.UserInterface.Views;
 
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.datefield.DateTimeResolution;
 import com.vaadin.ui.*;
 import me.metlabnews.Presentation.*;
@@ -29,7 +30,6 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_parent = parent;
 
 		setupGrids();
-		m_dateTime.setValue(LocalDateTime.now());
 		m_dateTime.setLocale(Locale.GERMANY);
 		m_dateTime.setResolution(DateTimeResolution.SECOND);
 		m_textProfileName.setWidth("350");
@@ -170,8 +170,8 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_tabsSubscriber.addSelectedTabChangeListener(event -> updateGridSub());
 		m_tabsAdmin.addSelectedTabChangeListener(event -> updateGridAdmin());
 		m_listTemplates.addValueChangeListener(event -> applyTemplate());
-		m_gridProfilesForClippings.addItemClickListener(event -> showClippingsPart1());
-		m_gridClippings.addItemClickListener(event -> showClipping());
+		m_gridProfilesForClippings.addSelectionListener(event -> showClippingsPart1());
+		m_gridClippings.addSelectionListener(event -> showClipping());
 	}
 
 	@Override
@@ -218,7 +218,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 			"Pressespiegel aktualisieren");
 	private final Panel                             m_panelClipping                         = new Panel(
 			"Pressespiegel");
-	private final Label                             m_textClipping                          = new Label("");
+	private final Label                             m_textClipping                          = new Label("", ContentMode.HTML);
 	private final VerticalLayout                    m_displayProfiles                       = new VerticalLayout();
 	private final Grid<Profile_GridHelper>          m_gridProfiles                          = new Grid<>("Profile");
 	private final Button                            m_buttonShowProfiles                    = new Button(
@@ -297,6 +297,8 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 			"Passwort wiederholen:");
 	private final Button                            m_buttonPWReset                         = new Button(
 			"Passwort zurücksetzen");
+
+	private boolean m_clippingsUpdatable = true;
 
 	private void showAdminLayout()
 	{
@@ -661,20 +663,31 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 	{
 		List<ClippingDataRepresentation> clippings = new ArrayList<>();
 		Collections.addAll(clippings, data);
+		if(clippings.isEmpty())
+		{
+			clippings.add(new ClippingDataRepresentation(
+					"", "Kein Pressespiegel ausgewählt.","Keine Pressespiegel vorhanden."));
+		}
+		m_clippingsUpdatable = false;
 		m_gridClippings.setItems(clippings);
+		m_clippingsUpdatable = true;
+		m_gridClippings.select(clippings.get(0));
 		m_gridClippings.recalculateColumnWidths();
 	}
 
 	private void showClipping()
 	{
-		Object[] clippings = m_gridClippings.getSelectedItems().toArray();
-		if(clippings.length != 1)
+		if(m_clippingsUpdatable)
 		{
-			Notification.show("Wählen Sie genau einen Pressespiegel aus!");
-			m_textClipping.setValue("");
-			return;
+			Object[] clippings = m_gridClippings.getSelectedItems().toArray();
+			if(clippings.length != 1)
+			{
+				Notification.show("Wählen Sie genau einen Pressespiegel aus!");
+				m_textClipping.setValue("Kein Pressespiegel ausgewählt.");
+				return;
+			}
+			m_textClipping.setValue(((ClippingDataRepresentation)clippings[0]).getContent());
 		}
-		m_textClipping.setValue(((ClippingDataRepresentation)clippings[0]).getContent());
 	}
 
 	private void showTemplatesForSubscribers(ProfileTemplateDataRepresentation[] data)
