@@ -120,7 +120,7 @@ public interface IUserInterface
 		             IGenericFailureEvent onFailure);
 	}
 
-	void registerCallbackFetchProfiles(IFetchProfilesCallback callback); //TODO implement in Presentation
+	void registerCallbackFetchProfiles(IFetchProfilesCallback callback);
 
 
 	interface IFetchClippingsCallback
@@ -130,7 +130,7 @@ public interface IUserInterface
 		             String profileID);
 	}
 
-	void registerCallbackFetchClippings(IFetchClippingsCallback callback); //TODO implement in Presentation
+	void registerCallbackFetchClippings(IFetchClippingsCallback callback);
 
 
 	interface IFetchTemplatesCallback
@@ -139,7 +139,7 @@ public interface IUserInterface
 		             IGenericFailureEvent onFailure);
 	}
 
-	void registerCallbackFetchTemplates(IFetchTemplatesCallback callback); //TODO implement in Presentation
+	void registerCallbackFetchTemplates(IFetchTemplatesCallback callback);
 
 
 	interface IAddTemplateCallback
@@ -151,7 +151,7 @@ public interface IUserInterface
 		             String[] sources);
 	}
 
-	void registerCallbackAddTemplate(IAddTemplateCallback callback); //TODO implement in Presentation
+	void registerCallbackAddTemplate(IAddTemplateCallback callback);
 
 
 	interface IRemoveTemplateCallback
@@ -161,7 +161,7 @@ public interface IUserInterface
 		             String templateName);
 	}
 
-	void registerCallbackRemoveTemplate(IRemoveTemplateCallback callback); //TODO implement in Presentation
+	void registerCallbackRemoveTemplate(IRemoveTemplateCallback callback);
 
 
 	interface IAddProfileCallback
@@ -174,7 +174,7 @@ public interface IUserInterface
 		             Duration interval);
 	}
 
-	void registerCallbackAddProfile(IAddProfileCallback callback); //TODO: implement in Presentation
+	void registerCallbackAddProfile(IAddProfileCallback callback);
 
 	interface IUpdateProfileCallback
 	{
@@ -208,7 +208,7 @@ public interface IUserInterface
 		             String senderEmail, String profileId, String receiverEmail);
 	}
 
-	void registerCallbackShareProfile(IShareProfileCallback callback); //TODO: implement in Presentation
+	void registerCallbackShareProfile(IShareProfileCallback callback);
 
 
 	// endregion Subscriber Interaction
@@ -253,7 +253,7 @@ public interface IUserInterface
 		             IGenericFailureEvent onFailure);
 	}
 
-	void registerCallbackFetchSubscribers(IFetchSubscribersCallback callback); //TODO implement in Presentation
+	void registerCallbackFetchSubscribers(IFetchSubscribersCallback callback);
 
 	// endregion Client Admin Interaction
 
@@ -309,7 +309,7 @@ public interface IUserInterface
 		             IGenericFailureEvent onFailure);
 	}
 
-	void registerCallbackFetchSources(IFetchSourcesCallback callback); //TODO implement in Presentation
+	void registerCallbackFetchSources(IFetchSourcesCallback callback);
 
 
 	interface IAddSourceCallback
@@ -319,7 +319,7 @@ public interface IUserInterface
 		             String name, String link, String rssLink);
 	}
 
-	void registerCallbackAddSource(IAddSourceCallback callback); //TODO implement in Presentation
+	void registerCallbackAddSource(IAddSourceCallback callback);
 
 
 	interface IRemoveSourceCallback
@@ -328,6 +328,7 @@ public interface IUserInterface
 		             IGenericFailureEvent onFailure,
 		             String name);
 	}
+
 
 	interface IChangePasswordCallback
 	{
@@ -338,7 +339,24 @@ public interface IUserInterface
 		             String newPW);
 	}
 
-	void registerCallbackRemoveSource(IRemoveSourceCallback callback); //TODO implement in Presentation
+	void registerCallbackRemoveSource(IRemoveSourceCallback callback);
+
+
+	interface IStartCrawlerCallback
+	{
+		void execute();
+	}
+
+	void registerCallbackStartCrawler(IStartCrawlerCallback callback);
+
+
+	interface IStopCrawlerCallback
+	{
+		void execute();
+	}
+
+	void registerCallbackStopCrawler(IStopCrawlerCallback callback);
+
 	// endregion System Admin Interaction
 
 

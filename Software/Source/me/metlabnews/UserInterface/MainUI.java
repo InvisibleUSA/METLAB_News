@@ -559,6 +559,16 @@ public class MainUI extends UI implements IUserInterface
 		m_removeSourceCallback.execute(onSuccess, onFailure, name);
 	}
 
+	public void startCrawler()
+	{
+		m_startCrawlerCallback.execute();
+	}
+
+	public void stopCrawler()
+	{
+		m_stopCrawlerCallback.execute();
+	}
+
 	// endregion GUI Methods
 
 	/**
@@ -848,6 +858,23 @@ public class MainUI extends UI implements IUserInterface
 		m_removeSourceCallback = callback;
 	}
 
+	/**
+	 * registers the callback for starting the crawler
+	 */
+	@Override
+	public void registerCallbackStartCrawler(IStartCrawlerCallback callback)
+	{
+		m_startCrawlerCallback = callback;
+	}
+
+	/**
+	 * registers the callback for stopping the crawler
+	 */
+	@Override
+	public void registerCallbackStopCrawler(IStopCrawlerCallback callback)
+	{
+		m_stopCrawlerCallback = callback;
+	}
 
 	private ISubscriberLoginCallback                  m_subscriberLoginCallback;
 	private ISysAdminLoginCallback                    m_sysAdminLoginCallback;
@@ -874,6 +901,8 @@ public class MainUI extends UI implements IUserInterface
 	private IAddSourceCallback                        m_addSourceCallback;
 	private IRemoveSourceCallback                     m_removeSourceCallback;
 	private IChangePasswordCallback                   m_changePasswordCallback;
+	private IStartCrawlerCallback                     m_startCrawlerCallback;
+	private IStopCrawlerCallback                      m_stopCrawlerCallback;
 	// endregion Callbacks
 
 
