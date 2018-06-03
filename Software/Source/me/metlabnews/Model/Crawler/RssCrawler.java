@@ -91,9 +91,13 @@ public class RssCrawler implements Runnable
 				{
 				}
 			}
-			catch(IOException | NullPointerException e)
+			catch(IOException e)
 			{
 				Logger.getInstance().logWarning(this, m_source.getName() + " is not reachable!");
+			}
+			catch(NullPointerException e)
+			{
+				Logger.getInstance().logWarning(this, m_source.getName() + "s feed is not valid!");
 			}
 		}
 		Logger.getInstance().logInfo(this, "stopped crawler on \"" + m_source.getName() + "\"");
