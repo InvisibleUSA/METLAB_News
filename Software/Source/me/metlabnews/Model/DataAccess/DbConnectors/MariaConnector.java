@@ -18,7 +18,8 @@ class MariaConnector
 		}
 		catch(ClassNotFoundException e)
 		{
-			System.err.println("Cannot find the driver in the classpath!" + e.toString());
+			Logger.getInstance().logError(MariaConnector.class,
+			                              "MARIA CONNECTOR: Cannot find the driver in the classpath!" + e.toString());
 		}
 	}
 

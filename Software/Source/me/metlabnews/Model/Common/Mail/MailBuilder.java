@@ -27,7 +27,7 @@ public class MailBuilder
 	private static String createClippingContent(String c)
 	{
 		return
-				"<table border=\"1\">\n" +
+				"<table border=\"0\">\n" +
 						"   <tr>\n" +
 						"       <td valign=\"middle\" style=\"padding:0 10px 10px 0\"><p href=\"#\" style=\"text-decoration: none; color: #272727; font-size: 12px; color: #272727; font-weight: bold; font-family:Arial, sans-serif \">" + c + "</p></td>\n" +
 						"   </tr>\n" +
@@ -51,7 +51,7 @@ public class MailBuilder
 		sb.append(HTML_header);
 		sb.append(createSalutationContent("Sehr geehrter Abonnent, " + "\n"));
 		sb.append(createNormalContent("nachfolgend erhalten Sie " + articles.size() + " " +
-				                              "Artikel, die Sie mit Ihrem Profil erstellt haben"));
+				                              "Artikel, die Sie mit Ihrem Profil erstellt haben."));
 		for(String s : content)
 		{
 			sb.append(createNormalContent(s)).append("\n");
@@ -106,7 +106,7 @@ public class MailBuilder
 					"\t\t\t<table width=\"580\" border=\"0\" class=\"deviceWidth\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" bgcolor=\"#eeeeed\" style=\"margin:0 auto;\">\n" +
 					"\t\t\t\t<tr>\n" +
 					"\t\t\t\t\t<td valign=\"top\" style=\"padding:0\" bgcolor=\"#ffffff\">\n" +
-					"\t\t\t\t\t\t<p href=\"#\"><img  class=\"deviceWidth\" src=\"file:/// http://metlabnews.me:8080/images/header.jpeg\" alt=\"\" border=\"0\" style=\"display: block; border-radius: 4px;\" /></p>\n" +
+					"\t\t\t\t\t\t<p href=\"#\"><img  class=\"deviceWidth\" src=\"http://metlabnews.me:8080/images/header.jpeg\" alt=\"\" border=\"0\" style=\"display: block; border-radius: 4px;\" /></p>\n" +
 					"\t\t\t\t\t</td>\n" +
 					"\t\t\t\t</tr>\n" +
 					"                <tr>\n" +
