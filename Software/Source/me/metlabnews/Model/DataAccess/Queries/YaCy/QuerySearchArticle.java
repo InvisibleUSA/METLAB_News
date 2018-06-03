@@ -69,7 +69,7 @@ public class QuerySearchArticle extends YaCyQueryBase
 		if(m_source != null) {
 			query += "site:" + m_source.getLink();
 		}
-		String url = "http://localhost:8090/yacysearch.rss?query=" + query + "&maximumRecords=" + m_maximumRecords;
+		String url = "http://metlabnews.me:8090/yacysearch.rss?query=" + query + "&maximumRecords=" + m_maximumRecords;
 		m_logger.logDebug(this, url);
 		return url;
 	}
