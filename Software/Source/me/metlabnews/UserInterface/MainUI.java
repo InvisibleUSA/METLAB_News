@@ -559,16 +559,21 @@ public class MainUI extends UI implements IUserInterface
 		m_removeSourceCallback.execute(onSuccess, onFailure, name);
 	}
 
+	/**
+	 * Executes the action of starting the crawler
+	 */
 	public void startCrawler()
 	{
 		m_startCrawlerCallback.execute();
 	}
 
+	/**
+	 * Executes the action of stopping the crawler
+	 */
 	public void stopCrawler()
 	{
 		m_stopCrawlerCallback.execute();
 	}
-
 	// endregion GUI Methods
 
 	/**
@@ -582,12 +587,12 @@ public class MainUI extends UI implements IUserInterface
 	}
 
 
+	// region Callbacks
 	/**
 	 * registers the callback for logging in a subscriber or client administrator
 	 *
 	 * @param callback callback to be registered
 	 */
-	// region Callbacks
 	@Override
 	public void registerCallbackSubscriberLogin(ISubscriberLoginCallback callback)
 	{
