@@ -4,6 +4,7 @@ package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.QueryBase;
 
+import javax.naming.NamingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -34,6 +35,11 @@ abstract class MariaDBQueryBase extends QueryBase
 		catch(SQLException e)
 		{
 			Logger.getInstance().logError(this, "SQL DB Error: " + e.toString());
+			return false;
+		}
+		catch(NamingException e)
+		{
+			Logger.getInstance().logError(this, "Naming Error: " + e.toString());
 			return false;
 		}
 	}

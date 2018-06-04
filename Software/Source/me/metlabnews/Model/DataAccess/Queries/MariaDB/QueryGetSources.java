@@ -37,6 +37,7 @@ public class QueryGetSources extends MariaDBQueryBase
 				String     rss_link = rs.getString("RSS_FEED");
 				NewsSource source   = new NewsSource(name, link, rss_link);
 				m_sources.add(source);
+				rs.close();
 			}
 		}
 		catch(SQLException e) {

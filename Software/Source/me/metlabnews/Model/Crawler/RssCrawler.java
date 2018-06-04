@@ -64,11 +64,10 @@ public class RssCrawler implements Runnable
 				String             doc      = Helper.getHTTPResponse(m_source.getRss_link());
 				Logger.getInstance().logDebug(this, doc);
 				ArrayList<Article> articles = RSSFeed.parseFeed(doc, this.m_source).getArticles();
-				for(Article a : articles)
-				{
-					QueryGetSourceArticleCounter count = new QueryGetSourceArticleCounter(m_source);
-					if(count.execute())
-					{
+				QueryGetSourceArticleCounter count = new QueryGetSourceArticleCounter();
+				for(Article a : articles) {
+					count.source = m_source;
+					if(count.execute()) {
 						String guid = m_source.getName() + count.getNumArticles();
 						a.setGuid(guid);
 						boolean exists = articleExists(a);
