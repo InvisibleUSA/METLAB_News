@@ -23,7 +23,7 @@ public class Subscriber_GridHelper
 					m_buttonRemove.setEnabled(false);
 					Notification.show("Abonnent wurde entfernt");
 				},
-				errorMessage -> Notification.show(errorMessage),
+				Notification::show,
 				m_email,
 				java.sql.Date.valueOf(LocalDate.now())));
 	}
