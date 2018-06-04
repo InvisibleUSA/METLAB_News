@@ -32,9 +32,9 @@ import java.util.List;
  *
  * @author Achim Groß
  */
-@Theme("maintheme")
+//@Theme("maintheme")
 @PreserveOnRefresh
-@Push(PushMode.AUTOMATIC)
+//@Push(PushMode.AUTOMATIC)
 public class MainUI extends UI implements IUserInterface
 {
 	private SubscriberLoginView        m_subscriberLoginView;
