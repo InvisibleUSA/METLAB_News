@@ -51,7 +51,7 @@ public class QueryGetSubscribersOfOrganisation extends MariaDBQueryBase
 				lastName = rs.getString("Name");
 				password = rs.getString("PW");
 				organisation = rs.getString("Firma");
-				isAdmin = rs.getString("isAdmin") == "1";
+				isAdmin = rs.getString("isAdmin").equals("1");
 
 				if(!email.isEmpty() || firstName != null || lastName != null || password != null || organisation != null || isAdmin != null)
 				{

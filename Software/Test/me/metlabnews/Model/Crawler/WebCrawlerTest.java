@@ -24,21 +24,27 @@ public class WebCrawlerTest
 		init();
 		WebCrawler test = new WebCrawler(new NewsSource("Gamestar", "gamestar.de", ""));
 		test.start();
+		assert test.isRunning();
 		Thread.sleep(10000);
 		test.stop();
+		assert !test.isRunning();
 	}
 
 	@Test
 	public void start()
 	{
+		init();
 		WebCrawler test = new WebCrawler(new NewsSource("Gamestar", "gamestar.de", ""));
 		test.start();
+		assert test.isRunning();
 	}
 
 	@Test
 	public void stop()
 	{
+		init();
 		WebCrawler test = new WebCrawler(new NewsSource("Gamestar", "gamestar.de", ""));
 		test.stop();
+		assert !test.isRunning();
 	}
 }

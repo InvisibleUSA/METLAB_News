@@ -57,8 +57,8 @@ abstract class MariaDBQueryBase extends QueryBase
 	 * Writes the results of the query back in the members of the specific subclass after the query was executed.
 	 * It is called by MariaDBQueryBase when execute() is called.
 	 *
-	 * @param conn result of sql query
-	 * @param q
+	 * @param conn DB connection
+	 * @param q SQL Query as Object Array to be processed as prepared statement
 	 */
 	protected abstract void processResults(Connection conn, Object[] q);
 }
