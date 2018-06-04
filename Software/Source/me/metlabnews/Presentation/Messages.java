@@ -4,7 +4,7 @@ package me.metlabnews.Presentation;
 /**
  * Contains default messages for the front end
  */
-// TODO: group and order messages
+
 public final class Messages
 {
 	public static final String IllegalOperation         = "Operation kann nicht ausgeführt werden!";
