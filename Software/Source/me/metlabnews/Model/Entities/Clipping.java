@@ -93,7 +93,7 @@ public class Clipping
 		StringBuilder s = new StringBuilder("<clipping>\n");
 		s.append("\t<profileID>").append(m_profile.getID()).append("</profileID>\n");
 		s.append("\t<generationtime>");
-		s.append(m_generationTime.format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss")));
+		s.append(m_generationTime.format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss")));
 		s.append("</generationtime>\n");
 		s.append("\t<articles>\n");
 		for(Article a : m_articles)
@@ -117,7 +117,8 @@ public class Clipping
 		List<String>  content  = new ArrayList<>();
 		List<Article> articles = new ArrayList<>(m_articles);
 
-		content.add(m_generationTime.toString() + "\n");
+		content.add("Artikelgenerierung: " + m_generationTime.format(
+				DateTimeFormatter.ofPattern("dd.MM.YYYY  HH:mm:ss")) + "<br>");
 		content.add(m_profile.toString());
 
 		return MailBuilder.getFinalHTMLString(content, articles);

@@ -152,11 +152,7 @@ public class ObservationProfile extends ObservationProfileTemplate
 		s.append("Quellen: ");
 		for(String src : m_sources)
 		{
-			s.append("    ").append(src).append("\n");
-		}
-		for(char ignored : m_profileName.toCharArray())
-		{
-			s.append("-");
+			s.append(src).append(", ");
 		}
 		return s.toString();
 	}

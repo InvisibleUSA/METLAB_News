@@ -18,7 +18,7 @@ public class MailBuilder
 		return
 				"\t\t\t\t\t\t\t\t\t\t\t\t<!-- Content 1 -->\n" +
 						"\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n" +
-						"\t\t\t\t\t\t\t\t\t\t\t\t\t<td data-color=\"text\" data-size=\"size text\" data-min=\"10\" data-max=\"26\" data-link-color=\"link text color\" data-link-style=\"font-weight:bold; text-decoration:underline; color:#40aceb;\" align=\"left\" style=\"font:bold 16px/25px Arial, Helvetica, sans-serif; color:#888; padding:0 0 5px;\">\n" +
+						"\t\t\t\t\t\t\t\t\t\t\t\t\t<td data-color=\"text\" data-size=\"size text\" data-min=\"10\" data-max=\"26\" data-link-color=\"link text color\" data-link-style=\"font-weight:bold; text-decoration:underline; color:#40aceb;\" align=\"left\" style=\"font:bold 12px/20px Arial, Helvetica, sans-serif; color:#888; padding:0 0 5px;\">\n" +
 						"\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + c + "" +
 						"\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n" +
 						"\t\t\t\t\t\t\t\t\t\t\t\t</tr>";
@@ -57,7 +57,7 @@ public class MailBuilder
 		return
 				"\t\t\t\t\t\t\t\t\t\t\t\t<!-- Anrede -->\n" +
 						"\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n" +
-						"\t\t\t\t\t\t\t\t\t\t\t\t\t<td data-color=\"title\" data-size=\"size title\" data-min=\"25\" data-max=\"45\" data-link-color=\"link title color\" data-link-style=\"text-decoration:none; color:#292c34;\" class=\"title\" align=\"left\" style=\"font:35px/38px Arial, Helvetica, sans-serif; color:#292c34; padding:0 0 24px;\">\n" +
+						"\t\t\t\t\t\t\t\t\t\t\t\t\t<td data-color=\"title\" data-size=\"size title\" data-min=\"25\" data-max=\"45\" data-link-color=\"link title color\" data-link-style=\"text-decoration:none; color:#292c34;\" class=\"title\" align=\"left\" style=\"font:25px/20px Arial, Helvetica, sans-serif; color:#292c34; padding:0 0 24px;\">\n" +
 						"\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + c + "" +
 						"\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n" +
 						"\t\t\t\t\t\t\t\t\t\t\t\t</tr>";
