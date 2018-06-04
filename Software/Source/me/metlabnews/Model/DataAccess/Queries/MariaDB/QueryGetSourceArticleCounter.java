@@ -18,7 +18,7 @@ public class QueryGetSourceArticleCounter extends MariaDBQueryBase {
 
 	@Override
 	protected Object[] createSQLQuery() {
-		return new String[] {"SELECT rss_articlecounter FROM Quellen WHERE Name='" + source.getName() + "'"};
+		return new String[] {"SELECT rss_articlecounter FROM Quellen WHERE Name = ", source.getName()};
 	}
 
 	@Override
