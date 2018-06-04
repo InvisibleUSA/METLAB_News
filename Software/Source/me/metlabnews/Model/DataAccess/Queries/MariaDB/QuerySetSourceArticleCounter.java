@@ -25,8 +25,8 @@ public class QuerySetSourceArticleCounter extends MariaDBQueryBase {
 
 	@Override
 	protected Object[] createSQLQuery() {
-		return new String[] {
-				"UPDATE Quellen SET rss_articlecounter='" + m_numArticles + "' WHERE Name='" + m_source.getName() + "'"};
+		return new Object[] {
+				"UPDATE Quellen SET rss_articlecounter = ? WHERE Name = ?", m_numArticles, m_source.getName()};
 	}
 
 	@Override
