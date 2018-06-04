@@ -2,6 +2,8 @@ package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
 import me.metlabnews.Model.Entities.NewsSource;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 
@@ -28,7 +30,9 @@ public class QuerySetSourceArticleCounter extends MariaDBQueryBase {
 	}
 
 	@Override
-	protected void processResults(ResultSet rs) {
+	protected void processResults(Connection conn, Object[] q) {
 
 	}
+
+
 }

@@ -4,9 +4,7 @@ package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 import me.metlabnews.Model.Entities.Organisation;
 import me.metlabnews.Model.Entities.Subscriber;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import java.sql.*;
 
 
 public class QueryLoginUser extends MariaDBQueryBase
@@ -33,12 +31,29 @@ public class QueryLoginUser extends MariaDBQueryBase
 	}
 
 	@Override
-	protected void processResults(ResultSet rs)
+	protected void processResults(Connection conn, Object[] q)
 	{
 		String email        = "";
 		String readPassword = "";
 		try
 		{
+            PreparedStatement ps = conn.prepareStatement((String)q[0]);
+            for(int i = 1; i < q.length; i++)
+            {
+                if(q[i] instanceof String)
+                {
+                    ps.setString(i, (String)q[i]);
+                }
+                else if(q[i] instanceof Integer)
+                {
+                    ps.setInt(i, (int)q[i]);
+                }
+                else if(q[i] instanceof Date)
+                {
+                    ps.setDate(i, (Date)q[i]);
+                }
+            }
+			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
 				email = rs.getString("EMail");

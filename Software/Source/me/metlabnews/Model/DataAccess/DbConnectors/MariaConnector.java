@@ -40,29 +40,38 @@ class MariaConnector
 	private String     conString = (configurationManager.getRdbmsUseLocalDB()) ? configurationManager.getRdbmsLocalUrl() : configurationManager.getRdbmsRemoteUrl();
 	//private Connection conn;
 
-	ResultSet query(Object[] q) throws SQLException
+	Connection query(Object[] q) throws SQLException
 	{
 		Connection conn = connect();
-		PreparedStatement ps = conn.prepareStatement((String)q[0]);
-		for(int i = 1; i < q.length; i++)
-		{
-			if(q[i] instanceof String)
-			{
-				ps.setString(i, (String)q[i]);
-			}
-			else if(q[i] instanceof Integer)
-			{
-				ps.setInt(i, (int)q[i]);
-			}
-			else if(q[i] instanceof Date)
-			{
-				ps.setDate(i, (Date)q[i]);
-			}
-		}
-		ResultSet rs = ps.executeQuery();
+//		PreparedStatement ps = conn.prepareStatement((String)q[0]);
+//		for(int i = 1; i < q.length; i++)
+//		{
+//			if(q[i] instanceof String)
+//			{
+//				ps.setString(i, (String)q[i]);
+//			}
+//			else if(q[i] instanceof Integer)
+//			{
+//				ps.setInt(i, (int)q[i]);
+//			}
+//			else if(q[i] instanceof Date)
+//			{
+//				ps.setDate(i, (Date)q[i]);
+//			}
+//		}
+		//ResultSet rs = ps.executeQuery();
+		//int columnCount = rs.getMetaData().getColumnCount();
+		//Object[] data = new Object[columnCount];
+		//while (rs.next())
+		//{
+		//	for (int i = 0; i < columnCount; i++)
+		//	{
+		//		data[i] = rs.getObject(i);
+		//	}
+		//}
 		//ps.close();
-		conn.close();
-		return rs;
+		//conn.close();
+		return conn;
 	}
 
 

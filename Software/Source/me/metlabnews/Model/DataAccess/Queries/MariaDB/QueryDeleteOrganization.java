@@ -1,5 +1,7 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 
@@ -18,9 +20,9 @@ public class QueryDeleteOrganization extends MariaDBQueryBase
 		return new String[] {"DELETE FROM Klienten WHERE Name = ?", orgName};
 	}
 
-	@Override
-	protected void processResults(ResultSet rs)
-	{
+    @Override
+    protected void processResults(Connection conn, Object[] q) {
 
-	}
+    }
+
 }

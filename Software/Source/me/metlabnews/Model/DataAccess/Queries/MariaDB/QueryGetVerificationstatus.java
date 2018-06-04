@@ -1,5 +1,7 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 
@@ -18,10 +20,10 @@ public class QueryGetVerificationstatus extends MariaDBQueryBase
 		return new String[] {"SELECT isVeryfied FROM Abonnent WHERE EMail = ?", email};
 	}
 
-	@Override
-	protected void processResults(ResultSet rs)
-	{
+    @Override
+    protected void processResults(Connection conn, Object[] q) {
+
+    }
 
 
-	}
 }

@@ -5,6 +5,8 @@ import org.basex.core.Command;
 
 import javax.naming.NamingException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -26,7 +28,7 @@ public class DatabaseConnector
 		return m_baseXConnector.query(query);
 	}
 
-	public ResultSet mariaQuery(Object[] query) throws SQLException, NamingException
+	public Connection mariaQuery(Object[] query) throws SQLException, NamingException
 	{
 		return m_mariaConnector.query(query);
 	}
