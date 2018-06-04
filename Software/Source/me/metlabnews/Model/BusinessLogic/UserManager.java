@@ -86,22 +86,10 @@ public class UserManager
 			onFailure.execute(Messages.PasswordDoesNotMatchRequirements);
 			return;
 		}
-//		QueryLoginUser qlu = new QueryLoginUser();
-//		qlu.byPassword = true;
-//		qlu.password = password;
-//		if(!qlu.execute())
-//		{
-//			onFailure.execute(Messages.UnknownError);
-//			return;
-//		}
-//		if(qlu.userExists)
-//		{
-//			onFailure.execute("Das Passwort wird bereits von diesem Nutzer verwendet: " + qlu.subscriber.getEmail());
-//			return;
-//		}
+
 
 		Subscriber subscriber = new Subscriber(email, password, firstName, lastName, new Organisation(organisationName),
-		                                       clientAdmin); //TODO: Change Organisation
+		                                       clientAdmin);
 
 		QueryAddUser qau = new QueryAddUser();
 		qau.subscriber = subscriber;
