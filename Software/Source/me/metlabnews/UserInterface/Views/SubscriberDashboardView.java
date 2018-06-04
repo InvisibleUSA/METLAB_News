@@ -588,7 +588,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 						m_textProfileName.setValue("");
 						m_textProfileKeywords.setValue("");
 						m_selectProfileSources.deselectAll();
-						Notification.show("Profil wurde erstellt");
+						m_parent.access(() -> Notification.show("Profil wurde erstellt"));
 					},
 					errorMessage -> m_parent.access(() -> Notification.show(errorMessage)),
 					m_textProfileName.getValue(),
@@ -836,11 +836,12 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		}
 		m_gridSubscribers.setItems(subs);
 		m_gridSubscribers.recalculateColumnWidths();
+		List<Subscriber_GridHelper> subsForShare = new ArrayList<>(subs);
 		if(ownSub != null)
 		{
-			subs.remove(subs.indexOf(ownSub));
+			subsForShare.remove(subsForShare.indexOf(ownSub));
 		}
-		m_gridShare.setItems(subs);
+		m_gridShare.setItems(subsForShare);
 		m_gridShare.recalculateColumnWidths();
 	}
 
