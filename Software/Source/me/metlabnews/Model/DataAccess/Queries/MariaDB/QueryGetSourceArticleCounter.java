@@ -1,5 +1,6 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
+import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Entities.NewsSource;
 
 import java.sql.*;
@@ -18,7 +19,7 @@ public class QueryGetSourceArticleCounter extends MariaDBQueryBase {
 
 	@Override
 	protected Object[] createSQLQuery() {
-		return new String[] {"SELECT rss_articlecounter FROM Quellen WHERE Name = ", source.getName()};
+		return new String[] {"SELECT rss_articlecounter FROM Quellen WHERE Name = ?", source.getName()};
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class QueryGetSourceArticleCounter extends MariaDBQueryBase {
 			rs.close();
 		}
 		catch(SQLException e) {
-			e.printStackTrace();
+			Logger.getInstance().logError(this, "SQLException: " + e.getMessage() + ":" + e.getCause());
 		}
 	}
 
