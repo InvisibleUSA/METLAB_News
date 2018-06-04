@@ -141,13 +141,18 @@ public class Article
 	}
 
 
+	/**
+	 * This method returns a HTML String
+	 *
+	 * @return a HTML String
+	 */
 	public String toHTMLString()
 	{
 		@SuppressWarnings("UnnecessaryLocalVariable")
 		final String erg =
 				"<h2><p>" + m_title + "</p><br></h2>"
 						+ "<p>" + m_description + "</p>"
-						+ "<p> " + m_link + "</p><br>"
+						+ "<p>Link: " + m_link + "</p><br>"
 						+ "<p>Quelle: " + m_source.getName() + "</p><br>";
 		return erg;
 	}
