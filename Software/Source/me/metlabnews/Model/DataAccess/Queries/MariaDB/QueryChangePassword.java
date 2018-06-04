@@ -1,5 +1,7 @@
 package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 
@@ -19,8 +21,8 @@ public class QueryChangePassword extends MariaDBQueryBase
 	}
 
 	@Override
-	protected void processResults(ResultSet rs)
-	{
+	protected void processResults(Connection conn, Object[] q) {
 
 	}
+
 }

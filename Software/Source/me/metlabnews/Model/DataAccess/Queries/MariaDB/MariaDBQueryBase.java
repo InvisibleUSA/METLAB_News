@@ -4,7 +4,8 @@ package me.metlabnews.Model.DataAccess.Queries.MariaDB;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.DataAccess.Queries.QueryBase;
 
-import java.sql.ResultSet;
+import javax.naming.NamingException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 
@@ -26,14 +27,20 @@ abstract class MariaDBQueryBase extends QueryBase
 		try
 		{
 			Object[]  sql = createSQLQuery();
-			ResultSet rs  = m_dbConnector.mariaQuery(sql);
+			Connection conn  = m_dbConnector.mariaQuery(sql);
 
-			processResults(rs);
+			processResults(conn, sql);
+			conn.close();
 			return true;
 		}
 		catch(SQLException e)
 		{
 			Logger.getInstance().logError(this, "SQL DB Error: " + e.toString());
+			return false;
+		}
+		catch(NamingException e)
+		{
+			Logger.getInstance().logError(this, "Naming Error: " + e.toString());
 			return false;
 		}
 	}
@@ -50,7 +57,8 @@ abstract class MariaDBQueryBase extends QueryBase
 	 * Writes the results of the query back in the members of the specific subclass after the query was executed.
 	 * It is called by MariaDBQueryBase when execute() is called.
 	 *
-	 * @param rs result of sql query
+	 * @param conn result of sql query
+	 * @param q
 	 */
-	protected abstract void processResults(ResultSet rs);
+	protected abstract void processResults(Connection conn, Object[] q);
 }
