@@ -39,6 +39,9 @@ public class RssCrawler implements Runnable
 		this.m_source = source;
 	}
 
+	/**
+	 * starts this is instance in a new thread
+	 */
 	void start()
 	{
 		if(!m_running)
@@ -145,6 +148,9 @@ public class RssCrawler implements Runnable
 		m_running = false;
 	}
 
+	/**
+	 * @return the source this crawler runs on
+	 */
 	public NewsSource getSource()
 	{
 		return m_source;

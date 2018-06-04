@@ -28,6 +28,11 @@ public class WebCrawler
 	private final String  m_yacy_address;
 	private final boolean m_yacy_is_protected;
 
+	/**
+	 * creates a new webcrawler with the given source
+	 *
+	 * @param source this crawlers {@link NewsSource}
+	 */
 	WebCrawler(NewsSource source) {
 		this.m_source = source;
 		this.m_yacy_pw = ConfigurationManager.getInstance().getCrawlerYaCyPassword();
@@ -158,7 +163,7 @@ public class WebCrawler
 				response = Helper.getHTTPResponse(m_yacy_address + "/CrawlProfileEditor_p.xml");
 			}
 			XMLTag            profileSummary = new XMLTag(response);
-			ArrayList<XMLTag> profiles = profileSummary.children("crawlProfile");
+			ArrayList<XMLTag> profiles       = profileSummary.children("crawlProfile");
 			for(XMLTag tag : profiles) {
 				if(tag.child("name").value().equals(m_source.getLink())) {
 					return tag.child("handle").value();
@@ -171,6 +176,9 @@ public class WebCrawler
 		return null;
 	}
 
+	/**
+	 * @return the source this webcrawler runs on
+	 */
 	public NewsSource getSource() {
 		return m_source;
 	}

@@ -23,15 +23,28 @@ public class RSSFeed
 	private NewsSource         source;
 	private ArrayList<Article> articles = new ArrayList<>();
 
+	/**
+	 * creates an empty rss feed
+	 */
 	public RSSFeed() {
 
 	}
 
+	/**
+	 * creates an rss feed with the given newssource and the given articles
+	 * @param s the given source
+	 * @param articles the given articles
+	 */
 	public RSSFeed(NewsSource s, Article... articles) {
 		source = s;
 		this.articles.addAll(Arrays.asList(articles));
 	}
 
+	/**
+	 * creates an rss feed with the given newssource and the given articles
+	 * @param s the given source
+	 * @param articles the given articles
+	 */
 	public RSSFeed(NewsSource s, ArrayList<Article> articles) {
 		source = s;
 		this.articles = articles;
@@ -103,23 +116,40 @@ public class RSSFeed
 		}
 	}
 
+	/**
+	 * sets the source of the rss feed
+	 * @param s the new source
+	 */
 	public void setSource(NewsSource s) {
 		this.source = s;
 	}
 
+	/**
+	 * adds an article to the rss feed
+	 * @param a the article to add
+	 */
 	public void addArticle(Article a) {
 		this.articles.add(a);
 	}
 
+	/**
+	 * @param articles the articles that the rss feed should have
+	 */
 	public void setArticles(Collection<Article> articles) {
 		this.articles.clear();
 		this.articles.addAll(articles);
 	}
 
+	/**
+	 * @return an @{@link ArrayList} of {@link Article} that belong to this feed
+	 */
 	public ArrayList<Article> getArticles() {
 		return articles;
 	}
 
+	/**
+	 * @return the rss feeds source
+	 */
 	public NewsSource getSource() {
 		return source;
 	}

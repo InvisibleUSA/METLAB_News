@@ -69,6 +69,9 @@ public class CrawlerController implements Runnable
 		m_running = false;
 	}
 
+	/**
+	 * start a this instance of CrawlerController in a new Thread
+	 */
 	public void start() {
 		m_t = new Thread(this);
 		m_t.start();

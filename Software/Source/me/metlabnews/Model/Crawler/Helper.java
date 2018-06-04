@@ -35,6 +35,10 @@ public class Helper
 		return sb.toString();
 	}
 
+	/**
+	 * @param title removes critical characters at a file name from a string
+	 * @return the new cleaned string
+	 */
 	public static String formatForFileName(String title)
 	{
 		String result = title
@@ -56,10 +60,17 @@ public class Helper
 		return result;
 	}
 
+	/**
+	 * @param address the url to get the response from
+	 * @param user the user to authenticate with
+	 * @param pw that users password
+	 * @return the response of the website
+	 * @throws IOException if url is not reachable
+	 */
 	public static String getHTTPResponse(String address, String user, String pw) throws IOException
 	{
 		Logger.getInstance().logDebug(Helper.class, "Helper Class --> url: " + address);
-		URL               url        = new URL(address);
+		URL url = new URL(address);
 		String            encoding   = Base64.getEncoder().encodeToString(
 				(user + ":" + pw).getBytes(Charset.forName("UTF-8")));
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();

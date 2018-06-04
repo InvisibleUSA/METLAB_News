@@ -1,8 +1,10 @@
 package me.metlabnews.Model.Entities;
 
+import com.sun.istack.Nullable;
 import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.XMLTag;
 
+import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,14 +32,31 @@ public class Article
 		Logger.getInstance().register(Article.class, Logger.Channel.Entities);
 	}
 
+	@Nullable
 	private String     m_title;
+	@Nullable
 	private String     m_link;
+	@Nullable
 	private String     m_description;
+	@NotNull
 	private NewsSource m_source;
+	@Nullable
 	private String     m_guid;
+	@Nullable
 	private Calendar   m_pubDate;
 	private boolean    m_isRSS = true;
 
+	/**
+	 * constructs an complete {@link Article} with the given arguments, each one, but the source can be null
+	 *
+	 * @param title       the given title of the article, gets formatted through {{@link #format(String)}}
+	 *                    and all xml tags removed through {{@link #removeAllTags(String)}.
+	 * @param source      the given NewsSource, mustn't be null
+	 * @param link        the given link to the original article
+	 * @param description the articles description
+	 * @param guid        the articles global unique identifier
+	 * @param pubDate     the articles publish date
+	 */
 	public Article(String title, NewsSource source, String link, String description, String guid, Calendar pubDate)
 	{
 		this.m_title = format(removeAllTags(title));
@@ -90,6 +109,11 @@ public class Article
 		return s.replaceAll("<.*>", "");
 	}
 
+	/**
+	 * formats a string: replacing all '&' with 'und' and replaces "\"" with "'"
+	 * @param s the String to format
+	 * @return the formatted string
+	 */
 	private String format(String s)
 	{
 		s = s.replace("&", "und");
@@ -128,26 +152,42 @@ public class Article
 		return erg;
 	}
 
+	/**
+	 * @return the articles source
+	 */
 	public NewsSource getSource()
 	{
 		return m_source;
 	}
 
+	/**
+	 * @return the articles publishing date
+	 */
 	public Calendar getPubDate()
 	{
 		return m_pubDate;
 	}
 
+	/**
+	 * @return the articles global unique identfier
+	 */
 	public String getguid()
 	{
 		return m_guid;
 	}
 
+	/**
+	 * @return the articles title
+	 */
 	public String getTitle()
 	{
 		return m_title;
 	}
 
+	/**
+	 * sets the guid of the article
+	 * @param guid should be globally unique
+	 */
 	public void setGuid(String guid)
 	{
 		this.m_guid = guid;
