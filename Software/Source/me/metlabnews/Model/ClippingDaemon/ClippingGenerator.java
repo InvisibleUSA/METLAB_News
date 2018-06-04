@@ -6,9 +6,11 @@ import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddClipping;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryAddYaCyArticle;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QuerySearchArticleRSS;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryUpdateProfile;
+import me.metlabnews.Model.DataAccess.Queries.MariaDB.QueryGetSourceLink;
 import me.metlabnews.Model.DataAccess.Queries.YaCy.QuerySearchArticle;
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.Clipping;
+import me.metlabnews.Model.Entities.NewsSource;
 import me.metlabnews.Model.Entities.ObservationProfile;
 
 import java.time.LocalDateTime;
@@ -63,6 +65,7 @@ class ClippingGenerator implements Runnable
 	{
 		return m_clipping;
 	}
+
 	private void updateGenerationTime()
 	{
 		m_profile.setLastGenerationTime(LocalDateTime.now());
@@ -88,29 +91,43 @@ class ClippingGenerator implements Runnable
 
 	private void getYaCyArticles()
 	{
-		QuerySearchArticle query = new QuerySearchArticle();
-		query.setSortByDate(true);
-		query.setMaximumRecords(13);
-
-		if(!query.execute())
+		for(String source : m_profile.getSources())
 		{
-			Logger.getInstance().logError(this, "Unknown YaCy access error. Could not get YaCy clipping results.");
-			return;
-		}
-		Logger.getInstance().logDebug(this, "Fetched potential HTML Articles");
-
-		for(Article a : query.getArticles())
-		{
-			m_clipping.addArticle(a);
-			//Write to BaseX
-			QueryAddYaCyArticle q = new QueryAddYaCyArticle(a);
-			if(!q.execute())
+			QueryGetSourceLink linkQuery = new QueryGetSourceLink(source);
+			if(linkQuery.execute())
 			{
-				Logger.getInstance().logError(this, "Unknown Database Error");
+				String             source_link = linkQuery.getSourceLink();
+				QuerySearchArticle query       = new QuerySearchArticle();
+				query.setSearchTerms(m_profile.getKeywords());
+				query.setSource(new NewsSource(source, source_link, ""));
+				query.setSortByDate(true);
+				query.setMaximumRecords(13);
+
+				if(!query.execute())
+				{
+					Logger.getInstance().logError(this,
+					                              "Unknown YaCy access error. Could not get YaCy clipping results.");
+					return;
+				}
+				Logger.getInstance().logDebug(this, "Fetched potential HTML Articles");
+
+				for(Article a : query.getArticles())
+				{
+					m_clipping.addArticle(a);
+					//Write to BaseX
+					QueryAddYaCyArticle q = new QueryAddYaCyArticle(a);
+					if(!q.execute())
+					{
+						Logger.getInstance().logError(this, "Unknown Database Error");
+					}
+				}
+			}
+			else
+			{
+				Logger.getInstance().logError(this, "Unknown MariaDB Error");
 			}
 		}
 	}
-
 
 	private void getRSSArticles()
 	{

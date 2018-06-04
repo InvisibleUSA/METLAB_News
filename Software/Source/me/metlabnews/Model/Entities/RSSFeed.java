@@ -56,23 +56,29 @@ public class RSSFeed
 				else {
 					title = "";
 				}
-				String description = curr_article.child("description").value();
-				if(description != null) {
-					description = description.replace("\"", "'");
+				String description;
+				XMLTag descriptionChild = curr_article.child("description");
+				if(descriptionChild != null)
+				{
+					description = descriptionChild.value().replace("\"", "'");
 				}
 				else {
 					description = "";
 				}
-				String link = curr_article.child("link").value();
-				if(link != null) {
-					link = link.replace("\"", "'");
+				String link;
+				XMLTag linkChild = curr_article.child("link");
+				if(linkChild != null)
+				{
+					link = linkChild.value().replace("\"", "'");
 				}
 				else {
 					link = "";
 				}
-				String guid = curr_article.child("guid").value();
-				if(guid != null) {
-					guid = guid.replace("\"", "'");
+				String guid;
+				XMLTag guidChild = curr_article.child("guid");
+				if(guidChild != null)
+				{
+					guid = guidChild.value().replace("\"", "'");
 				}
 				else {
 					guid = "";
@@ -92,7 +98,7 @@ public class RSSFeed
 			return new RSSFeed(source, articles);
 		}
 		else {
-			Logger.getInstance().logError(new RSSFeed(), "NullPointerException on source:" + source.getName());
+			Logger.getInstance().logError(RSSFeed.class, "NullPointerException on source:" + source.getName());
 			return null;
 		}
 	}

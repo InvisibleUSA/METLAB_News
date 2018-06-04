@@ -18,6 +18,11 @@ public class QueryGetSources extends MariaDBQueryBase
 {
 	private ArrayList<NewsSource> m_sources = new ArrayList<>();
 
+	static
+	{
+		Logger.getInstance().register(QueryGetSources.class, Logger.Channel.RDBMS);
+	}
+
 	@Override
 	protected Object[] createSQLQuery() {
 		return new String[] {"SELECT * FROM Quellen"};

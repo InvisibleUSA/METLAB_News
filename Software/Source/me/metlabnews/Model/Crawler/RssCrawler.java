@@ -9,6 +9,7 @@ import me.metlabnews.Model.DataAccess.Queries.MariaDB.QuerySetSourceArticleCount
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.RSSFeed;
 import me.metlabnews.Model.Entities.NewsSource;
+import sun.security.krb5.Config;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ public class RssCrawler implements Runnable
 			try
 			{
 				String             doc      = Helper.getHTTPResponse(m_source.getRss_link());
+				Logger.getInstance().logDebug(this, doc);
 				ArrayList<Article> articles = RSSFeed.parseFeed(doc, this.m_source).getArticles();
 				for(Article a : articles)
 				{
@@ -83,13 +85,6 @@ public class RssCrawler implements Runnable
 						                              "failed to add article :\"" + a.getTitle() + "\" because sql query failed");
 					}
 				}
-				try
-				{
-					Thread.sleep(ConfigurationManager.getInstance().getCrawlerTimeout());
-				}
-				catch(InterruptedException ignored)
-				{
-				}
 			}
 			catch(IOException e)
 			{
@@ -98,6 +93,15 @@ public class RssCrawler implements Runnable
 			catch(NullPointerException e)
 			{
 				Logger.getInstance().logWarning(this, m_source.getName() + "s feed is not valid!");
+				Logger.getInstance().logError(this, e.getMessage() + "\n" + e.getCause());
+			}
+			try
+			{
+				Thread.sleep(ConfigurationManager.getInstance().getCrawlerTimeout());
+			}
+			catch(InterruptedException ignored)
+			{
+
 			}
 		}
 		Logger.getInstance().logInfo(this, "stopped crawler on \"" + m_source.getName() + "\"");

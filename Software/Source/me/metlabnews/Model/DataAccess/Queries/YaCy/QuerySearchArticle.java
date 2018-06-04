@@ -1,11 +1,13 @@
 package me.metlabnews.Model.DataAccess.Queries.YaCy;
 
 import me.metlabnews.Model.Common.Logger;
+import me.metlabnews.Model.DataAccess.ConfigurationManager;
 import me.metlabnews.Model.Entities.Article;
 import me.metlabnews.Model.Entities.NewsSource;
 import me.metlabnews.Model.Entities.RSSFeed;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 
 
@@ -40,6 +42,38 @@ public class QuerySearchArticle extends YaCyQueryBase
 		m_searchTerms = searchTerms;
 	}
 
+	public void setSeatchTerms(String... searchTerms)
+	{
+		m_searchTerms = searchTerms;
+	}
+
+	/**
+	 * @param searchTerms must be an Collection with only Strings in it
+	 */
+	public void setSearchTerms(Collection searchTerms)
+	{
+		m_searchTerms = new String[searchTerms.size()];
+		int      i     = 0;
+		Object[] terms = searchTerms.toArray();
+		for(Object currTerm : terms)
+		{
+			if(currTerm instanceof String)
+			{
+				m_searchTerms[i] = (String)terms[i];
+			}
+			else
+			{
+				m_searchTerms[i] = "";
+			}
+			i++;
+		}
+	}
+
+	public void setSource(NewsSource source)
+	{
+		m_source = source;
+	}
+
 	public void setMaximumRecords(int maximumRecords) {
 		m_maximumRecords = maximumRecords;
 	}
@@ -69,14 +103,13 @@ public class QuerySearchArticle extends YaCyQueryBase
 		if(m_source != null) {
 			query += "site:" + m_source.getLink();
 		}
-		String url = "http://localhost:8090/yacysearch.rss?query=" + query + "&maximumRecords=" + m_maximumRecords;
-		m_logger.logDebug(this, url);
+		String url = ConfigurationManager.getInstance().getCrawlerYaCyAddress() + "/yacysearch.rss?query=" + query + "&maximumRecords=" + m_maximumRecords;
+		Logger.getInstance().logDebug(this, url);
 		return url;
 	}
 
 	@Override
 	protected void processResults(String result) {
-		m_logger.logDebug(this, result);
 		RSSFeed search_res = RSSFeed.parseFeed(result,
 		                                       new NewsSource("YaCy", "localhost:8090", "localhost:8090"));
 		if(search_res != null) {
