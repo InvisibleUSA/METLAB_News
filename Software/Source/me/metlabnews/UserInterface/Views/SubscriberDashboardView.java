@@ -187,7 +187,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 		m_panelTemplateCreation2.setContent(m_layoutTemplateCreation2);
 		m_layoutTemplateCreation2.addComponents(m_selectTemplateSources, m_buttonShowTemplateSources);
 
-		m_tabsSettings.addTab(m_displayPWReset, "Passwort zurücksetzen");
+		m_tabsSettings.addTab(m_displayPWReset, "Passwort ändern");
 		m_tabsSettings.addTab(m_displayQuitAccount, "Gefahrenzone");
 		m_displayPWReset.addComponents(m_textCurrentPW, m_textNewPW1, m_textNewPW2, m_buttonPWReset);
 		m_displayQuitAccount.addComponent(m_buttonQuitAccount);
@@ -330,7 +330,7 @@ public class SubscriberDashboardView extends VerticalLayout implements IView
 	private final TextField                         m_textNewPW2                            = new TextField(
 			"Passwort wiederholen:");
 	private final Button                            m_buttonPWReset                         = new Button(
-			"Passwort zurücksetzen");
+			"Passwort ändern");
 
 	private boolean m_clippingsUpdatable = true;
 
