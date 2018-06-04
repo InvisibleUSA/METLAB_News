@@ -28,7 +28,8 @@ public class Profile_GridHelper
 
 		setupListSelects(keywords, sources);
 
-		m_checkBoxIsActive.setValue(true);
+		m_checkBoxIsActive.setValue(m_isActive);
+
 		m_checkBoxIsActive.addValueChangeListener(
 				event -> {
 					m_isActive = m_checkBoxIsActive.getValue();

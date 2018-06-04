@@ -34,32 +34,47 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 		m_buttonLogout.addClickListener((Button.ClickEvent event) -> m_parent.logout());
 
 		m_buttonShowOrganizations.addClickListener(
-				(Button.ClickEvent event) -> m_parent.getAllOrganisations(
-						this::showOrganizations,
-						Notification::show));
+				(Button.ClickEvent event) ->
+						m_parent.getAllOrganisations(
+								data -> {
+									showOrganizations(data);
+									m_parent.access(() -> Notification.show("Organisationen wurden aktualisiert."));
+								},
+								Notification::show));
 
 		m_buttonShowSources.addClickListener(
-				(Button.ClickEvent event) -> updateGrid());
+				(Button.ClickEvent event) ->
+						m_parent.fetchSources(
+								data -> {
+									showSources(data);
+									Notification.show("Quellen wurden aktualisiert.");
+								},
+								Notification::show));
 
-		m_buttonAddOrganisation.addClickListener(event -> createOrganizationAction());
+		m_buttonAddOrganisation.addClickListener(
+				(Button.ClickEvent event) -> createOrganizationAction());
 
-		m_buttonAddSource.addClickListener(event -> m_parent.addSource(
-				() -> m_parent.access(
-						() -> {
-							Notification.show("Quelle hinzugefügt");
-							m_textSourceName.setValue("");
-							m_textSourceLink.setValue("");
-							m_textSourceRssLink.setValue("");
-						}),
-				errorMessage -> m_parent.access(
-						() -> Notification.show("Quelle konnte nicht hinzugefügt werden\n" + errorMessage)),
-				m_textSourceName.getValue(),
-				m_textSourceLink.getValue(),
-				m_textSourceRssLink.getValue()));
+		m_buttonAddSource.addClickListener(
+				(Button.ClickEvent event) -> createSource());
+
+		m_buttonStartCrawler.addClickListener(
+				(Button.ClickEvent event) ->
+				{
+					m_parent.startCrawler();
+					Notification.show("Crawler gestartet");
+				});
+		m_buttonStopCrawler.addClickListener(
+				(Button.ClickEvent event) ->
+				{
+					m_parent.stopCrawler();
+					Notification.show("Crawler gestoppt");
+				});
 
 
 		this.addComponents(m_title, m_layoutHeaderBar, m_tabLayout);
 		m_layoutHeaderBar.addComponents(m_buttonLogout);
+		m_tabLayout.addTab(m_displayCrawlerControl, "Crawler Steuerung");
+		m_displayCrawlerControl.addComponents(m_buttonStartCrawler, m_buttonStopCrawler);
 		m_tabLayout.addTab(m_displayOrganizations, "Organisationen");
 		m_displayOrganizations.addComponents(m_gridOrganizations, m_buttonShowOrganizations);
 		m_tabLayout.addTab(m_layoutAddOrganization, "Organisation hinzufügen");
@@ -84,9 +99,6 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 	public void show()
 	{
 		m_parent.setContent(this);
-		m_parent.getAllOrganisations(
-				this::showOrganizations,
-				Notification::show);
 	}
 
 	private MainUI m_parent;
@@ -96,6 +108,10 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 	private final HorizontalLayout m_layoutHeaderBar = new HorizontalLayout();
 
 	private final TabSheet m_tabLayout = new TabSheet();
+
+	private final VerticalLayout m_displayCrawlerControl = new VerticalLayout();
+	private final Button         m_buttonStopCrawler     = new Button("Crawler stoppen");
+	private final Button         m_buttonStartCrawler    = new Button("Crawler starten");
 
 	private final VerticalLayout                m_displayOrganizations    = new VerticalLayout();
 	private final Grid<Organization_GridHelper> m_gridOrganizations       = new Grid<>();
@@ -152,8 +168,7 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 	{
 		if(m_tabLayout.getSelectedTab().equals(m_displayOrganizations))
 		{
-			m_parent.getAllOrganisations(this::showOrganizations,
-			                             Notification::show);
+			m_parent.getAllOrganisations(this::showOrganizations, Notification::show);
 		}
 		else if(m_tabLayout.getSelectedTab().equals(m_displaySources))
 		{
@@ -212,5 +227,22 @@ public class SystemAdminDashboardView extends VerticalLayout implements IView
 				m_textAdminLastName.getValue(),
 				m_textAdminEmail.getValue(),
 				m_textAdminPassword.getValue());
+	}
+
+	private void createSource()
+	{
+		m_parent.addSource(
+				() -> m_parent.access(
+						() -> {
+							Notification.show("Quelle hinzugefügt");
+							m_textSourceName.setValue("");
+							m_textSourceLink.setValue("");
+							m_textSourceRssLink.setValue("");
+						}),
+				errorMessage -> m_parent.access(
+						() -> Notification.show("Quelle konnte nicht hinzugefügt werden\n" + errorMessage)),
+				m_textSourceName.getValue(),
+				m_textSourceLink.getValue(),
+				m_textSourceRssLink.getValue());
 	}
 }

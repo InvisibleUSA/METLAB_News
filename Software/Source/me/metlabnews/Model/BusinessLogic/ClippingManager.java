@@ -10,6 +10,8 @@ import me.metlabnews.Model.Entities.Subscriber;
 import me.metlabnews.Model.Entities.SystemAdministrator;
 import me.metlabnews.Presentation.*;
 
+import java.util.List;
+
 
 
 /**
@@ -60,14 +62,17 @@ public class ClippingManager
 			return;
 		}
 
-		int resultCount = fetchQuery.getResults().size();
-		ClippingDataRepresentation[] resultSet = new ClippingDataRepresentation[resultCount];
-		for(int idx = 0; idx < resultCount; ++idx)
+		int                          resultCount = fetchQuery.getResults().size();
+		ClippingDataRepresentation[] resultSet   = new ClippingDataRepresentation[resultCount];
+		List<Clipping>               resultList  = fetchQuery.getResults();
+
+		int index = 0;
+		for(Clipping clipping : resultList)
 		{
-			Clipping clipping = fetchQuery.getResults().get(idx);
-			resultSet[idx] = new ClippingDataRepresentation(clipping.getGenerationTime().toString(),
-			                                                clipping.prettyPrintHTML(),
-			                                                clipping.getGenerationTime().toString());
+			resultSet[index] = new ClippingDataRepresentation(clipping.getProfile().getID(),
+			                                                        clipping.prettyPrintHTML(),
+			                                                        clipping.getGenerationTime().toString());
+			index++;
 		}
 		onSuccess.execute(resultSet);
 	}

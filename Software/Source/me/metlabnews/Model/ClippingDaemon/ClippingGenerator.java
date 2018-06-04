@@ -50,6 +50,8 @@ class ClippingGenerator implements Runnable
 	{
 		m_clipping = new Clipping(m_profile);
 
+		updateGenerationTime();
+
 		getRSSArticles();
 
 		getYaCyArticles();
@@ -57,8 +59,6 @@ class ClippingGenerator implements Runnable
 		sendMail();
 
 		storeClippingInBaseX();
-
-		updateGenerationTime();
 	}
 
 	Clipping getClipping()

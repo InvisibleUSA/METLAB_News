@@ -6,6 +6,7 @@ import me.metlabnews.Model.Common.Logger;
 import me.metlabnews.Model.Common.Mail.MailBuilder;
 import me.metlabnews.Model.Common.XMLTag;
 import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetArticleByID;
+import me.metlabnews.Model.DataAccess.Queries.BaseX.QueryGetProfileById;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,7 +34,17 @@ public class Clipping
 	{
 		try
 		{
-			//m_profile = tag.child("profileID").value();
+			QueryGetProfileById fetchQuery = new QueryGetProfileById();
+			fetchQuery.profileID = tag.child("profileID").value();
+			if(!fetchQuery.execute())
+			{
+				Logger.getInstance().logError(this, "Unknown Database error.");
+			}
+			else
+			{
+				m_profile = fetchQuery.getProfile();
+			}
+
 			m_generationTime = LocalDateTime.parse(tag.child("generationtime").value());
 			for(XMLTag articles : tag.children("articles"))
 			{

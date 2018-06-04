@@ -1,6 +1,7 @@
 package me.metlabnews.Presentation;
 
 import me.metlabnews.Model.BusinessLogic.*;
+import me.metlabnews.Model.Crawler.CrawlerController;
 import me.metlabnews.Model.ResourceManagement.IResource;
 
 import java.util.Arrays;
@@ -170,6 +171,10 @@ public class Presenter implements IResource
 
 		ui.registerCallbackRemoveSource((onSuccess, onFailure, name) -> clippingManager.removeSource(
 				session, onSuccess, onFailure, name));
+
+		ui.registerCallbackStartCrawler(() -> CrawlerController.getInstance().start());
+
+		ui.registerCallbackStopCrawler(() -> CrawlerController.getInstance().stop());
 	}
 
 

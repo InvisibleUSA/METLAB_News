@@ -143,12 +143,13 @@ public class ObservationProfile extends ObservationProfileTemplate
 		StringBuilder s = new StringBuilder("Profilname: " + m_profileName + "<br>");
 		//s.append("Last generation time: ").append(m_lastGeneration).append("<br>");
 		//s.append("Period: ").append(m_period).append("<br>");
-		s.append("Keywords:");
+		s.append("Schlüsselwörter: ");
 		for(String key : m_keywords)
 		{
 			s.append("    ").append(key).append("\n");
 		}
-		s.append("Sources:\n");
+		s.append("<br>");
+		s.append("Quellen: ");
 		for(String src : m_sources)
 		{
 			s.append("    ").append(src).append("\n");
