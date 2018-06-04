@@ -31,9 +31,9 @@ public class QueryGetArticleByID extends BaseXQueryBase
 	@Override
 	protected Command createBaseXQuery()
 	{
-		final String query = "for $art in /article\n" +
-				" where $art/ID = '" + articleID + "'\n" +
-				" return $article";
+		final String query = "(for $art in /article\n" +
+				" where $art/guid = '" + articleID + "'\n" +
+				" return $art)[1]";
 		return new XQuery(query);
 	}
 
