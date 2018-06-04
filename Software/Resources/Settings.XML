@@ -11,8 +11,8 @@
 
 
 	<!-- Crawler -->
-	<entry key="Crawler.Timeout">12345</entry>
-	<entry key="Crawler.MaxDocsPerDomain">12345</entry>
+	<entry key="Crawler.Timeout">20000</entry>
+	<entry key="Crawler.MaxDocsPerDomain">20000</entry>
 	<entry key="Crawler.TypePreferred">RSSFeed</entry> <!-- {RSSFeed, Website} -->
 	<entry key="Crawler.YaCy.Address">http://metlabnews.me:8090</entry>
 	<entry key="Crawler.YaCy.User">admin</entry>

@@ -150,6 +150,6 @@ class ClippingGenerator implements Runnable
 	{
 		if (!m_sendMail) return;
 		MailDeliverer m = new MailDeliverer();
-		m.send(m_profile.getUserMail(), "New clipping", m_clipping.prettyPrintHTML());
+		m.send(m_profile.getUserMail(), "METLAB News - Neues Clipping", m_clipping.prettyPrintHTML());
 	}
 }
